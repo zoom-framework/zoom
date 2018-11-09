@@ -20,6 +20,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="zoom" target="1.6" />
       <module name="zoom-admin" target="1.6" />
       <module name="zoom-aop" target="1.6" />
       <module name="zoom-async" target="1.6" />

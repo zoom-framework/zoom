@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/zoom.iml" filepath="$PROJECT_DIR$/zoom.iml" />
       <module fileurl="file://$PROJECT_DIR$/zoom-aop/zoom-aop.iml" filepath="$PROJECT_DIR$/zoom-aop/zoom-aop.iml" />
       <module fileurl="file://$PROJECT_DIR$/zoom-async/zoom-async.iml" filepath="$PROJECT_DIR$/zoom-async/zoom-async.iml" />
       <module fileurl="file://$PROJECT_DIR$/zoom-cache/zoom-cache.iml" filepath="$PROJECT_DIR$/zoom-cache/zoom-cache.iml" />
@@ -10,7 +11,6 @@
       <module fileurl="file://$PROJECT_DIR$/zoom-dao/zoom-dao.iml" filepath="$PROJECT_DIR$/zoom-dao/zoom-dao.iml" />
       <module fileurl="file://$PROJECT_DIR$/zoom-event/zoom-event.iml" filepath="$PROJECT_DIR$/zoom-event/zoom-event.iml" />
       <module fileurl="file://$PROJECT_DIR$/zoom-ioc/zoom-ioc.iml" filepath="$PROJECT_DIR$/zoom-ioc/zoom-ioc.iml" />
-      <module fileurl="file://$PROJECT_DIR$/zoom-parent.iml" filepath="$PROJECT_DIR$/zoom-parent.iml" />
       <module fileurl="file://$PROJECT_DIR$/zoom-plugin/zoom-plugin.iml" filepath="$PROJECT_DIR$/zoom-plugin/zoom-plugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/zoom-timer/zoom-timer.iml" filepath="$PROJECT_DIR$/zoom-timer/zoom-timer.iml" />
       <module fileurl="file://$PROJECT_DIR$/zoom-web/zoom-web.iml" filepath="$PROJECT_DIR$/zoom-web/zoom-web.iml" />
