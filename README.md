@@ -78,4 +78,9 @@ mvn versions:set -DnewVersion=0.1.2
 ```
 mvn deploy
 ```
+清除idea
 
+```
+find ./ -name ".idea"|xargs rm -rf
+find ./ -name "*.iml"|xargs rm -rf
+```
