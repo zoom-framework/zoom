@@ -1,6 +1,6 @@
-import com.jzoom.zoom.ioc.IocObject;
-import com.jzoom.zoom.ioc.impl.ZoomIoc;
-import com.jzoom.zoom.ioc.impl.ZoomIocKey;
+import org.zoomdev.zoom.ioc.IocObject;
+import org.zoomdev.zoom.ioc.impl.ZoomIoc;
+import org.zoomdev.zoom.ioc.impl.ZoomIocKey;
 import junit.framework.TestCase;
 
 public class Test  extends TestCase {

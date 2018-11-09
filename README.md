@@ -71,7 +71,7 @@ cloc ./ --include-ext=java --match-d=src
 
 统一的版本管理
 ```
-mvn versions:set -DnewVersion=0.1.2
+mvn versions:set -DnewVersion=0.1.5
 ```
 
 发布

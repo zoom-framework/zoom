@@ -4,13 +4,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.jzoom.zoom</groupId>
+		<groupId>org.zoomdev.zoom</groupId>
 		<artifactId>zoom-parent</artifactId>
-		<version>0.1.4</version>
+		<version>0.1.6</version>
 	</parent>
 
 
-	<groupId>com.jzoom.zoom</groupId>
+	<groupId>org.zoomdev.zoom</groupId>
 	<artifactId>zoom-plugin</artifactId>
 	<packaging>jar</packaging>
 
@@ -31,11 +31,11 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.jzoom.zoom</groupId>
+			<groupId>org.zoomdev.zoom</groupId>
 			<artifactId>zoom-dao</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.jzoom.zoom</groupId>
+			<groupId>org.zoomdev.zoom</groupId>
 			<artifactId>zoom-web</artifactId>
 		</dependency>
 

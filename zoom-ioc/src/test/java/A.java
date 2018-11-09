@@ -1,4 +1,4 @@
-import com.jzoom.zoom.common.annotations.Inject;
+import org.zoomdev.zoom.common.annotations.Inject;
 
 public class A {
 

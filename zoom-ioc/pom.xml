@@ -3,11 +3,11 @@ xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLS
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.jzoom.zoom</groupId>
+		<groupId>org.zoomdev.zoom</groupId>
 		<artifactId>zoom-parent</artifactId>
-		<version>0.1.4</version>
+		<version>0.1.6</version>
 	</parent>
-	<groupId>com.jzoom.zoom</groupId>
+	<groupId>org.zoomdev.zoom</groupId>
 	<artifactId>zoom-ioc</artifactId>
 	<packaging>jar</packaging>
 
@@ -29,7 +29,7 @@ xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLS
 		</dependency>
 
 		<dependency>
-			<groupId>com.jzoom.zoom</groupId>
+			<groupId>org.zoomdev.zoom</groupId>
 			<artifactId>zoom-common</artifactId>
 		</dependency>
 

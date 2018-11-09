@@ -5,13 +5,13 @@
 
 
 	<parent>
-		<groupId>com.jzoom.zoom</groupId>
+		<groupId>org.zoomdev.zoom</groupId>
 		<artifactId>zoom-parent</artifactId>
-		<version>0.1.4</version>
+		<version>0.1.6</version>
 	</parent>
 
 
-	<groupId>com.jzoom.zoom</groupId>
+	<groupId>org.zoomdev.zoom</groupId>
 	<artifactId>zoom-cache</artifactId>
 	<packaging>jar</packaging>
 
@@ -33,15 +33,15 @@
 		</dependency>
 		<dependency>
 
-			<groupId>com.jzoom.zoom</groupId>
+			<groupId>org.zoomdev.zoom</groupId>
 			<artifactId>zoom-aop</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.jzoom.zoom</groupId>
+			<groupId>org.zoomdev.zoom</groupId>
 			<artifactId>zoom-ioc</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.jzoom.zoom</groupId>
+			<groupId>org.zoomdev.zoom</groupId>
 			<artifactId>zoom-common</artifactId>
 		</dependency>
 		<dependency>

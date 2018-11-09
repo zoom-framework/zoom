@@ -10,8 +10,8 @@ import java.util.Map;
 import org.apache.commons.beanutils.BeanUtils;
 import org.junit.Test;
 
-import com.jzoom.zoom.common.json.JSON;
-import com.jzoom.zoom.common.utils.Classes;
+import org.zoomdev.zoom.common.json.JSON;
+import org.zoomdev.zoom.common.utils.Classes;
 
 public class TestBeanUtils {
 

@@ -5,16 +5,16 @@ xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLS
 
 
 	<parent>
-		<groupId>com.jzoom.zoom</groupId>
+		<groupId>org.zoomdev.zoom</groupId>
 		<artifactId>zoom-parent</artifactId>
-		<version>0.1.4</version>
+		<version>0.1.6</version>
 	</parent>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	
-	<groupId>com.jzoom.zoom</groupId>
+	<groupId>org.zoomdev.zoom</groupId>
 	<artifactId>zoom-web</artifactId>
 	<packaging>jar</packaging>
 
@@ -49,27 +49,27 @@ xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLS
 		</dependency>
 
 		<dependency>
-			<groupId>com.jzoom.zoom</groupId>
+			<groupId>org.zoomdev.zoom</groupId>
 			<artifactId>zoom-common</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.jzoom.zoom</groupId>
+			<groupId>org.zoomdev.zoom</groupId>
 			<artifactId>zoom-aop</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.jzoom.zoom</groupId>
+			<groupId>org.zoomdev.zoom</groupId>
 			<artifactId>zoom-timer</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.jzoom.zoom</groupId>
+			<groupId>org.zoomdev.zoom</groupId>
 			<artifactId>zoom-async</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.jzoom.zoom</groupId>
+			<groupId>org.zoomdev.zoom</groupId>
 			<artifactId>zoom-ioc</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.jzoom.zoom</groupId>
+			<groupId>org.zoomdev.zoom</groupId>
 			<artifactId>zoom-event</artifactId>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/log4j/log4j -->

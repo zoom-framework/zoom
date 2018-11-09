@@ -1,5 +1,5 @@
-import com.jzoom.zoom.common.json.JSON;
-import com.jzoom.zoom.dao.annotations.Table;
+import org.zoomdev.zoom.common.json.JSON;
+import org.zoomdev.zoom.dao.annotations.Table;
 
 import java.util.Map;
 
