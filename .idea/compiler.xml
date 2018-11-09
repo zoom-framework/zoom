@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="zoom-aop" />
+        <module name="zoom-async" />
+        <module name="zoom-cache" />
+        <module name="zoom-caster" />
+        <module name="zoom-common" />
+        <module name="zoom-dao" />
+        <module name="zoom-event" />
+        <module name="zoom-ioc" />
+        <module name="zoom-plugin" />
+        <module name="zoom-timer" />
+        <module name="zoom-web" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="zoom-admin" target="1.6" />
+      <module name="zoom-aop" target="1.6" />
+      <module name="zoom-async" target="1.6" />
+      <module name="zoom-cache" target="1.6" />
+      <module name="zoom-caster" target="1.6" />
+      <module name="zoom-common" target="1.6" />
+      <module name="zoom-dao" target="1.6" />
+      <module name="zoom-event" target="1.6" />
+      <module name="zoom-excel" target="1.6" />
+      <module name="zoom-http" target="1.6" />
+      <module name="zoom-ioc" target="1.6" />
+      <module name="zoom-parent" target="1.6" />
+      <module name="zoom-plugin" target="1.6" />
+      <module name="zoom-server" target="1.6" />
+      <module name="zoom-timer" target="1.6" />
+      <module name="zoom-token" target="1.6" />
+      <module name="zoom-web" target="1.6" />
+      <module name="zoom-websocket" target="1.6" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

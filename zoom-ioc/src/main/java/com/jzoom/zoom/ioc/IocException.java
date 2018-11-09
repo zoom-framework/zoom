@@ -1,0 +1,22 @@
+package com.jzoom.zoom.ioc;
+
+public class IocException extends RuntimeException {
+
+	public IocException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public IocException(String message) {
+		super(message);
+	}
+
+	public IocException(Throwable cause) {
+		super(cause);
+	}
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7783013537702779377L;
+
+}

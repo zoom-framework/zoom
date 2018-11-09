@@ -1,39 +1,81 @@
 # zoom
 
-#### 项目介绍
-{**以下是码云平台说明，您可以替换为您的项目简介**
-码云是开源中国推出的基于 Git 的代码托管平台（同时支持 SVN）。专为开发者提供稳定、高效、安全的云端软件开发协作平台
-无论是个人、团队、或是企业，都能够用码云实现代码托管、项目管理、协作开发。企业项目请看 [https://gitee.com/enterprises](https://gitee.com/enterprises)}
 
-#### 软件架构
-软件架构说明
+# 语义说明：
 
-
-#### 安装教程
-
-1. xxxx
-2. xxxx
-3. xxxx
-
-#### 使用说明
-
-1. xxxx
-2. xxxx
-3. xxxx
-
-#### 参与贡献
-
-1. Fork 本项目
-2. 新建 Feat_xxx 分支
-3. 提交代码
-4. 新建 Pull Request
+* getXXX            获取单个或多个数据，如果没有获取到数据，返回null或者空集合
+* fetchXXX          断言能获取到一个数据，如果没有获取到，将创建，如果不成功将报错
+* findXXX           获取多个数据，返回集合（可能为空），一定不是null
 
 
-#### 码云特技
+# 公共接口说明
 
-1. 使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2. 码云官方博客 [blog.gitee.com](https://blog.gitee.com)
-3. 你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解码云上的优秀开源项目
-4. [GVP](https://gitee.com/gvp) 全称是码云最有价值开源项目，是码云综合评定出的优秀开源项目
-5. 码云官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6. 码云封面人物是一档用来展示码云会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+* Destroyable       销毁
+* Initable          初始化
+
+
+
+# 内容更新
+
+[2018-10-30]
+后端：
+entity 在查询单个的时候能link其他表
+完善entity的自动生成 auto increase/sequence/trigger等形式
+完善entity的primary key设置
+完善entity的查询条件
+前端：
+完善属性编辑器，增加枚举类型、布尔类型
+
+[2018-10-31]
+*[x] 新增event模块，异步执行系统事件
+*[x] 增加IocEventListener,优化Timer、Event
+
+[2018-11-01]
+*[ ] Websocket,web shell
+*[ ] 日志实时查询
+*[x]错误：没有办法上传:
+
+[2018-11-03]
+*[x] 多tab
+*[ ] 优化模板管理，增加自定义字段
+*[ ] 优化多记录编辑、多记录删除
+
+
+
+增强模板生成器，可以生成各种数据
+1、生成api接口调用
+2、生成
+
+后台可直接创建 rest接口
+1、选择资源（多个表等）
+2、选择字段
+3、选择参数
+4、定制规则
+
+
+dao的sql分页优化，看看其他系统都是怎么做的, position和pageSize放在参数里面。
+
+
+Exception的处理规则
+
+
+primary key 如果用户没有选择，需要给用户选择
+
+#### 
+
+
+#### 代码统计
+```
+cloc ./ --include-ext=java --match-d=src
+```
+
+统一的版本管理
+```
+mvn versions:set -DnewVersion=0.1.1
+```
+
+发布
+```
+mvn deploy
+```
+
