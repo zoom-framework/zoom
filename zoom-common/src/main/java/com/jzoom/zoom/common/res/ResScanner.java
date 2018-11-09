@@ -209,10 +209,21 @@ public class ResScanner implements Destroyable {
 		return res;
 	}
 
+    /**
+     *
+     * @param classLoader
+     * @throws IOException
+     */
 	public void scan(ClassLoader classLoader) throws IOException {
 		scan(classLoader, fastFilter);
 	}
 
+    /**
+     * 扫描一个jar文件
+     * @param is
+     * @param classLoader
+     * @throws IOException
+     */
 	public void scan(InputStream is,ClassLoader classLoader) throws IOException {
 		ZipInputStream inputStream = null;
 		try {
@@ -231,20 +242,16 @@ public class ResScanner implements Destroyable {
 		
 	}
 	/**
-	 * 扫描项目所有的资源文件 .class .json .properties .xml .jar
-	 * 
-	 * 如果需要限制文件，自定义filter
-	 * 
-	 * 
-	 * 
-	 * @param context
+	 * 扫描项目所有的资源文件
+     * @param classLoader
+     * @param filter            如果需要限制文件，自定义filter
+	 *
 	 * @throws IOException
 	 */
 	public void scan(ClassLoader classLoader, Filter<File> filter) throws IOException {
 		assert (filter != null);
 
 		this.scanFilter = filter;
-
 		/// 如果有缓存，那么清理一下
 		clear();
 		
@@ -272,9 +279,35 @@ public class ResScanner implements Destroyable {
 			scanFoler(path, classLoader,new File(path));
 		}
 
-	}
 
-	public void clear() {
+
+		//检查classpath是否有没有被扫描过得
+        scanClassPath(classLoader);
+
+
+
+        scanned.clear();
+	}
+    /**
+     * 获取所有的含有 .class文件的路径
+     * @return
+     */
+    private void scanClassPath(ClassLoader classLoader) throws IOException {
+        String str =  System.getProperty("java.class.path");
+        String[] parts = str.split( ":" );
+        for(String part : parts){
+            File file = new File(part);
+            if(!scanned.contains(file)){
+                if(file.isDirectory()){
+                    scanFoler(part,classLoader,file);
+                }else{
+                    parseFile(part,classLoader,file);
+                }
+            }
+        }
+    }
+
+    public void clear() {
 		classes.clear();
 		
 	}
@@ -391,6 +424,8 @@ public class ResScanner implements Destroyable {
 		});
 	}
 
+	private Set<File> scanned = new HashSet<File>();
+
 	/**
 	 * 扫描目录
 	 * 
@@ -400,6 +435,7 @@ public class ResScanner implements Destroyable {
 	 */
 	public void scanFoler(String root, ClassLoader classLoader, File folder) throws IOException {
 		File[] files = folder.listFiles();
+		scanned.add(folder);
 		if (files == null) {
 			return;
 		}
@@ -408,25 +444,29 @@ public class ResScanner implements Destroyable {
 			if (file.isDirectory()) {
 				scanFoler(root,classLoader, file);
 			} else {
-				// 文件
-				String name = file.getName();
-				if(log.isTraceEnabled()) {
-					log.trace("扫描到了文件"+file.getAbsolutePath());
-				}
-				if (name.endsWith("class")) {
-					if (scanFilter.accept(file))
-						parseClass(root, classLoader, file);
-				} else if (name.endsWith("jar")) {
-					if (scanFilter.accept(file))
-						parseJar(file,classLoader);
-					
-				} else {
-					if (scanFilter.accept(file))
-						parseOther(name, file);
-				}
+                scanned.add(file);
+                parseFile(root,classLoader,file);
 			}
 		}
 	}
+	private void parseFile(String root,ClassLoader classLoader,File file) throws IOException {
+        // 文件
+        String name = file.getName();
+        if(log.isTraceEnabled()) {
+            log.trace("扫描到了文件"+file.getAbsolutePath());
+        }
+        if (name.endsWith("class")) {
+            if (scanFilter.accept(file))
+                parseClass(root, classLoader, file);
+        } else if (name.endsWith("jar")) {
+            if (scanFilter.accept(file))
+                parseJar(file,classLoader);
+
+        } else {
+            if (scanFilter.accept(file))
+                parseOther(name, file);
+        }
+    }
 
 	/**
 	 * 解析jar文件
@@ -492,7 +532,8 @@ public class ResScanner implements Destroyable {
 	 * 添加一个jar中的class
 	 * 
 	 * @param className
-	 * @param file
+     * @param classLoader
+     * @param jar
 	 * 
 	 */
 	private void addJarClass(String className, ClassLoader classLoader, File jar) {

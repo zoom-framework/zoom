@@ -35,7 +35,7 @@ public class ProcessUtilTest extends TestCase {
 
         thread.start();
 
-        Thread.sleep(3000);
+        Thread.sleep(1);
         controller.destroy();
         thread.stop();
 
