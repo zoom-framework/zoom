@@ -34,13 +34,13 @@ xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLS
 		<dependency>
 			<groupId>com.jzoom.zoom</groupId>
 			<artifactId>zoom-common</artifactId>
-			<version>0.1.1</version>
+			<version>0.1.2</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.jzoom.zoom</groupId>
 			<artifactId>zoom-aop</artifactId>
-			<version>0.1.1</version>
+			<version>0.1.2</version>
 		</dependency>
 
 
@@ -55,7 +55,7 @@ xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLS
 		<dependency>
 			<groupId>com.jzoom.zoom</groupId>
 			<artifactId>zoom-ioc</artifactId>
-			<version>0.1.1</version>
+			<version>0.1.2</version>
 		</dependency>
 
 
