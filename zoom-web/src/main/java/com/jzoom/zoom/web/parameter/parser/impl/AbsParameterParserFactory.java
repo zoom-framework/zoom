@@ -23,7 +23,7 @@ public abstract class AbsParameterParserFactory<T> implements ParameterParserFac
         Class<?>[] types = method.getParameterTypes();
         int c = types.length;
         Type[] genericTypes = method.getGenericParameterTypes();
-        ParameterAdapter[] adapters = new ParameterAdapter[c];
+        ParameterAdapter<?>[] adapters = new ParameterAdapter<?>[c];
         List<String> pathValiableNames = new ArrayList<String>();
         for (int i = 0; i < c; ++i) {
             Annotation[] annotations = paramAnnotations[i];

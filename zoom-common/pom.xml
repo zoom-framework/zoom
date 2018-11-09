@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.jzoom.zoom</groupId>
 		<artifactId>zoom-parent</artifactId>
-		<version>0.1.1</version>
+		<version>0.1.4</version>
 	</parent>
 
 	<groupId>com.jzoom.zoom</groupId>
@@ -18,7 +18,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<zoomVersion>0.0.1-SNAPSHOT</zoomVersion>
+		
 	</properties>
 
 	<dependencies>

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.jzoom.zoom</groupId>
 	<artifactId>zoom-parent</artifactId>
-	<version>0.1.2</version>
+	<version>0.1.4</version>
 	<packaging>pom</packaging>
 	<name>zoom-parent</name>
 
@@ -46,7 +46,7 @@
 		<module>zoom-web</module>
 		<module>zoom-cache</module>
 		<module>zoom-plugin</module>
-        <module>zoom-event</module>
+    <module>zoom-event</module>
 	</modules>
 
 	<reporting>
@@ -170,65 +170,65 @@
 			<dependency>
 				<groupId>com.jzoom.zoom</groupId>
 				<artifactId>zoom-caster</artifactId>
-				<version>0.1.2</version>
+				<version>0.1.4</version>
 			</dependency>
 			<dependency>
 				<groupId>com.jzoom.zoom</groupId>
 				<artifactId>zoom-async</artifactId>
-				<version>0.1.2</version>
+				<version>0.1.4</version>
 			</dependency>
 			<dependency>
 				<groupId>com.jzoom.zoom</groupId>
 				<artifactId>zoom-dao</artifactId>
-				<version>0.1.2</version>
+				<version>0.1.4</version>
 			</dependency>
 			<dependency>
 				<groupId>com.jzoom.zoom</groupId>
 				<artifactId>zoom-ioc</artifactId>
-				<version>0.1.2</version>
+				<version>0.1.4</version>
 			</dependency>
 
 			<dependency>
 				<groupId>com.jzoom.zoom</groupId>
 				<artifactId>zoom-common</artifactId>
-				<version>0.1.2</version>
+				<version>0.1.4</version>
 			</dependency>
 			<dependency>
 				<groupId>com.jzoom.zoom</groupId>
 				<artifactId>zoom-aop</artifactId>
-				<version>0.1.2</version>
+				<version>0.1.4</version>
 			</dependency>
 			<dependency>
 				<groupId>com.jzoom.zoom</groupId>
 				<artifactId>zoom-timer</artifactId>
-				<version>0.1.2</version>
+				<version>0.1.4</version>
 			</dependency>
 			<dependency>
 				<groupId>com.jzoom.zoom</groupId>
 				<artifactId>zoom-plugin</artifactId>
-				<version>0.1.2</version>
+				<version>0.1.4</version>
 			</dependency>
 
 			<dependency>
 				<groupId>com.jzoom.zoom</groupId>
 				<artifactId>zoom-web</artifactId>
-				<version>0.1.2</version>
+				<version>0.1.4</version>
 			</dependency>
 			<dependency>
 				<groupId>com.jzoom.zoom</groupId>
 				<artifactId>zoom-plugin</artifactId>
-				<version>0.1.2</version>
+				<version>0.1.4</version>
 			</dependency>
 			<dependency>
 				<groupId>com.jzoom.zoom</groupId>
 				<artifactId>zoom-cache</artifactId>
-				<version>0.1.2</version>
+				<version>0.1.4</version>
 			</dependency>
-            <dependency>
-                <groupId>com.jzoom.zoom</groupId>
-                <artifactId>zoom-event</artifactId>
-                <version>0.1.2</version>
-            </dependency>
+			<dependency>
+					<groupId>com.jzoom.zoom</groupId>
+					<artifactId>zoom-event</artifactId>
+					<version>0.1.4</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 </project>
