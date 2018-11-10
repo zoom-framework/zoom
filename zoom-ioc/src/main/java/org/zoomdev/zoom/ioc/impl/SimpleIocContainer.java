@@ -82,7 +82,6 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
 			}
 
 			if (!obj.isInitialized()) {
-				obj.initialize();
 
 				if (iocClass == null)
 					iocClass = this.iocClassLoader.get(key);
@@ -100,6 +99,9 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
                         method.invoke(obj);
                     }
                 }
+
+                obj.initialize();
+
             }
 
             return obj;
