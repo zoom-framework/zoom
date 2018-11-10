@@ -17,7 +17,6 @@ import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.meta.TableMeta;
 import com.sun.istack.internal.NotNull;
 import org.apache.commons.lang3.StringUtils;
-import org.zoomdev.zoom.dao.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -69,8 +68,8 @@ class BeanEntityFactory implements EntityFactory {
     @Override
     public Entity getEntity(final Dao dao, final Class<?> type) {
         Table table = type.getAnnotation(Table.class);
-        String tableName = table.name();
-        assert (!StringUtils.isEmpty(table.name()));
+        String tableName = table.value();
+        assert (!StringUtils.isEmpty(table.value()));
         return getEntity(dao,type,tableName);
     }
 
@@ -220,12 +219,14 @@ class BeanEntityFactory implements EntityFactory {
 
         AutoEntity autoEntity = createAutoEntity(autoFields, autoRelatedEntityFields);
 
+
         return new BeanEntity(
                 tableName,
                 entityAdapterList.toArray(new EntityField[entityAdapterList.size()]),
                 primaryKeys,
                 autoEntity,
-                type);
+                type,
+                nameAdapter);
     }
 
     private AutoEntity createAutoEntity(List<AutoField> autoFields, List<EntityField> entityFields) {

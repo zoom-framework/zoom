@@ -1,7 +1,7 @@
 package org.zoomdev.zoom.dao.impl;
 
 import org.zoomdev.zoom.common.designpattern.SingletonUtils;
-import org.zoomdev.zoom.dao.Ar;
+import org.zoomdev.zoom.dao.RawAr;
 import org.zoomdev.zoom.dao.driver.DbStructFactory;
 import org.zoomdev.zoom.dao.meta.TableMeta;
 
@@ -32,7 +32,7 @@ public class CachedDbStructFactory implements DbStructFactory {
     }
 
     @Override
-    public Collection<String> getTableNames(Ar ar) {
+    public Collection<String> getTableNames(RawAr ar) {
         List<String> array = new ArrayList<String>();
         for(TableNameAndComment data : getNameAndComments(ar)){
             array.add(data.getName());
@@ -42,7 +42,7 @@ public class CachedDbStructFactory implements DbStructFactory {
 
 
     @Override
-    public TableMeta getTableMeta(final Ar ar, final String tableName) {
+    public TableMeta getTableMeta(final RawAr ar, final String tableName) {
         return (TableMeta)SingletonUtils.liteDoubleLockMap(pool, tableName, new SingletonUtils.SingletonInit<Object>() {
             @Override
             public Object create() {
@@ -52,13 +52,13 @@ public class CachedDbStructFactory implements DbStructFactory {
     }
 
     @Override
-    public void fill(Ar ar, TableMeta meta) {
+    public void fill(RawAr ar, TableMeta meta) {
         if(meta.getComment()!=null)return;
         factory.fill(ar,meta);
     }
 
     @Override
-    public Collection<TableNameAndComment> getNameAndComments(final Ar ar) {
+    public Collection<TableNameAndComment> getNameAndComments(final RawAr ar) {
         return (Collection<TableNameAndComment>)SingletonUtils.liteDoubleLockMap(pool, NAMES, new SingletonUtils.SingletonInit<Object>() {
             @Override
             public Object create() {

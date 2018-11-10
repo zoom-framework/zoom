@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class ActiveRecord extends ThreadLocalConnectionHolder implements Ar, ConnectionHolder, Trans {
+public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, ConnectionHolder, Trans {
 
 	private AliasSqlBuilder builder;
 	private Dao dao;
@@ -31,27 +31,32 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements Ar, Con
 		this.builder = new AliasSqlBuilder(dao);
 	}
 
-	public List<Record> query(String sql, List<Object> values, List<StatementAdapter> adapters,
-							  boolean all) {
-		Connection connection = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			connection = getConnection();
-			ps = BuilderKit.prepareStatement(connection, sql, values);
-			rs = ps.executeQuery();
-			return BuilderKit.build(rs, builder.nameAdapter);
-		} catch (SQLException e) {
-            throw new DaoException(builder.printSql(), e);
-		} finally {
-			DaoUtils.close(rs);
-			DaoUtils.close(ps);
-			releaseConnection();
-			builder.clear(all);
-		}
+	public List<Record> query(final String sql, final List<Object> values, List<StatementAdapter> adapters,
+                              final boolean all) {
+
+		return execute(new ConnectionExecutor() {
+            @Override
+            public List<Record> execute(Connection connection) throws SQLException {
+                PreparedStatement ps = null;
+                ResultSet rs = null;
+                try {
+                    ps = BuilderKit.prepareStatement(connection, sql, values);
+                    rs = ps.executeQuery();
+                    return BuilderKit.build(rs, builder.nameAdapter);
+                } catch (SQLException e) {
+                    throw new DaoException(builder.printSql(), e);
+                } finally {
+                    DaoUtils.close(rs);
+                    DaoUtils.close(ps);
+                    builder.clear(all);
+                }
+            }
+        });
 	}
 
-	public Record get(String sql, List<Object> values, List<StatementAdapter> adapters , NameAdapter nameAdapter) {
+	public Record get(String sql, List<Object> values,
+                      List<StatementAdapter> adapters ,
+                      NameAdapter nameAdapter) {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -85,7 +90,9 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements Ar, Con
 //	}
 
 
-	public ResultSet execute(final String sql, final List<Object> values, final List<StatementAdapter> adapters,
+	public ResultSet execute(final String sql,
+                             final List<Object> values,
+                             final List<StatementAdapter> adapters,
 			final boolean all) {
 		return execute(new ConnectionExecutor() {
 
@@ -109,16 +116,6 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements Ar, Con
 		});
 	}
 
-	@Override
-	public <T> T execute(ConnectionExecutor executor) {
-		try {
-			return executor.execute(getConnection());
-		} catch (SQLException e) {
-			throw new DaoException(e);
-		} finally {
-			releaseConnection();
-		}
-	}
 
 
 	@Override
@@ -236,7 +233,27 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements Ar, Con
 		return this;
 	}
 
-	@Override
+    @Override
+    public Ar groupBy(String field) {
+        return null;
+    }
+
+    @Override
+    public Ar having(String field, Symbol symbol, Object value) {
+        return null;
+    }
+
+    @Override
+    public Ar union(SqlBuilder sqlBuilder) {
+        return null;
+    }
+
+    @Override
+    public Ar unionAll(SqlBuilder sqlBuilder) {
+        return null;
+    }
+
+    @Override
 	public Ar select(String select) {
 		builder.select(select);
 		return this;
@@ -295,7 +312,7 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements Ar, Con
 	}
 
 	@Override
-	public Ar whereIn(String key, Object... values) {
+	public <E> Ar whereIn(String key, E... values) {
 		builder.whereIn(key, values);
 		return this;
 	}
@@ -358,4 +375,8 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements Ar, Con
 	}
 
 
+    @Override
+    protected String printSql() {
+        return builder.printSql();
+    }
 }

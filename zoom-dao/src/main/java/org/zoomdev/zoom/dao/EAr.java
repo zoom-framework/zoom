@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Entity active record
  */
-public interface EAr<T> {
+public interface EAr<T> extends Sql<EAr<T>> {
 
 
     /**
@@ -20,20 +20,6 @@ public interface EAr<T> {
 
     EAr<T> ignoreNull(boolean value);
 
-
-    /**
-     * 指定表
-     * @param arr
-     * @return
-     */
-    EAr<T> tables(String[] arr);
-
-    /**
-     * 指定表名称,这个选项在参数为实体对象的时候依然有效
-     * @param table
-     * @return
-     */
-    EAr<T> table(String table);
 
 
     /**
@@ -106,31 +92,6 @@ public interface EAr<T> {
      */
     int delete(T data);
 
-    /**
-     * 查询结果数量
-     * @return
-     */
-    int getCount();
-    //######################################################
-    // 查询相关方法
-    //######################################################
-
-    EAr<T> where(String field,Object value);
-
-    EAr<T> orderBy(String field, SqlBuilder.Sort sort);
-
-
-    EAr<T> join(String table,String on);
-
-    EAr<T> orWhere(String field, Object value);
-
-    <E> EAr<T> whereIn(String field, E... values);
-
-    EAr<T> like(String name, SqlBuilder.Like like, Object value);
-
-    EAr<T> whereCondition(String field,Object...values);
-
-    EAr<T> where(String field, Symbol symbol, Object value);
 
 
 }

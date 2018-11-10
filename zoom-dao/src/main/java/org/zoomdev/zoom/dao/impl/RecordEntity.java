@@ -20,4 +20,9 @@ public class RecordEntity extends AbstractEntity {
     public Object newInstance() {
         return new Record();
     }
+
+    @Override
+    public String getColumnName(String field) {
+        return null;
+    }
 }

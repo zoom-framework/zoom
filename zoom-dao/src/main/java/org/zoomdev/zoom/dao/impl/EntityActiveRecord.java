@@ -1,25 +1,24 @@
 package org.zoomdev.zoom.dao.impl;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.mutable.MutableInt;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.common.designpattern.SingletonUtils;
 import org.zoomdev.zoom.common.expression.Symbol;
 import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.common.filter.pattern.PatternFilterFactory;
 import org.zoomdev.zoom.dao.*;
-import org.zoomdev.zoom.dao.*;
 import org.zoomdev.zoom.dao.adapters.EntityField;
 import org.zoomdev.zoom.dao.utils.DaoUtils;
-import org.apache.commons.lang3.mutable.MutableInt;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 
 /**
  * 将来与ActiveRecord合并
@@ -33,37 +32,35 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
     private Dao dao;
     private SimpleSqlBuilder builder;
     private Entity entity;
+    private List<EntityField> entityFields;
 
     private boolean ignoreNull = true;
 
-    private Map<String, Filter<EntityField>> patterFilterCache = new ConcurrentHashMap<String, Filter<EntityField>>();
+    private Map<String, Filter<EntityField>> patterFilterCache =
+            new ConcurrentHashMap<String, Filter<EntityField>>();
     /**
      * 对字段进行筛选
      */
     private Filter<EntityField> filter;
 
-
-    static class PatterFilter implements Filter<EntityField> {
-
-        private Filter<String> pattern;
-
-        PatterFilter(Filter<String> pattern) {
-            this.pattern = pattern;
-        }
-
-        @Override
-        public boolean accept(EntityField value) {
-            return pattern.accept(value.getFieldName());
-        }
+    @Override
+    protected String printSql() {
+        return builder.printSql();
     }
 
+
+
+
     private Filter<EntityField> createPatternFilter(final String filter) {
-        return SingletonUtils.liteDoubleLockMap(patterFilterCache, filter, new SingletonUtils.SingletonInit<Filter<EntityField>>() {
-            @Override
-            public Filter<EntityField> create() {
-                return new PatterFilter(PatternFilterFactory.createFilter(filter));
-            }
-        });
+        return SingletonUtils.liteDoubleLockMap(
+                patterFilterCache,
+                filter,
+                new SingletonUtils.SingletonInit<Filter<EntityField>>() {
+                    @Override
+                    public Filter<EntityField> create() {
+                        return new SqlUtils.PatterFilter(PatternFilterFactory.createFilter(filter));
+                    }
+                });
     }
 
     public EntityActiveRecord(Dao dao, Entity entity) {
@@ -71,8 +68,8 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
         this.builder = new SimpleSqlBuilder(dao);
         this.entity = entity;
         this.dao = dao;
+        this.entityFields = new ArrayList<EntityField>();
     }
-
 
     @Override
     public EAr<T> filter(String filter) {
@@ -86,63 +83,32 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
         return this;
     }
 
-    @Override
-    public EAr<T> tables(String[] arr) {
-        return this;
-    }
-
-    @Override
-    public EAr<T> table(String table) {
-        return this;
-    }
-
 
     @Override
     public List<T> find() {
         builder.table(entity.getTable());
-        buildSelect();
+        SqlUtils.buildSelect(builder,entity,filter,entityFields);
         builder.buildSelect();
-        return query(true);
+        return SqlUtils.executeQuery(this,builder,entityFields,entity,true);
     }
 
 
-    public List<T> query(boolean all) {
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            connection = getConnection();
-            ps = BuilderKit.prepareStatement(
-                    connection,
-                    builder.sql.toString(), builder.values);
-            rs = ps.executeQuery();
-            return BuilderKit.buildList(entity, entityAdapters, entityAdaptersCount, rs);
-        } catch (Throwable e) {
-            throw new DaoException(builder.printSql(), e);
-        } finally {
-            DaoUtils.close(rs);
-            DaoUtils.close(ps);
-            if (all) {
-                releaseConnection();
-            }
-            builder.clear(all);
-        }
-    }
 
     @Override
     public List<T> limit(int position, int pageSize) {
-        buildSelect();
+        builder.table(entity.getTable());
+        SqlUtils.buildSelect(builder,entity,filter,entityFields);
         builder.buildLimit(position, pageSize);
-
-        return query(true);
+        return SqlUtils.executeQuery(this,builder,entityFields,entity,true);
     }
 
     @Override
     public Page<T> position(int position, int pageSize) {
-        buildSelect();
+        builder.table(entity.getTable());
+        SqlUtils.buildSelect(builder,entity,filter,entityFields);
         builder.buildLimit(position, pageSize);
         try {
-            List<T> list = query(false);
+            List<T> list = SqlUtils.executeQuery(this,builder,entityFields,entity,false);
             int total = getCount();
             int page = builder.getPageFromPosition(position, pageSize);
             return new Page<T>(list, page, pageSize, total);
@@ -154,57 +120,27 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
 
     @Override
     public Page<T> page(int page, int pageSize) {
-        if (page <= 0)
-            page = 1;
+        if (page <= 0) page = 1;
         return position((page - 1) * pageSize, pageSize);
     }
 
-    public int executeUpdate() {
-        Connection connection = null;
-        PreparedStatement ps = null;
-        try {
-            if (log.isDebugEnabled()) {
-                log.debug(builder.printSql());
-            }
-            connection = getConnection();
-            ps = BuilderKit.prepareStatement(connection,
-                    builder.sql.toString(),
-                    builder.values,
-                    builder.adapters);
-            return ps.executeUpdate();
-        } catch (SQLException e) {
-            throw new DaoException(builder.printSql(), e);
-        } finally {
-            DaoUtils.close(ps);
-            releaseConnection();
-            builder.clear(true);
-        }
-    }
-
-    void entityConditon(Object data) {
-        // 主键
-        for (EntityField adapter : entity.getPrimaryKeys()) {
-            builder.where(adapter.getColumnName(), adapter.get(data));
-            builder.adapters.add(adapter);
-        }
-    }
 
     @Override
     public int update(T data) {
-        entityConditon(data);
+        SqlUtils.entityConditon(builder, entity, data);
 
-        BuilderKit.buildUpdate(entity,
-                builder.sql,
-                builder.values,
+        SqlUtils.buildUpdate(
+                builder,
                 dao.getDriver(),
-                builder.where,
+                entity,
                 data,
                 filter,
-                builder.adapters,
                 ignoreNull);
 
-
-        return executeUpdate();
+        return SqlUtils.executeUpdate(
+                this,
+                builder
+        );
     }
 
     @Override
@@ -213,67 +149,20 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
     }
 
 
-    private EntityField[] entityAdapters;
-    private int entityAdaptersCount;
 
-
-    private void buildSelect() {
-        //build select
-        EntityField[] adapters = new EntityField[entity.getFieldCount()];
-        int count = 0;
-        for (EntityField adapter : entity.getEntityFields()) {
-            if (filter == null || filter.accept(adapter)) {
-                adapters[count++] = adapter;
-                builder.selectRaw(adapter.getSelectName());
-            }
-        }
-        if (count == 0) {
-            throw new DaoException("必须指定至少一个selet字段");
-        }
-        this.entityAdapters = adapters;
-        this.entityAdaptersCount = count;
-    }
-
-    private T getOne() {
-        builder.table(entity.getTable());
-        buildSelect();
-        builder.buildSelect();
-        Connection connection;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            connection = getConnection();
-            ps = BuilderKit.prepareStatement(
-                    connection,
-                    builder.sql.toString(),
-                    builder.values);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                return BuilderKit.build(entity, entityAdapters, entityAdaptersCount, rs);
-            }
-            return null;
-        } catch (Throwable e) {
-            throw new DaoException(builder.printSql(), e);
-        } finally {
-            DaoUtils.close(rs);
-            DaoUtils.close(ps);
-            releaseConnection();
-            builder.clear(true);
-        }
-    }
 
     /**
      * @param values
      * @return
      */
     public T get(Object... values) {
-
         if (entity.getPrimaryKeys().length == 0) {
             throw new DaoException("本表" + entity.getTable() + "没有主键，系统无法判断条件");
         }
 
         if (entity.getPrimaryKeys().length != values.length) {
-            throw new DaoException("参数个数" + values.length + "与主键个数" + entity.getPrimaryKeys().length + "不符");
+            throw new DaoException(
+                    "参数个数" + values.length + "与主键个数" + entity.getPrimaryKeys().length + "不符");
         }
 
         int index = 0;
@@ -285,64 +174,52 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
 
     }
 
+    T getOne(){
+        builder.table(entity.getTable());
+        SqlUtils.buildSelect(builder,entity,filter,entityFields);
+        builder.buildSelect();
+        return SqlUtils.executeGet(this,builder,entity,entityFields);
+    }
+
     @Override
     public T get() {
         if (builder.where.length() == 0) {
             throw new DaoException("单独查询一个实体至少需要指定一个条件");
         }
         return getOne();
-
-    }
-
-    public int executeInsert(
-            Object data
-    ) {
-        Connection connection;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            connection = getConnection();
-            ps = entity.prepareInsert(connection, builder.sql.toString());
-
-            BuilderKit.prepareStatement(
-                    ps,
-                    builder.values,
-                    builder.adapters);
-            int ret = ps.executeUpdate();
-            if (ret > 0) {
-                entity.afterInsert(data, ps);
-            }
-            return ret;
-        } catch (Throwable e) {
-            throw new DaoException(builder.printSql(), e);
-        } finally {
-            DaoUtils.close(ps);
-            releaseConnection();
-            builder.clear(true);
-        }
     }
 
 
     @Override
     public int insert(T data) {
-        BuilderKit.buildInsert(builder.sql, builder.adapters, builder.values, dao.getDriver(),
-                entity, data, filter, ignoreNull);
-
-        return executeInsert(data);
+        SqlUtils.buildInsert(
+                builder,
+                dao.getDriver(),
+                entity,
+                data,
+                filter,
+                ignoreNull);
+        return SqlUtils.executeInsert(
+                this,
+                entity,
+                data,
+                builder
+        );
     }
 
     @Override
     public int insert(final Iterable<T> it) {
         final MutableInt result = new MutableInt(0);
         try {
-            ZoomDao.runTrans(new Runnable(){
-                @Override
-                public void run() {
-                    for(T t : it){
-                        result.add(insert(t));
-                    }
-                }
-            });
+            ZoomDao.runTrans(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            for (T t : it) {
+                                result.add(insert(t));
+                            }
+                        }
+                    });
         } catch (Throwable throwable) {
             throw new DaoException(throwable);
         }
@@ -354,14 +231,15 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
     public int update(final Iterable<T> it) {
         final MutableInt result = new MutableInt(0);
         try {
-            ZoomDao.runTrans(new Runnable(){
-                @Override
-                public void run() {
-                    for(T t : it){
-                        result.add(update(t));
-                    }
-                }
-            });
+            ZoomDao.runTrans(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            for (T t : it) {
+                                result.add(update(t));
+                            }
+                        }
+                    });
         } catch (Throwable throwable) {
             throw new DaoException(throwable);
         }
@@ -369,26 +247,26 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
         return result.getValue();
     }
 
-
     @Override
     public int delete(T data) {
-        entityConditon(data);
+        SqlUtils.entityConditon(builder, entity, data);
         builder.buildDelete();
-        return executeUpdate();
+        return SqlUtils.executeUpdate(this, builder);
     }
 
     @Override
     public int delete(final Iterable<T> it) {
         final MutableInt result = new MutableInt(0);
         try {
-            ZoomDao.runTrans(new Runnable() {
-                @Override
-                public void run() {
-                    for (T t : it) {
-                        result.add(delete(t));
-                    }
-                }
-            });
+            ZoomDao.runTrans(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            for (T t : it) {
+                                result.add(delete(t));
+                            }
+                        }
+                    });
         } catch (Throwable throwable) {
             throw new DaoException(throwable);
         }
@@ -396,21 +274,50 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
         return result.getValue();
     }
 
-    @Override
     public int getCount() {
+        builder.selectRaw("COUNT(*) AS COUNT_");
+
+//        Record record = get();
+//        if (record == null) {
+//            return Caster.to(null, int.class);
+//        }
+//        return record.get("count(*)", int.class);
         return 0;
     }
 
     @Override
     public EAr<T> where(String field, Object value) {
+        builder.where(entity.getColumnName(field), value);
         return this;
     }
 
     @Override
     public EAr<T> orderBy(String field, SqlBuilder.Sort sort) {
+        builder.orderBy(entity.getColumnName(field), sort);
         return this;
     }
 
+    @Override
+    public EAr<T> groupBy(String field) {
+        builder.groupBy(entity.getColumnName(field));
+        return this;
+    }
+
+    @Override
+    public EAr<T> having(String field, Symbol symbol, Object value) {
+        builder.having(entity.getColumnName(field),symbol,value);
+        return this;
+    }
+
+    @Override
+    public EAr<T> union(SqlBuilder sqlBuilder) {
+        return this;
+    }
+
+    @Override
+    public EAr<T> unionAll(SqlBuilder sqlBuilder) {
+        return this;
+    }
 
     @Override
     public EAr<T> join(String table, String on) {
@@ -418,27 +325,51 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
     }
 
     @Override
+    public EAr<T> join(String table, String on, String type) {
+
+        return this;
+    }
+
+    @Override
+    public EAr<T> select(String select) {
+        filter(select.replace(",","|"));
+        return this;
+    }
+
+    @Override
+    public EAr<T> select(Iterable<String> select) {
+        filter(StringUtils.join(select,"|"));
+        return this;
+    }
+
+
+    @Override
     public EAr<T> orWhere(String field, Object value) {
+        builder.orWhere(entity.getColumnName(field), value);
         return this;
     }
 
     @Override
     public <E> EAr<T> whereIn(String field, E... values) {
+        builder.whereIn(entity.getColumnName(field), values);
         return this;
     }
 
     @Override
     public EAr<T> like(String name, SqlBuilder.Like like, Object value) {
+        builder.like(entity.getColumnName(name), like, value);
         return this;
     }
 
     @Override
     public EAr<T> whereCondition(String field, Object... values) {
+        builder.whereCondition(entity.getColumnName(field), values);
         return this;
     }
 
     @Override
     public EAr<T> where(String field, Symbol symbol, Object value) {
+        builder.where(entity.getColumnName(field), symbol, value);
         return this;
     }
 }

@@ -19,15 +19,8 @@ import java.util.Map;
  * @author jzoom
  *
  */
-public interface Ar extends Trans,ConnectionHolder  {
+public interface Ar extends Trans,ConnectionHolder,Sql<Ar>  {
 
-	Ar tables(String[] arr);
-	/**
-	 * 指定表名称,这个选项在参数为实体对象的时候依然有效
-	 * @param table
-	 * @return
-	 */
-	Ar table(String table);
 
 	/**
 	 * 凡是符合条件的都返回，需要确定返回的数据数量是少量的，否则引起程序运行慢
@@ -62,13 +55,7 @@ public interface Ar extends Trans,ConnectionHolder  {
 	 * @return
 	 */
 	int update();
-	
-	/**
-	 * dao.ar().table("xxx").set("id",1).set("name","123").insertOrUpdate("id"),当id存在则更新，否则插入 
-	 * @param keys
-	 * @return
-	 */
-	int insertOrUpdate(String...keys);
+
 
 
 	Ar setAll(Map<String, Object> record);
@@ -100,10 +87,6 @@ public interface Ar extends Trans,ConnectionHolder  {
 	int insert();
 	
 
-
-
-	<T> T execute(ConnectionExecutor executor);
-
 	/**
 	 *
 	 * @return
@@ -115,35 +98,11 @@ public interface Ar extends Trans,ConnectionHolder  {
 	 * @return
 	 */
 	int getCount();
-	//######################################################
-	// 查询相关方法
-	//######################################################
-	
-	Ar where(String key,Object value);
-
-	Ar orderBy(String field, Sort sort);
-
-	Ar select(String select);
-
-	Ar select(Iterable<String> select);
-
-	Ar join(String table,String on);
-
-    Ar join(String table, String on, String type);
-
-	Ar orWhere(String key, Object value);
-
-	<T> Ar whereIn(String key, T... values);
-
-	Ar like(String name,Like like,Object value);
-	
-	Ar whereCondition(String key,Object...values);
-
-	Ar where(String key, Symbol symbol, Object value);
-
-
-	Ar selectMax(String field);
 
 
 	int executeUpdate(String sql, Object... args);
+
+
+
+	Ar selectMax(String field);
 }

@@ -6,6 +6,9 @@ import org.zoomdev.zoom.common.filter.pattern.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
@@ -229,6 +232,34 @@ public class PatternFilterFactoryTest {
             }
         }
         System.out.println(System.currentTimeMillis() - time);
+    }
+
+
+    public static interface ITest{
+	    String test();
+    }
+
+    @Test
+    public void test5(){
+		Filter<String> filter = PatternFilterFactory.createFilter("*.*");
+		assertEquals(filter.accept("1.html"),true);
+        assertEquals(filter.accept("1html"),false);
+
+        assertEquals(filter.accept("a.b./c/.html"),true);
+
+        PatternFilterFactory.clear();
+
+
+       ITest test = (ITest) Proxy.newProxyInstance(getClass().getClassLoader(), new Class<?>[]{
+                ITest.class
+        }, new InvocationHandler() {
+            @Override
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                return "hello";
+            }
+        });
+
+       System.out.println(test.test());
     }
 
 }

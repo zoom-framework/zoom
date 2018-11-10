@@ -3,6 +3,7 @@ package org.zoomdev.zoom.dao.driver.h2;
 import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.common.utils.MapUtils;
 import org.zoomdev.zoom.dao.Ar;
+import org.zoomdev.zoom.dao.RawAr;
 import org.zoomdev.zoom.dao.Record;
 import org.zoomdev.zoom.dao.driver.AbsDbStruct;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
@@ -29,13 +30,13 @@ public class H2DbStrict extends AbsDbStruct {
 
 
 	@Override
-	public Collection<String> getTableNames(Ar ar) {
+	public Collection<String> getTableNames(RawAr ar) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Collection<TableNameAndComment> getNameAndComments(Ar ar) {
+	public Collection<TableNameAndComment> getNameAndComments(RawAr ar) {
 		List<Record> list = ar.table("information_schema.tables")
 				.select("TABLE_NAME as NAME,REMARKS AS COMMENT")
 				.where("TABLE_SCHEMA", "PUBLIC")
@@ -56,7 +57,7 @@ public class H2DbStrict extends AbsDbStruct {
 	}
 
 	@Override
-	public void fill(Ar ar, TableMeta meta) {
+	public void fill(RawAr ar, TableMeta meta) {
 
 		List<Record> list = ar
 				.table("information_schema.columns")

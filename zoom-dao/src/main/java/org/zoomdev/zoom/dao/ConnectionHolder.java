@@ -7,6 +7,10 @@ public interface ConnectionHolder {
 	void releaseConnection();
 	
 	Connection getConnection();
+
+
+    <T> T execute(ConnectionExecutor executor);
+
 	
 	
 }

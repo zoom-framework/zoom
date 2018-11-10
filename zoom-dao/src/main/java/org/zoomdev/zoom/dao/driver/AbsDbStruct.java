@@ -11,6 +11,7 @@ import java.util.List;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.dao.Ar;
 import org.zoomdev.zoom.dao.ConnectionExecutor;
+import org.zoomdev.zoom.dao.RawAr;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.meta.TableMeta;
 import org.zoomdev.zoom.dao.utils.DaoUtils;
@@ -21,7 +22,7 @@ public abstract class AbsDbStruct implements DbStructFactory{
 	}
 	
 	@Override
-	public TableMeta getTableMeta(Ar ar, final String table) {
+	public TableMeta getTableMeta(RawAr ar, final String table) {
 		TableMeta tableMeta = ar.execute(new ConnectionExecutor() {
 
 			@SuppressWarnings("unchecked")

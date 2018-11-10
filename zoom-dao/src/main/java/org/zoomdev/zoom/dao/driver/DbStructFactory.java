@@ -1,6 +1,7 @@
 package org.zoomdev.zoom.dao.driver;
 
 import org.zoomdev.zoom.dao.Ar;
+import org.zoomdev.zoom.dao.RawAr;
 import org.zoomdev.zoom.dao.meta.TableMeta;
 
 import java.util.Collection;
@@ -46,7 +47,7 @@ public interface DbStructFactory {
 	 * @param ar
 	 * @return
 	 */
-	Collection<String> getTableNames( Ar ar );
+	Collection<String> getTableNames( RawAr ar );
 
 	/**
 	 * 获取基础的tableMeda信息,只有jvm获取的信息
@@ -54,21 +55,21 @@ public interface DbStructFactory {
 	 * @param tableName
 	 * @return
 	 */
-	TableMeta getTableMeta(Ar ar,String tableName);
+	TableMeta getTableMeta(RawAr ar,String tableName);
 
 	/**
 	 * 填充更加详细的信息，必须要有访问系统表的权限,没有也不影响一般的查询
 	 * @param ar
 	 * @param meta
 	 */
-	void fill(Ar ar,TableMeta meta);
+	void fill(RawAr ar,TableMeta meta);
 	
 	/**
 	 * 获取表的名称和注释，必须要有访问系统表的权限
 	 * @param ar
 	 * @return
 	 */
-	Collection<TableNameAndComment> getNameAndComments( Ar ar );
+	Collection<TableNameAndComment> getNameAndComments( RawAr ar );
 
 	/**
 	 * 清除缓存

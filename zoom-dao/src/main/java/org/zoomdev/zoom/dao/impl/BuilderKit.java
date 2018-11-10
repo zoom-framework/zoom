@@ -24,87 +24,6 @@ import java.util.regex.Pattern;
 
 public class BuilderKit {
 
-    public static void buildSelect() {
-
-    }
-
-
-    private static void appendValue(List<Object> values, Object value,
-									List<StatementAdapter> insertFields,
-									EntityField entityField, StringBuilder sql, String[] specialValues, int index, SqlDriver driver) {
-        values.add(value);
-        insertFields.add(entityField.getStatementAdapter());
-        driver.protectColumn(sql, entityField.getColumnName());
-        specialValues[index] = "?";
-    }
-
-	public static void buildInsert(
-			StringBuilder sql,
-            List<StatementAdapter> insertFields,
-			List<Object> values,
-			SqlDriver driver,
-			Entity entity,
-			Object data,
-            Filter<EntityField> filter,
-            boolean ignoreNull
-			) {
-
-        EntityField[] fields = entity.getEntityFields();
-		sql.append("INSERT INTO ").append(entity.getTable()).append(" (");
-		boolean first = true;
-        int index = 0;
-        String[] specialValues = new String[fields.length];
-		for (EntityField entityField : fields) {
-            //插入数据,如果有忽略掉其他判断
-            AutoField autoField = entityField.getAutoField();
-            Object value;
-            if (autoField != null) {
-                String specialValue;
-                if ((specialValue = autoField.getSqlInsert(data, entityField)) != null) {
-                    specialValues[index] = specialValue;
-				} else if ((value = autoField.generageValue(data, entityField)) != null) {
-                    if (first) {
-                        first = false;
-                    } else {
-                        sql.append(COMMA);
-                    }
-                    appendValue(values, value, insertFields, entityField, sql, specialValues, index, driver);
-                } else {
-                    // 都没有？ 不需要处理
-                    continue;
-                }
-
-            } else {
-                if (filter == null || filter.accept(entityField)) {
-                    value = entityField.get(data);
-                    if (value == null && ignoreNull) {
-                        continue;
-                    }
-                    if (first) {
-                        first = false;
-                    } else {
-                        sql.append(COMMA);
-                    }
-                    appendValue(values, value, insertFields, entityField, sql, specialValues, index, driver);
-                }
-            }
-            ++index;
-        }
-        sql.append(") VALUES (");
-        first = true;
-        for (int i = 0; i < index; ++i) {
-            String value = specialValues[i];
-            if (value == null) continue;
-            if (first) {
-                first = false;
-            } else {
-                sql.append(",");
-            }
-            sql.append(value);
-		}
-		sql.append(')');
-
-	}
 
 
 
@@ -377,42 +296,6 @@ public class BuilderKit {
             }
             sql.append(field.getColumnName()).append("=?");
         }
-    }
-
-    public static void buildUpdate(
-            Entity entity,
-            StringBuilder sql,
-            List<Object> values,
-            SqlDriver driver,
-            StringBuilder where,
-            Object record,
-            Filter<EntityField> filter,
-            List<StatementAdapter> adapters,
-            boolean ignoreNull
-    ) {
-        sql.append("UPDATE ").append(entity.getTable());
-        boolean first = true;
-        int index = 0;
-        for (EntityField field : entity.getEntityFields()) {
-            if (filter == null || filter.accept(field)) {
-                Object value = field.get(record);
-                if (value == null && ignoreNull) continue;
-                if (first) {
-                    first = false;
-                    sql.append(" SET ");
-                } else {
-                    sql.append(COMMA);
-                }
-                values.add(index, value);
-                adapters.add(index, field.getStatementAdapter());
-                ++index;
-                driver.protectColumn(sql, field.getColumnName()).append("=?");
-            }
-        }
-        if (index == 0) {
-            throw new DaoException("至少更新一个字段");
-        }
-        sql.append(where);
     }
 
 

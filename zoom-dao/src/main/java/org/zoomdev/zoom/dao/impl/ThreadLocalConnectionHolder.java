@@ -1,13 +1,16 @@
 package org.zoomdev.zoom.dao.impl;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import org.zoomdev.zoom.dao.ConnectionExecutor;
 import org.zoomdev.zoom.dao.ConnectionHolder;
+import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.Trans;
 
-public class ThreadLocalConnectionHolder implements ConnectionHolder, Trans {
+public abstract class ThreadLocalConnectionHolder implements ConnectionHolder, Trans {
 	private DataSource dataSource;
 	private Connection connection;
 
@@ -34,6 +37,20 @@ public class ThreadLocalConnectionHolder implements ConnectionHolder, Trans {
 		final Connection connection = this.connection;
 		return connection == null ? (this.connection = ZoomDao.getConnection(dataSource)) : connection;
 	}
+
+	@Override
+	public <T> T execute(ConnectionExecutor executor) {
+		try {
+			return executor.execute(getConnection());
+		} catch (SQLException e) {
+			throw new DaoException(printSql(),e);
+		} finally {
+			releaseConnection();
+		}
+	}
+
+	protected abstract String printSql();
+
 
 	public void releaseConnection() {
 		final Connection connection = this.connection;

@@ -1,7 +1,7 @@
 package org.zoomdev.zoom.dao.driver.oracle;
 
 import org.zoomdev.zoom.caster.Caster;
-import org.zoomdev.zoom.dao.Ar;
+import org.zoomdev.zoom.dao.RawAr;
 import org.zoomdev.zoom.dao.Record;
 import org.zoomdev.zoom.dao.driver.AbsDbStruct;
 import org.zoomdev.zoom.dao.driver.DbStructFactory;
@@ -25,7 +25,7 @@ public class OracleDbStruct extends AbsDbStruct  implements DbStructFactory{
 
 	private static final Log log = LogFactory.getLog(OracleDbStruct.class);
 	@Override
-	public Collection<String> getTableNames(Ar ar) {
+	public Collection<String> getTableNames(RawAr ar) {
 		List<Record> list = ar.executeQuery("SELECT TABLE_NAME FROM user_tab_comments");
 		List<String> result = new ArrayList<String>();
 		for (Record record : list) {
@@ -34,7 +34,7 @@ public class OracleDbStruct extends AbsDbStruct  implements DbStructFactory{
 		return result;
 	}
 	
-	protected Map<String, String> getKeyTypes(Ar ar,String table){
+	protected Map<String, String> getKeyTypes(RawAr ar,String table){
 		List<Record> consts = ar
 				.executeQuery("select user_cons_columns.constraint_name,user_cons_columns.table_name, user_cons_columns.column_name,user_constraints.constraint_type from user_cons_columns "
 						+ "join user_constraints on user_cons_columns.constraint_name = user_constraints.constraint_name "
@@ -50,7 +50,7 @@ public class OracleDbStruct extends AbsDbStruct  implements DbStructFactory{
 		return keyTypes;
 	}
 	
-	Map<String, String> getIndexType(Ar ar,String tableName) {
+	Map<String, String> getIndexType(RawAr ar,String tableName) {
 		List<Record> indexs = ar.executeQuery("select user_ind_columns.table_name,user_ind_columns.column_name,user_indexes.index_type from user_ind_columns "
 				+ "join user_indexes on user_ind_columns.index_name = user_indexes.index_name "
 				+ "where user_ind_columns.table_name=?", tableName);
@@ -63,7 +63,7 @@ public class OracleDbStruct extends AbsDbStruct  implements DbStructFactory{
 	}
 
 	@Override
-	public void fill(Ar ar, TableMeta meta) {
+	public void fill(RawAr ar, TableMeta meta) {
 		List<Record> list = ar.executeQuery("SELECT TABLE_NAME as \"name\",COMMENTS as \"comment\" FROM user_tab_comments WHERE TABLE_NAME=?",meta.getName().toUpperCase());
 		if(list.size() > 0 ) {
 			meta.setComment( list.get(0).getString("comment") );
@@ -114,7 +114,7 @@ public class OracleDbStruct extends AbsDbStruct  implements DbStructFactory{
 	}
 
 	@Override
-	public Collection<TableNameAndComment> getNameAndComments(Ar ar) {
+	public Collection<TableNameAndComment> getNameAndComments(RawAr ar) {
 		List<Record> list = ar.executeQuery("SELECT TABLE_NAME as \"name\",COMMENTS as \"comment\" FROM user_tab_comments");
 
 		List<TableNameAndComment> result = new ArrayList<TableNameAndComment>(list.size());

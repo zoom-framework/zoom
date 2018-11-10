@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,7 +27,7 @@ import org.zoomdev.zoom.common.utils.Strings;
  */
 public class PatternFilterFactory {
 
-	private static Map<String, Filter<String>> filterMap = new HashMap<String, Filter<String>>();
+	private static Map<String, Filter<String>> filterMap = new ConcurrentHashMap<String, Filter<String>>();
 	
 	/**
 	 * 这个用来匹配 *xxx*   *xxx   xxx* 的形式
@@ -39,7 +40,6 @@ public class PatternFilterFactory {
 	private static String EXP = "[a-zA-Z0-9_\\.\\/\\+\\-]*";
 	public static void clear() {
 		Classes.destroy(filterMap);
-		filterMap = null;
 	}
 	public static Filter<String> createFilter(String pattern) {
 		

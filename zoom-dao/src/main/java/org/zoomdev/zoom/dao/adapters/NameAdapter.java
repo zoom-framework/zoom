@@ -36,7 +36,7 @@ public interface NameAdapter {
 	String getColumnName( String field );
 
     /**
-     * 在sql语句中的select 后面的字段，可能为 select ** as bb from yy
+     * 在sql语句中的select 后面的字段，可能为 {xx as bb} / xx /table.column
      *
      * @param field
      * @return

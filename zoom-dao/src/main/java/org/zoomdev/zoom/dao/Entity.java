@@ -79,4 +79,11 @@ public interface Entity {
      * @throws SQLException
      */
     void afterInsert(Object data, PreparedStatement ps) throws SQLException;
+
+	/**
+	 * 从实体类字段名称获取数据库字段名称
+	 * @param field
+	 * @return
+	 */
+	String getColumnName(String field);
 }

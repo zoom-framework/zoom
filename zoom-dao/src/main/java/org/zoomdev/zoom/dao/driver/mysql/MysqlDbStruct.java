@@ -1,7 +1,7 @@
 package org.zoomdev.zoom.dao.driver.mysql;
 
 import org.zoomdev.zoom.caster.Caster;
-import org.zoomdev.zoom.dao.Ar;
+import org.zoomdev.zoom.dao.RawAr;
 import org.zoomdev.zoom.dao.Record;
 import org.zoomdev.zoom.dao.driver.AbsDbStruct;
 import org.zoomdev.zoom.dao.driver.DbStructFactory;
@@ -30,13 +30,13 @@ public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
 
 
 	@Override
-	public Collection<String> getTableNames(Ar ar) {
+	public Collection<String> getTableNames(RawAr ar) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Collection<TableNameAndComment> getNameAndComments(Ar ar) {
+	public Collection<TableNameAndComment> getNameAndComments(RawAr ar) {
 		List<Record> list = ar.executeQuery(
 				"select table_comment as comment,table_name as name from information_schema.tables where table_schema=?",
 				dbName);
@@ -89,7 +89,7 @@ public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
 
 
 	@Override
-	public void fill(Ar ar, TableMeta meta) {
+	public void fill(RawAr ar, TableMeta meta) {
 		List<Record> list = ar.executeQuery(
 				"SELECT TABLE_COMMENT AS COMMENT,TABLE_NAME as NAME from information_schema.tables where table_schema=? AND TABLE_NAME=?",
 				dbName,

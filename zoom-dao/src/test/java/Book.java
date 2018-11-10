@@ -3,7 +3,7 @@ import org.zoomdev.zoom.dao.annotations.Table;
 
 import java.util.Map;
 
-@Table(name = "r_book")
+@Table(value = "r_book")
 public class Book {
 
     String id;
