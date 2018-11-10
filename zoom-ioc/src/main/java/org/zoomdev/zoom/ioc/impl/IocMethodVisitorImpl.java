@@ -2,7 +2,6 @@ package org.zoomdev.zoom.ioc.impl;
 
 import org.zoomdev.zoom.common.utils.CachedClasses;
 import org.zoomdev.zoom.ioc.*;
-import org.zoomdev.zoom.ioc.*;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -31,7 +30,7 @@ public class IocMethodVisitorImpl implements IocEventListener,IocMethodVisitor {
         for(Method method : methods){
             for(IocMethodHandler handler : handlers){
                 if(handler.accept(method)){
-                    handler.visit(object, method, ioc.getMethodProxy(object.getIocClass(), method));
+                    handler.create(object, method, ioc.getMethodProxy(object.getIocClass(), method));
                 }
             }
         }

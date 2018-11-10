@@ -63,6 +63,8 @@ public class ClassResolvers {
 					classResolver.clear();
 				}
 			}
+
+            classResolver.endResolve();
 		}
 
 	}

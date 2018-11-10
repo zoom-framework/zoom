@@ -75,7 +75,8 @@ public class ZoomIocKey implements IocKey{
 	
 	@Override
 	public String toString() {
-		return type + " : " + name;
+		if(name == null)return type.getName();
+		return type.getName() + " : " + name;
 	}
 	@Override
 	public boolean hasName() {

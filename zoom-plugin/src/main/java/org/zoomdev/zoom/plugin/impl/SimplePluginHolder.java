@@ -82,7 +82,7 @@ public class SimplePluginHolder implements PluginHolder {
 		}
 		assert(plugin!=null);
 		try{
-            ioc = new SimpleIocContainer(host.getIoc().getScope());
+            ioc = new SimpleIocContainer(host.getIoc().getScope(),host.getIoc().getIocClassLoader());
             tokens = new ArrayList<Router.RemoveToken>();
             ClassResolvers classResolvers = new ClassResolvers(
                     new SimpleConfigBuilder(ioc),
@@ -118,15 +118,13 @@ public class SimplePluginHolder implements PluginHolder {
 		this.running = false;
 		try{
             plugin.shutdown(host);
-        }finally{
-		    //无论有没有关闭出错，都是清除
+            clear();
+        } catch (Throwable t){
+            //无论有没有关闭出错，都是清除
             if(ignoreError){
                 clear();
             }
-
         }
-
-
 	}
 	@Override
 	public void install(PluginHost pluginHost) {

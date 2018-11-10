@@ -17,10 +17,16 @@ public abstract class AnnotationMethodHandler<T extends Annotation> implements I
         //获取泛型类型
         annotationClass = (Class<T>) Classes.getAllParameterizedTypes(getClass())[0];
     }
-
-
     @Override
-    public void visit(IocObject target, Method method, IocMethodProxy proxy) {
+    public void destroy(IocObject target, Method method) {
+        T annotation = method.getAnnotation(annotationClass);
+        destroy(target,annotation,method);
+    }
+    protected void destroy(IocObject target,T annotation, Method method) {
+
+    }
+    @Override
+    public void create(IocObject target, Method method, IocMethodProxy proxy) {
        T annotation = method.getAnnotation(annotationClass);
         visit(target,annotation,method,proxy);
     }

@@ -9,12 +9,16 @@ import org.zoomdev.zoom.ioc.IocMethodProxy;
 import org.zoomdev.zoom.ioc.IocObject;
 import org.zoomdev.zoom.ioc.impl.AnnotationMethodHandler;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 class EventObserverMethodHandler extends AnnotationMethodHandler<EventObserver> {
 
     private EventService eventService;
-    private IocContainer ioc;
+
+    private Map<String,EventListener> listenerMap = new ConcurrentHashMap<String, EventListener>();
 
     public EventObserverMethodHandler(EventService eventService){
         this.eventService = eventService;
@@ -23,7 +27,19 @@ class EventObserverMethodHandler extends AnnotationMethodHandler<EventObserver> 
     @Override
     protected void visit(IocObject target, EventObserver annotation, Method method, IocMethodProxy proxy) {
         String name = annotation.value();
-        eventService.addListener(name,new InnerMethodInvoker(target,method));
+        EventListener listener = new InnerMethodInvoker(target,method);
+        listenerMap.put(name,listener);
+        eventService.addListener(name,listener);
+    }
+
+    public String getKey(IocObject target){
+        return target.getIocClass().getKey().toString();
+    }
+
+    @Override
+    protected void destroy(IocObject target, EventObserver annotation, Method method) {
+        String name = annotation.value();
+        eventService.removeListener(name,new InnerMethodInvoker(target,method));
     }
 
     static class InnerMethodInvoker implements EventListener{

@@ -3,10 +3,7 @@ package org.zoomdev.zoom.ioc.impl;
 import org.zoomdev.zoom.common.Destroyable;
 import org.zoomdev.zoom.common.designpattern.SingletonUtils;
 import org.zoomdev.zoom.common.utils.Classes;
-import org.zoomdev.zoom.ioc.ClassEnhancer;
-import org.zoomdev.zoom.ioc.IocClass;
-import org.zoomdev.zoom.ioc.IocClassLoader;
-import org.zoomdev.zoom.ioc.IocKey;
+import org.zoomdev.zoom.ioc.*;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -36,6 +33,9 @@ public class ZoomIocClassLoader implements IocClassLoader,Destroyable {
         return SingletonUtils.liteDoubleLockMap(pool, key, new SingletonUtils.SingletonInit<IocClass>() {
             @Override
             public IocClass create() {
+                if(key.isInterface()){
+                    throw new IocException("找不到"+key.getType()+"对应的配置，是否已经在Ioc容器注册了?");
+                }
                 ZoomIocConstructor constructor = ZoomIocConstructor
                         .createFromClass(type, key, ZoomIocClassLoader.this, classEnhancer);
                 IocClass iocClass = new ZoomBeanIocClass(ZoomIocClassLoader.this,

@@ -44,24 +44,35 @@ public class TimerModule implements Destroyable {
         return timer.value();
     }
 
+
     @Inject
     public void inject(IocMethodVisitor visitor, final TimerService timerService) {
         visitor.add(new IocMethodHandler() {
-            @Override
-            public void visit(IocObject target, Method method, IocMethodProxy proxy) {
-                Timer timer = method.getAnnotation(Timer.class);
 
-                StringBuilder sb = new StringBuilder(target.getIocClass().getKey().getType().getName())
+            private String getKey(IocObject target,Method method){
+                StringBuilder sb = new StringBuilder(target.getIocClass().getKey().toString())
                         .append("#")
                         .append(method.getName());
+                return sb.toString();
+            }
+
+            @Override
+            public void create(IocObject target, Method method, IocMethodProxy proxy) {
+                Timer timer = method.getAnnotation(Timer.class);
                 String cron = ElParser.parseConfigValue(getCron(timer));
                 if (StringUtils.isEmpty(cron))
                     return;
-                timerService.startTimer(sb.toString(), IocTimerJob.class, new TimerData(
+                timerService.startTimer(getKey(target,method), IocTimerJob.class, new TimerData(
                         target,
                         proxy
                 ), cron);
 
+            }
+
+            @Override
+            public void destroy(IocObject target, Method method) {
+
+                timerService.stopTimer(getKey(target,method));
             }
 
             @Override

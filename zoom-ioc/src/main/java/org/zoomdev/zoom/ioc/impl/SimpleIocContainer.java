@@ -29,9 +29,9 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
 		this.iocClassLoader.setClassEnhancer(new NoneEnhancer());
 	}
 
-	public SimpleIocContainer(IocScope parentScope) {
+	public SimpleIocContainer(IocScope parentScope,IocClassLoader parentClassLoader) {
 		globalScope = new GroupScope(this, this,parentScope);
-		this.iocClassLoader = new ZoomIocClassLoader();
+		this.iocClassLoader =new GroupClassLoader(parentClassLoader);
 		this.iocClassLoader.setClassEnhancer(new NoneEnhancer());
 	}
 
@@ -246,6 +246,7 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
 			IocKey key = new ZoomIocKey(name, fieldType);
 			if(!key.hasName()) {
 				classLoader.append(key.getType());
+
 			}
 			return new ZoomBeanIocField(key,field,IocValues.VALUE);
 		}
