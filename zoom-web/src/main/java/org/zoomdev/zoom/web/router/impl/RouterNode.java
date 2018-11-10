@@ -1,4 +1,4 @@
-package org.zoomdev.zoom.web.router;
+package org.zoomdev.zoom.web.router.impl;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -6,9 +6,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.zoomdev.zoom.common.Destroyable;
 import org.zoomdev.zoom.common.utils.Classes;
+import org.zoomdev.zoom.common.utils.CollectionUtils;
 import org.zoomdev.zoom.web.action.ActionHandler;
 import org.zoomdev.zoom.web.action.impl.GroupActionHandler;
+import org.zoomdev.zoom.web.router.Router;
+import org.zoomdev.zoom.web.router.RouterParamRule;
 
 
 /**
@@ -17,7 +21,7 @@ import org.zoomdev.zoom.web.action.impl.GroupActionHandler;
  *
  * @param 
  */
-public class RouterNode {
+class RouterNode implements Destroyable {
 
 	
 	Map<String, RouterNode> children;
@@ -27,8 +31,11 @@ public class RouterNode {
 	private ActionHandler action;
 	
 	RouterNode pattern;
-	
-	
+
+    @Override
+    public void destroy() {
+
+    }
 	
 	public RouterNode(int level) {
 		this.level = level;
@@ -90,20 +97,22 @@ public class RouterNode {
 		return handler;
 	}
 
+
 	/**
 	 * 注册路由
-	 * @param parts
-	 * @param rule
-	 * @param value
+	 * @param parts  分割的数组 /id/name  =>  ['id','name']
+     * @param names  表示的是参数的名称PathVariable  如  /{table}/name/{id} 则 names=['table',null,'id']
+	 * @param rule   pathvariable的解析器
+	 * @param value  需要注册的值
 	 */
-	public void register(String[] parts, String[] names,RouterParamRule rule, ActionHandler value) {
+	public Router.RemoveToken register(String[] parts, String[] names, RouterParamRule rule, final ActionHandler value) {
 		if(parts ==null || parts.length==0) {
 			throw new RuntimeException("parts长度必须大于0");
 		}
 		final int level = this.level;
-		String current = parts[level];
+		final String current = parts[level];
 		
-		String paramName = names[level];
+		final String paramName = names[level];
 		if(paramName!=null) {
 			//不一定有下级
 			if(pattern==null) {
@@ -111,9 +120,21 @@ public class RouterNode {
 			}
 			if(parts.length-1==level) {
 				pattern.setAction(value);
-				return;
+				return new Router.RemoveToken() {
+                    @Override
+                    public void remove() {
+                        pattern.action = ActionHandlerUtils.removeAction(pattern.action,value);
+                    }
+                };
 			}
-			pattern.register(parts,names, rule,value);
+			return new ActionHandlerUtils.GroupRemove(new Router.RemoveToken() {
+                @Override
+                public void remove() {
+                    if(pattern.isEmpty()){
+                        pattern = null;
+                    }
+                }
+            },pattern.register(parts,names, rule,value));
 		}else {
 			//当前的key为下级注册
 			if(children==null) {
@@ -124,15 +145,36 @@ public class RouterNode {
 				child = new RouterNode(level+1);
 				children.put(current, child);
 			}
+            final RouterNode finalChild = child;
 			if(parts.length-1==level) {
 				child.setAction(value);
-				return;
+
+                return new Router.RemoveToken() {
+
+                    @Override
+                    public void remove() {
+                        finalChild.action = ActionHandlerUtils.removeAction(finalChild.action,value);
+                        if(finalChild.isEmpty()){
+                            children.remove(current);
+                        }
+                    }
+                };
 			}
-			child.register(parts,names,rule,value);
+            return new ActionHandlerUtils.GroupRemove(new Router.RemoveToken() {
+                @Override
+                public void remove() {
+                    if(finalChild.isEmpty()){
+                        children.remove(current);
+                    }
+                }
+            },child.register(parts,names,rule,value));
 		}
-		
-		
 	}
+
+	public boolean isEmpty(){
+	    return CollectionUtils.isEmpty( children ) &&
+                (pattern==null || pattern.isEmpty() ) && action == null;
+    }
 
 	/**
 	 * 清除所有路由
@@ -166,5 +208,6 @@ public class RouterNode {
 	public void setAction(ActionHandler action) {
 		this.action = GroupActionHandler.from(this.action, action);
 	}
+
 
 }

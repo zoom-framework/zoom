@@ -77,4 +77,7 @@ public interface IocContainer extends Destroyable {
      * @param scope
      */
     void release(Scope scope);
+
+
+    IocScope getScope();
 }

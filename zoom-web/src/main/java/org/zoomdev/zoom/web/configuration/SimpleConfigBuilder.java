@@ -1,15 +1,15 @@
 package org.zoomdev.zoom.web.configuration;
 
+import org.zoomdev.zoom.common.Destroyable;
 import org.zoomdev.zoom.common.annotations.IocBean;
 import org.zoomdev.zoom.common.annotations.Module;
-import org.zoomdev.zoom.common.filter.impl.AnnotationFilter;
+import org.zoomdev.zoom.common.filter.impl.ClassAnnotationFilter;
 import org.zoomdev.zoom.common.filter.pattern.PatternFilterFactory;
 import org.zoomdev.zoom.common.res.ClassResolver;
 import org.zoomdev.zoom.common.utils.CachedClasses;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.ioc.IocException;
-import org.zoomdev.zoom.web.annotations.ZoomApplication;
 import org.zoomdev.zoom.web.annotations.ZoomApplication;
 
 import java.lang.annotation.Annotation;
@@ -29,7 +29,7 @@ public class SimpleConfigBuilder extends ClassResolver {
 	public SimpleConfigBuilder(IocContainer ioc) {
 		this.ioc= ioc;
 		setClassNameFilter(PatternFilterFactory.createFilter("*.modules.*"));
-		setClassFilter( new AnnotationFilter<Class<?>>( Module.class )  );
+		setClassFilter( new ClassAnnotationFilter<Class<?>>( Module.class )  );
 		list = new ArrayList<Class<?>>();
 	}
 
@@ -121,5 +121,6 @@ public class SimpleConfigBuilder extends ClassResolver {
 		}
 
 		list.clear();
+
 	}
 }

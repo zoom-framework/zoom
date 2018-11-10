@@ -32,8 +32,8 @@ public class PluginModule {
 	
 	
 	@IocBean
-	public PluginHost getPluginHost(ClassResolvers resolvers) {
-		return new SimplePluginHost(resolvers);
+	public PluginHost getPluginHost() {
+		return new SimplePluginHost();
 	}
 	
 }

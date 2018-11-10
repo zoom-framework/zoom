@@ -4,7 +4,6 @@ import org.zoomdev.zoom.common.annotations.IocBean;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.ioc.*;
 import org.apache.commons.lang3.StringUtils;
-import org.zoomdev.zoom.ioc.*;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -17,9 +16,9 @@ abstract class ZoomIocConstructor implements IocConstructor {
         String initialize = iocBean.initialize();
 		String name = iocBean.name();
         String destroy = iocBean.destroy();
-		IocKey key = new ZoomIocKey(name, method.getReturnType(), target.getClass().getClassLoader());
+		IocKey key = new ZoomIocKey(name, method.getReturnType());
 		return new IocBeanConstructor(key,
-				ZoomIoc.parseParameterKeys(target, method,classLoader), target, method,
+				SimpleIocContainer.parseParameterKeys(target, method,classLoader), target, method,
                 initialize, destroy);
 	}
 
@@ -79,13 +78,13 @@ abstract class ZoomIocConstructor implements IocConstructor {
 
 		Constructor<?>[] constructors = type.getConstructors();
 		if(constructors.length == 0) {
-			return new IocClassConstructor( key,ZoomIoc.EMPTY_KEYS,type );
+			return new IocClassConstructor( key,SimpleIocContainer.EMPTY_KEYS,type );
 		}
 
 		if(constructors.length == 1){
             Constructor<?> constructor = constructors[0];
             return new IocConstructorContructor( key ,
-                    ZoomIoc.parseParameterKeys(
+                    SimpleIocContainer.parseParameterKeys(
                             type.getClassLoader(),
                             constructor.getParameterAnnotations(),
                             constructor.getParameterTypes(),
@@ -100,7 +99,7 @@ abstract class ZoomIocConstructor implements IocConstructor {
 
 
 
-        return new IocClassConstructor( key,ZoomIoc.EMPTY_KEYS,type );
+        return new IocClassConstructor( key,SimpleIocContainer.EMPTY_KEYS,type );
 	}
 
 	static class IocInstanceConstructor extends  ZoomIocConstructor{
@@ -109,7 +108,7 @@ abstract class ZoomIocConstructor implements IocConstructor {
 		private boolean inited;
 
 		public IocInstanceConstructor(Class<?> type, Object instance, boolean inited) {
-			super(new ZoomIocKey(type), ZoomIoc.EMPTY_KEYS);
+			super(new ZoomIocKey(type), SimpleIocContainer.EMPTY_KEYS);
 			assert(instance!=null);
 			this.inited = inited;
 			this.instance = instance;
@@ -134,7 +133,7 @@ abstract class ZoomIocConstructor implements IocConstructor {
 		@Override
         public IocObject newInstance(IocObject[] values) {
 			try {
-				return ZoomIocObject.wrap(iocClass, constructor.newInstance(ZoomIoc.getValues(
+				return ZoomIocObject.wrap(iocClass, constructor.newInstance(SimpleIocContainer.getValues(
 						values
 						) ));
 			} catch (Exception e) {
@@ -196,7 +195,7 @@ abstract class ZoomIocConstructor implements IocConstructor {
 		@Override
         public IocObject newInstance(IocObject[] values) {
 			try {
-				Object bean = method.invoke(target, ZoomIoc.getValues(values));
+				Object bean = method.invoke(target, SimpleIocContainer.getValues(values));
 
                 IocEvent iocDestroy = null;
                 IocEvent iocInit = null;

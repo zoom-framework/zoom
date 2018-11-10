@@ -30,7 +30,7 @@ public class ZoomIocMethod implements IocMethod {
     @Override
     public Object invoke(IocObject obj, IocObject[] values) {
 		try {
-            return method.invoke(obj.get(), ZoomIoc.getValues(values));
+            return method.invoke(obj.get(), SimpleIocContainer.getValues(values));
 		} catch (Exception e) {
 			throw new IocException("调用ioc注入函数失败"+method,e);
         }

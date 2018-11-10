@@ -1,7 +1,6 @@
 package org.zoomdev.zoom.ioc.impl;
 
 import org.zoomdev.zoom.ioc.*;
-import org.zoomdev.zoom.ioc.*;
 
 /**
  * 一开始，并不知道所有的Constructor,必须要等实例化之后才知道
@@ -26,8 +25,8 @@ public class ZoomBeanIocClass extends ZoomIocClass {
 
     private void createInjector(IocScope scope, Object instance){
         injectorCreated = true;
-        methods = ZoomIoc.parseMethods(instance.getClass(),classLoader);
-        fields = ZoomIoc.parseFields(instance.getClass(),classLoader);
+        methods = SimpleIocContainer.parseMethods(instance.getClass(),classLoader);
+        fields = SimpleIocContainer.parseFields(instance.getClass(),classLoader);
 
         if(fields!=null) {
             for (IocField field : fields) {

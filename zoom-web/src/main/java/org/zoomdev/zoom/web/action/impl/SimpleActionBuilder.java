@@ -1,11 +1,15 @@
 package org.zoomdev.zoom.web.action.impl;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.zoomdev.zoom.common.filter.impl.AnnotationFilter;
+import org.zoomdev.zoom.common.Destroyable;
+import org.zoomdev.zoom.common.filter.impl.ClassAnnotationFilter;
 import org.zoomdev.zoom.common.filter.pattern.PatternFilterFactory;
 import org.zoomdev.zoom.common.res.ClassResolver;
 import org.zoomdev.zoom.ioc.IocContainer;
@@ -34,17 +38,28 @@ public class SimpleActionBuilder extends ClassResolver{
 	private Controller controller;
 	private Object target;
 	private String key;
-	
+
+    public List<Router.RemoveToken> getRemoveTokenList() {
+        return removeTokenList;
+    }
+
+    private List<Router.RemoveToken> removeTokenList;
+
+    public SimpleActionBuilder(IocContainer ioc, Router router){
+        this(ioc,router, null);
+    }
+
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public SimpleActionBuilder(IocContainer ioc,Router router) {
-		setClassFilter(new AnnotationFilter(Controller.class));
+	public SimpleActionBuilder(IocContainer ioc, Router router, List<Router.RemoveToken> removeTokenList) {
+		setClassFilter(new ClassAnnotationFilter(Controller.class));
 		setClassNameFilter(PatternFilterFactory.createFilter("*.controllers.*"));
 
 		this.ioc = ioc;
 		this.router = router;
 		ioc.getIocClassLoader().append(ActionInterceptorFactory.class, new SimpleActionInterceptorFactory(),true);
 		factory = ioc.get(ActionInterceptorFactory.class);
+        this.removeTokenList = removeTokenList;
 	}
 	
 
@@ -119,7 +134,11 @@ public class SimpleActionBuilder extends ClassResolver{
 		if(log.isInfoEnabled()) {
 			log.info(String.format("注册Action成功:key:[%s] class:[%s] method:[%s] loader:[%s]", key, clazz,method.getName() ,clazz.getClassLoader()));
 		}
-		router.register(key,  action);
+        Router.RemoveToken removeToken = router.register(key,  action);
+		if(removeTokenList!=null){
+            removeTokenList.add(removeToken);
+        }
+
 		
 	}
 
@@ -132,8 +151,7 @@ public class SimpleActionBuilder extends ClassResolver{
 	public boolean resolveMethods() {
 		return true;
 	}
-	
-	
-	
-	
+
+
+
 }

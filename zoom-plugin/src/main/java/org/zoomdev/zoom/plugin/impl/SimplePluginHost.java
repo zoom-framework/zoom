@@ -7,27 +7,34 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.zoomdev.zoom.common.annotations.Inject;
 import org.zoomdev.zoom.common.res.ClassResolvers;
+import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.plugin.NotSupportException;
 import org.zoomdev.zoom.plugin.PluginException;
 import org.zoomdev.zoom.plugin.PluginHolder;
 import org.zoomdev.zoom.plugin.PluginHost;
+import org.zoomdev.zoom.web.router.Router;
 
 public class SimplePluginHost implements PluginHost {
 
 	private List<PluginHolder> holders;
 
-	private ClassResolvers resolvers;
+	@Inject
+	private IocContainer ioc;
+
+	@Inject
+	private Router router;
+
 
 	private static final Log logger = LogFactory.getLog(PluginHost.class);
 
 	private List<PluginHolder> runningPlugins;
 	
 
-	public SimplePluginHost(ClassResolvers resolvers) {
+	public SimplePluginHost() {
 		holders = new ArrayList<PluginHolder>();
 		runningPlugins = new ArrayList<PluginHolder>();
-		this.resolvers = resolvers;
 	}
 
 	public synchronized PluginHolder load(URL plugin) throws PluginException {
@@ -56,12 +63,22 @@ public class SimplePluginHost implements PluginHost {
 	}
 	
 	@Override
-	public void shutdown(PluginHolder plugin) throws PluginException {
+	public void shutdown(PluginHolder plugin,boolean ignoreError) throws PluginException {
 		assert(plugin!=null);
-		plugin.shutdown(this);
+		plugin.shutdown(this,ignoreError);
 		runningPlugins.remove(plugin);
 	}
-	
+
+	@Override
+	public IocContainer getIoc() {
+		return ioc;
+	}
+
+	@Override
+	public Router getRouter() {
+		return router;
+	}
+
 	@Override
 	public synchronized void install(PluginHolder pluginHolder) throws PluginException {
 		
@@ -86,10 +103,10 @@ public class SimplePluginHost implements PluginHost {
 	
 
 
-	public synchronized void shutdown() {
+	public synchronized void shutdown(boolean ignoreError) {
 		for (PluginHolder plugin : runningPlugins) {
 			try {
-				plugin.shutdown(this);
+				plugin.shutdown(this,ignoreError);
 			} catch (Throwable e) {
 
 			}
@@ -102,12 +119,7 @@ public class SimplePluginHost implements PluginHost {
 
 	}
 
-	@Override
-	public ClassResolvers getClassResolvers() {
-		return this.resolvers;
-	}
 
-	
 	
 
 }

@@ -1,8 +1,6 @@
 package org.zoomdev.zoom.web.action.impl;
 
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,8 +15,28 @@ public class GroupActionHandler implements ActionHandler {
 	public GroupActionHandler( ActionHandler... actionHandlers ) {
 		this.actionHandlers = actionHandlers;
 	}
-	
-	public static ActionHandler from( ActionHandler handler1,ActionHandler handler2 ) {
+
+    @Override
+    public boolean equals(Object obj) {
+	    if(obj instanceof GroupActionHandler){
+
+	        GroupActionHandler target = (GroupActionHandler)obj;
+            if(target.actionHandlers.length != this.actionHandlers.length){
+                return false;
+            }
+
+            for(int i=0; i < actionHandlers.length; ++i){
+                if(!actionHandlers[i].equals(target.actionHandlers[i])){
+                    return false;
+                }
+            }
+            return true;
+
+        }
+        return false;
+    }
+
+    public static ActionHandler from(ActionHandler handler1, ActionHandler handler2 ) {
 		if(handler1==null)
 			return handler2;
 		if(handler1 instanceof GroupActionHandler) {
@@ -72,6 +90,33 @@ public class GroupActionHandler implements ActionHandler {
 		return false;
 	}
 
+    /**
+     * 将指定的action处理器移除，并返回一个被移除的ActionHandler
+     * @param handler
+     * @return
+     */
+    public ActionHandler remove(ActionHandler handler){
+        List<ActionHandler> list = new ArrayList<ActionHandler>(this.actionHandlers.length);
+        for (ActionHandler actionHandler : actionHandlers) {
+            if(actionHandler == handler){
+                continue;
+            }
+            list.add(actionHandler);
+        }
+
+        if(list.size() == 1){
+            return list.get(0);
+        }
+
+        if(list.size() == 0){
+            return null;
+        }
+
+        return new GroupActionHandler(
+                list.toArray(new ActionHandler[list.size()])
+        );
+    }
+
 	@Override
 	public String getMapping() {
 		
@@ -94,6 +139,8 @@ public class GroupActionHandler implements ActionHandler {
 	public String[] getPathVariableNames() {
 		return actionHandlers[0].getPathVariableNames();
 	}
+
+
 
 	
 }

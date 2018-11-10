@@ -25,7 +25,7 @@ public interface PluginHolder {
 	 */
 	void startup(PluginHost host) throws PluginException;
 
-	void shutdown(PluginHost host);
+	void shutdown(PluginHost host,boolean ignoreError);
 
 	boolean isRunning();
 

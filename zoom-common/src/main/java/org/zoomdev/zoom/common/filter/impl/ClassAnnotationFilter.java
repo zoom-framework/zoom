@@ -8,11 +8,11 @@ import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.common.Destroyable;
 import org.zoomdev.zoom.common.filter.Filter;
 
-public class AnnotationFilter<T extends AnnotatedElement> implements Filter< T >,Destroyable {
+public class ClassAnnotationFilter<T extends AnnotatedElement> implements Filter< T >,Destroyable {
 	
 	private Class<? extends Annotation> annotationClass;
 	
-	public AnnotationFilter(Class<? extends Annotation> annotationClass) {
+	public ClassAnnotationFilter(Class<? extends Annotation> annotationClass) {
 		assert(annotationClass!=null);
 		this.annotationClass = annotationClass;
 	}

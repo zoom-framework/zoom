@@ -1,16 +1,23 @@
 package org.zoomdev.zoom.plugin.impl;
 
 import org.zoomdev.zoom.common.io.Io;
+import org.zoomdev.zoom.common.res.ClassResolvers;
 import org.zoomdev.zoom.common.res.ResScanner;
 import org.zoomdev.zoom.common.res.ResScanner.ClassRes;
+import org.zoomdev.zoom.ioc.IocContainer;
+import org.zoomdev.zoom.ioc.impl.SimpleIocContainer;
 import org.zoomdev.zoom.plugin.Plugin;
 import org.zoomdev.zoom.plugin.PluginException;
 import org.zoomdev.zoom.plugin.PluginHolder;
 import org.zoomdev.zoom.plugin.PluginHost;
+import org.zoomdev.zoom.web.action.impl.SimpleActionBuilder;
+import org.zoomdev.zoom.web.configuration.SimpleConfigBuilder;
+import org.zoomdev.zoom.web.router.Router;
 
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SimplePluginHolder implements PluginHolder {
@@ -66,24 +73,60 @@ public class SimplePluginHolder implements PluginHolder {
 		assert(plugin!=null);
 		return plugin.isInstalled();
 	}
-
+    IocContainer ioc;
+	private List<Router.RemoveToken> tokens;
 	@Override
 	public synchronized void startup(PluginHost host) throws PluginException {
 		if(running) {
 			return;
 		}
 		assert(plugin!=null);
-		host.getClassResolvers().visit(scanner);
-		plugin.startup(host);
-		running = true;
+		try{
+            ioc = new SimpleIocContainer(host.getIoc().getScope());
+            tokens = new ArrayList<Router.RemoveToken>();
+            ClassResolvers classResolvers = new ClassResolvers(
+                    new SimpleConfigBuilder(ioc),
+                    new SimpleActionBuilder(ioc,host.getRouter(),tokens)
+            );
+            classResolvers.visit(scanner);
+            plugin.startup(host);
+            running = true;
+        }catch (Throwable t){
+            clear();
+            throw new PluginException(t);
+        }
+
 	}
 
+	void clear(){
+        if(ioc!=null){
+            ioc.destroy();
+            ioc = null;
+        }
+        if(tokens!=null){
+            for(Router.RemoveToken removeToken : tokens){
+                removeToken.remove();
+            }
+            tokens.clear();
+            tokens = null;
+        }
+    }
+
 	@Override
-	public synchronized void shutdown(PluginHost host) {
+	public synchronized void shutdown(PluginHost host,boolean ignoreError) {
 		assert(plugin!=null);
 		this.running = false;
-		plugin.shutdown(host);
-		
+		try{
+            plugin.shutdown(host);
+        }finally{
+		    //无论有没有关闭出错，都是清除
+            if(ignoreError){
+                clear();
+            }
+
+        }
+
+
 	}
 	@Override
 	public void install(PluginHost pluginHost) {

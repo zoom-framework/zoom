@@ -3,6 +3,8 @@ package org.zoomdev.zoom.plugin;
 import java.net.URL;
 
 import org.zoomdev.zoom.common.res.ClassResolvers;
+import org.zoomdev.zoom.ioc.IocContainer;
+import org.zoomdev.zoom.web.router.Router;
 
 /**
  * 宿主程序
@@ -19,8 +21,6 @@ public interface PluginHost {
 	void update(String event,String sender,Object data) throws NotSupportException;
 
 	PluginHolder getPluginById(String id);
-	
-	ClassResolvers getClassResolvers();
 	
 	PluginHolder load(URL url)  throws PluginException;
 	
@@ -42,5 +42,9 @@ public interface PluginHost {
 	
 	void startup() throws PluginException;
 
-	void shutdown(PluginHolder plugin) throws PluginException;
+	void shutdown(PluginHolder plugin,boolean ignoreError) throws PluginException;
+
+	IocContainer getIoc();
+
+	Router getRouter();
 }

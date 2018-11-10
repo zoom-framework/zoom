@@ -8,7 +8,7 @@ import java.lang.management.RuntimeMXBean;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.zoomdev.zoom.ioc.impl.ZoomIoc;
+import org.zoomdev.zoom.ioc.impl.SimpleIocContainer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,12 +30,6 @@ import org.zoomdev.zoom.web.router.Router;
 import org.zoomdev.zoom.web.router.impl.BracesRouterParamRule;
 import org.zoomdev.zoom.web.router.impl.SimpleRouter;
 import org.zoomdev.zoom.web.utils.WebUtils;
-import org.zoomdev.zoom.web.action.ActionHandler;
-import org.zoomdev.zoom.web.action.impl.SimpleActionBuilder;
-import org.zoomdev.zoom.web.router.Router;
-import org.zoomdev.zoom.web.router.impl.BracesRouterParamRule;
-import org.zoomdev.zoom.web.router.impl.SimpleRouter;
-import org.zoomdev.zoom.web.utils.WebUtils;
 
 public class ZoomWeb {
 	private Router router;
@@ -50,7 +44,7 @@ public class ZoomWeb {
 		
 		printLogo();
         // 初始化ioc容器
-        ioc = new ZoomIoc();
+        ioc = new SimpleIocContainer();
         ioc.getIocClassLoader().append(IocContainer.class,ioc,true);
         WebUtils.setIoc(ioc);
 

@@ -28,7 +28,7 @@ public interface ActionHandler {
 	boolean supportsHttpMethod(String method);
 	
 	/**
-	 * 路由映射
+	 * 路由映射 带有{}
 	 * @return
 	 */
 	String getMapping();

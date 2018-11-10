@@ -193,7 +193,7 @@ public class PluginService {
 		}
 
 		try {
-			pluginHost.shutdown(plugin);
+			pluginHost.shutdown(plugin,false);
 			dao.table("sys_plugin").where("id", id).set("running", 0).update();
 		} catch (PluginException e) {
 			throw new StatusException.ApiError("插件加载失败");
@@ -208,7 +208,7 @@ public class PluginService {
 		}
 
 		try {
-			pluginHost.shutdown(plugin);
+			pluginHost.shutdown(plugin,false);
 			pluginHost.uninstall(plugin);
 			dao.table("sys_plugin").where("id", id).set("running", 0).set("installed", 0).update();
 		} catch (PluginException e) {

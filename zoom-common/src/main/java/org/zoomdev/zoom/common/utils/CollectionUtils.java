@@ -28,6 +28,10 @@ public class CollectionUtils {
         return values.toArray(new String[values.size()]);
     }
 
+    public static boolean isEmpty(Map<?,?> map) {
+        return map == null || map.size() == 0;
+    }
+
     public static interface Converter<T, E> {
         E convert(T data);
     }

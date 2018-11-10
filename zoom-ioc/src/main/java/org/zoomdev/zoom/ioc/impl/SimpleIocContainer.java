@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ZoomIoc implements IocContainer, IocEventListener {
+public class SimpleIocContainer implements IocContainer, IocEventListener {
 
 	private GlobalScope globalScope;
 
@@ -23,13 +23,17 @@ public class ZoomIoc implements IocContainer, IocEventListener {
             Collections.synchronizedList(new ArrayList<IocEventListener>());
 
 
-	public  ZoomIoc() {
+	public SimpleIocContainer() {
         globalScope = new GlobalScope(this, this);
 		this.iocClassLoader = new ZoomIocClassLoader();
 		this.iocClassLoader.setClassEnhancer(new NoneEnhancer());
 	}
 
-
+	public SimpleIocContainer(IocScope parentScope) {
+		globalScope = new GroupScope(this, this,parentScope);
+		this.iocClassLoader = new ZoomIocClassLoader();
+		this.iocClassLoader.setClassEnhancer(new NoneEnhancer());
+	}
 
 
 	@Override
@@ -57,7 +61,7 @@ public class ZoomIoc implements IocContainer, IocEventListener {
 			if (obj == null) {
 				iocClass = this.iocClassLoader.get(key);
 				if (iocClass == null) {
-					if(!key.hasName() && !key.isInterface() && key.getClassLoader() == key.getType().getClassLoader()) {
+					if(!key.hasName() && !key.isInterface()) {
 						iocClass = iocClassLoader.append(key.getType());
 					}else {
 						throw new IocException("找不到IocClass key:" + key + " 请提供ioc的配置");
@@ -139,9 +143,9 @@ public class ZoomIoc implements IocContainer, IocEventListener {
 				}
 			}
 			if (paramInject != null && !StringUtils.isEmpty(paramInject.value())) {
-				arg = new ZoomIocKey(paramInject.value(), type, classLoader);
+				arg = new ZoomIocKey(paramInject.value(), type);
 			} else {
-				arg = new ZoomIocKey(type, classLoader);
+				arg = new ZoomIocKey(type);
 				iocClassLoader.append(type);
 			}
 			args[index++] = arg;
@@ -213,6 +217,11 @@ public class ZoomIoc implements IocContainer, IocEventListener {
 
 	}
 
+	@Override
+	public IocScope getScope() {
+		return globalScope;
+	}
+
 	/**
 	 * 将来改成可配置的
 	 * @param inject
@@ -230,11 +239,11 @@ public class ZoomIoc implements IocContainer, IocEventListener {
 		if(!StringUtils.isEmpty(inject.config())){
 			//配置
 			String name = inject.config();
-			IocKey key = new ZoomIocKey(name, fieldType, field.getDeclaringClass().getClassLoader());
+			IocKey key = new ZoomIocKey(name, fieldType);
 			return new ZoomBeanIocField(key,field,IocValues.createConfig(field,key));
 		}else{
 			String name = inject.value();
-			IocKey key = new ZoomIocKey(name, fieldType, field.getDeclaringClass().getClassLoader());
+			IocKey key = new ZoomIocKey(name, fieldType);
 			if(!key.hasName()) {
 				classLoader.append(key.getType());
 			}

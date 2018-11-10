@@ -12,19 +12,15 @@ import org.zoomdev.zoom.web.action.ActionHandler;
 import org.zoomdev.zoom.web.action.impl.GroupActionHandler;
 import org.zoomdev.zoom.web.exception.StatusException;
 import org.zoomdev.zoom.web.router.Router;
-import org.zoomdev.zoom.web.router.RouterNode;
 import org.zoomdev.zoom.web.router.RouterParamRule;
-import org.zoomdev.zoom.web.exception.StatusException;
-import org.zoomdev.zoom.web.router.Router;
-import org.zoomdev.zoom.web.router.RouterNode;
 
 public class SimpleRouter implements Router, Destroyable {
 	
-	private Map<String, ActionHandler> actionMap;
-	private final RouterParamRule rule;
-	private RouterNode node;
+	Map<String, ActionHandler> actionMap;
+	final RouterParamRule rule;
+	RouterNode node;
 	/**
-	 * just keep the instance
+	 * just keep the instance, so that we can visit them in future
 	 */
 	private Map<ActionHandler, Boolean> actionPool;
 	
@@ -45,8 +41,14 @@ public class SimpleRouter implements Router, Destroyable {
 		return actionPool.keySet();
 	}
 
-	public void register( String url, ActionHandler action ) {
+	public RemoveToken register(String url, final ActionHandler action ) {
 		actionPool.put(action, Boolean.TRUE);
+        final RemoveToken removeToken = new RemoveToken() {
+            @Override
+            public void remove() {
+                actionPool.remove(action);
+            }
+        };
 		if(this.rule.match(url)) {
 			if(url.startsWith("/")) {
 				url = url.substring(1);
@@ -55,16 +57,26 @@ public class SimpleRouter implements Router, Destroyable {
 			if(parts.length==0) {
 				parts = new String[] {""};
 			}
-			node.register(parts,getNames(parts),rule,action);
+            return new ActionHandlerUtils.GroupRemove(
+              removeToken,
+              node.register(parts,getNames(parts),rule,action)
+            );
 		}else {
 			if(!url.startsWith("/")) {
 				url = "/" + url;
 			}
 			ActionHandler src = actionMap.get(url);
-			actionMap.put(url, GroupActionHandler.from(src, action));
+            src = GroupActionHandler.from(src, action);
+			actionMap.put(url,src);
+			return new ActionHandlerUtils.GroupRemove(
+			        removeToken,
+                    new ActionHandlerUtils.RemoveRouter(actionMap,url,action)
+            );
 			
 		}
 	}
+
+
 	
 	private String[] getNames(String[] parts) {
 		String[] names = new String[parts.length];

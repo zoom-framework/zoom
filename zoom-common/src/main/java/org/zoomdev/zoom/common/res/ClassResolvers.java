@@ -7,9 +7,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.zoomdev.zoom.common.Destroyable;
 import org.zoomdev.zoom.common.res.ResScanner.ClassRes;
 import org.zoomdev.zoom.common.utils.Visitor;
-import org.zoomdev.zoom.common.utils.Visitor;;
+import org.zoomdev.zoom.common.utils.Visitor;
+import sun.security.krb5.internal.crypto.Des;;
 
 public class ClassResolvers {
 
@@ -25,7 +27,7 @@ public class ClassResolvers {
 	}
 	
 	
-	public void visit( ResScanner scanner ) {
+	public void visit(ResScanner scanner ) {
 		final List<ResScanner.ClassRes> classes = new ArrayList<ResScanner.ClassRes>();
 		scanner.visitClass(new Visitor<ClassRes>() {
 
@@ -39,6 +41,7 @@ public class ClassResolvers {
 			}
 			
 		});
+
 		
 		for (ClassResolver classResolver : resolvers) {
 			for (ResScanner.ClassRes res : classes) {
@@ -60,10 +63,8 @@ public class ClassResolvers {
 					classResolver.clear();
 				}
 			}
-			
-			classResolver.endResolve();
 		}
-		
+
 	}
 
 }

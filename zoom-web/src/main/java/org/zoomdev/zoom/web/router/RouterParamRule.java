@@ -1,5 +1,8 @@
 package org.zoomdev.zoom.web.router;
 
+import org.zoomdev.zoom.web.action.Action;
+import org.zoomdev.zoom.web.action.ActionHandler;
+
 /**
  * 路由参数的匹配规则
  * @author jzoom
@@ -25,5 +28,7 @@ public interface RouterParamRule {
 	 * @return
 	 */
 	boolean match(String url);
+
+
 	
 }
