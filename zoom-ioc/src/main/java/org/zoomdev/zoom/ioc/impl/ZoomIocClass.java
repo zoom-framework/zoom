@@ -3,7 +3,7 @@ package org.zoomdev.zoom.ioc.impl;
 import org.zoomdev.zoom.ioc.*;
 import org.zoomdev.zoom.ioc.*;
 
-public abstract class ZoomIocClass implements IocClass {
+public abstract class ZoomIocClass extends IocBase implements IocClass {
 
 
     protected IocConstructor constructor;
@@ -16,7 +16,8 @@ public abstract class ZoomIocClass implements IocClass {
     IocField[] fields;
 
 
-    public ZoomIocClass(IocClassLoader classLoader, IocConstructor constructor, IocKey key) {
+    public ZoomIocClass(IocContainer ioc,IocClassLoader classLoader, IocConstructor constructor, IocKey key) {
+    	super(ioc);
         this.classLoader = classLoader;
         this.constructor = constructor;
         this.key = key;

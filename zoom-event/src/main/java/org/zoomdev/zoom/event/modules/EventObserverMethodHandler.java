@@ -4,12 +4,10 @@ import org.zoomdev.zoom.event.Event;
 import org.zoomdev.zoom.event.EventListener;
 import org.zoomdev.zoom.event.EventService;
 import org.zoomdev.zoom.event.annotations.EventObserver;
-import org.zoomdev.zoom.ioc.IocContainer;
-import org.zoomdev.zoom.ioc.IocMethodProxy;
+import org.zoomdev.zoom.ioc.IocMethod;
 import org.zoomdev.zoom.ioc.IocObject;
 import org.zoomdev.zoom.ioc.impl.AnnotationMethodHandler;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,21 +23,20 @@ class EventObserverMethodHandler extends AnnotationMethodHandler<EventObserver> 
     }
 
     @Override
-    protected void visit(IocObject target, EventObserver annotation, Method method, IocMethodProxy proxy) {
+    protected void visit(IocObject target, EventObserver annotation, IocMethod method) {
         String name = annotation.value();
-        EventListener listener = new InnerMethodInvoker(target,method);
-        listenerMap.put(name,listener);
+        EventListener listener = new InnerMethodInvoker(target,method.getMethod());
+        listenerMap.put(method.getUid(),listener);
         eventService.addListener(name,listener);
     }
 
-    public String getKey(IocObject target){
-        return target.getIocClass().getKey().toString();
-    }
 
     @Override
-    protected void destroy(IocObject target, EventObserver annotation, Method method) {
+    protected void destroy(IocObject target, EventObserver annotation, IocMethod method) {
         String name = annotation.value();
-        eventService.removeListener(name,new InnerMethodInvoker(target,method));
+        String uid = method.getUid();
+        EventListener listener = listenerMap.get(uid);
+        eventService.removeListener(name,listener);
     }
 
     static class InnerMethodInvoker implements EventListener{

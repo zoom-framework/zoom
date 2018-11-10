@@ -9,14 +9,15 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class GlobalScope implements IocScope,Destroyable {
 
-	private Map<IocKey, IocObject> pool = new ConcurrentHashMap<IocKey, IocObject>();
+	protected Map<IocKey, IocObject> pool = new ConcurrentHashMap<IocKey, IocObject>();
+
+    protected IocEventListener listener;
 
     public GlobalScope(IocContainer ioc, IocEventListener listener) {
         this.ioc = ioc;
         this.listener = listener;
     }
 
-    private IocEventListener listener;
 
     private IocContainer ioc;
 
@@ -36,8 +37,6 @@ public class GlobalScope implements IocScope,Destroyable {
 	public IocObject get(IocKey key) {
 		return pool.get(key);
 	}
-
-
 
 	@Override
 	public void destroy() {

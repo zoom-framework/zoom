@@ -5,8 +5,8 @@ import org.zoomdev.zoom.common.annotations.Inject;
 import org.zoomdev.zoom.common.annotations.IocBean;
 import org.zoomdev.zoom.common.annotations.Module;
 import org.zoomdev.zoom.common.el.ElParser;
+import org.zoomdev.zoom.ioc.IocMethod;
 import org.zoomdev.zoom.ioc.IocMethodHandler;
-import org.zoomdev.zoom.ioc.IocMethodProxy;
 import org.zoomdev.zoom.ioc.IocMethodVisitor;
 import org.zoomdev.zoom.ioc.IocObject;
 import org.zoomdev.zoom.timer.TimerJob;
@@ -57,22 +57,22 @@ public class TimerModule implements Destroyable {
             }
 
             @Override
-            public void create(IocObject target, Method method, IocMethodProxy proxy) {
+            public void create(IocObject target, IocMethod method) {
                 Timer timer = method.getAnnotation(Timer.class);
                 String cron = ElParser.parseConfigValue(getCron(timer));
                 if (StringUtils.isEmpty(cron))
                     return;
-                timerService.startTimer(getKey(target,method), IocTimerJob.class, new TimerData(
+                timerService.startTimer(method.getUid(), IocTimerJob.class, new TimerData(
                         target,
-                        proxy
+                        method
                 ), cron);
 
             }
 
             @Override
-            public void destroy(IocObject target, Method method) {
+            public void destroy(IocObject target, IocMethod method) {
 
-                timerService.stopTimer(getKey(target,method));
+                timerService.stopTimer(method.getUid());
             }
 
             @Override
@@ -84,11 +84,11 @@ public class TimerModule implements Destroyable {
 
 
     class TimerData {
-        IocMethodProxy injector;
+        IocMethod injector;
         IocObject target;
 
 
-        public TimerData(IocObject target, IocMethodProxy injector) {
+        public TimerData(IocObject target, IocMethod injector) {
             this.injector = injector;
             this.target = target;
         }

@@ -11,6 +11,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EventListener;
 import java.util.List;
 
 public class SimpleIocContainer implements IocContainer, IocEventListener {
@@ -25,14 +26,15 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
 
 	public SimpleIocContainer() {
         globalScope = new GlobalScope(this, this);
-		this.iocClassLoader = new ZoomIocClassLoader();
+		this.iocClassLoader = new ZoomIocClassLoader(this);
 		this.iocClassLoader.setClassEnhancer(new NoneEnhancer());
 	}
 
-	public SimpleIocContainer(IocScope parentScope,IocClassLoader parentClassLoader) {
+	public SimpleIocContainer(IocScope parentScope, IocClassLoader parentClassLoader, List<IocEventListener> eventListeners) {
 		globalScope = new GroupScope(this, this,parentScope);
-		this.iocClassLoader =new GroupClassLoader(parentClassLoader);
+		this.iocClassLoader =new GroupClassLoader(this,parentClassLoader);
 		this.iocClassLoader.setClassEnhancer(new NoneEnhancer());
+		this.eventListeners.addAll(eventListeners);
 	}
 
 
@@ -41,10 +43,16 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
 
 		this.iocClassLoader.destroy();
 		globalScope.destroy();
+		this.eventListeners.clear();
 
 	}
 
-	@Override
+    @Override
+    public List<IocEventListener> getEventListeners() {
+        return eventListeners;
+    }
+
+    @Override
 	public IocObject get(IocKey key) {
 		return get(globalScope, key);
 	}
@@ -89,7 +97,7 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
 				IocMethod[] methods = iocClass.getIocMethods();
 				if(methods!=null) {
 					for (IocMethod method : methods) {
-                        invokeMethod(obj, method);
+                        method.invoke(obj);
                     }
                 }
             }
@@ -101,15 +109,6 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
     }
 
 
-    public Object invokeMethod(IocObject obj, IocMethod method) {
-		IocKey[] keys = method.getParameterKeys();
-        IocObject[] values = new IocObject[keys.length];
-        for (int i = 0, c = keys.length; i < c; ++i) {
-            values[i] = get(keys[i]);
-        }
-
-        return method.invoke(obj, values);
-    }
 
 	static final Object[] EMPTY = new Object[0];
 	static final IocKey[] EMPTY_KEYS =  new IocKey[0];
@@ -189,27 +188,22 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
 
     private IocInjectorFactory iocInjectorFactory;
 
-    private IocMethodProxy createMethodProxy(final IocMethod iocMethod) {
-        return new IocMethodProxy() {
-            @Override
-            public Object invoke(IocObject object) {
-                return invokeMethod(object, iocMethod);
-            }
-        };
-    }
 
-    public IocMethodProxy getMethodProxy(IocClass iocClass, Method target) {
+
+    @Override
+    public IocMethod getMethod(IocClass iocClass, Method target) {
 		if (iocClass.getIocMethods() != null) {
 			for (IocMethod method : iocClass.getIocMethods()) {
 				if (method.getMethod() == target) {
-					return createMethodProxy(method);
+					return method;
 				}
 			}
 		}
 
-        return createMethodProxy(createIocMethod(
-                iocClass.getIocClassLoader(),
-                iocClass.getKey().getType(), target));
+        return createIocMethod(
+                this,
+                iocClass,
+                iocClass.getKey().getType(), target);
     }
 
 	@Override
@@ -260,7 +254,7 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
 	 * @param type
 	 * @return
 	 */
-	public static IocMethod[] parseMethods(Class<?> type,IocClassLoader classLoader) {
+	public static IocMethod[] parseMethods(IocContainer ioc,IocClass iocClass,Class<?> type,IocClassLoader classLoader) {
 		Method[] methods = CachedClasses.getPublicMethods(type);
 		if(methods==null || methods.length==0)return null;
 		List<IocMethod> iocMethods = new ArrayList<IocMethod>();
@@ -268,7 +262,7 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
 			Inject inject = method.getAnnotation(Inject.class);
 			if (inject != null) {
 				try{
-                    iocMethods.add(createIocMethod(classLoader, type, method));
+                    iocMethods.add(createIocMethod(ioc, iocClass , type, method));
 				}catch (Throwable t){
 					throw new IocException("注入方法失败"+method,t);
 				}
@@ -280,13 +274,17 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
 		return iocMethods.toArray(new IocMethod[iocMethods.size()]);
 	}
 
-    public static IocMethod createIocMethod(IocClassLoader classLoader, Class<?> type, Method method) {
+    public static IocMethod createIocMethod(
+            IocContainer ioc,
+            IocClass iocClass,
+            Class<?> type,
+            Method method) {
         try {
             IocKey[] keys = parseParameterKeys(
                     type.getClassLoader(),
                     method.getParameterAnnotations(),
-                    method.getParameterTypes(), classLoader);
-            return new ZoomIocMethod(keys, method);
+                    method.getParameterTypes(), iocClass.getIocClassLoader());
+            return new ZoomIocMethod(ioc,iocClass,keys, method);
         } catch (Throwable t) {
             throw new IocException("注入方法失败" + method, t);
         }
@@ -322,5 +320,12 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
             listener.onObjectCreated(scope, object);
         }
 
+    }
+
+    @Override
+    public void onObjectDestroy(IocScope scope, IocObject object) {
+        for (IocEventListener listener : eventListeners) {
+            listener.onObjectDestroy(scope, object);
+        }
     }
 }

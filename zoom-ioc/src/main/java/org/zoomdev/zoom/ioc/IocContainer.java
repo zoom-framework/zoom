@@ -3,8 +3,11 @@ package org.zoomdev.zoom.ioc;
 import org.zoomdev.zoom.common.Destroyable;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 public interface IocContainer extends Destroyable {
+
+    List<IocEventListener> getEventListeners();
 
     /**
      * ioc对象的范围
@@ -56,19 +59,14 @@ public interface IocContainer extends Destroyable {
     void addEventListener(IocEventListener listener);
 
 
-    /**
-     * @param obj
-     * @param iocMethod
-     * @return
-     */
-    Object invokeMethod(IocObject obj, IocMethod iocMethod);
+
 
     /**
      * @param iocClass
      * @param target
      * @return
      */
-    IocMethodProxy getMethodProxy(IocClass iocClass, Method target);
+    IocMethod getMethod(IocClass iocClass, Method target);
 
 
     /**

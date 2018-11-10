@@ -9,13 +9,14 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ZoomIocClassLoader implements IocClassLoader,Destroyable {
+public class ZoomIocClassLoader extends IocBase implements IocClassLoader,Destroyable {
 
     private Map<IocKey, IocClass> pool = new ConcurrentHashMap<IocKey, IocClass>();
 
 	private ClassEnhancer classEnhancer;
 
-	public ZoomIocClassLoader(){
+	public ZoomIocClassLoader(IocContainer ioc){
+        super(ioc);
 
     }
 
@@ -38,7 +39,9 @@ public class ZoomIocClassLoader implements IocClassLoader,Destroyable {
                 }
                 ZoomIocConstructor constructor = ZoomIocConstructor
                         .createFromClass(type, key, ZoomIocClassLoader.this, classEnhancer);
-                IocClass iocClass = new ZoomBeanIocClass(ZoomIocClassLoader.this,
+                IocClass iocClass = new ZoomBeanIocClass(
+                        ioc,
+                        ZoomIocClassLoader.this,
                         constructor,
                         constructor.getKey());
                 constructor.setIocClass(iocClass);
@@ -60,6 +63,7 @@ public class ZoomIocClassLoader implements IocClassLoader,Destroyable {
             public IocClass create() {
                 ZoomIocConstructor constructor = ZoomIocConstructor.createFromInstance(baseType, instance, initialized);
                 IocClass iocClass = new ZoomBeanIocClass(
+                        ioc,
                         ZoomIocClassLoader.this,
                         constructor,
                         constructor.getKey());
@@ -77,7 +81,7 @@ public class ZoomIocClassLoader implements IocClassLoader,Destroyable {
     @Override
     public IocClass append(Object moduleInstance, Method method) {
         ZoomIocConstructor constructor = ZoomIocConstructor.createFromIocBean(moduleInstance, method, this);
-		ZoomBeanIocClass iocClass = new ZoomBeanIocClass(this, constructor, constructor.getKey());
+		ZoomBeanIocClass iocClass = new ZoomBeanIocClass( ioc,this, constructor, constructor.getKey());
         constructor.setIocClass(iocClass);
 		pool.put(constructor.getKey(), iocClass);
 

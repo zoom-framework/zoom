@@ -30,7 +30,22 @@ public class IocMethodVisitorImpl implements IocEventListener,IocMethodVisitor {
         for(Method method : methods){
             for(IocMethodHandler handler : handlers){
                 if(handler.accept(method)){
-                    handler.create(object, method, ioc.getMethodProxy(object.getIocClass(), method));
+                    handler.create(object, ioc.getMethod(object.getIocClass(), method));
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onObjectDestroy(IocScope scope, IocObject object) {
+        Object data = object.get();
+        assert(data!=null);
+        IocContainer ioc = scope.getIoc();
+        Method[] methods = CachedClasses.getPublicMethods(data.getClass());
+        for(Method method : methods){
+            for(IocMethodHandler handler : handlers){
+                if(handler.accept(method)){
+                    handler.destroy(object, ioc.getMethod(object.getIocClass(), method));
                 }
             }
         }

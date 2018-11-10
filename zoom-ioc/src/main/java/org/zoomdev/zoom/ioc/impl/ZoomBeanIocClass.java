@@ -13,19 +13,20 @@ public class ZoomBeanIocClass extends ZoomIocClass {
     private IocContainer iocContainer;
 
     public ZoomBeanIocClass(
+            IocContainer ioc,
             IocClassLoader classLoader,
             IocConstructor constructor,
             IocKey key) {
-        super(classLoader,constructor,key);
+        super(ioc,classLoader,constructor,key);
     }
 
     private boolean injectorCreated = false;
 
 
 
-    private void createInjector(IocScope scope, Object instance){
+    private void createInjector(IocContainer ioc,IocScope scope, Object instance){
         injectorCreated = true;
-        methods = SimpleIocContainer.parseMethods(instance.getClass(),classLoader);
+        methods = SimpleIocContainer.parseMethods(ioc,this,instance.getClass(),classLoader);
         fields = SimpleIocContainer.parseFields(instance.getClass(),classLoader);
 
         if(fields!=null) {
@@ -70,7 +71,7 @@ public class ZoomBeanIocClass extends ZoomIocClass {
         Object instance = obj.get();
 
         if(!injectorCreated){
-            createInjector(scope,instance);
+            createInjector(ioc,scope,instance);
         }
 
 

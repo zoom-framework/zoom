@@ -1,25 +1,57 @@
 package org.zoomdev.zoom.ioc.impl;
 
-import org.zoomdev.zoom.ioc.IocException;
-import org.zoomdev.zoom.ioc.IocKey;
-import org.zoomdev.zoom.ioc.IocMethod;
-import org.zoomdev.zoom.ioc.IocObject;
+import org.zoomdev.zoom.ioc.*;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
-public class ZoomIocMethod implements IocMethod {
+public class ZoomIocMethod extends IocBase implements IocMethod {
 	
 	
 	private IocKey[] parameterKeys;
 
-	private Method method;
+	private final Method method;
+
+	// 唯一id，在ioc容器中的
+	private String uid;
 
 
-    public ZoomIocMethod(IocKey[] parameterKeys, Method method) {
-		assert(parameterKeys!=null && method!=null);
+	private IocClass iocClass;
+
+
+    public ZoomIocMethod(IocContainer ioc,IocClass iocClass,IocKey[] parameterKeys, Method method) {
+        super(ioc);
+        assert(parameterKeys!=null && method!=null && iocClass!=null);
 		this.parameterKeys = parameterKeys;
+		this.iocClass = iocClass;
 		this.method = method;
 	}
+
+
+	private String getKey(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(iocClass.getKey().toString())
+                .append(method.getName());
+
+        for(IocKey key : parameterKeys){
+            sb.append(key.toString());
+        }
+
+        return sb.toString();
+
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public String getUid() {
+
+        return uid == null ? (
+                uid =getKey()
+                )  :uid;
+    }
 
 	@Override
 	public IocKey[] getParameterKeys() {
@@ -28,17 +60,35 @@ public class ZoomIocMethod implements IocMethod {
 
 
     @Override
-    public Object invoke(IocObject obj, IocObject[] values) {
+    public Object invoke(IocObject obj) {
 		try {
+            IocObject[] values = new IocObject[parameterKeys.length];
+            for (int i = 0, c = parameterKeys.length; i < c; ++i) {
+                values[i] = ioc.get(parameterKeys[i]);
+            }
+
             return method.invoke(obj.get(), SimpleIocContainer.getValues(values));
 		} catch (Exception e) {
 			throw new IocException("调用ioc注入函数失败"+method,e);
         }
     }
 
+
 	@Override
 	public Method getMethod() {
 		return method;
 	}
+
+    @Override
+    public <T extends Annotation> boolean isAnnotationPresent(Class<T> annotationClass) {
+        return method.isAnnotationPresent(annotationClass);
+    }
+
+    @Override
+    public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
+        return method.getAnnotation(annotationClass);
+    }
+
+
 
 }

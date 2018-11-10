@@ -7,4 +7,6 @@ public interface IocEventListener {
      * @param object
      */
     void onObjectCreated(IocScope scope,IocObject object);
+
+    void onObjectDestroy(IocScope scope,IocObject object);
 }

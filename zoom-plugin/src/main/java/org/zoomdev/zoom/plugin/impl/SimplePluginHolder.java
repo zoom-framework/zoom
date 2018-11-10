@@ -82,7 +82,8 @@ public class SimplePluginHolder implements PluginHolder {
 		}
 		assert(plugin!=null);
 		try{
-            ioc = new SimpleIocContainer(host.getIoc().getScope(),host.getIoc().getIocClassLoader());
+		    IocContainer mainIoc = host.getIoc();
+            ioc = new SimpleIocContainer(mainIoc.getScope(),mainIoc.getIocClassLoader(),mainIoc.getEventListeners());
             tokens = new ArrayList<Router.RemoveToken>();
             ClassResolvers classResolvers = new ClassResolvers(
                     new SimpleConfigBuilder(ioc),
