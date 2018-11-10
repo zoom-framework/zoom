@@ -241,15 +241,13 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
 
     @Override
     public Ar table(String table) {
-        //return ar().table(table);
-        return null;
+        return ar().table(table);
     }
 
     @Override
     public Ar tables(String[] tables) {
         assert (tables != null);
-        //	return ar().tables(tables);
-        return null;
+        return ar().tables(tables);
     }
 
 
