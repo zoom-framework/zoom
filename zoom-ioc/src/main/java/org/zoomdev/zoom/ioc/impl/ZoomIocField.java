@@ -35,11 +35,6 @@ public abstract class ZoomIocField implements IocField {
     }
 
     @Override
-    public String toString() {
-        return field.toString();
-    }
-
-    @Override
     public IocValue getValue() {
         return value;
     }
