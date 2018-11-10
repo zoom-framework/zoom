@@ -27,41 +27,41 @@ public class ZoomBeanIocClass extends ZoomIocClass {
     private void createInjector(IocContainer ioc,IocScope scope, Object instance){
         injectorCreated = true;
         methods = SimpleIocContainer.parseMethods(ioc,this,instance.getClass(),classLoader);
-        fields = SimpleIocContainer.parseFields(instance.getClass(),classLoader);
+        fields = SimpleIocContainer.parseFields(ioc,instance.getClass(),classLoader);
 
-        if(fields!=null) {
-            for (IocField field : fields) {
-                try{
-                    IocClass iocClass = classLoader.get(field.getKey());
-                    if(iocClass!=null){
-                        iocClass.newInstance(scope);
-                    }else if( field.getValue() == IocValues.VALUE ){
-                        throw new IocException("初始化ioc field失败"+field.getField()+" 未取到能设置的IocClass");
-                    }
-
-                }catch (Throwable e){
-                    throw new IocException("初始化ioc field失败"+field.getField(),e);
-                }
-
-            }
-        }
-
-        if(methods!=null) {
-            for (IocMethod method : methods) {
-                for (IocKey key : method.getParameterKeys()) {
-                    try{
-                        IocClass iocClass = classLoader.get(key);
-                        if(iocClass==null){
-                            throw new IocException("初始化ioc method失败,获取key失败"+key);
-                        }
-                        iocClass.newInstance(scope);
-                    }catch (Throwable e){
-                        throw new IocException("初始化ioc method失败"+method.getMethod(),e);
-                    }
-
-                }
-            }
-        }
+//        if(fields!=null) {
+//            for (IocField field : fields) {
+//                try{
+//                    IocClass iocClass = classLoader.get(field.getKey());
+//                    if(iocClass!=null){
+//                        iocClass.newInstance(scope);
+//                    }else if( field.getValue() == IocValues.VALUE ){
+//                        throw new IocException("初始化ioc field失败"+field.getField()+" 未取到能设置的IocClass");
+//                    }
+//
+//                }catch (Throwable e){
+//                    throw new IocException("初始化ioc field失败"+field.getField(),e);
+//                }
+//
+//            }
+//        }
+//
+//        if(methods!=null) {
+//            for (IocMethod method : methods) {
+//                for (IocKey key : method.getParameterKeys()) {
+//                    try{
+//                        IocClass iocClass = classLoader.get(key);
+//                        if(iocClass==null){
+//                            throw new IocException("初始化ioc method失败,获取key失败"+key);
+//                        }
+//                        iocClass.newInstance(scope);
+//                    }catch (Throwable e){
+//                        throw new IocException("初始化ioc method失败"+method.getMethod(),e);
+//                    }
+//
+//                }
+//            }
+//        }
     }
 
 

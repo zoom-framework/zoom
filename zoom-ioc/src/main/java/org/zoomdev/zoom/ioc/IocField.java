@@ -4,11 +4,11 @@ import java.lang.reflect.Field;
 
 public interface IocField extends IocInjector {
 
-	IocKey getKey();
-
-	void set(IocObject obj, IocObject value);
-
-	IocValue getValue();
+	/**
+	 * inject的别名
+	 * @param obj
+	 */
+	void set(IocObject obj);
 
     Field getField();
 }

@@ -5,26 +5,25 @@ import org.zoomdev.zoom.ioc.*;
 
 import java.lang.reflect.Field;
 
-public class ZoomBeanIocField extends ZoomIocField {
+public class ZoomBeanIocField extends  ZoomIocField implements IocField{
+    protected IocKey key;
 
-    private IocContainer iocContainer;
+    public ZoomBeanIocField(IocContainer ioc,Field field,IocKey key) {
+        super(ioc,field);
+        this.key = key;
+    }
 
-	public ZoomBeanIocField(IocKey key, Field field, IocValue value) {
-		super(key, field,value);
-	}
 
-	@Override
-	public void set(IocObject obj, IocObject value) {
+    @Override
+	public void set(IocObject obj) {
 		try {
-			field.set(obj.get(), value.get());
+			field.set(obj.get(), ioc.get(key).get());
 		} catch (Exception e) {
 			throw new IocException("设置字段值失败",e);
         }
 	}
 
 
-    @Override
-    public void inject(IocObject target) {
 
-    }
+
 }

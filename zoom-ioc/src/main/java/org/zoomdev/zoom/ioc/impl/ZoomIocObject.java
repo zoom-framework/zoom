@@ -13,7 +13,7 @@ public class ZoomIocObject implements IocObject,Destroyable {
 
 	private static final Log log = LogFactory.getLog(ZoomIocObject.class);
 	
-	private boolean inited;
+	boolean inited;
 	
 	private Object obj;
 	
@@ -46,10 +46,7 @@ public class ZoomIocObject implements IocObject,Destroyable {
     public static IocObject wrap(IocClass iocClass, Object obj, boolean inited) {
         return new ZoomIocObject(iocClass, obj, inited);
 	}
-	@Override
-    public boolean isInitialized() {
-		return inited;
-	}
+
 
 	@Override
 	public void destroy() {
@@ -74,7 +71,6 @@ public class ZoomIocObject implements IocObject,Destroyable {
 
 	@Override
     public void initialize() {
-		inited = true;
 		if(init != null){
 		    init.call(obj);
         }else{

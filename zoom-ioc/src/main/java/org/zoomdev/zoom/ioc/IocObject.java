@@ -7,12 +7,7 @@ package org.zoomdev.zoom.ioc;
  */
 public interface IocObject {
 
-    /**
-     * 是否已经初始化
-     *
-     * @return
-     */
-    boolean isInitialized();
+
 
     /**
      * 进行初始化

@@ -64,7 +64,7 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
 
 	public synchronized IocObject get(IocScope scope, IocKey key) {
 		try{
-			IocObject obj = scope.get(key);
+			ZoomIocObject obj = (ZoomIocObject)scope.get(key);
 			IocClass iocClass = null;
 			if (obj == null) {
 				iocClass = this.iocClassLoader.get(key);
@@ -75,14 +75,15 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
 						throw new IocException("找不到IocClass key:" + key + " 请提供ioc的配置");
 					}
 				}
-				obj = iocClass.newInstance(scope);
+				obj =  (ZoomIocObject)iocClass.newInstance(scope);
 				if (obj == null) {
 					throw new IocException("创建对象失败");
 				}
 			}
 
-			if (!obj.isInitialized()) {
-				obj.initialize();
+			if (!obj.inited) {
+				obj.inited = true;
+
 
 				if (iocClass == null)
 					iocClass = this.iocClassLoader.get(key);
@@ -90,7 +91,7 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
 				IocField[] fields = iocClass.getIocFields();
 				if(fields!=null) {
 					for (IocField field : fields) {
-						field.set(obj, field.getValue().getValue(this,field.getKey()));
+						field.set(obj);
 					}
 				}
 
@@ -100,6 +101,9 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
                         method.invoke(obj);
                     }
                 }
+
+                obj.initialize();
+
             }
 
             return obj;
@@ -163,7 +167,7 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
 	 * @param type
 	 * @return
 	 */
-	public static IocField[] parseFields(Class<?> type,IocClassLoader classLoader) {
+	public static IocField[] parseFields(IocContainer ioc,Class<?> type,IocClassLoader classLoader) {
 		Field[] fields = CachedClasses.getFields(type);
 		if(fields==null || fields.length == 0) {
 			return null;
@@ -173,7 +177,7 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
 			Inject inject = field.getAnnotation(Inject.class);
 			if (inject != null) {
 				try{
-					IocField iocField = createIocField(inject,field,classLoader);
+					IocField iocField = createIocField(ioc,inject,field,classLoader);
 					iocFields.add(iocField);
 				}catch (Throwable t){
 					throw new IocException("注入字段失败"+field,t);
@@ -186,7 +190,6 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
 	}
 
 
-    private IocInjectorFactory iocInjectorFactory;
 
 
 
@@ -223,7 +226,7 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
 	 * @param classLoader
 	 * @return
 	 */
-	private static IocField createIocField(Inject inject, Field field,IocClassLoader classLoader){
+	private static IocField createIocField(IocContainer ioc,Inject inject, Field field,IocClassLoader classLoader){
 //		IocField result;
 //		if( iocInjectorFactory != null && ((result = iocInjectorFactory.createIocField(inject,key,field)) != null) ){
 //			return result;
@@ -234,7 +237,7 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
 			//配置
 			String name = inject.config();
 			IocKey key = new ZoomIocKey(name, fieldType);
-			return new ZoomBeanIocField(key,field,IocValues.createConfig(field,key));
+			return new ZoomConfigIocField(ioc,field,name);
 		}else{
 			String name = inject.value();
 			IocKey key = new ZoomIocKey(name, fieldType);
@@ -242,7 +245,7 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
 				classLoader.append(key.getType());
 
 			}
-			return new ZoomBeanIocField(key,field,IocValues.VALUE);
+			return new ZoomBeanIocField(ioc,field,key);
 		}
 
 
@@ -305,13 +308,6 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
     }
 
 
-    public IocInjectorFactory getIocInjectorFactory() {
-		return iocInjectorFactory;
-	}
-
-	public void setIocInjectorFactory(IocInjectorFactory iocInjectorFactory) {
-		this.iocInjectorFactory = iocInjectorFactory;
-	}
 
     @Override
     public void onObjectCreated(IocScope scope, IocObject object) {

@@ -2,13 +2,10 @@ package org.zoomdev.zoom.ioc.impl;
 
 import org.zoomdev.zoom.ioc.*;
 import org.zoomdev.zoom.ioc.IocField;
-import org.zoomdev.zoom.ioc.IocKey;
-import org.zoomdev.zoom.ioc.IocValue;
 
 import java.lang.reflect.Field;
 
-public abstract class ZoomIocField implements IocField {
-    protected IocKey key;
+public abstract class ZoomIocField extends IocBase implements IocField {
 
     @Override
     public Field getField() {
@@ -20,24 +17,18 @@ public abstract class ZoomIocField implements IocField {
     }
 
     protected Field field;
-    protected IocValue value;
 
-    public ZoomIocField(IocKey key, Field field,IocValue value) {
+
+
+    public ZoomIocField(IocContainer ioc,Field field){
+        super(ioc);
         field.setAccessible(true);
-        this.key = key;
         this.field = field;
-        this.value = value;
     }
+
 
     @Override
-    public IocKey getKey() {
-        return key;
+    public void inject(IocObject target) {
+        set(target);
     }
-
-    @Override
-    public IocValue getValue() {
-        return value;
-    }
-
-
 }
