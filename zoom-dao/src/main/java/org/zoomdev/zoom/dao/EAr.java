@@ -29,13 +29,13 @@ public interface EAr<T> extends Sql<EAr<T>> {
     List<T> find();
 
 
-    List<T> limit(int position,int pageSize);
+    List<T> limit(int position,int size);
 
 
-    Page<T> position(int position,int pageSize);
+    Page<T> position(int position,int size);
 
 
-    Page<T> page(int page,int pageSize);
+    Page<T> page(int page,int size);
 
 
     /**

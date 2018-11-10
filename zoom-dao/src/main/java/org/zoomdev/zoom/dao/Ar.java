@@ -29,13 +29,13 @@ public interface Ar extends Trans,ConnectionHolder,Sql<Ar>  {
 	List<Record> find();
 
 
-	List<Record> limit(int position,int pageSize);
+	List<Record> limit(int position,int size);
 
 
-	Page<Record> position(int position,int pageSize);
+	Page<Record> position(int position,int size);
 
 
-	Page<Record> page(int page,int pageSize);
+	Page<Record> page(int page,int size);
 
 	/**
 	 * @param sql

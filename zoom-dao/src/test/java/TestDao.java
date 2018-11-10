@@ -65,7 +65,11 @@ public class TestDao extends TestCase {
         dao.ar(Product.class).where("id",2)
                 .orderBy("id",SqlBuilder.Sort.DESC)
                 .filter("id|name").get();
+        Page<Product> page = dao.ar(Product.class).where("id",2)
+                .orderBy("id",SqlBuilder.Sort.DESC)
+                .filter("id|name").page(1,30);
 
+        System.out.println(page);
 
 //        TableMeta tableMeta = dao.getDbStructFactory().getTableMeta(dao.ar(), "(select * from r_book) a");
 //        System.out.println(tableMeta);

@@ -5,7 +5,7 @@ import java.util.List;
 public class Page<T> {
 
 	private List<T> list;
-	private int pageSize;
+	private int size;
 	private int page;
 	private int total;
 	
@@ -13,11 +13,11 @@ public class Page<T> {
 	
 	}
 	
-	public Page( List<T> list,int page,int pageSize,int total ) {
+	public Page(List<T> list, int page, int size, int total ) {
 		this();
 		this.list = list;
 		this.page = page;
-		this.pageSize = pageSize;
+		this.size = size;
 		this.total = total;
 	}
 	
@@ -27,11 +27,11 @@ public class Page<T> {
 	public void setList(List<T> list) {
 		this.list = list;
 	}
-	public int getPageSize() {
-		return pageSize;
+	public int getSize() {
+		return size;
 	}
-	public void setPageSize(int pageSize) {
-		this.pageSize = pageSize;
+	public void setSize(int size) {
+		this.size = size;
 	}
 	public int getPage() {
 		return page;
@@ -48,7 +48,7 @@ public class Page<T> {
 	
 	@Override
 	public String toString() {
-		return String.format("Page(page:%d,total:%d,size:%d,list:%d)", page,total,pageSize,list.size());	
+		return String.format("Page(page:%d,total:%d,size:%d,list:%d)", page,total, size,list.size());
 	}
 	
 	

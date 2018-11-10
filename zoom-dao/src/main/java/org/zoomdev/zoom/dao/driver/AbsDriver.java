@@ -44,8 +44,8 @@ public abstract class AbsDriver implements SqlDriver {
 	}
 
 	@Override
-	public int position2page(int position, int pageSize) {
-		return position / pageSize + 1;
+	public int position2page(int position, int size) {
+		return position / size + 1;
 
 	}
 

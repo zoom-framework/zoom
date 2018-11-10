@@ -131,27 +131,29 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
 	}
 
 	@Override
-	public List<Record> limit(int position, int pageSize) {
-		builder.buildLimit(position, pageSize);
+	public List<Record> limit(int position, int size) {
+		builder.buildLimit(position, size);
 		return query(builder.sql.toString(), builder.values,new ArrayList<StatementAdapter>(), true);
 	}
 
 	@Override
-	public Page<Record> page(int page, int pageSize) {
+	public Page<Record> page(int page, int size) {
 		if (page <= 0)
 			page = 1;
-		return position((page - 1) * pageSize, pageSize);
+		return position((page - 1) * size, size);
 	}
 
 	@Override
-	public Page<Record> position(int position, int pageSize) {
-		builder.buildLimit(position, pageSize);
+	public Page<Record> position(int position, int size) {
+		builder.buildLimit(position, size);
 
 		try {
-			List<Record> list = query(builder.sql.toString(), builder.values,new ArrayList<StatementAdapter>(), false);
+			List<Record> list =
+                    query(builder.sql.toString(),
+                            builder.values,new ArrayList<StatementAdapter>(), false);
 			int total = getCount();
-			int page = builder.getPageFromPosition(position, pageSize);
-			return new Page<Record>(list, page, pageSize, total);
+			int page = builder.getPageFromPosition(position, size);
+			return new Page<Record>(list, page, size, total);
 		} finally {
 			builder.clear(true);
 		}

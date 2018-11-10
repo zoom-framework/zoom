@@ -1,8 +1,5 @@
 package org.zoomdev.zoom.dao.impl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,13 +9,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.common.designpattern.SingletonUtils;
 import org.zoomdev.zoom.common.expression.Symbol;
 import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.common.filter.pattern.PatternFilterFactory;
 import org.zoomdev.zoom.dao.*;
 import org.zoomdev.zoom.dao.adapters.EntityField;
-import org.zoomdev.zoom.dao.utils.DaoUtils;
 
 /**
  * 将来与ActiveRecord合并
@@ -58,7 +55,7 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
                 new SingletonUtils.SingletonInit<Filter<EntityField>>() {
                     @Override
                     public Filter<EntityField> create() {
-                        return new SqlUtils.PatterFilter(PatternFilterFactory.createFilter(filter));
+                        return new EntitySqlUtils.PatterFilter(PatternFilterFactory.createFilter(filter));
                     }
                 });
     }
@@ -87,31 +84,31 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
     @Override
     public List<T> find() {
         builder.table(entity.getTable());
-        SqlUtils.buildSelect(builder,entity,filter,entityFields);
+        EntitySqlUtils.buildSelect(builder,entity,filter,entityFields);
         builder.buildSelect();
-        return SqlUtils.executeQuery(this,builder,entityFields,entity,true);
+        return EntitySqlUtils.executeQuery(this,builder,entityFields,entity,true);
     }
 
 
 
     @Override
-    public List<T> limit(int position, int pageSize) {
+    public List<T> limit(int position, int size) {
         builder.table(entity.getTable());
-        SqlUtils.buildSelect(builder,entity,filter,entityFields);
-        builder.buildLimit(position, pageSize);
-        return SqlUtils.executeQuery(this,builder,entityFields,entity,true);
+        EntitySqlUtils.buildSelect(builder,entity,filter,entityFields);
+        builder.buildLimit(position, size);
+        return EntitySqlUtils.executeQuery(this,builder,entityFields,entity,true);
     }
 
     @Override
-    public Page<T> position(int position, int pageSize) {
+    public Page<T> position(int position, int size) {
         builder.table(entity.getTable());
-        SqlUtils.buildSelect(builder,entity,filter,entityFields);
-        builder.buildLimit(position, pageSize);
+        EntitySqlUtils.buildSelect(builder,entity,filter,entityFields);
+        builder.buildLimit(position, size);
         try {
-            List<T> list = SqlUtils.executeQuery(this,builder,entityFields,entity,false);
+            List<T> list = EntitySqlUtils.executeQuery(this,builder,entityFields,entity,false);
             int total = getCount();
-            int page = builder.getPageFromPosition(position, pageSize);
-            return new Page<T>(list, page, pageSize, total);
+            int page = builder.getPageFromPosition(position, size);
+            return new Page<T>(list, page, size, total);
         } finally {
             releaseConnection();
             builder.clear(true);
@@ -119,17 +116,17 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
     }
 
     @Override
-    public Page<T> page(int page, int pageSize) {
+    public Page<T> page(int page, int size) {
         if (page <= 0) page = 1;
-        return position((page - 1) * pageSize, pageSize);
+        return position((page - 1) * size, size);
     }
 
 
     @Override
     public int update(T data) {
-        SqlUtils.entityConditon(builder, entity, data);
+        EntitySqlUtils.entityConditon(builder, entity, data);
 
-        SqlUtils.buildUpdate(
+        EntitySqlUtils.buildUpdate(
                 builder,
                 dao.getDriver(),
                 entity,
@@ -137,7 +134,7 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
                 filter,
                 ignoreNull);
 
-        return SqlUtils.executeUpdate(
+        return EntitySqlUtils.executeUpdate(
                 this,
                 builder
         );
@@ -176,9 +173,9 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
 
     T getOne(){
         builder.table(entity.getTable());
-        SqlUtils.buildSelect(builder,entity,filter,entityFields);
+        EntitySqlUtils.buildSelect(builder,entity,filter,entityFields);
         builder.buildSelect();
-        return SqlUtils.executeGet(this,builder,entity,entityFields);
+        return EntitySqlUtils.executeGet(this,builder,entity,entityFields);
     }
 
     @Override
@@ -192,14 +189,14 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
 
     @Override
     public int insert(T data) {
-        SqlUtils.buildInsert(
+        EntitySqlUtils.buildInsert(
                 builder,
                 dao.getDriver(),
                 entity,
                 data,
                 filter,
                 ignoreNull);
-        return SqlUtils.executeInsert(
+        return EntitySqlUtils.executeInsert(
                 this,
                 entity,
                 data,
@@ -249,9 +246,9 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
 
     @Override
     public int delete(T data) {
-        SqlUtils.entityConditon(builder, entity, data);
+        EntitySqlUtils.entityConditon(builder, entity, data);
         builder.buildDelete();
-        return SqlUtils.executeUpdate(this, builder);
+        return EntitySqlUtils.executeUpdate(this, builder);
     }
 
     @Override
@@ -276,13 +273,8 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
 
     public int getCount() {
         builder.selectRaw("COUNT(*) AS COUNT_");
-
-//        Record record = get();
-//        if (record == null) {
-//            return Caster.to(null, int.class);
-//        }
-//        return record.get("count(*)", int.class);
-        return 0;
+        builder.buildSelect();
+        return Caster.to(EntitySqlUtils.executeGetValue(this,builder),int.class);
     }
 
     @Override

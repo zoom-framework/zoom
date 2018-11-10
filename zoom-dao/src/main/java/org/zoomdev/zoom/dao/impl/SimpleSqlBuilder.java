@@ -254,13 +254,13 @@ public class SimpleSqlBuilder implements SqlBuilder {
 	}
 
 
-	public void buildLimit(int position, int pageSize) {
+	public void buildLimit(int position, int size) {
 		buildSelect();
-		driver.buildPage(sql, position, pageSize);
+		driver.buildPage(sql, position, size);
 	}
 	
-	public int getPageFromPosition(int position,int pageSize) {
-		return driver.position2page(position,pageSize);
+	public int getPageFromPosition(int position,int size) {
+		return driver.position2page(position,size);
 	}
 	
 	

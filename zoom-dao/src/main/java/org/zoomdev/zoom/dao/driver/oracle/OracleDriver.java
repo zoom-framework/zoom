@@ -11,25 +11,25 @@ import org.zoomdev.zoom.dao.driver.AbsDriver;
 public class OracleDriver extends AbsDriver {
 
 	@Override
-	public StringBuilder buildPage(StringBuilder sql, int position, int pageSize) {
+	public StringBuilder buildPage(StringBuilder sql, int position, int size) {
 		return sql.insert(0, "SELECT * FROM(SELECT A.*, rownum r FROM (").append(") A WHERE rownum <= ")
-		.append(position + pageSize).append(" ) B WHERE r > ").append(position);
+		.append(position + size).append(" ) B WHERE r > ").append(position);
 	}
 
 	@Override
-	public int position2page(int position, int pageSize) {
+	public int position2page(int position, int size) {
 		++position;
-		if (position % pageSize == 0) {
-			return position / pageSize;
+		if (position % size == 0) {
+			return position / size;
 		}
-		return position / pageSize + 1;
+		return position / size + 1;
 	}
 	
 	/**
 	 * 系统的position从0开始,page从1开始
 	 */
 	@Override
-	public int page2position(int page, int pageSize) {
+	public int page2position(int page, int size) {
 	
 		return 0;
 	}

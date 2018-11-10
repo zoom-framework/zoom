@@ -11,7 +11,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SqlUtils {
+public class EntitySqlUtils {
     static class PatterFilter implements Filter<EntityField> {
 
         private Filter<String> pattern;
@@ -250,8 +250,6 @@ public class SqlUtils {
     }
 
 
-
-
     public static <T> List<T> buildList(
             ResultSet rs,
             Entity entity,
@@ -260,7 +258,7 @@ public class SqlUtils {
 
         List<T> list = new ArrayList<T>();
         while (rs.next()) {
-            T data = build(rs,entity,entityFields);
+            T data = buildRecord(rs, entity, entityFields);
             list.add(data);
         }
 
@@ -268,19 +266,21 @@ public class SqlUtils {
 
     }
 
-    public static <T> T build(
+
+
+    static <T> T buildRecord(
             ResultSet rs,
             Entity entity,
             List<EntityField> entityFields
     ) throws SQLException {
         Object data = entity.newInstance();
         for (int i = 0, c = entityFields.size(); i < c; ++i) {
-            EntityField adapter = entityFields.get(i);
+            EntityField entityField = entityFields.get(i);
             try {
                 Object r = rs.getObject(i + 1);
-                adapter.set(data, adapter.getFieldValue(r));
+                entityField.set(data, entityField.getFieldValue(r));
             } catch (Exception e) {
-                throw new DaoException("不能设置查询结果" + adapter.getFieldName(), e);
+                throw new DaoException("不能设置查询结果" + entityField.getFieldName(), e);
             }
 
         }
@@ -307,11 +307,11 @@ public class SqlUtils {
     }
 
 
-    public static <T> T executeGet(
+    static <T> T executeGet(
             ConnectionHolder ar,
             SimpleSqlBuilder builder,
             Entity entity,
-            List<EntityField> entityFields){
+            List<EntityField> entityFields) {
         Connection connection;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -320,7 +320,7 @@ public class SqlUtils {
             ps = BuilderKit.prepareStatement(connection, builder.sql.toString(), builder.values);
             rs = ps.executeQuery();
             if (rs.next()) {
-                return SqlUtils.build(rs,entity,entityFields);
+                return EntitySqlUtils.buildRecord(rs, entity, entityFields);
             }
             return null;
         } catch (Throwable e) {
@@ -333,7 +333,7 @@ public class SqlUtils {
         }
     }
 
-    public static <T> List<T> executeQuery(
+    static <T> List<T> executeQuery(
             ConnectionHolder ar,
             SimpleSqlBuilder builder,
             List<EntityField> entityFields,
@@ -346,7 +346,7 @@ public class SqlUtils {
             connection = ar.getConnection();
             ps = BuilderKit.prepareStatement(connection, builder.sql.toString(), builder.values);
             rs = ps.executeQuery();
-            return buildList(rs,entity,entityFields);
+            return buildList(rs, entity, entityFields);
         } catch (Throwable e) {
             throw new DaoException(builder.printSql(), e);
         } finally {
@@ -357,5 +357,39 @@ public class SqlUtils {
             }
             builder.clear(all);
         }
+    }
+
+
+    static Object executeGetValue(
+            ConnectionHolder ar,
+            final SimpleSqlBuilder builder) {
+
+        return ar.execute(new ConnectionExecutor() {
+            @Override
+            public Object execute(Connection connection) throws SQLException {
+                PreparedStatement ps = null;
+                ResultSet rs = null;
+                try {
+                    ps = BuilderKit.prepareStatement(connection,
+                            builder.sql.toString(),
+                            builder.values);
+                    rs = ps.executeQuery();
+                    if (rs.next()) {
+                        Object r = rs.getObject(1);
+                        return r;
+                    }
+                    return null;
+                } catch (SQLException e) {
+                    throw new DaoException(builder.printSql(), e);
+                } finally {
+                    DaoUtils.close(rs);
+                    DaoUtils.close(ps);
+                    builder.clear(true);
+                }
+            }
+        });
+
+
+
     }
 }

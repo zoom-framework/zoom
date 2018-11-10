@@ -29,12 +29,12 @@ public interface SqlDriver extends StatementAdapterFactory {
 	StatementAdapter get(Class<?> dataClass, Class<?> columnClass );
 
 
-	StringBuilder buildPage(StringBuilder sql, int position, int pageSize);
+	StringBuilder buildPage(StringBuilder sql, int position, int size);
 
 
-	int position2page(int position,int pageSize);
+	int position2page(int position,int size);
 	
-	int page2position(int page,int pageSize);
+	int page2position(int page,int size);
 	
 	void insertOrUpdate(StringBuilder sb,List<Object> values,String tableName,Map<String, Object> data,String...unikeys);
 }

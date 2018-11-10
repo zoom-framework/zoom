@@ -37,8 +37,8 @@ public class MysqlDriver  extends AbsDriver{
 	}
 
 	@Override
-	public StringBuilder buildPage(StringBuilder sql, int position, int pageSize) {
-		return sql.append(" LIMIT ").append(position).append(',').append(pageSize);
+	public StringBuilder buildPage(StringBuilder sql, int position, int size) {
+		return sql.append(" LIMIT ").append(position).append(',').append(size);
 	}
 
 
@@ -83,7 +83,7 @@ public class MysqlDriver  extends AbsDriver{
 	}
 
 	@Override
-	public int page2position(int page, int pageSize) {
+	public int page2position(int page, int size) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
