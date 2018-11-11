@@ -29,15 +29,15 @@ public class TimerModule implements Destroyable {
 
 
     private String getCron(Timer timer) {
-        if (timer.every() != Timer.Every.None) {
+        if (timer.every() != Timer.Every.NONE) {
             assert (timer.everyValue() > 0);
-            if (timer.every() == Timer.Every.Second) {
+            if (timer.every() == Timer.Every.SECOND) {
                 return String.format("0/%d * * * * ?", timer.everyValue());
             }
-            if (timer.every() == Timer.Every.Minute) {
+            if (timer.every() == Timer.Every.MINUTE) {
                 return String.format("0 0/%d * * * ?", timer.everyValue());
             }
-            if (timer.every() == Timer.Every.Hour) {
+            if (timer.every() == Timer.Every.HOUR) {
                 return String.format("0 0 0/%d * * ?", timer.everyValue());
             }
         }

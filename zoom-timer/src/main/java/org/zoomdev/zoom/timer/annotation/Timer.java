@@ -25,19 +25,19 @@ public @interface Timer {
      *
      * @return
      */
-    Every every() default Every.None;
+    Every every() default Every.NONE;
 
     /**
-     * 指定every之后有效 如: Every.Second,everyValue 1 :    0/1 * * * * ?
+     * 指定every之后有效 如: Every.SECOND,everyValue 1 :    0/1 * * * * ?
      *
      * @return
      */
     int everyValue() default 1;
 
     enum Every {
-        None,
-        Second,
-        Minute,
-        Hour
+        NONE,
+        SECOND,
+        MINUTE,
+        HOUR
     }
 }
