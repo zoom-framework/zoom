@@ -49,6 +49,18 @@ public class TestIoc extends TestCase {
         assertEquals(shopService.showProduct(),"test");
 
 
+        IocContainer subIoc = new SimpleIocContainer(
+            ioc.getScope(),
+                ioc.getIocClassLoader(),
+                ioc.getEventListeners()
+        );
+
+
+
+
+
         Classes.destroy(ioc);
+
+        Classes.destroy(subIoc);
     }
 }

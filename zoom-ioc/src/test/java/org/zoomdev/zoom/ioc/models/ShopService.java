@@ -3,6 +3,8 @@ package org.zoomdev.zoom.ioc.models;
 import org.zoomdev.zoom.common.Destroyable;
 import org.zoomdev.zoom.common.Initializeable;
 import org.zoomdev.zoom.common.annotations.Inject;
+import org.zoomdev.zoom.ioc.IocMethod;
+import org.zoomdev.zoom.ioc.IocObject;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -41,6 +43,8 @@ public class ShopService implements Initializeable,Destroyable {
     public void editProduct(String info){
         String user = userService.getAdmin();
         productService.editProduct(user,info);
+
+        method.invoke(target);
     }
 
 
@@ -57,5 +61,14 @@ public class ShopService implements Initializeable,Destroyable {
     @Override
     public void initialize() {
         System.out.println("ShopService initialize");
+    }
+
+    private IocObject target;
+    private IocMethod method;
+    public void setListener(IocObject target,IocMethod method) {
+
+        this.target = target;
+        this.method = method;
+
     }
 }

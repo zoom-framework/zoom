@@ -1,6 +1,7 @@
 package org.zoomdev.zoom.ioc.models.impl;
 
 import org.zoomdev.zoom.common.annotations.Inject;
+import org.zoomdev.zoom.ioc.annotations.TestListener;
 import org.zoomdev.zoom.ioc.models.PushService;
 import org.zoomdev.zoom.ioc.models.ShopService;
 
@@ -32,5 +33,21 @@ public class PushServiceImpl implements PushService {
     @Override
     public String getName() {
         return shopService.getName();
+    }
+
+
+
+    public void init(){
+    }
+
+
+    public void destroy(){
+
+    }
+
+    @TestListener
+    public void notifyMessage(){
+
+        System.out.println("on notify");
     }
 }

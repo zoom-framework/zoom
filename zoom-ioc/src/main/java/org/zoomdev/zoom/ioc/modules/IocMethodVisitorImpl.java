@@ -1,4 +1,4 @@
-package org.zoomdev.zoom.ioc.impl;
+package org.zoomdev.zoom.ioc.modules;
 
 import org.zoomdev.zoom.common.utils.CachedClasses;
 import org.zoomdev.zoom.ioc.*;
@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IocMethodVisitorImpl implements IocEventListener,IocMethodVisitor {
+class IocMethodVisitorImpl implements IocEventListener,IocMethodVisitor {
 
     private List<IocMethodHandler> handlers;
 

@@ -6,7 +6,6 @@ import org.zoomdev.zoom.common.annotations.Module;
 import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.ioc.IocEventListener;
 import org.zoomdev.zoom.ioc.IocMethodVisitor;
-import org.zoomdev.zoom.ioc.impl.IocMethodVisitorImpl;
 
 @Module
 public class IocModule {
