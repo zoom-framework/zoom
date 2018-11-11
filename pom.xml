@@ -3,10 +3,16 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.zoomdev.zoom</groupId>
 	<artifactId>zoom-parent</artifactId>
-	<version>0.1.8</version>
+	<version>0.1.9</version>
 	<packaging>pom</packaging>
 	<name>zoom-parent</name>
-
+	<properties>  
+			<!-- 文件拷贝时的编码 -->  
+			<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>  
+			<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>  
+			<!-- 编译时的编码 -->  
+			<maven.compiler.encoding>UTF-8</maven.compiler.encoding>  
+	</properties>  
 	<distributionManagement>
 		<repository>
 			<!-- 这里的ID要和setting的id一致 -->
@@ -60,6 +66,20 @@
 	</reporting>
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.6.201602180812</version>
+				<executions>
+					<execution>
+						<id>prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 			<plugin>
 				<groupId>net.alchim31.maven</groupId>
 				<artifactId>scala-maven-plugin</artifactId>
@@ -116,7 +136,14 @@
 					</dependency>
 				</dependencies>
 			</plugin>
-
+			<plugin>
+				<groupId>org.eluder.coveralls</groupId>
+				<artifactId>coveralls-maven-plugin</artifactId>
+				<version>4.3.0</version>
+				<configuration>
+					<repoToken>ABCGhtKphpKGK3nRAtyp610LWADuQHzQn</repoToken>
+				</configuration>
+			</plugin>
 
 		</plugins>
 		<pluginManagement>
@@ -170,64 +197,64 @@
 			<dependency>
 				<groupId>org.zoomdev.zoom</groupId>
 				<artifactId>zoom-caster</artifactId>
-				<version>0.1.8</version>
+				<version>0.1.9</version>
 			</dependency>
 			<dependency>
 				<groupId>org.zoomdev.zoom</groupId>
 				<artifactId>zoom-async</artifactId>
-				<version>0.1.8</version>
+				<version>0.1.9</version>
 			</dependency>
 			<dependency>
 				<groupId>org.zoomdev.zoom</groupId>
 				<artifactId>zoom-dao</artifactId>
-				<version>0.1.8</version>
+				<version>0.1.9</version>
 			</dependency>
 			<dependency>
 				<groupId>org.zoomdev.zoom</groupId>
 				<artifactId>zoom-ioc</artifactId>
-				<version>0.1.8</version>
+				<version>0.1.9</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.zoomdev.zoom</groupId>
 				<artifactId>zoom-common</artifactId>
-				<version>0.1.8</version>
+				<version>0.1.9</version>
 			</dependency>
 			<dependency>
 				<groupId>org.zoomdev.zoom</groupId>
 				<artifactId>zoom-aop</artifactId>
-				<version>0.1.8</version>
+				<version>0.1.9</version>
 			</dependency>
 			<dependency>
 				<groupId>org.zoomdev.zoom</groupId>
 				<artifactId>zoom-timer</artifactId>
-				<version>0.1.8</version>
+				<version>0.1.9</version>
 			</dependency>
 			<dependency>
 				<groupId>org.zoomdev.zoom</groupId>
 				<artifactId>zoom-plugin</artifactId>
-				<version>0.1.8</version>
+				<version>0.1.9</version>
 			</dependency>
 
 			<dependency>
 				<groupId>org.zoomdev.zoom</groupId>
 				<artifactId>zoom-web</artifactId>
-				<version>0.1.8</version>
+				<version>0.1.9</version>
 			</dependency>
 			<dependency>
 				<groupId>org.zoomdev.zoom</groupId>
 				<artifactId>zoom-plugin</artifactId>
-				<version>0.1.8</version>
+				<version>0.1.9</version>
 			</dependency>
 			<dependency>
 				<groupId>org.zoomdev.zoom</groupId>
 				<artifactId>zoom-cache</artifactId>
-				<version>0.1.8</version>
+				<version>0.1.9</version>
 			</dependency>
 			<dependency>
 					<groupId>org.zoomdev.zoom</groupId>
 					<artifactId>zoom-event</artifactId>
-					<version>0.1.8</version>
+					<version>0.1.9</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

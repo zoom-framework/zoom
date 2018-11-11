@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.event.modules;
 
-import org.zoomdev.zoom.common.async.Asyncs;
+import org.zoomdev.zoom.async.impl.Asyncs;
 import org.zoomdev.zoom.common.designpattern.SingletonUtils;
 import org.zoomdev.zoom.common.lock.LockUtils;
 import org.zoomdev.zoom.event.Event;

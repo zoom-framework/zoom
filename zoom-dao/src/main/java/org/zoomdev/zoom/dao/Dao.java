@@ -5,6 +5,7 @@ import org.zoomdev.zoom.dao.alias.AliasPolicyMaker;
 import org.zoomdev.zoom.dao.alias.NameAdapterFactory;
 import org.zoomdev.zoom.dao.driver.DbStructFactory;
 import org.zoomdev.zoom.dao.driver.SqlDriver;
+import org.zoomdev.zoom.dao.migrations.DatabaseBuilder;
 
 import javax.sql.DataSource;
 
@@ -73,4 +74,10 @@ public interface Dao extends StatementAdapterFactory {
 
 
     AliasPolicyMaker getAliasPolicyMaker();
+
+
+    DatabaseBuilder builder();
+
+
+    <T> T execute(ConnectionExecutor connectionExecutor);
 }

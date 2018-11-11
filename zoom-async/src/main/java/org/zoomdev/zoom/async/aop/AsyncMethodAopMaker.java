@@ -4,7 +4,7 @@ import org.zoomdev.zoom.aop.MethodInterceptor;
 import org.zoomdev.zoom.aop.MethodInvoker;
 import org.zoomdev.zoom.aop.factory.AnnotationMethodInterceptorFactory;
 import org.zoomdev.zoom.async.annotation.Async;
-import org.zoomdev.zoom.common.async.Asyncs;
+import org.zoomdev.zoom.async.impl.Asyncs;
 
 import java.lang.reflect.Method;
 import java.util.List;

@@ -21,6 +21,7 @@ import org.zoomdev.zoom.dao.driver.oracle.OracleDbStruct;
 import org.zoomdev.zoom.dao.driver.oracle.OracleDriver;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.meta.TableMeta;
+import org.zoomdev.zoom.dao.migrations.DatabaseBuilder;
 import org.zoomdev.zoom.dao.transaction.Trans;
 import org.zoomdev.zoom.dao.transaction.Transactions;
 import org.zoomdev.zoom.dao.utils.DaoUtils;
@@ -110,8 +111,8 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
         Db.unregister(this);
     }
 
-    public void execute(ConnectionExecutor executor) {
-        ar().execute(executor);
+    public <T> T execute(ConnectionExecutor executor) {
+        return ar().execute(executor);
     }
 
     public DbStructFactory getDbStructFactory() {
@@ -456,6 +457,11 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
     @Override
     public AliasPolicyMaker getAliasPolicyMaker() {
         return maker;
+    }
+
+    @Override
+    public DatabaseBuilder builder() {
+        return null;
     }
 
     @Override

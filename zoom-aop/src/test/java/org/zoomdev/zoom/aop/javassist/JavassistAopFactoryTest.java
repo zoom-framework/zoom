@@ -270,6 +270,8 @@ public class JavassistAopFactoryTest {
 		}finally {
 			((JavassistAopFactory)factory).destroy();
 		}
+
+
 		
 	}
 

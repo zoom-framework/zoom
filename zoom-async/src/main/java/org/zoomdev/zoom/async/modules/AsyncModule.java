@@ -5,8 +5,8 @@ import org.zoomdev.zoom.async.aop.AsyncMethodAopMaker;
 import org.zoomdev.zoom.common.annotations.Inject;
 import org.zoomdev.zoom.common.annotations.IocBean;
 import org.zoomdev.zoom.common.annotations.Module;
-import org.zoomdev.zoom.common.async.Asyncs;
-import org.zoomdev.zoom.common.async.JobQueue;
+import org.zoomdev.zoom.async.impl.Asyncs;
+import org.zoomdev.zoom.async.JobQueue;
 
 @Module
 public class AsyncModule {

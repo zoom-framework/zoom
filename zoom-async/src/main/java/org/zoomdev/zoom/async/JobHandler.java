@@ -1,4 +1,4 @@
-package org.zoomdev.zoom.common.async;
+package org.zoomdev.zoom.async;
 
 public interface JobHandler<T> {
 	void execute(T data);

@@ -1,4 +1,7 @@
-package org.zoomdev.zoom.common.async;
+package org.zoomdev.zoom.async.impl;
+
+import org.zoomdev.zoom.async.JobQueue;
+import org.zoomdev.zoom.async.impl.AsyncService;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -32,13 +35,6 @@ public class Asyncs {
 	public static JobQueue defaultJobQueue() {
 		return service;
 	}
-	
-	/**
-	 * 新的异步任务队列
-	 * @param threadCount
-	 * @return
-	 */
-	public static JobQueue newJobQueue(int threadCount) {
-		return new AsyncService(threadCount);
-	}
+
+
 }

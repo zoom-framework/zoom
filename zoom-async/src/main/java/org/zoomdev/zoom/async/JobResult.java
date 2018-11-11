@@ -1,9 +1,9 @@
-package org.zoomdev.zoom.common.async;
+package org.zoomdev.zoom.async;
 
 /**
  * 任务结果,一般用于提交一组任务
  *
- * @see JobQueue#submit(java.util.Iterator, JobExecutor, JobResult)
+ * @see JobQueue#execute(java.util.Iterator, JobExecutor, JobResult)
  * 
  * @author renxueliang
  *

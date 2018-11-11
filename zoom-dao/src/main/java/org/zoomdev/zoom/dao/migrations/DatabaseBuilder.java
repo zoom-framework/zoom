@@ -21,7 +21,7 @@ public interface DatabaseBuilder {
     // commments current context is table, for table, current context is column, for column
     DatabaseBuilder commments(String commments);
 
-    DatabaseBuilder create(String table);
+    DatabaseBuilder createTable(String table);
 
     // add column
     DatabaseBuilder add(String column);
@@ -37,13 +37,21 @@ public interface DatabaseBuilder {
     DatabaseBuilder number();
     DatabaseBuilder notNull();
     DatabaseBuilder primaryKey();
-    DatabaseBuilder autoIncreament();
+
+    /// for mysql
+    DatabaseBuilder autoIncement();
     DatabaseBuilder unique();
     DatabaseBuilder index();
 
-
+//
+//    DatabaseBuilder createTrigger(String name);
+//
+//    DatabaseBuilder createSequence();
 
     void build();
 
+
+    // create a table from class directly
+    void build(Class<?> type,boolean dropIfExists);
 
 }

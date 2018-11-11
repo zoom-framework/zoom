@@ -1,9 +1,12 @@
-package org.zoomdev.zoom.common.async;
+package org.zoomdev.zoom.async.impl;
 
+import org.zoomdev.zoom.async.JobExecutor;
+import org.zoomdev.zoom.async.JobHandler;
+import org.zoomdev.zoom.async.JobQueue;
+import org.zoomdev.zoom.async.JobResult;
 import org.zoomdev.zoom.common.Destroyable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.zoomdev.zoom.common.Destroyable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -21,7 +24,7 @@ class AsyncService implements JobQueue, ThreadFactory,Destroyable {
 
 
 	private Map<String, JobHandler<?>> map = new ConcurrentHashMap<String, JobHandler<?>>();
-	
+
 	private final Log logger = LogFactory.getLog(getClass());
 
 	private ExecutorService service;
@@ -77,10 +80,10 @@ class AsyncService implements JobQueue, ThreadFactory,Destroyable {
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public <T, R> void submit(Iterator<List<T>> it, JobExecutor<T, R> executor, JobResult<List<R>> result)
+	public <T, R> void execute(Iterator<List<T>> it, JobExecutor<T, R> executor, JobResult<List<R>> result)
 			throws ExecutionException, InterruptedException {
 		while (it.hasNext()) {
-			List<R> r = submit(it.next(), executor);
+			List<R> r = execute(it.next(), executor);
 			result.onResult(r);
 		}
 	}
@@ -94,13 +97,14 @@ class AsyncService implements JobQueue, ThreadFactory,Destroyable {
 	 * @throws ExecutionException
 	 * @throws InterruptedException
 	 */
-	public <T, R> List<R> submit(List<T> jobs, final JobExecutor<T, R> executor)
+	public <T, R> List<R> execute(Iterable<T> jobs, final JobExecutor<T, R> executor)
 			throws ExecutionException, InterruptedException {
-		List<Future<R>> tmps = new ArrayList<Future<R>>(jobs.size());
+		List<Future<R>> tmps = new ArrayList<Future<R>>();
 		List<R> result = new ArrayList<R>();
-		for (int i = 0, c = jobs.size(); i < c; i++) {
-			tmps.add(service.submit(new InnerJobExecutor<T, R>(jobs.get(i), executor)));
-		}
+		for(T job : jobs){
+            tmps.add(service.submit(new InnerJobExecutor<T, R>(job, executor)));
+        }
+
 		for (Future<R> f : tmps) {
 			result.add(f.get());
 		}
@@ -111,20 +115,23 @@ class AsyncService implements JobQueue, ThreadFactory,Destroyable {
 	 * Register async task executor
 	 * 
 	 * @param name
-	 * @param executor
 	 */
 	public <T> void register(String name, JobHandler<T> handler) {
 		map.put(name, handler);
 	}
 
-	
-	
-	/**
+    @Override
+    public void unregister(String name) {
+        map.remove(name);
+    }
+
+
+    /**
 	 * 使用指定的任务处理器处理一项任务
 	 * @param data
 	 * @param handler
 	 */
-	public <T> void executeSimple(final T data,final JobHandler<T> handler) {
+	public <T> void run(final T data, final JobHandler<T> handler) {
 		service.execute(new Runnable() {
 			@Override
 			public void run() {
@@ -150,7 +157,7 @@ class AsyncService implements JobQueue, ThreadFactory,Destroyable {
 	 * @param data
 	 */
 	@SuppressWarnings("rawtypes")
-	public void execute(final String name, final Object data) {
+	public void run(final String name, final Object data) {
 		service.execute(new Runnable() {
 			
 			/**
@@ -185,19 +192,16 @@ class AsyncService implements JobQueue, ThreadFactory,Destroyable {
 	}
 
 	/**
-	 * 这里暂时没有实现
+	 *
 	 */
 	@Override
 	public <R, T> Future<R> submit(T data, JobExecutor<T, R> executor) {
 		return service.submit( new InnerJobExecutor<T, R>(data, executor) );
 	}
 
-	@Override
-	public <T> void execute(T data, JobHandler<T> handler) {
-		throw new RuntimeException("还没有实现，正在考虑使用场景");
-	}
 
-	@Override
+
+    @Override
 	public <T> Future<T> submit(Callable<T> callable) {
 		
 		return service.submit(callable);
