@@ -49,12 +49,6 @@ public class TimerModule implements Destroyable {
     public void inject(IocMethodVisitor visitor, final TimerService timerService) {
         visitor.add(new IocMethodHandler() {
 
-            private String getKey(IocObject target,Method method){
-                StringBuilder sb = new StringBuilder(target.getIocClass().getKey().toString())
-                        .append("#")
-                        .append(method.getName());
-                return sb.toString();
-            }
 
             @Override
             public void create(IocObject target, IocMethod method) {
@@ -71,7 +65,6 @@ public class TimerModule implements Destroyable {
 
             @Override
             public void destroy(IocObject target, IocMethod method) {
-
                 timerService.stopTimer(method.getUid());
             }
 

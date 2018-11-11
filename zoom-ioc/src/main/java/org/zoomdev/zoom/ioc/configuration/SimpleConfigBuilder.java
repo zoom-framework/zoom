@@ -84,7 +84,9 @@ public class SimpleConfigBuilder extends ClassResolver {
 			}
 			Module module = type.getAnnotation(Module.class);
 			Class<? extends Annotation> annotationClass = module.value();
-			if(annotationClass==Module.class || (app!=null && app.getAnnotation(annotationClass)!=null) ) {
+			if(annotationClass==Module.class
+                    || (app!=null && app.getAnnotation(annotationClass)!=null)
+                    || app == null) {
 				log.info(String.format( "初始化Module [%s]" ,type));
 				types.add(type);
 			}else {

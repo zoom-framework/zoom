@@ -27,7 +27,7 @@ public class TestTimerModule extends TestCase {
         classResolvers.visit(scanner);
 
 
-        TestModule testModule = ioc.get(TestModule.class);
+        TestModule.TestService testModule = ioc.get(TestModule.TestService.class);
 
 
         Classes.destroy(ioc);
