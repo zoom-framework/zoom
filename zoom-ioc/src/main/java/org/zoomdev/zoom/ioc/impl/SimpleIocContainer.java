@@ -64,6 +64,43 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
 		return (T) get(new ZoomIocKey(type)).get();
 	}
 
+	private void initObject(ZoomIocObject obj,IocScope scope){
+
+
+        if (!obj.inited) {
+            obj.inited = true;
+
+            //先初始化构造器中没有被初始化的
+            IocClass iocClass = obj.getIocClass();
+            IocConstructor iocConstructor = iocClass.getIocConstructor();
+
+
+            for(IocKey key : iocConstructor.getParameterKeys()){
+                ZoomIocObject childObject = (ZoomIocObject)scope.get(key);
+                initObject(childObject,scope);
+            }
+
+
+
+            IocField[] fields = iocClass.getIocFields();
+            if(fields!=null) {
+                for (IocField field : fields) {
+                    field.set(obj);
+                }
+            }
+
+            IocMethod[] methods = iocClass.getIocMethods();
+            if(methods!=null) {
+                for (IocMethod method : methods) {
+                    method.invoke(obj);
+                }
+            }
+
+            obj.initialize();
+
+        }
+    }
+
 	public synchronized IocObject get(IocScope scope, IocKey key) {
 		try{
 			ZoomIocObject obj = (ZoomIocObject)scope.get(key);
@@ -83,30 +120,7 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
 				}
 			}
 
-			if (!obj.inited) {
-				obj.inited = true;
-
-
-				if (iocClass == null)
-					iocClass = this.iocClassLoader.get(key);
-
-				IocField[] fields = iocClass.getIocFields();
-				if(fields!=null) {
-					for (IocField field : fields) {
-						field.set(obj);
-					}
-				}
-
-				IocMethod[] methods = iocClass.getIocMethods();
-				if(methods!=null) {
-					for (IocMethod method : methods) {
-                        method.invoke(obj);
-                    }
-                }
-
-                obj.initialize();
-
-            }
+            initObject(obj,scope);
 
             return obj;
         } catch (Throwable e) {

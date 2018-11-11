@@ -8,6 +8,7 @@ public interface IocClass {
 
     IocObject newInstance(IocScope scope);
 
+    IocConstructor getIocConstructor();
 
     IocField[] getIocFields();
 

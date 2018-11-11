@@ -1,8 +1,17 @@
 package org.zoomdev.zoom.ioc.models.impl;
 
+import org.zoomdev.zoom.common.annotations.Inject;
 import org.zoomdev.zoom.ioc.models.PushService;
+import org.zoomdev.zoom.ioc.models.ShopService;
 
 public class PushServiceImpl implements PushService {
+
+
+    /**
+     * 模拟循环依赖
+     */
+    @Inject
+    private ShopService shopService;
 
     private String key;
 
@@ -13,4 +22,15 @@ public class PushServiceImpl implements PushService {
     }
 
 
+
+    public void send(){
+
+        System.out.println( shopService.getName() + "Notify");
+
+    }
+
+    @Override
+    public String getName() {
+        return shopService.getName();
+    }
 }

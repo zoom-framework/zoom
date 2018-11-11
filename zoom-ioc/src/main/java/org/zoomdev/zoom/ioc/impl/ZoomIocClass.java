@@ -23,6 +23,12 @@ public abstract class ZoomIocClass extends IocBase implements IocClass {
     }
 
 
+	@Override
+	public IocConstructor getIocConstructor() {
+		return constructor;
+	}
+
+
 	protected IocObject[] getValues(IocScope scope, IocKey[] keys) {
 		IocObject[] values = new IocObject[keys.length];
 		for (int i = 0, c = keys.length; i < c; ++i) {

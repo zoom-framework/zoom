@@ -11,9 +11,12 @@ public class ProductService {
 
     private String product;
 
+    private String user;
+
     @Inject
     public void init(){
         product = "MyProduct";
+        user = "myuser";
     }
 
     public String getProduct() {
@@ -24,5 +27,6 @@ public class ProductService {
 
     public void editProduct(String user,String info){
         this.product = info;
+        this.user = user;
     }
 }

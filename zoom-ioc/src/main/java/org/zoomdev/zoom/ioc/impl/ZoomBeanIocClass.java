@@ -78,6 +78,4 @@ public class ZoomBeanIocClass extends ZoomIocClass {
         return obj;
     }
 
-
-
 }

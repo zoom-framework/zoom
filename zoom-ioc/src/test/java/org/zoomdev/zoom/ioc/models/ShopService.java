@@ -1,5 +1,7 @@
 package org.zoomdev.zoom.ioc.models;
 
+import org.zoomdev.zoom.common.Destroyable;
+import org.zoomdev.zoom.common.Initializeable;
 import org.zoomdev.zoom.common.annotations.Inject;
 
 import java.util.concurrent.CountDownLatch;
@@ -11,7 +13,7 @@ import java.util.concurrent.CountDownLatch;
  * 修改商品需要登录权限
  *
  */
-public class ShopService {
+public class ShopService implements Initializeable,Destroyable {
 
 
     @Inject
@@ -20,13 +22,17 @@ public class ShopService {
     @Inject
     private CountDownLatch countDownLatch;
 
-    @Inject
     private UserService userService;
+
+
+    public ShopService(UserService userService){
+        this.userService = userService;
+    }
     /**
      * 都可以浏览
      */
     public String showProduct(){
-        System.out.println("product is " + productService.getProduct());
+        System.out.println("product is " + userService.getAdmin()+":" + productService.getProduct());
         countDownLatch.countDown();
         return productService.getProduct();
     }
@@ -38,5 +44,18 @@ public class ShopService {
     }
 
 
+    public String getName(){
+        return "Shop";
+    }
 
+
+    @Override
+    public void destroy() {
+        System.out.println("ShopService is destroied");
+    }
+
+    @Override
+    public void initialize() {
+        System.out.println("ShopService initialize");
+    }
 }
