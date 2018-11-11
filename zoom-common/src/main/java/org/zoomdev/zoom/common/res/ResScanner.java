@@ -212,6 +212,9 @@ public class ResScanner implements Destroyable {
 		return res;
 	}
 
+	public void scan() throws IOException {
+		scan(getClass().getClassLoader(), fastFilter);
+	}
     /**
      *
      * @param classLoader

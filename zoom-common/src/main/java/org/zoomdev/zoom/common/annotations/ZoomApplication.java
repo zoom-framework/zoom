@@ -1,4 +1,4 @@
-package org.zoomdev.zoom.web.annotations;
+package org.zoomdev.zoom.common.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -28,6 +28,8 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
         globalScope = new GlobalScope(this, this);
 		this.iocClassLoader = new ZoomIocClassLoader(this);
 		this.iocClassLoader.setClassEnhancer(new NoneEnhancer());
+
+        getIocClassLoader().append(IocContainer.class,this,true);
 	}
 
 	public SimpleIocContainer(IocScope parentScope, IocClassLoader parentClassLoader, List<IocEventListener> eventListeners) {
@@ -35,6 +37,8 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
 		this.iocClassLoader =new GroupClassLoader(this,parentClassLoader);
 		this.iocClassLoader.setClassEnhancer(new NoneEnhancer());
 		this.eventListeners.addAll(eventListeners);
+
+        getIocClassLoader().append(IocContainer.class,this,true);
 	}
 
 

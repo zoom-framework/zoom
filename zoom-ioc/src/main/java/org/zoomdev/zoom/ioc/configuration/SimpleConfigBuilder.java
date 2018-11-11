@@ -1,8 +1,8 @@
-package org.zoomdev.zoom.web.configuration;
+package org.zoomdev.zoom.ioc.configuration;
 
-import org.zoomdev.zoom.common.Destroyable;
 import org.zoomdev.zoom.common.annotations.IocBean;
 import org.zoomdev.zoom.common.annotations.Module;
+import org.zoomdev.zoom.common.annotations.ZoomApplication;
 import org.zoomdev.zoom.common.filter.impl.ClassAnnotationFilter;
 import org.zoomdev.zoom.common.filter.pattern.PatternFilterFactory;
 import org.zoomdev.zoom.common.res.ClassResolver;
@@ -10,7 +10,6 @@ import org.zoomdev.zoom.common.utils.CachedClasses;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.ioc.IocException;
-import org.zoomdev.zoom.web.annotations.ZoomApplication;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -48,10 +47,7 @@ public class SimpleConfigBuilder extends ClassResolver {
 	
 	@Override
 	public void visitMethod(Method method) {
-		IocBean bean = method.getAnnotation(IocBean.class);
-		if(bean != null) {
-			//classFactory.registerIocBean(bean,clazz, method);
-		}
+
 	}
 
 	@Override
@@ -62,7 +58,7 @@ public class SimpleConfigBuilder extends ClassResolver {
 
 	@Override
 	public boolean resolveMethods() {
-		return true;
+		return false;
 	}
 	
 	private Class<?> findApplication(){

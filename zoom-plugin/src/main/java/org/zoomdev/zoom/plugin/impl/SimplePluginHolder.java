@@ -11,7 +11,7 @@ import org.zoomdev.zoom.plugin.PluginException;
 import org.zoomdev.zoom.plugin.PluginHolder;
 import org.zoomdev.zoom.plugin.PluginHost;
 import org.zoomdev.zoom.web.action.impl.SimpleActionBuilder;
-import org.zoomdev.zoom.web.configuration.SimpleConfigBuilder;
+import org.zoomdev.zoom.ioc.configuration.SimpleConfigBuilder;
 import org.zoomdev.zoom.web.router.Router;
 
 import java.io.InputStream;
