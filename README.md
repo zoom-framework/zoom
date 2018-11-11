@@ -1,86 +1,18 @@
 # zoom
+![build](https://travis-ci.org/zoom-framework/zoom.svg?branch=master)
+ 
+轻量级java web开发框架。既能使用java的强大功能，又能具有php的开发效率。
 
+# 概述
 
-# 语义说明：
+框架特色：
 
-* getXXX            获取单个或多个数据，如果没有获取到数据，返回null或者空集合
-* fetchXXX          断言能获取到一个数据，如果没有获取到，将创建，如果不成功将报错
-* findXXX           获取多个数据，返回集合（可能为空），一定不是null
-
-
-# 公共接口说明
-
-* Destroyable       销毁
-* Initable          初始化
-
-
-
-# 内容更新
-
-[2018-10-30]
-后端：
-entity 在查询单个的时候能link其他表
-完善entity的自动生成 auto increase/sequence/trigger等形式
-完善entity的primary key设置
-完善entity的查询条件
-前端：
-完善属性编辑器，增加枚举类型、布尔类型
-
-[2018-10-31]
-*[x] 新增event模块，异步执行系统事件
-*[x] 增加IocEventListener,优化Timer、Event
-
-[2018-11-01]
-*[ ] Websocket,web shell
-*[ ] 日志实时查询
-*[x]错误：没有办法上传:
-
-[2018-11-03]
-*[x] 多tab
-*[ ] 优化模板管理，增加自定义字段
-*[ ] 优化多记录编辑、多记录删除
++ 本框架以约定为主要的编码规范，通过一系列针对web开发过程中的各个概念做出规范，限定文件和目录的组织结构，能大大减少沟通和查找时间，提高开发效率。
++ 速度快，作者表示完全无法忍受spring-boot那慢如蜗牛的加载速度，本框架完全没有加载速度这个问题，任何代码修改之后的页面刷新速度几乎可以做到秒刷。
++ 超爽的api，尤其涉及到数据库，在开发过程中不需要写任何sql语句
 
 
 
-增强模板生成器，可以生成各种数据
-1、生成api接口调用
-2、生成
-
-后台可直接创建 rest接口
-1、选择资源（多个表等）
-2、选择字段
-3、选择参数
-4、定制规则
 
 
-dao的sql分页优化，看看其他系统都是怎么做的, position和pageSize放在参数里面。
 
-
-Exception的处理规则
-
-
-primary key 如果用户没有选择，需要给用户选择
-
-#### 
-
-
-#### 代码统计
-```
-cloc ./ --include-ext=java --match-d=src
-```
-
-统一的版本管理
-```
-mvn versions:set -DnewVersion=0.1.5
-```
-
-发布
-```
-mvn deploy
-```
-清除idea
-
-```
-find ./ -name ".idea"|xargs rm -rf
-find ./ -name "*.iml"|xargs rm -rf
-```
