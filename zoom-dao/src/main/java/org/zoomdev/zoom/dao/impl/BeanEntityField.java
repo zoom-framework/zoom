@@ -9,9 +9,8 @@ class BeanEntityField extends AbstractEntityField {
     private Field field;
 
 
-    BeanEntityField(
-            String column, String select, Field field) {
-        super(column, select);
+    BeanEntityField( Field field) {
+        super();
         this.field = field;
     }
 

@@ -13,30 +13,27 @@ public interface EntityFactory {
 
 	/**
 	 * 根据实体类和表，获取到一个Entity绑定关系,
-	 * @param dao
 	 * @param type
 	 * @return
 	 */
-	Entity getEntity(Dao dao,Class<?> type);
+	Entity getEntity(Class<?> type);
 
 
 	/**
 	 * 根据实体类和表，获取到一个Entity绑定关系,
-	 * @param dao
 	 * @param type
 	 * @param table  一个实体类允许绑定多个表
 	 * @return
 	 */
-    Entity getEntity(Dao dao, Class<?> type, String table);
+    Entity getEntity(Class<?> type, String table);
 
     /**
      * 根据实体类和表，获取到一个Entity绑定关系,
      *
-     * @param dao
      * @param type
      * @param tables
      * @return
      */
-    Entity getEntity(Dao dao, Class<?> type, String[] tables);
+    Entity getEntity(Class<?> type, String[] tables);
 
 }

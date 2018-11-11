@@ -20,7 +20,9 @@ import java.util.Map;
 public interface Ar extends Trans,ConnectionHolder,Sql<Ar>  {
 
 
-	/**
+
+
+    /**
 	 * 凡是符合条件的都返回，需要确定返回的数据数量是少量的，否则引起程序运行慢
 	 * @return
 	 */

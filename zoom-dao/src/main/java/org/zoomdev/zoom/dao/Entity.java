@@ -86,4 +86,10 @@ public interface Entity {
 	 * @return
 	 */
 	String getColumnName(String field);
+
+    /**
+     * 为activerecord设置数据， table / join
+     * @param builder
+     */
+	void setSource(SqlBuilder builder);
 }

@@ -1,18 +1,17 @@
 package org.zoomdev.zoom.dao.impl;
 
-import org.apache.commons.lang3.StringUtils;
-import org.zoomdev.zoom.common.filter.pattern.PatternFilter;
 import org.zoomdev.zoom.dao.DaoException;
+import org.zoomdev.zoom.dao.SqlBuilder;
 import org.zoomdev.zoom.dao.adapters.EntityField;
-import org.zoomdev.zoom.dao.adapters.NameAdapter;
-import org.zoomdev.zoom.dao.meta.ColumnMeta;
+import org.zoomdev.zoom.dao.meta.JoinMeta;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 class BeanEntity extends AbstractEntity {
 
     Class<?> type;
+
+    private JoinMeta[] joins;
 
 
     BeanEntity(String table,
@@ -20,8 +19,13 @@ class BeanEntity extends AbstractEntity {
                EntityField[] primaryKeys,
                AutoEntity autoEntity,
                Class<?> type,
-               NameAdapter nameAdapter) {
-        super(table, entityFields, primaryKeys, autoEntity,nameAdapter);
+               Map<String,String> namesMap,
+               JoinMeta[] joins) {
+        super(table, entityFields, primaryKeys, autoEntity,namesMap);
+        if (primaryKeys.length == 0) {
+            throw new DaoException("绑定实体类" + type + "至少需要定义一个主键");
+        }
+        this.joins = joins;
         this.type = type;
 
     }
@@ -39,6 +43,16 @@ class BeanEntity extends AbstractEntity {
             throw new DaoException("初始化类失败"+type,e);
         }
     }
+
+    @Override
+    public void setSource(SqlBuilder builder) {
+        builder.table(table);
+        for(JoinMeta joinMeta : joins){
+            builder.join(joinMeta.getTable(),joinMeta.getOn());
+        }
+    }
+
+
 
 
 }

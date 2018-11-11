@@ -176,7 +176,9 @@ public interface SqlBuilder {
      * @param on
      * @return
      */
-    SqlBuilder innerJoin(String otherTable, String on);
+    SqlBuilder join(String otherTable, String on);
+
+    SqlBuilder join(String table, String on, String type);
 
 
     SqlBuilder tables(String... tables);

@@ -12,25 +12,25 @@ abstract class AbstractEntityField implements EntityField {
     /// 数据从数据库取出来之后转化成实体类的字段类型
     protected ValueCaster caster;
 
+    private StatementAdapter statementAdapter;
+
+    private AutoField autoField;
+
+
+
+    private String column;
+
+    private String selectColumnName;
+
+    AbstractEntityField() {
+    }
+
     public void setCaster(ValueCaster caster) {
         this.caster = caster;
     }
 
     public void setStatementAdapter(StatementAdapter statementAdapter) {
         this.statementAdapter = statementAdapter;
-    }
-
-    private StatementAdapter statementAdapter;
-
-    private AutoField autoField;
-
-    private String column;
-
-    private String select;
-
-    AbstractEntityField(String column, String select) {
-        this.column = column;
-        this.select = select;
     }
 
 
@@ -66,8 +66,15 @@ abstract class AbstractEntityField implements EntityField {
     }
 
     @Override
-    public String getSelectName() {
-        return select;
+    public String getSelectColumnName() {
+        return selectColumnName;
     }
 
+    public void setColumn(String column) {
+        this.column = column;
+    }
+
+    public void setSelectColumnName(String selectColumnName) {
+        this.selectColumnName = selectColumnName;
+    }
 }

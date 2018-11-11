@@ -296,7 +296,7 @@ public class EntitySqlUtils {
         // build select
         for (EntityField field : entity.getEntityFields()) {
             if (filter == null || filter.accept(field)) {
-                builder.selectRaw(field.getSelectName());
+                builder.selectRaw(field.getSelectColumnName());
                 entityFields.add(field);
             }
         }

@@ -2,6 +2,7 @@ package org.zoomdev.zoom.dao.impl;
 
 import org.zoomdev.zoom.dao.*;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
+import org.zoomdev.zoom.dao.alias.AliasPolicyMaker;
 import org.zoomdev.zoom.dao.alias.NameAdapterFactory;
 import org.zoomdev.zoom.dao.driver.DbStructFactory;
 import org.zoomdev.zoom.dao.driver.SqlDriver;
@@ -65,6 +66,11 @@ public class HttpDao implements Dao {
 
   @Override
   public DataSource getDataSource() {
+    return null;
+  }
+
+  @Override
+  public AliasPolicyMaker getAliasPolicyMaker() {
     return null;
   }
 

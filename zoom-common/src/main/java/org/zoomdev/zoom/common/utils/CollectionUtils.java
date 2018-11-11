@@ -32,10 +32,14 @@ public class CollectionUtils {
         return map == null || map.size() == 0;
     }
 
-    public static interface Converter<T, E> {
-        E convert(T data);
-    }
-
+    /**
+     * 遍历array,可能转化array类型
+     * @param it
+     * @param converter
+     * @param <T>
+     * @param <E>
+     * @return
+     */
     public static <T, E> List<E> map(T[] it, Converter<T, E> converter) {
         List<E> list = new ArrayList<E>(it.length);
         for (T t : it) {

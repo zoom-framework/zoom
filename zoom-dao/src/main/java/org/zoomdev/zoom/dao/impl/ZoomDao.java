@@ -7,8 +7,8 @@ import org.zoomdev.zoom.dao.*;
 import org.zoomdev.zoom.dao.adapters.NameAdapter;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 import org.zoomdev.zoom.dao.alias.AliasPolicy;
+import org.zoomdev.zoom.dao.alias.AliasPolicyMaker;
 import org.zoomdev.zoom.dao.alias.NameAdapterFactory;
-import org.zoomdev.zoom.dao.alias.impl.*;
 import org.zoomdev.zoom.dao.alias.impl.*;
 import org.zoomdev.zoom.dao.driver.DbStructFactory;
 import org.zoomdev.zoom.dao.driver.SqlDriver;
@@ -25,7 +25,6 @@ import org.zoomdev.zoom.dao.transaction.Transactions;
 import org.zoomdev.zoom.dao.utils.DaoUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.zoomdev.zoom.dao.*;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -45,7 +44,7 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
 
     private SqlDriver sqlDriver;
     private DataSource dataSource;
-    private EntityFactory entityManager;
+    private EntityFactory beanEntityFactory;
     private DbStructFactory dbStructFactory;
     private boolean lazyLoad;
 
@@ -75,8 +74,8 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
         this.dataSource = dataSource;
         this.lazyLoad = lazyLoad;
         Db.register(this);
-        entityManager = new BeanEntityFactory();
-        recordEntityFactory = new RecordEntityFactory(maker);
+        beanEntityFactory = new BeanEntityFactory(this);
+        recordEntityFactory = new RecordEntityFactory(this);
         if (lazyLoad) {
             return;
         }
@@ -198,7 +197,7 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
     @Override
     public <T> EAr<T> ar(Class<T> type) {
         EAr<T> ar = (EAr<T>) earHolder.get();
-        Entity entity =  entityManager.getEntity(this, type);
+        Entity entity =  beanEntityFactory.getEntity(type);
         if (ar == null) {
             lazyLoad();
             ar = new EntityActiveRecord<T>(this,entity);
@@ -212,7 +211,7 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
     @Override
     public EAr<Record> ar(String table) {
         EAr<Record> ar = (EAr<Record>) earHolder.get();
-        Entity entity = recordEntityFactory.getEntity(this, Record.class, table);
+        Entity entity = recordEntityFactory.getEntity( Record.class, table);
         if (ar == null) {
             lazyLoad();
             ar = new EntityActiveRecord<Record>(this, entity);
@@ -226,7 +225,7 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
     @Override
     public EAr<Record> ar(String[] tables) {
         EAr<Record> ar = (EAr<Record>) earHolder.get();
-        Entity entity = recordEntityFactory.getEntity(this, Record.class, tables);
+        Entity entity = recordEntityFactory.getEntity( Record.class, tables);
         if (ar == null) {
             lazyLoad();
             ar = new EntityActiveRecord<Record>(this, entity);
@@ -448,6 +447,11 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
     @Override
     public DataSource getDataSource() {
         return dataSource;
+    }
+
+    @Override
+    public AliasPolicyMaker getAliasPolicyMaker() {
+        return maker;
     }
 
     @Override

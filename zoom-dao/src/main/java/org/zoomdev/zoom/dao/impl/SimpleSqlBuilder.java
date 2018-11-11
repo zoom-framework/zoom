@@ -207,13 +207,12 @@ public class SimpleSqlBuilder implements SqlBuilder {
 	}
 
 	@Override
-	public SqlBuilder innerJoin(String otherTable, String on) {
+	public SqlBuilder join(String otherTable, String on) {
 
 		return join(otherTable, on, "INNER");
 	}
 
-
-
+	@Override
 	public SqlBuilder join(String table, String on, String type) {
         if (type == null) {
             type = "INNER";

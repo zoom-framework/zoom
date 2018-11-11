@@ -52,10 +52,27 @@ public class MapUtils {
 		return result;
 	}
 
-
-    public static <V> void createIfAbsent(Map<String, Object> map, Callable<V> callable) {
-
+	public static <T,V> Map<String,V> convert( Map<String,T> src, Converter<T,V> converter){
+	    assert(src!=null);
+        Map<String,V> dest = null;
+        try {
+            dest = src.getClass().newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException("不能初始化要求转化的Map类型"+src.getClass(),e);
+        }
+        for(Map.Entry<String,T> entry : src.entrySet()){
+	        dest.put(entry.getKey(), converter.convert(entry.getValue()));
+        }
+        return dest;
     }
+
+
+//    public static <V> V createIfAbsent(Map<String, V> map,String key, Callable<V> callable) {
+//		if(!map.containsKey(key)){
+//
+//        }
+//
+//    }
 
 
 	

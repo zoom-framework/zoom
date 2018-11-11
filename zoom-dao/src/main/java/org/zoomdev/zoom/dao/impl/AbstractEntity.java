@@ -20,20 +20,20 @@ public abstract class AbstractEntity implements Entity {
 
     private Map<String, String> file2column;
 
-    private NameAdapter nameAdapter;
+    private Map<String,String> namesMap;
 
     AbstractEntity(
             String table,
             EntityField[] entityFields,
             EntityField[] primaryKeys,
             AutoEntity autoEntity,
-            NameAdapter nameAdapter) {
+            Map<String,String> namesMap) {
         this.table = table;
         this.entityFields = entityFields;
         this.primaryKeys = primaryKeys;
         this.autoEntity = autoEntity;
         this.file2column = new ConcurrentHashMap<String, String>();
-        this.nameAdapter = nameAdapter;
+        this.namesMap = namesMap;
     }
 
 
@@ -91,8 +91,8 @@ public abstract class AbstractEntity implements Entity {
                     break;
                 }
             }
-            if (column == null && nameAdapter!=null) {
-                column = nameAdapter.getColumnName(field);
+            if (column == null && namesMap!=null) {
+                column = namesMap.get(field);
                 if (column != null) {
                     file2column.put(field, column);
                 }

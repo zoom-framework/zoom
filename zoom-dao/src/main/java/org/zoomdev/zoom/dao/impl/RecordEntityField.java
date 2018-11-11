@@ -8,8 +8,8 @@ public class RecordEntityField extends AbstractEntityField {
     private String field;
 
 
-    RecordEntityField(String column, String select,String field) {
-        super(column, select);
+    RecordEntityField(String field) {
+        super();
         this.field = field;
     }
 

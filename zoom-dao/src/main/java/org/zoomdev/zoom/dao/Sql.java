@@ -9,6 +9,14 @@ import org.zoomdev.zoom.common.expression.Symbol;
  */
 public interface Sql<T extends Sql> {
 
+
+    String INNER = "INNER";
+    String LEFT = "LEFT";
+    String RIGHT = "RIGHT";
+
+
+
+
     T where(String key,Object value);
 
     T orWhere(String key, Object value);

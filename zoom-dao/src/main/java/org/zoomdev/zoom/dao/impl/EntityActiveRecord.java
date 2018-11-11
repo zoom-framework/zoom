@@ -84,7 +84,7 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
 
     @Override
     public List<T> find() {
-        builder.table(entity.getTable());
+        entity.setSource(builder);
         EntitySqlUtils.buildSelect(builder,entity,filter,entityFields);
         builder.buildSelect();
         return EntitySqlUtils.executeQuery(this,builder,entityFields,entity,true);
@@ -94,7 +94,7 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
 
     @Override
     public List<T> limit(int position, int size) {
-        builder.table(entity.getTable());
+        entity.setSource(builder);
         EntitySqlUtils.buildSelect(builder,entity,filter,entityFields);
         builder.buildLimit(position, size);
         return EntitySqlUtils.executeQuery(this,builder,entityFields,entity,true);
@@ -102,7 +102,7 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
 
     @Override
     public Page<T> position(int position, int size) {
-        builder.table(entity.getTable());
+        entity.setSource(builder);
         EntitySqlUtils.buildSelect(builder,entity,filter,entityFields);
         builder.buildLimit(position, size);
         try {
@@ -173,7 +173,7 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
     }
 
     T getOne(){
-        builder.table(entity.getTable());
+        entity.setSource(builder);
         EntitySqlUtils.buildSelect(builder,entity,filter,entityFields);
         builder.buildSelect();
         return EntitySqlUtils.executeGet(this,builder,entity,entityFields);

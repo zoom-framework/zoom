@@ -1,5 +1,7 @@
 package org.zoomdev.zoom.dao.annotations;
 
+import org.zoomdev.zoom.dao.Ar;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -25,4 +27,6 @@ public @interface Join {
      * @return
      */
     String on();
+
+    String type() default  Ar.INNER;
 }

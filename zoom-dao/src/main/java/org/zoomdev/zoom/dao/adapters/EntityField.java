@@ -36,7 +36,7 @@ public interface EntityField extends StatementAdapter {
 	 * 获取在select中应该填充的值,经过适配的名称
 	 * @return
 	 */
-	String getSelectName();
+	String getSelectColumnName();
 
     /**
      * 设置值
