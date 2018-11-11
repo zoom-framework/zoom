@@ -37,8 +37,20 @@ public interface Dao extends StatementAdapterFactory {
      */
     <T> EAr<T> ar(Class<T> type);
 
+    /**
+     *
+     * @param table
+     * @return
+     */
+    EAr<Record> ar(String table);
 
-    EAr<Record> record(String table);
+
+    /**
+     *
+     * @param tables
+     * @return
+     */
+    EAr<Record> ar(String[] tables);
 
     /**
      * 获取数据库结构

@@ -1,6 +1,7 @@
 package org.zoomdev.zoom.dao.driver.mysql;
 
 import org.zoomdev.zoom.caster.Caster;
+import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.RawAr;
 import org.zoomdev.zoom.dao.Record;
 import org.zoomdev.zoom.dao.driver.AbsDbStruct;
@@ -20,7 +21,8 @@ public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
 
 	private String dbName;
 
-	public MysqlDbStruct(String dbName) {
+	public MysqlDbStruct(Dao dao,String dbName) {
+		super(dao);
 		this.dbName = dbName;
 	}
 
@@ -30,14 +32,13 @@ public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
 
 
 	@Override
-	public Collection<String> getTableNames(RawAr ar) {
-		// TODO Auto-generated method stub
+	public Collection<String> getTableNames() {
 		return null;
 	}
 
 	@Override
-	public Collection<TableNameAndComment> getNameAndComments(RawAr ar) {
-		List<Record> list = ar.executeQuery(
+	public Collection<TableNameAndComment> getNameAndComments() {
+		List<Record> list = dao.ar().executeQuery(
 				"select table_comment as comment,table_name as name from information_schema.tables where table_schema=?",
 				dbName);
 
@@ -89,8 +90,8 @@ public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
 
 
 	@Override
-	public void fill(RawAr ar, TableMeta meta) {
-		List<Record> list = ar.executeQuery(
+	public void fill(TableMeta meta) {
+		List<Record> list = dao.ar().executeQuery(
 				"SELECT TABLE_COMMENT AS COMMENT,TABLE_NAME as NAME from information_schema.tables where table_schema=? AND TABLE_NAME=?",
 				dbName,
 				meta.getName());
@@ -101,7 +102,7 @@ public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
 			meta.setComment("");
 		}
 
-		list = ar.executeQuery(
+		list = dao.ar().executeQuery(
 				"SELECT TABLE_NAME,COLUMN_NAME,IS_NULLABLE,DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,COLUMN_KEY,EXTRA,COLUMN_COMMENT,COLUMN_DEFAULT FROM information_schema.columns WHERE table_schema=? and TABLE_NAME=?",
 				dbName, meta.getName());
 

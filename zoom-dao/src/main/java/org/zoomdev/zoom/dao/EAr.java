@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.dao;
 
-import org.zoomdev.zoom.common.expression.Symbol;
+import org.zoomdev.zoom.common.utils.Page;
 
 import java.util.List;
 
@@ -18,6 +18,11 @@ public interface EAr<T> extends Sql<EAr<T>> {
     EAr<T> filter(String filter);
 
 
+    /**
+     * 针对插入和更新有效
+     * @param value
+     * @return
+     */
     EAr<T> ignoreNull(boolean value);
 
 
@@ -32,7 +37,7 @@ public interface EAr<T> extends Sql<EAr<T>> {
     List<T> limit(int position,int size);
 
 
-    Page<T> position(int position,int size);
+    Page<T> position(int position, int size);
 
 
     Page<T> page(int page,int size);
@@ -85,6 +90,7 @@ public interface EAr<T> extends Sql<EAr<T>> {
 
 
     int delete(Iterable<T> it);
+
     /**
      *
      * 删除实体
@@ -93,5 +99,24 @@ public interface EAr<T> extends Sql<EAr<T>> {
     int delete(T data);
 
 
+    /**
+     *
+     * 获取记录数量           dao.ar(Book.class).count();/dar.ar("book").count()
+     * @return
+     */
+    int count();
 
+    /**
+     * 直接获取值            dao.ar(Book.class).where("id",1).getValue("id",String.class)
+     * @param key
+     * @param typeOfE
+     * @param <E>
+     * @return
+     */
+    <E> E value(String key, Class<E> typeOfE);
+
+    EAr<T> setEntity(Entity entity);
+
+
+    Entity getEntity();
 }

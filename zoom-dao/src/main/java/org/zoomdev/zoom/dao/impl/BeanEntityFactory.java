@@ -4,16 +4,15 @@ import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.caster.ValueCaster;
 import org.zoomdev.zoom.common.utils.CachedClasses;
 import org.zoomdev.zoom.common.utils.Classes;
+import org.zoomdev.zoom.common.utils.PatternUtils;
 import org.zoomdev.zoom.dao.*;
 import org.zoomdev.zoom.dao.adapters.DataAdapter;
 import org.zoomdev.zoom.dao.adapters.EntityField;
 import org.zoomdev.zoom.dao.adapters.NameAdapter;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
-import org.zoomdev.zoom.dao.annotations.AutoGenerate;
-import org.zoomdev.zoom.dao.annotations.Column;
-import org.zoomdev.zoom.dao.annotations.ColumnIgnore;
-import org.zoomdev.zoom.dao.annotations.Table;
+import org.zoomdev.zoom.dao.annotations.*;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
+import org.zoomdev.zoom.dao.meta.JoinMeta;
 import org.zoomdev.zoom.dao.meta.TableMeta;
 import com.sun.istack.internal.NotNull;
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 class BeanEntityFactory implements EntityFactory {
 
@@ -63,12 +63,106 @@ class BeanEntityFactory implements EntityFactory {
 
     }
 
+    private static final Pattern AND_OR_PATTERN = Pattern.compile("[\\s]+(and)[\\s]+|[\\s]+(or)[\\s]+",Pattern.CASE_INSENSITIVE);
 
+    /**
+     * 使用Pattern对字符串分割
+     * @param target
+     * @param pattern
+     * @return
+     */
+    public static List<String> split(String target, Pattern pattern){
+        assert(target!=null && pattern!=null);
+        List<String> list = new ArrayList<String>();
+        Matcher matcher = pattern.matcher(target);
+        int start = 0;
+        while(matcher.find()){
+            list.add(target.substring(start,matcher.start()));
+            list.add(matcher.group(1));
+            start = matcher.end();
+        }
+
+        list.add(target.substring(start));
+
+        return list;
+
+    }
+
+
+    static final Pattern COLUMN_PATTERN = Pattern.compile("[a-zA-Z0-9]+[\\s]*\\.[\\s]*[a-zA-Z0-9]+|[a-zA-Z0-9]+");
+
+
+    private void parseOneForOne(final StringBuilder sb, String part){
+
+        PatternUtils.visit(part, COLUMN_PATTERN, new PatternUtils.PatternVisitor() {
+            @Override
+            public void onGetPattern(Matcher matcher) {
+                String str = matcher.group();
+                if(str.contains(".")){
+                    //table + column
+                    sb.append(str);
+                }else{
+
+                }
+            }
+
+            @Override
+            public void onGetRest(String rest) {
+                sb.append(rest);
+            }
+        });
+
+    }
+
+
+    private String parseOn(String on){
+        final StringBuilder sb = new StringBuilder();
+        PatternUtils.visit(on, AND_OR_PATTERN, new PatternUtils.PatternVisitor() {
+            @Override
+            public void onGetPattern(Matcher matcher) {
+                sb.append(matcher.group());
+            }
+
+            @Override
+            public void onGetRest(String rest) {
+                parseOneForOne(sb,rest);
+            }
+        });
+        //再来做一次替换
+
+
+
+        return null;
+    }
 
     @Override
     public Entity getEntity(final Dao dao, final Class<?> type) {
         Table table = type.getAnnotation(Table.class);
+        if(table==null){
+            throw new DaoException("找不到Table标注，不能使用本方法绑定实体");
+        }
         String tableName = table.value();
+        Link link = type.getAnnotation(Link.class);
+        if(link!=null){
+            Join[] joins= link.value();
+            //表
+            List<String> tables = new ArrayList<String>();
+            tables.add(tableName);
+
+
+            for(Join join : joins){
+                tables.add(join.table());
+            }
+
+            for(Join join : joins){
+                String otherTable = join.table();
+                String on = join.on();
+                //
+                JoinMeta joinMeta = new JoinMeta();
+
+            }
+        }
+
         assert (!StringUtils.isEmpty(table.value()));
         return getEntity(dao,type,tableName);
     }
@@ -129,8 +223,8 @@ class BeanEntityFactory implements EntityFactory {
 
 
     public Entity bindEntity(Dao dao,Class<?> type,String tableName){
-        TableMeta meta = dao.getDbStructFactory().getTableMeta(dao.ar(),tableName);
-        dao.getDbStructFactory().fill(dao.ar(),meta);
+        TableMeta meta = dao.getDbStructFactory().getTableMeta(tableName);
+        dao.getDbStructFactory().fill(meta);
         NameAdapter nameAdapter = dao.getNameAdapterFactory().getNameAdapter(tableName);
 
         Map<String,ColumnMeta> map = new LinkedHashMap<String, ColumnMeta>(meta.getColumns().length);
@@ -386,7 +480,7 @@ class BeanEntityFactory implements EntityFactory {
             return column;
         }else{
             //用自动命名,不管是什么都是用AS
-            return String.format("%s AS __F%d",column,index);
+            return String.format("%s AS F%d_",column,index);
         }
     }
 }

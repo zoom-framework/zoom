@@ -3,6 +3,7 @@ package org.zoomdev.zoom.dao.driver.h2;
 import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.common.utils.MapUtils;
 import org.zoomdev.zoom.dao.Ar;
+import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.RawAr;
 import org.zoomdev.zoom.dao.Record;
 import org.zoomdev.zoom.dao.driver.AbsDbStruct;
@@ -22,7 +23,8 @@ public class H2DbStrict extends AbsDbStruct {
 
 	private String dbName;
 
-	public H2DbStrict(String dbName) {
+	public H2DbStrict(Dao dao,String dbName) {
+		super(dao);
 		this.dbName = dbName;
 	}
 
@@ -30,14 +32,8 @@ public class H2DbStrict extends AbsDbStruct {
 
 
 	@Override
-	public Collection<String> getTableNames(RawAr ar) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Collection<TableNameAndComment> getNameAndComments(RawAr ar) {
-		List<Record> list = ar.table("information_schema.tables")
+	public Collection<TableNameAndComment> getNameAndComments() {
+		List<Record> list = dao.ar().table("information_schema.tables")
 				.select("TABLE_NAME as NAME,REMARKS AS COMMENT")
 				.where("TABLE_SCHEMA", "PUBLIC")
 			.find();
@@ -56,16 +52,21 @@ public class H2DbStrict extends AbsDbStruct {
 		return  result;
 	}
 
-	@Override
-	public void fill(RawAr ar, TableMeta meta) {
+    @Override
+    public Collection<String> getTableNames() {
+        return null;
+    }
 
-		List<Record> list = ar
+    @Override
+	public void fill(TableMeta meta) {
+
+		List<Record> list = dao.ar()
 				.table("information_schema.columns")
 				.select("TABLE_NAME,COLUMN_NAME,IS_NULLABLE,DATA_TYPE,SEQUENCE_NAME,CHARACTER_MAXIMUM_LENGTH,REMARKS,COLUMN_DEFAULT")
 				.where("TABLE_SCHEMA", "PUBLIC")
 				.where("TABLE_NAME", meta.getName().toUpperCase()).find();
 		//index
-		List<Record> indexes = ar.table("INFORMATION_SCHEMA.indexes").select("COLUMN_NAME,INDEX_TYPE_NAME")
+		List<Record> indexes = dao.ar().table("INFORMATION_SCHEMA.indexes").select("COLUMN_NAME,INDEX_TYPE_NAME")
 					.where("TABLE_NAME", meta.getName().toUpperCase()).find();
 		Map<String,String> indexesMap = MapUtils.toKeyAndLabel(indexes, "column_name", "index_type_name");
 

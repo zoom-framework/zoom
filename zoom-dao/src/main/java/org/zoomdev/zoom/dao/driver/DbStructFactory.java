@@ -44,32 +44,28 @@ public interface DbStructFactory {
 
 	/**
 	 * 获取所有的表名称
-	 * @param ar
 	 * @return
 	 */
-	Collection<String> getTableNames( RawAr ar );
+	Collection<String> getTableNames( );
 
 	/**
 	 * 获取基础的tableMeda信息,只有jvm获取的信息
-	 * @param ar
 	 * @param tableName
 	 * @return
 	 */
-	TableMeta getTableMeta(RawAr ar,String tableName);
+	TableMeta getTableMeta(String tableName);
 
 	/**
 	 * 填充更加详细的信息，必须要有访问系统表的权限,没有也不影响一般的查询
-	 * @param ar
 	 * @param meta
 	 */
-	void fill(RawAr ar,TableMeta meta);
-	
+	void fill(TableMeta meta);
+
 	/**
 	 * 获取表的名称和注释，必须要有访问系统表的权限
-	 * @param ar
 	 * @return
 	 */
-	Collection<TableNameAndComment> getNameAndComments( RawAr ar );
+	Collection<TableNameAndComment> getNameAndComments(  );
 
 	/**
 	 * 清除缓存

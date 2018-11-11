@@ -11,19 +11,28 @@ import java.util.List;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.dao.Ar;
 import org.zoomdev.zoom.dao.ConnectionExecutor;
+import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.RawAr;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.meta.TableMeta;
 import org.zoomdev.zoom.dao.utils.DaoUtils;
 
 public abstract class AbsDbStruct implements DbStructFactory{
+
+    protected final Dao dao;
+
+    public AbsDbStruct(Dao dao){
+        this.dao = dao;
+    }
+
+
 	protected String getQueryTableMetaStatement(String table) {
 		return "select * from " + table + " where 1=2";
 	}
 	
 	@Override
-	public TableMeta getTableMeta(RawAr ar, final String table) {
-		TableMeta tableMeta = ar.execute(new ConnectionExecutor() {
+	public TableMeta getTableMeta( final String table) {
+		TableMeta tableMeta = dao.ar().execute(new ConnectionExecutor() {
 
 			@SuppressWarnings("unchecked")
 			@Override

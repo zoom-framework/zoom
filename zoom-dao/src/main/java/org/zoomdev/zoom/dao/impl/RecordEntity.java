@@ -2,13 +2,15 @@ package org.zoomdev.zoom.dao.impl;
 
 import org.zoomdev.zoom.dao.Record;
 import org.zoomdev.zoom.dao.adapters.EntityField;
+import org.zoomdev.zoom.dao.adapters.NameAdapter;
 
 public class RecordEntity extends AbstractEntity {
     RecordEntity(String table,
                  EntityField[] entityFields,
                  EntityField[] primaryKeys,
-                 AutoEntity autoEntity) {
-        super(table, entityFields, primaryKeys, autoEntity);
+                 AutoEntity autoEntity,
+                 NameAdapter nameAdapter) {
+        super(table, entityFields, primaryKeys, autoEntity,nameAdapter);
     }
 
     @Override
@@ -21,8 +23,4 @@ public class RecordEntity extends AbstractEntity {
         return new Record();
     }
 
-    @Override
-    public String getColumnName(String field) {
-        return null;
-    }
 }

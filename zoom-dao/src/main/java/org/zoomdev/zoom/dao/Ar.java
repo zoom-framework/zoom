@@ -1,8 +1,6 @@
 package org.zoomdev.zoom.dao;
 
-import org.zoomdev.zoom.common.expression.Symbol;
-import org.zoomdev.zoom.dao.SqlBuilder.Like;
-import org.zoomdev.zoom.dao.SqlBuilder.Sort;
+import org.zoomdev.zoom.common.utils.Page;
 
 import java.util.List;
 import java.util.Map;
@@ -32,7 +30,7 @@ public interface Ar extends Trans,ConnectionHolder,Sql<Ar>  {
 	List<Record> limit(int position,int size);
 
 
-	Page<Record> position(int position,int size);
+	Page<Record> position(int position, int size);
 
 
 	Page<Record> page(int page,int size);

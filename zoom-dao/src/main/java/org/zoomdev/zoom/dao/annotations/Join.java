@@ -9,7 +9,20 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Join {
 
-    /// table.colukn = table2.column2
-    String[] value() default  {};
+    /**
+     *  表名称
+     */
+    String table();
 
+    /**
+     * 表名称的别名
+     * @return
+     */
+    String alias() default "";
+
+    /**
+     * 字符:[a-zA-Z0-9()><= ]
+     * @return
+     */
+    String on();
 }

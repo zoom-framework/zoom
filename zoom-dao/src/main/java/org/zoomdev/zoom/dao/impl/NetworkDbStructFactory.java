@@ -10,30 +10,28 @@ public class NetworkDbStructFactory implements DbStructFactory {
 
   NetworkAdapter networkAdapter;
 
-  /**
-   * 这些都有对应的http接口
-   *
-   * @param ar
-   * @return
-   */
   @Override
-  public Collection<String> getTableNames(RawAr ar) {
+  public Collection<String> getTableNames() {
     return null;
   }
 
   @Override
-  public TableMeta getTableMeta(RawAr ar, String tableName) {
+  public TableMeta getTableMeta(String tableName) {
     return null;
   }
 
   @Override
-  public void fill(RawAr ar, TableMeta meta) {}
+  public void fill(TableMeta meta) {
+
+  }
 
   @Override
-  public Collection<TableNameAndComment> getNameAndComments(RawAr ar) {
+  public Collection<TableNameAndComment> getNameAndComments() {
     return null;
   }
 
   @Override
-  public void clearCache() {}
+  public void clearCache() {
+
+  }
 }

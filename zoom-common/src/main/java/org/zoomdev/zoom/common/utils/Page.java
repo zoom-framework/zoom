@@ -1,4 +1,4 @@
-package org.zoomdev.zoom.dao;
+package org.zoomdev.zoom.common.utils;
 
 import java.util.List;
 

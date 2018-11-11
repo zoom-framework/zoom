@@ -36,7 +36,12 @@ public class HttpDao implements Dao {
   }
 
   @Override
-  public EAr<Record> record(String table) {
+  public EAr<Record> ar(String table) {
+    return null;
+  }
+
+  @Override
+  public EAr<Record> ar(String[] tables) {
     return null;
   }
 

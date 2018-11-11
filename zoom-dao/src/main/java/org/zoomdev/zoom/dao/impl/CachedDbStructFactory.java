@@ -32,9 +32,9 @@ public class CachedDbStructFactory implements DbStructFactory {
     }
 
     @Override
-    public Collection<String> getTableNames(RawAr ar) {
+    public Collection<String> getTableNames() {
         List<String> array = new ArrayList<String>();
-        for(TableNameAndComment data : getNameAndComments(ar)){
+        for(TableNameAndComment data : getNameAndComments()){
             array.add(data.getName());
         }
         return array;
@@ -42,27 +42,27 @@ public class CachedDbStructFactory implements DbStructFactory {
 
 
     @Override
-    public TableMeta getTableMeta(final RawAr ar, final String tableName) {
+    public TableMeta getTableMeta( final String tableName) {
         return (TableMeta)SingletonUtils.liteDoubleLockMap(pool, tableName, new SingletonUtils.SingletonInit<Object>() {
             @Override
             public Object create() {
-                return factory.getTableMeta(ar,tableName);
+                return factory.getTableMeta(tableName);
             }
         });
     }
 
     @Override
-    public void fill(RawAr ar, TableMeta meta) {
+    public void fill(TableMeta meta) {
         if(meta.getComment()!=null)return;
-        factory.fill(ar,meta);
+        factory.fill(meta);
     }
 
     @Override
-    public Collection<TableNameAndComment> getNameAndComments(final RawAr ar) {
+    public Collection<TableNameAndComment> getNameAndComments() {
         return (Collection<TableNameAndComment>)SingletonUtils.liteDoubleLockMap(pool, NAMES, new SingletonUtils.SingletonInit<Object>() {
             @Override
             public Object create() {
-                return factory.getNameAndComments(ar);
+                return factory.getNameAndComments();
             }
         });
     }

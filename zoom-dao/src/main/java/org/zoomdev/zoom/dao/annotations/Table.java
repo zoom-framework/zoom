@@ -13,4 +13,10 @@ public @interface Table {
 	 * @return
 	 */
 	String value();
+
+	/**
+	 * 表名称的别名
+	 * @return
+	 */
+	String alias() default "";
 }

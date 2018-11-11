@@ -155,15 +155,15 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
 
     private DbStructFactory createDbStructFactory(String productName) {
         if (Databases.MYSQL.equals(productName)) {
-            return new MysqlDbStruct(tableCat);
+            return new MysqlDbStruct(this,tableCat);
         }
 
         if (Databases.H2.equals(productName)) {
-            return new H2DbStrict(tableCat);
+            return new H2DbStrict(this,tableCat);
         }
 
         if (Databases.ORACLE.equalsIgnoreCase(productName)) {
-            return new OracleDbStruct(tableCat);
+            return new OracleDbStruct(this,tableCat);
         }
 
         throw new RuntimeException(String.format("不支持的数据库产品:%s", productName));
@@ -198,20 +198,41 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
     @Override
     public <T> EAr<T> ar(Class<T> type) {
         EAr<T> ar = (EAr<T>) earHolder.get();
+        Entity entity =  entityManager.getEntity(this, type);
         if (ar == null) {
-            ar = createEAr(type);
+            lazyLoad();
+            ar = new EntityActiveRecord<T>(this,entity);
             earHolder.set(ar);
+        }else{
+            ar.setEntity(entity);
         }
         return ar;
     }
 
     @Override
-    public EAr<Record> record(String table) {
+    public EAr<Record> ar(String table) {
         EAr<Record> ar = (EAr<Record>) earHolder.get();
+        Entity entity = recordEntityFactory.getEntity(this, Record.class, table);
         if (ar == null) {
             lazyLoad();
-            ar = new EntityActiveRecord<Record>(this, recordEntityFactory.getEntity(this, Record.class, table));
+            ar = new EntityActiveRecord<Record>(this, entity);
             earHolder.set(ar);
+        }else{
+            ar.setEntity(entity);
+        }
+        return ar;
+    }
+
+    @Override
+    public EAr<Record> ar(String[] tables) {
+        EAr<Record> ar = (EAr<Record>) earHolder.get();
+        Entity entity = recordEntityFactory.getEntity(this, Record.class, tables);
+        if (ar == null) {
+            lazyLoad();
+            ar = new EntityActiveRecord<Record>(this, entity);
+            earHolder.set(ar);
+        }else{
+            ar.setEntity(entity);
         }
         return ar;
     }
@@ -232,11 +253,6 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
         return new ActiveRecord(this);
     }
 
-
-    private <T> EAr<T> createEAr(Class<T> type) {
-        lazyLoad();
-        return new EntityActiveRecord<T>(this, entityManager.getEntity(this, type));
-    }
 
 
     @Override
@@ -281,7 +297,7 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
 
     @Override
     public NameAdapter getNameAdapter(String table) {
-        TableMeta meta = getDbStructFactory().getTableMeta(ar(), table);
+        TableMeta meta = getDbStructFactory().getTableMeta(table);
         AliasPolicy aliasPolicy = maker.getAliasPolicy(getColumnNames(meta));
         if (aliasPolicy != null) {
             Map<String, String> map = new HashMap<String, String>();
@@ -304,7 +320,7 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
         Map<String, String> column2OrgFieldMap = new LinkedHashMap<String, String>();
         boolean first = true;
         for (String table : tables) {
-            TableMeta meta = getDbStructFactory().getTableMeta(ar(), table);
+            TableMeta meta = getDbStructFactory().getTableMeta( table);
             String tableAlia = tableAliasPolicy.getAlias(table);
             // 取出每一个表的重命名策略
             AliasPolicy columnAlias = maker.getAliasPolicy(getColumnNames(meta));

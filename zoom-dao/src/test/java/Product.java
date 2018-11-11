@@ -1,6 +1,10 @@
+import org.zoomdev.zoom.dao.annotations.Column;
+import org.zoomdev.zoom.dao.annotations.Join;
+import org.zoomdev.zoom.dao.annotations.Link;
 import org.zoomdev.zoom.dao.annotations.Table;
 
-@Table(value = "shp_product")
+@Link({@Join(table = "shp_type", on = "tpId=typeId")})
+@Table("shp_product")
 public class Product {
 
 
@@ -54,5 +58,16 @@ public class Product {
 
 
     String info;
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
+    }
+
+    // 类型名称
+    String typeName;
 
 }

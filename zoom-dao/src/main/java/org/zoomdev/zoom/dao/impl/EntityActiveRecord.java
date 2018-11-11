@@ -14,6 +14,7 @@ import org.zoomdev.zoom.common.designpattern.SingletonUtils;
 import org.zoomdev.zoom.common.expression.Symbol;
 import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.common.filter.pattern.PatternFilterFactory;
+import org.zoomdev.zoom.common.utils.Page;
 import org.zoomdev.zoom.dao.*;
 import org.zoomdev.zoom.dao.adapters.EntityField;
 
@@ -106,7 +107,7 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
         builder.buildLimit(position, size);
         try {
             List<T> list = EntitySqlUtils.executeQuery(this,builder,entityFields,entity,false);
-            int total = getCount();
+            int total = count();
             int page = builder.getPageFromPosition(position, size);
             return new Page<T>(list, page, size, total);
         } finally {
@@ -271,10 +272,26 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
         return result.getValue();
     }
 
-    public int getCount() {
-        builder.selectRaw("COUNT(*) AS COUNT_");
+    public int count() {
+        return value("COUNT(*) AS COUNT_",int.class);
+    }
+
+    @Override
+    public <E> E value(String key, Class<E> typeOfE) {
+        builder.selectRaw(key);
         builder.buildSelect();
         return Caster.to(EntitySqlUtils.executeGetValue(this,builder),int.class);
+    }
+
+    @Override
+    public EAr<T> setEntity(Entity entity) {
+        this.entity = entity;
+        return this;
+    }
+
+    @Override
+    public Entity getEntity() {
+        return entity;
     }
 
     @Override
