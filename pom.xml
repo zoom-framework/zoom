@@ -26,20 +26,20 @@
 		</snapshotRepository>
 	</distributionManagement>
 
-	<repositories>
-		<repository>
-			<id>nexus</id>
-			<name>Team Nexus Repository</name>
-			<url>http://nexus.zoom-dev.org/repository/maven-public/</url>
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>nexus</id>
-			<name>Team Nexus Repository</name>
-			<url>http://nexus.zoom-dev.org/repository/maven-public/</url>
-		</pluginRepository>
-	</pluginRepositories>
+	<!--<repositories>-->
+		<!--<repository>-->
+			<!--<id>nexus</id>-->
+			<!--<name>Team Nexus Repository</name>-->
+			<!--<url>http://nexus.zoom-dev.org/repository/maven-public/</url>-->
+		<!--</repository>-->
+	<!--</repositories>-->
+	<!--<pluginRepositories>-->
+		<!--<pluginRepository>-->
+			<!--<id>nexus</id>-->
+			<!--<name>Team Nexus Repository</name>-->
+			<!--<url>http://nexus.zoom-dev.org/repository/maven-public/</url>-->
+		<!--</pluginRepository>-->
+	<!--</pluginRepositories>-->
 
 	<modules>
 		<module>zoom-caster</module>
