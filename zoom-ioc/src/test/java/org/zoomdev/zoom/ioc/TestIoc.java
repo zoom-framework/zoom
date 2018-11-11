@@ -10,6 +10,7 @@ import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.common.utils.Visitor;
 import org.zoomdev.zoom.ioc.configuration.SimpleConfigBuilder;
 import org.zoomdev.zoom.ioc.impl.SimpleIocContainer;
+import org.zoomdev.zoom.ioc.models.ShopService;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -31,8 +32,14 @@ public class TestIoc extends TestCase {
                 new SimpleConfigBuilder(ioc)
         );
         resolvers.visit(scanner);
+        ShopService shopService = ioc.get(ShopService.class);
 
-        
+
+        shopService.showProduct();
+
+        shopService.editProduct("test");
+
+        assertEquals(shopService.showProduct(),"test");
 
 
     }
