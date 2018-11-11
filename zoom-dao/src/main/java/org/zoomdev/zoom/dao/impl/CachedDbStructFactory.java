@@ -1,7 +1,6 @@
 package org.zoomdev.zoom.dao.impl;
 
 import org.zoomdev.zoom.common.designpattern.SingletonUtils;
-import org.zoomdev.zoom.dao.RawAr;
 import org.zoomdev.zoom.dao.driver.DbStructFactory;
 import org.zoomdev.zoom.dao.meta.TableMeta;
 
@@ -16,7 +15,7 @@ public class CachedDbStructFactory implements DbStructFactory {
     private DbStructFactory factory;
 
     //保证与表名称不一样就行了
-    private static final String NAMES = "#@names";
+    private static final String NAME_AND_COMMENT_KEY_NAME = "#@names";
 
 
     public CachedDbStructFactory(DbStructFactory factory){
@@ -53,13 +52,15 @@ public class CachedDbStructFactory implements DbStructFactory {
 
     @Override
     public void fill(TableMeta meta) {
-        if(meta.getComment()!=null)return;
+        if(meta.getComment()!=null){
+            return;
+        }
         factory.fill(meta);
     }
 
     @Override
     public Collection<TableNameAndComment> getNameAndComments() {
-        return (Collection<TableNameAndComment>)SingletonUtils.liteDoubleLockMap(pool, NAMES, new SingletonUtils.SingletonInit<Object>() {
+        return (Collection<TableNameAndComment>)SingletonUtils.liteDoubleLockMap(pool, NAME_AND_COMMENT_KEY_NAME, new SingletonUtils.SingletonInit<Object>() {
             @Override
             public Object create() {
                 return factory.getNameAndComments();

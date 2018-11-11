@@ -2,6 +2,7 @@ package org.zoomdev.zoom.dao.impl;
 
 import org.zoomdev.zoom.common.Destroyable;
 import org.zoomdev.zoom.common.io.Io;
+import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.common.utils.StrKit;
 import org.zoomdev.zoom.dao.*;
 import org.zoomdev.zoom.dao.adapters.NameAdapter;
@@ -61,7 +62,6 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
 
     public ZoomDao(DataSource dataSource) {
         this(dataSource, false);
-
     }
 
     /**
@@ -102,6 +102,10 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
 
     @Override
     public void destroy() {
+        Classes.destroy(dbStructFactory);
+        Classes.destroy(beanEntityFactory);
+        Classes.destroy(recordEntityFactory);
+
         Io.closeAny(dataSource);
         Db.unregister(this);
     }
@@ -146,7 +150,7 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
             }
             this.names = names;
             this.tableCat = cat;
-            dbStructFactory = createDbStructFactory(metaData.getDatabaseProductName());
+            dbStructFactory = new CachedDbStructFactory(createDbStructFactory(metaData.getDatabaseProductName()));
         } finally {
             DaoUtils.close(rs);
         }
