@@ -3,7 +3,13 @@ package org.zoomdev.zoom.caster;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.Writer;
 import java.lang.reflect.Field;
+import java.sql.Clob;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -133,27 +139,53 @@ public class CasterTest {
     static class A {
         private Collection<B> list;
         private String a;
+
+        private int b;
     }
-	@Test
+
+
+	@Test(expected = Caster.CasterException.class)
     public void testWrap() throws NoSuchFieldException {
 
 	   assertEquals( Caster.wrap(String.class,int.class)
                .to("123"),123);
+		assertEquals( Caster.wrap(String.class,int.class)
+				.to("0"),0);
+		assertEquals( Caster.wrap(String.class,int.class)
+				.to(null),0);
+
 
         Field field = A.class.getDeclaredField("list");
-        //assertEquals(field.getType(), field.getGenericType());
-
         Field fa = A.class.getDeclaredField("a");
-        fa.getGenericType();
-
-        assertEquals(fa.getType(), fa.getGenericType());
-
-
-        assertTrue(Number.class.isAssignableFrom(Integer.class));
-
-
+        Field fb = A.class.getDeclaredField("b");
         assertTrue(Caster.toType("[]", field.getGenericType()) instanceof List);
 
+       ValueCaster caster=  Caster.wrapFirstVisit( fb.getGenericType() );
+
+        assertEquals(  caster.to("1") , 1);
+
+
+        caster.to(3.0f);
+
 	}
-	
+
+    @Test
+	public void testProvider(){
+	    Caster.registerCastProvider(new Caster.CasterProvider() {
+            @Override
+            public ValueCaster getCaster(Class<?> srcType, Class<?> toType) {
+                return null;
+            }
+        });
+
+
+    }
+
+    @Test
+    public void testClob(){
+
+
+	    assertEquals(Caster.to(new MockClob("hello"),String.class),"hello");
+
+    }
 }

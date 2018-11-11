@@ -53,7 +53,30 @@ public class Caster {
 	 * @return
 	 */
 	public static ValueCaster wrapFirstVisit(Type dest) {
-		return new FirstVisitValueCaster(dest);
+		return new WrapException(new FirstVisitValueCaster(dest));
+    }
+
+
+    public static class WrapException implements ValueCaster{
+
+        public WrapException(ValueCaster valueCaster) {
+            this.valueCaster = valueCaster;
+        }
+
+        private ValueCaster valueCaster;
+
+        @Override
+        public Object to(Object src) {
+            try{
+                return valueCaster.to(src);
+            }catch (Throwable t){
+                if(t instanceof CasterException){
+                    throw (CasterException)t;
+                }
+                throw new CasterException(t);
+            }
+
+        }
     }
 
     static class FirstVisitValueCaster implements ValueCaster{
@@ -153,7 +176,7 @@ public class Caster {
 			super(message);
 		}
 		
-		public CasterException(Exception e) {
+		public CasterException(Throwable e) {
 			super(e);
 		}
 
@@ -409,16 +432,10 @@ public class Caster {
 				char[] buffer = new char[(int) clob.length()];
 				reader.read(buffer);
 				return new String(buffer);
-			} catch (IOException e) {
-				throw new CasterException(e);
-			} catch (SQLException e) {
+			} catch (Exception e) {
 				throw new CasterException(e);
 			} finally {
-				try {
-					reader.close();
-				} catch (IOException e) {
-					throw new RuntimeException(e);
-				}
+				try {reader.close();} catch (IOException e) {}
 			}
 		}
 
@@ -1281,7 +1298,7 @@ public class Caster {
 		throw new CasterException("Cannot cast " + srcType + " to " + toType);
 	}
 
-	static ValueCaster wrapParameterizedType(Class<?> srcType, ParameterizedType toType) {
+	private static ValueCaster wrapParameterizedType(Class<?> srcType, ParameterizedType toType) {
 		if (srcType == null || toType == null) {
 			throw new NullPointerException("srcType and toType must not be null");
 		}
