@@ -1,21 +1,13 @@
 package org.zoomdev.zoom.ioc;
 
 import junit.framework.TestCase;
-import org.zoomdev.zoom.common.annotations.IocBean;
-import org.zoomdev.zoom.common.annotations.Module;
 import org.zoomdev.zoom.common.res.ClassResolvers;
 import org.zoomdev.zoom.common.res.ResScanner;
-import org.zoomdev.zoom.common.utils.CachedClasses;
-import org.zoomdev.zoom.common.utils.Classes;
-import org.zoomdev.zoom.common.utils.Visitor;
 import org.zoomdev.zoom.ioc.configuration.SimpleConfigBuilder;
 import org.zoomdev.zoom.ioc.impl.SimpleIocContainer;
 import org.zoomdev.zoom.ioc.models.ShopService;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TestIoc extends TestCase {
 

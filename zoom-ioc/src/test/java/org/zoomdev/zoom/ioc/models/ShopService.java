@@ -1,9 +1,7 @@
 package org.zoomdev.zoom.ioc.models;
 
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.zoomdev.zoom.common.annotations.Inject;
 
-import java.lang.annotation.Inherited;
 import java.util.concurrent.CountDownLatch;
 
 /**

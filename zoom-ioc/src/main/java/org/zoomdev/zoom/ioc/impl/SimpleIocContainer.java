@@ -1,9 +1,8 @@
 package org.zoomdev.zoom.ioc.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.zoomdev.zoom.common.annotations.Inject;
 import org.zoomdev.zoom.common.utils.CachedClasses;
-import org.zoomdev.zoom.ioc.*;
-import org.apache.commons.lang3.StringUtils;
 import org.zoomdev.zoom.ioc.*;
 
 import java.lang.annotation.Annotation;
@@ -11,7 +10,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EventListener;
 import java.util.List;
 
 public class SimpleIocContainer implements IocContainer, IocEventListener {

@@ -1,7 +1,8 @@
 package org.zoomdev.zoom.ioc.impl;
 
-import org.zoomdev.zoom.ioc.*;
+import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.ioc.IocField;
+import org.zoomdev.zoom.ioc.IocObject;
 
 import java.lang.reflect.Field;
 
