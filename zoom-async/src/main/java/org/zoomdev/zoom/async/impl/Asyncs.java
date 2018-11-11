@@ -36,5 +36,12 @@ public class Asyncs {
 		return service;
 	}
 
-
+	/**
+	 * 新的异步任务队列
+	 * @param threadCount
+	 * @return
+	 */
+	public static JobQueue newJobQueue(int threadCount) {
+		return new AsyncService(threadCount);
+	}
 }

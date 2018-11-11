@@ -106,20 +106,20 @@ public abstract class AstractMethodInterceptorFactory implements AopFactory, Des
 		this.aopMakers = list.toArray(new MethodInterceptorFactory[list.size()]);
 	}
 
-	public AopFactory methodInterceptorFactory(MethodInterceptorFactory maker, int order) {
-		list.add(maker,order);
+	public AopFactory addMethodInterceptorFactory(MethodInterceptorFactory factory, int order) {
+		list.add(factory,order);
 		this.aopMakers = null;
 		return this;
 	}
 
 	@Override
 	public AopFactory addFilter(MethodInterceptor interceptor, ClassAndMethodFilter filter, int order) {
-		methodInterceptorFactory(new ClassAndMethodFilterMethodInterceptorFactory(filter, interceptor), order);
+		addMethodInterceptorFactory(new ClassAndMethodFilterMethodInterceptorFactory(filter, interceptor), order);
 		return this;
 	}
 	
 	public AopFactory addFilter(MethodInterceptor interceptor,String pattern,int order) {
-		methodInterceptorFactory(new ClassAndMethodFilterMethodInterceptorFactory(pattern, interceptor), order);
+		addMethodInterceptorFactory(new ClassAndMethodFilterMethodInterceptorFactory(pattern, interceptor), order);
 		return this;
 	}
 	

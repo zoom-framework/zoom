@@ -119,17 +119,22 @@ public class MethodInvoker {
 	 * @return
 	 */
 	public Object getReturnObject() {
-		if(!invoked) {
-			throw new RuntimeException("必须在调用invoke之后才可以使用这个方法，否则无意义");
-		}
+//		if(!invoked) {
+//			throw new RuntimeException("必须在调用invoke之后才可以使用这个方法，否则无意义");
+//		}
 		return returnObject;
 	}
-	
-	
+
+	public void setReturnObject(Object value,boolean setInvoked) {
+		returnObject = value;
+		if(setInvoked){
+			invoked = true;
+		}
+
+	}
 	
 	public void setReturnObject(Object value) {
-		returnObject = value;
-		invoked = true;
+        setReturnObject(value,true);
 	}
 
 	public boolean isInvoked() {

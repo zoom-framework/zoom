@@ -19,7 +19,7 @@ public class EventModule {
     @Inject
     public void init(AopFactory aopFactory, IocMethodVisitor methodVisitor, EventService eventService){
         methodVisitor.add(new EventObserverMethodHandler(eventService));
-        aopFactory.methodInterceptorFactory(new EventResultMethodInterceptorFactory(eventService),0);
+        aopFactory.addMethodInterceptorFactory(new EventResultMethodInterceptorFactory(eventService),0);
     }
 
 

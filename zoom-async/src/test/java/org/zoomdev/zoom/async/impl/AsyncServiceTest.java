@@ -123,7 +123,7 @@ public class AsyncServiceTest extends TestCase {
 
     public void testExecuteManyList() throws InterruptedException, ExecutionException {
         final MutableInt mutableInt = new MutableInt(0);
-        JobQueue jobQueue = Asyncs.defaultJobQueue();
+        JobQueue jobQueue = Asyncs.newJobQueue(10);
 
         List<List<Integer>> jobs = Arrays.asList(
                 Arrays.asList(1,2,3,4,5,6),

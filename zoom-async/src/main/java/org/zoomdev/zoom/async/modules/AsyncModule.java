@@ -13,7 +13,7 @@ public class AsyncModule {
 
 	@Inject
 	public void config( AopFactory factory) {
-		factory.methodInterceptorFactory(new AsyncMethodAopMaker(), 0);
+		factory.addMethodInterceptorFactory(new AsyncMethodAopMaker(), 0);
 	}
 
 	@IocBean

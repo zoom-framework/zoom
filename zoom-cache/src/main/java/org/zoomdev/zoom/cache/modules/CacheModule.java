@@ -27,8 +27,8 @@ public class CacheModule {
 	
 	@Inject
 	public void init(AopFactory factory,DataCache dataCache) {
-		factory.methodInterceptorFactory(new CacheGetInterceptorFactory(dataCache), 0);
-		factory.methodInterceptorFactory(new CacheRemoveInterceptorFactory(dataCache), 0);
+		factory.addMethodInterceptorFactory(new CacheGetInterceptorFactory(dataCache), 0);
+		factory.addMethodInterceptorFactory(new CacheRemoveInterceptorFactory(dataCache), 0);
 	}
 	
 }

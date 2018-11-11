@@ -76,10 +76,10 @@ public interface AopFactory extends ClassEnhancer {
 	
 	/**
 	 * 按照顺序增加{@link MethodInterceptorFactory}
-	 * @param maker
+	 * @param factory
 	 * @param order
 	 * @return
 	 */
-	AopFactory methodInterceptorFactory(MethodInterceptorFactory maker, int order);
+	AopFactory addMethodInterceptorFactory(MethodInterceptorFactory factory, int order);
 	
 }

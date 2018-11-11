@@ -10,7 +10,7 @@ public class DaoModule {
 
 	@Inject
 	public void config(AopFactory factory) {
-		factory.methodInterceptorFactory(new TransMethodInterceptorMaker(), 10000);
+		factory.addMethodInterceptorFactory(new TransMethodInterceptorMaker(), 10000);
 	}
 
 	
