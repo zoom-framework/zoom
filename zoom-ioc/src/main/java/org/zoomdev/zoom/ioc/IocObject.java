@@ -2,11 +2,10 @@ package org.zoomdev.zoom.ioc;
 
 /**
  * ioc object
- * @author jzoom
  *
+ * @author jzoom
  */
 public interface IocObject {
-
 
 
     /**
@@ -22,11 +21,12 @@ public interface IocObject {
      */
     Object get();
 
-	/**
-	 * 用于运行时动态设置
-	 * @param value
-	 */
-	void set(Object value);
+    /**
+     * 用于运行时动态设置
+     *
+     * @param value
+     */
+    void set(Object value);
 
     /**
      * 类似Object.getClass

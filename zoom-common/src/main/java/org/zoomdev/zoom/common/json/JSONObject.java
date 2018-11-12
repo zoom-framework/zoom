@@ -6,6 +6,6 @@ public interface JSONObject {
 
     String toJSON();
 
-    void fromJSON(Map<String,Object> data);
+    void fromJSON(Map<String, Object> data);
 
 }

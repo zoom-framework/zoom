@@ -11,12 +11,12 @@ import org.zoomdev.zoom.ioc.IocMethodVisitor;
 public class IocModule {
 
     @IocBean
-    public IocMethodVisitor getIocMethodVisitor(){
+    public IocMethodVisitor getIocMethodVisitor() {
         return new IocMethodVisitorImpl();
     }
 
     @Inject
     public void inject(IocContainer ioc, IocMethodVisitor visitor) {
-        ioc.addEventListener((IocEventListener)visitor);
+        ioc.addEventListener((IocEventListener) visitor);
     }
 }

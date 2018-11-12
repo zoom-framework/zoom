@@ -4,12 +4,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.Entity;
 import org.zoomdev.zoom.dao.adapters.EntityField;
-import org.zoomdev.zoom.dao.adapters.NameAdapter;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AbstractEntity implements Entity {
@@ -21,14 +22,14 @@ public abstract class AbstractEntity implements Entity {
 
     private Map<String, String> file2column;
 
-    private Map<String,String> namesMap;
+    private Map<String, String> namesMap;
 
     AbstractEntity(
             String table,
             EntityField[] entityFields,
             EntityField[] primaryKeys,
             AutoEntity autoEntity,
-            Map<String,String> namesMap) {
+            Map<String, String> namesMap) {
         this.table = table;
         this.entityFields = entityFields;
         this.primaryKeys = primaryKeys;
@@ -92,23 +93,23 @@ public abstract class AbstractEntity implements Entity {
                     break;
                 }
             }
-            if (column == null && namesMap!=null) {
+            if (column == null && namesMap != null) {
                 column = namesMap.get(field);
                 if (column != null) {
                     file2column.put(field, column);
                 }
             }
         }
-        if(column==null){
+        if (column == null) {
             throw new DaoException(
-                    String.format("找不到字段%s对应的列名称,所有可能的字段列表为"+getAvaliableFields(),
+                    String.format("找不到字段%s对应的列名称,所有可能的字段列表为" + getAvaliableFields(),
                             field));
         }
         return column;
     }
 
 
-    private String getAvaliableFields(){
+    private String getAvaliableFields() {
         Set<String> list = new LinkedHashSet<String>();
 
         for (EntityField entityField : entityFields) {
@@ -118,6 +119,6 @@ public abstract class AbstractEntity implements Entity {
         list.addAll(namesMap.keySet());
 
 
-        return StringUtils.join(list,",");
+        return StringUtils.join(list, ",");
     }
 }

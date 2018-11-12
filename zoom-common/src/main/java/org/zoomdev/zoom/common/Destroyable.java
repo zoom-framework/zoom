@@ -2,15 +2,14 @@ package org.zoomdev.zoom.common;
 
 /**
  * 可被销毁
- * @author renxueliang
  *
+ * @author renxueliang
  */
 public interface Destroyable {
-	
 
 
-	/**
-	 * 销毁
-	 */
-	void destroy();
+    /**
+     * 销毁
+     */
+    void destroy();
 }

@@ -24,12 +24,14 @@ public interface AutoField {
 
     /**
      * 用于insert，比如 select xxx.next_val() from dual
+     *
      * @return
      */
     String getSqlInsert(Object entity, EntityField entityField);
 
     /**
      * 某些情况下可以直接使用程序自动生成值
+     *
      * @return
      */
     Object generageValue(Object entity, EntityField entityField);

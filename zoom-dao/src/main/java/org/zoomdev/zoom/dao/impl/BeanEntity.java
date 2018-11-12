@@ -19,9 +19,9 @@ class BeanEntity extends AbstractEntity {
                EntityField[] primaryKeys,
                AutoEntity autoEntity,
                Class<?> type,
-               Map<String,String> namesMap,
+               Map<String, String> namesMap,
                JoinMeta[] joins) {
-        super(table, entityFields, primaryKeys, autoEntity,namesMap);
+        super(table, entityFields, primaryKeys, autoEntity, namesMap);
         if (primaryKeys.length == 0) {
             throw new DaoException("绑定实体类" + type + "至少需要定义一个主键");
         }
@@ -40,22 +40,20 @@ class BeanEntity extends AbstractEntity {
         try {
             return type.newInstance();
         } catch (Exception e) {
-            throw new DaoException("初始化类失败"+type,e);
+            throw new DaoException("初始化类失败" + type, e);
         }
     }
 
     @Override
     public void setQuerySource(SqlBuilder builder) {
         builder.table(table);
-        if(joins!=null){
-            for(JoinMeta joinMeta : joins){
-                builder.join(joinMeta.getTable(),joinMeta.getOn());
+        if (joins != null) {
+            for (JoinMeta joinMeta : joins) {
+                builder.join(joinMeta.getTable(), joinMeta.getOn());
             }
         }
 
     }
-
-
 
 
 }

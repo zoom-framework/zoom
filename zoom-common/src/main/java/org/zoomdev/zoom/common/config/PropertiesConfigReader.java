@@ -1,20 +1,13 @@
 package org.zoomdev.zoom.common.config;
 
+import org.apache.commons.lang3.StringUtils;
+import org.zoomdev.zoom.common.io.Io;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
-
-import org.zoomdev.zoom.common.io.Io;
-import org.zoomdev.zoom.common.io.Io;
 
 //
 ///**
@@ -52,141 +45,139 @@ import org.zoomdev.zoom.common.io.Io;
 // * @author jzoom
 // *
 // */
-class PropertiesConfigReader  implements ConfigLoader{
+class PropertiesConfigReader implements ConfigLoader {
 
-	
-	static Pattern ARRAY = Pattern.compile("([a-zA-Z\\.]+)\\[([0-9]+)\\]([a-zA-Z0-9\\.\\[\\]\\{\\}]*)");
-	
-	
-	static Pattern MAP = Pattern.compile("([a-zA-Z\\.]+)\\{\\}([a-zA-Z0-9\\.\\[\\]\\{\\}]*)");
-	
-	
-	@Override
-	public Map<String, Object> load(InputStream in,ConfigValueParser parser) throws IOException {
-		try {
-			Properties p = new Properties();
-			p.load(in);
-			 Map<String, Object> map = new HashMap<String, Object>();
-			Enumeration<Object> keys = p.keys();
-			while (keys.hasMoreElements()) {
-				String key = (String) keys.nextElement();
-				String value = p.getProperty(key);
-				if(key.contains("[") || key.contains("{")) {
-					parseKey(key, parser.parse(value), map);
-				}else {
-					map.put(key, parser.parse(value));
-				}
-			}
-			return map;
-		} finally {
-			Io.close(in);
-		}
-	}
-	
-	
-	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	static Object parseKey(String key,Object value, Map current  ) {
-		
-		Matcher matcher = ARRAY.matcher(key);
-		if(matcher.matches()) {
-			List list;
-			String name = matcher.group(1);
-			if(name.startsWith(".")) {
-				name = name.substring(1);
-			}
-			Object maybeList =  current.get(name);
-			if(maybeList == null) {
-				list = new ArrayList();
-				current.put(name, list);
-			}else {
-				if(maybeList instanceof List) {
-					list = (List)maybeList;
-				}else {
-					throw new RuntimeException(
-							String.format("同一个名称不能为多种类型 名称:%s 期待类型:%s 现在的类型:%s",name, List.class, maybeList.getClass() ));
-				}
-			}
-			String next = matcher.group(3);
-			if(next.isEmpty()) {
-				list.add(value);
-				return list;
-			}
-			String maybeIndex = matcher.group(2);
-			//这个时候一定是有值的，
-			if(StringUtils.isEmpty(maybeIndex)) {
-				throw new RuntimeException("对于下标[]来说，如果需要支持[].prop的属性，必须为[index].prop");
-			}
-			
-			int takeIndex = Integer.parseInt(maybeIndex);
-			if(takeIndex >= list.size()) {
-				for(int i=0 , c = takeIndex - list.size() + 1; i<c; ++i) {
-					list.add(null);
-				}
-			}
-			
-			Map takeCurrent = (Map) list.get(takeIndex);
-			if(takeCurrent == null) {
-				takeCurrent = new HashMap();
-				list.set(takeIndex, takeCurrent);
-			}
-			
-			parseKey(next,value, takeCurrent);  
-			
-			return list;
-		}else {
-			matcher = MAP.matcher(key);
-			if(matcher.matches()) {
-				
-				String name = matcher.group(1);
-				if(name.startsWith(".")) {
-					name = name.substring(1);
-				}
-				String next = matcher.group(2);
-				
-				if(StringUtils.isEmpty(next)) {
-					throw new RuntimeException("name{}的后面必须有key值，如:  bean{}.name=xxx") ;
-				}
-				
-				Map map;
-				Object maybeMap = current.get(name);
-				if(maybeMap==null) {
-					map = new HashMap();
-					current.put(name, map);
-					maybeMap = map;
-				}else {
-					if(maybeMap instanceof Map) {
-						map = (Map)maybeMap;
-					}else {
-						throw new RuntimeException(
-								String.format("同一个名称不能为多种类型 名称:%s 期待类型:%s 现在的类型:%s",name, Map.class, maybeMap.getClass() ));
-					}
-				}
-				parseKey(matcher.group(2), value, map);
-				
-				return current;
-			}else {
-				String name = key;
-				if(name.startsWith(".")) {
-					name = name.substring(1);
-				}
-				Object orgValue = current.get(name);
-				if(orgValue!=null) {
-					if(orgValue instanceof Map) {
-						throw new RuntimeException("覆盖原值,出现这个错误的原因一般是，之前设置了一个Map，而后又尝试设置一个普通值");
-					}else if(orgValue instanceof List) {
-						throw new RuntimeException("覆盖原值,出现这个错误的原因一般是，之前设置了一个List，而后又尝试设置一个普通值");
-					}
-				}
-				current.put(name	,value);
-				return current;
-			}
-			
-		}
-		
-		
-	}
-	
-	
-	
+
+    static Pattern ARRAY = Pattern.compile("([a-zA-Z\\.]+)\\[([0-9]+)\\]([a-zA-Z0-9\\.\\[\\]\\{\\}]*)");
+
+
+    static Pattern MAP = Pattern.compile("([a-zA-Z\\.]+)\\{\\}([a-zA-Z0-9\\.\\[\\]\\{\\}]*)");
+
+
+    @Override
+    public Map<String, Object> load(InputStream in, ConfigValueParser parser) throws IOException {
+        try {
+            Properties p = new Properties();
+            p.load(in);
+            Map<String, Object> map = new HashMap<String, Object>();
+            Enumeration<Object> keys = p.keys();
+            while (keys.hasMoreElements()) {
+                String key = (String) keys.nextElement();
+                String value = p.getProperty(key);
+                if (key.contains("[") || key.contains("{")) {
+                    parseKey(key, parser.parse(value), map);
+                } else {
+                    map.put(key, parser.parse(value));
+                }
+            }
+            return map;
+        } finally {
+            Io.close(in);
+        }
+    }
+
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    static Object parseKey(String key, Object value, Map current) {
+
+        Matcher matcher = ARRAY.matcher(key);
+        if (matcher.matches()) {
+            List list;
+            String name = matcher.group(1);
+            if (name.startsWith(".")) {
+                name = name.substring(1);
+            }
+            Object maybeList = current.get(name);
+            if (maybeList == null) {
+                list = new ArrayList();
+                current.put(name, list);
+            } else {
+                if (maybeList instanceof List) {
+                    list = (List) maybeList;
+                } else {
+                    throw new RuntimeException(
+                            String.format("同一个名称不能为多种类型 名称:%s 期待类型:%s 现在的类型:%s", name, List.class, maybeList.getClass()));
+                }
+            }
+            String next = matcher.group(3);
+            if (next.isEmpty()) {
+                list.add(value);
+                return list;
+            }
+            String maybeIndex = matcher.group(2);
+            //这个时候一定是有值的，
+            if (StringUtils.isEmpty(maybeIndex)) {
+                throw new RuntimeException("对于下标[]来说，如果需要支持[].prop的属性，必须为[index].prop");
+            }
+
+            int takeIndex = Integer.parseInt(maybeIndex);
+            if (takeIndex >= list.size()) {
+                for (int i = 0, c = takeIndex - list.size() + 1; i < c; ++i) {
+                    list.add(null);
+                }
+            }
+
+            Map takeCurrent = (Map) list.get(takeIndex);
+            if (takeCurrent == null) {
+                takeCurrent = new HashMap();
+                list.set(takeIndex, takeCurrent);
+            }
+
+            parseKey(next, value, takeCurrent);
+
+            return list;
+        } else {
+            matcher = MAP.matcher(key);
+            if (matcher.matches()) {
+
+                String name = matcher.group(1);
+                if (name.startsWith(".")) {
+                    name = name.substring(1);
+                }
+                String next = matcher.group(2);
+
+                if (StringUtils.isEmpty(next)) {
+                    throw new RuntimeException("name{}的后面必须有key值，如:  bean{}.name=xxx");
+                }
+
+                Map map;
+                Object maybeMap = current.get(name);
+                if (maybeMap == null) {
+                    map = new HashMap();
+                    current.put(name, map);
+                    maybeMap = map;
+                } else {
+                    if (maybeMap instanceof Map) {
+                        map = (Map) maybeMap;
+                    } else {
+                        throw new RuntimeException(
+                                String.format("同一个名称不能为多种类型 名称:%s 期待类型:%s 现在的类型:%s", name, Map.class, maybeMap.getClass()));
+                    }
+                }
+                parseKey(matcher.group(2), value, map);
+
+                return current;
+            } else {
+                String name = key;
+                if (name.startsWith(".")) {
+                    name = name.substring(1);
+                }
+                Object orgValue = current.get(name);
+                if (orgValue != null) {
+                    if (orgValue instanceof Map) {
+                        throw new RuntimeException("覆盖原值,出现这个错误的原因一般是，之前设置了一个Map，而后又尝试设置一个普通值");
+                    } else if (orgValue instanceof List) {
+                        throw new RuntimeException("覆盖原值,出现这个错误的原因一般是，之前设置了一个List，而后又尝试设置一个普通值");
+                    }
+                }
+                current.put(name, value);
+                return current;
+            }
+
+        }
+
+
+    }
+
+
 }

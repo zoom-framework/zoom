@@ -2,8 +2,8 @@ package org.zoomdev.zoom.common.expression;
 
 /**
  * 比较运算符号，用于解析数据库或参数中的运算符
- * @author jzoom
  *
+ * @author jzoom
  */
 public enum Symbol implements Compare.CompareValue {
     GT(">", Compare.GT),                //>
@@ -36,22 +36,22 @@ public enum Symbol implements Compare.CompareValue {
     }
 
     public static Symbol parse(String value) {
-        if(">".equals(value)) {
+        if (">".equals(value)) {
             return GT;
         }
-        if("<".equals(value)){
+        if ("<".equals(value)) {
             return LT;
         }
-        if(">=".equals(value)){
+        if (">=".equals(value)) {
             return GTE;
         }
-        if("<=".equals(value)){
+        if ("<=".equals(value)) {
             return LTE;
         }
-        if("<>".equals(value)){
+        if ("<>".equals(value)) {
             return NEQ;
         }
-        if("=".equals(value)) {
+        if ("=".equals(value)) {
             return EQ;
         }
         return null;

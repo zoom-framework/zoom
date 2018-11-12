@@ -4,9 +4,9 @@ import org.zoomdev.zoom.dao.alias.AliasPolicy;
 
 public class EmptyAlias implements AliasPolicy {
 
-	@Override
-	public String getAlias(String column) {
-		return column;
-	}
+    @Override
+    public String getAlias(String column) {
+        return column;
+    }
 
 }

@@ -7,7 +7,6 @@ package org.zoomdev.zoom.ioc;
  * {@link org.zoomdev.zoom.common.Initializeable}
  *
  * @author jzoom
- *
  */
 public interface IocEvent {
     /**

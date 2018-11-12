@@ -18,9 +18,9 @@ public class AsyncMethodAopMaker extends AnnotationMethodInterceptorFactory<Asyn
     @Override
     protected void createMethodInterceptors(Async annotation, Method method, List<MethodInterceptor> interceptors) {
 
-        if(Future.class.isAssignableFrom(method.getReturnType())){
+        if (Future.class.isAssignableFrom(method.getReturnType())) {
             interceptors.add(interceptorWithFuture);
-        }else{
+        } else {
             interceptors.add(interceptor);
         }
     }
@@ -31,8 +31,7 @@ public class AsyncMethodAopMaker extends AnnotationMethodInterceptorFactory<Asyn
     private static class AsyncMethodInterceptorWithFuture implements MethodInterceptor {
 
 
-
-        private AsyncMethodInterceptorWithFuture(){
+        private AsyncMethodInterceptorWithFuture() {
 
         }
 
@@ -45,27 +44,27 @@ public class AsyncMethodAopMaker extends AnnotationMethodInterceptorFactory<Asyn
                         invoker.invoke();
                         Object value = invoker.getReturnObject();
                         /// 仍然是一个future
-                        if(value instanceof Future){
-                            value = ((Future)value).get();
+                        if (value instanceof Future) {
+                            value = ((Future) value).get();
                         }
                         return value;
                     } catch (Throwable throwable) {
-                       throw Classes.makeThrow(throwable);
+                        throw Classes.makeThrow(throwable);
                     }
 
                 }
             });
-            invoker.setReturnObject(task,false);
+            invoker.setReturnObject(task, false);
             Asyncs.defaultJobQueue().run(task);
 
         }
 
     }
+
     private static class AsyncMethodInterceptor implements MethodInterceptor {
 
 
-
-        private AsyncMethodInterceptor(){
+        private AsyncMethodInterceptor() {
 
         }
 

@@ -8,10 +8,6 @@ import org.zoomdev.zoom.dao.alias.impl.CamelAliasPolicy;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.meta.TableMeta;
 
-import javax.swing.table.TableColumn;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * 重命名相关策略
  */
@@ -27,7 +23,7 @@ class RenameUtils {
     }
 
 
-    private static AliasPolicy getAliasPolicyForNames(AliasPolicyMaker maker,String[] names){
+    private static AliasPolicy getAliasPolicyForNames(AliasPolicyMaker maker, String[] names) {
         AliasPolicy aliasPolicy = maker.getAliasPolicy(names);
         if (aliasPolicy == null) {
             aliasPolicy = CamelAliasPolicy.DEFAULT;
@@ -36,46 +32,46 @@ class RenameUtils {
     }
 
 
-
-
     public static interface ColumnRenameVisitor {
         /**
-         *
          * @param tableMeta
          * @param columnMeta
-         * @param fieldName                 实体类字段（虚拟）
-         * @param selectColumnName          用于在select语句中的字段，可能会增加AS
+         * @param fieldName        实体类字段（虚拟）
+         * @param selectColumnName 用于在select语句中的字段，可能会增加AS
          */
-        void visit( TableMeta tableMeta,ColumnMeta columnMeta,String fieldName,String selectColumnName);
+        void visit(TableMeta tableMeta, ColumnMeta columnMeta, String fieldName, String selectColumnName);
     }
+
     public static void rename(Dao dao,
                               TableMeta tableMeta,
-                              ColumnRenameVisitor visitor){
+                              ColumnRenameVisitor visitor) {
 
 
         AliasPolicyMaker maker = dao.getAliasPolicyMaker();
         AliasPolicy aliasPolicy = maker.getAliasPolicy(getColumnNames(tableMeta));
         for (ColumnMeta columnMeta : tableMeta.getColumns()) {
             String field = aliasPolicy.getAlias(columnMeta.getName());
-            visitor.visit(tableMeta,columnMeta,field,columnMeta.getName());
+            visitor.visit(tableMeta, columnMeta, field, columnMeta.getName());
         }
 
     }
+
     public static void rename(Dao dao,
                               String table,
-                              ColumnRenameVisitor visitor){
+                              ColumnRenameVisitor visitor) {
 
         TableMeta tableMeta = dao.getDbStructFactory().getTableMeta(table);
         dao.getDbStructFactory().fill(tableMeta);
 
-        rename(dao,tableMeta,visitor);
+        rename(dao, tableMeta, visitor);
 
     }
+
     public static void rename(Dao dao,
                               String[] tables,
-                              ColumnRenameVisitor visitor){
+                              ColumnRenameVisitor visitor) {
         AliasPolicyMaker maker = dao.getAliasPolicyMaker();
-        AliasPolicy tableAliasPolicy = getAliasPolicyForNames(maker,tables);
+        AliasPolicy tableAliasPolicy = getAliasPolicyForNames(maker, tables);
 
         boolean first = true;
         for (String table : tables) {
@@ -83,20 +79,20 @@ class RenameUtils {
             dao.getDbStructFactory().fill(tableMeta);
             String tableAliasName = tableAliasPolicy.getAlias(table);
             // 取出每一个表的重命名策略
-            AliasPolicy columnAliasPolicy = getAliasPolicyForNames(maker,getColumnNames(tableMeta));
+            AliasPolicy columnAliasPolicy = getAliasPolicyForNames(maker, getColumnNames(tableMeta));
             for (ColumnMeta columnMeta : tableMeta.getColumns()) {
                 String columnAliasName = columnAliasPolicy.getAlias(columnMeta.getName());
                 //如果是第一个表，则直接使用字段名称，否则使用table.column的形式
                 String fieldName = first ? columnAliasName : (tableAliasName + StrKit.upperCaseFirst(columnAliasName));
 
-                String selectColumnName = String.format("%s.%s AS %s",table,
+                String selectColumnName = String.format("%s.%s AS %s", table,
                         dao.getDriver().protectColumn(columnMeta.getName()),
                         dao.getDriver().protectColumn(StrKit.toUnderLine(fieldName) + "_")
-                        );
-                visitor.visit(tableMeta,columnMeta,fieldName,selectColumnName);
+                );
+                visitor.visit(tableMeta, columnMeta, fieldName, selectColumnName);
 
             }
-            if(first)first=false;
+            if (first) first = false;
         }
     }
 }

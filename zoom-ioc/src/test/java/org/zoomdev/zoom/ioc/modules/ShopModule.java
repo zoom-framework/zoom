@@ -1,6 +1,5 @@
 package org.zoomdev.zoom.ioc.modules;
 
-import jdk.nashorn.internal.lookup.MethodHandleFactory;
 import org.zoomdev.zoom.common.annotations.Inject;
 import org.zoomdev.zoom.common.annotations.IocBean;
 import org.zoomdev.zoom.common.annotations.Module;
@@ -19,21 +18,20 @@ import java.util.concurrent.CountDownLatch;
 public class ShopModule {
 
 
-
-    @IocBean(initialize = "init",destroy = "destroy")
-    public PushService getPushService(){
+    @IocBean(initialize = "init", destroy = "destroy")
+    public PushService getPushService() {
 
         return new PushServiceImpl("testKey");
     }
 
     @Inject
-    public void inject(IocMethodVisitor methodVisitor, final ShopService shopService){
+    public void inject(IocMethodVisitor methodVisitor, final ShopService shopService) {
         methodVisitor.add(new AnnotationMethodHandler<TestListener>() {
             @Override
             protected void visit(IocObject target, TestListener annotation, IocMethod method) {
 
                 shopService.setListener(
-                    target,
+                        target,
                         method
                 );
 
@@ -42,7 +40,7 @@ public class ShopModule {
     }
 
     @IocBean
-    public CountDownLatch getCountDownLatch(){
+    public CountDownLatch getCountDownLatch() {
         return new CountDownLatch(100);
     }
 }

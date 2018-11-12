@@ -6,16 +6,16 @@ import org.zoomdev.zoom.web.parameter.ParameterParserFactory;
 
 import java.lang.reflect.Method;
 
-public class SimpleParameterParserFactory implements ParameterParserFactory,Destroyable {
+public class SimpleParameterParserFactory implements ParameterParserFactory, Destroyable {
 
-	@Override
-	public ParameterParser createParamParser(Class<?> controllerClass, Method method, String[] names) {
-		return new AutoParameterParser(controllerClass, method, names);
-	}
+    @Override
+    public ParameterParser createParamParser(Class<?> controllerClass, Method method, String[] names) {
+        return new AutoParameterParser(controllerClass, method, names);
+    }
 
-	@Override
-	public void destroy() {
-		
-	}
+    @Override
+    public void destroy() {
+
+    }
 
 }

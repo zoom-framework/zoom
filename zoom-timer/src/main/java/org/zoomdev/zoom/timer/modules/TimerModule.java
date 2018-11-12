@@ -1,5 +1,6 @@
 package org.zoomdev.zoom.timer.modules;
 
+import org.apache.commons.lang3.StringUtils;
 import org.zoomdev.zoom.common.Destroyable;
 import org.zoomdev.zoom.common.annotations.Inject;
 import org.zoomdev.zoom.common.annotations.IocBean;
@@ -14,7 +15,6 @@ import org.zoomdev.zoom.timer.TimerService;
 import org.zoomdev.zoom.timer.annotation.Timer;
 import org.zoomdev.zoom.timer.annotation.TimerEnable;
 import org.zoomdev.zoom.timer.impl.QuartzTimerService;
-import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Method;
 
@@ -22,10 +22,10 @@ import java.lang.reflect.Method;
 public class TimerModule implements Destroyable {
 
 
-	@IocBean
-	public TimerService getTimerService() {
-		return new QuartzTimerService();
-	}
+    @IocBean
+    public TimerService getTimerService() {
+        return new QuartzTimerService();
+    }
 
 
     private String getCron(Timer timer) {
@@ -101,13 +101,10 @@ public class TimerModule implements Destroyable {
     }
 
 
+    @Override
+    public void destroy() {
+
+    }
 
 
-	@Override
-	public void destroy() {
-		
-	}
-
-
-	
 }

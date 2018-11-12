@@ -15,9 +15,7 @@ public interface Sql<T extends Sql> {
     String RIGHT = "RIGHT";
 
 
-
-
-    T where(String key,Object value);
+    T where(String key, Object value);
 
     T orWhere(String key, Object value);
 
@@ -25,7 +23,7 @@ public interface Sql<T extends Sql> {
 
     T like(String name, SqlBuilder.Like like, Object value);
 
-    T whereCondition(String key,Object...values);
+//    T whereCondition(String key,Object...values);
 
     T where(String key, Symbol symbol, Object value);
 
@@ -37,7 +35,7 @@ public interface Sql<T extends Sql> {
     T groupBy(String field);
 
     /// having
-    T having(String field,Symbol symbol,Object value);
+    T having(String field, Symbol symbol, Object value);
 
 
     /// union
@@ -47,10 +45,9 @@ public interface Sql<T extends Sql> {
 
 
     // 多表查询
-    T join(String table,String on);
+    T join(String table, String on);
 
     T join(String table, String on, String type);
-
 
 
     /// 选择查询字段

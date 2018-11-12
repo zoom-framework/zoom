@@ -12,6 +12,7 @@ import java.lang.reflect.Method;
 public abstract class AnnotationMethodHandler<T extends Annotation> implements IocMethodHandler {
 
     private Class<T> annotationClass;
+
     @SuppressWarnings("unchecked")
     public AnnotationMethodHandler() {
         //获取泛型类型
@@ -21,16 +22,18 @@ public abstract class AnnotationMethodHandler<T extends Annotation> implements I
     @Override
     public void destroy(IocObject target, IocMethod method) {
         T annotation = method.getAnnotation(annotationClass);
-        destroy(target,annotation,method);
+        destroy(target, annotation, method);
     }
-    protected void destroy(IocObject target,T annotation, IocMethod method) {
+
+    protected void destroy(IocObject target, T annotation, IocMethod method) {
 
     }
+
     @Override
     public void create(IocObject target, IocMethod proxy) {
         Method method = proxy.getMethod();
-       T annotation = method.getAnnotation(annotationClass);
-        visit(target,annotation,proxy);
+        T annotation = method.getAnnotation(annotationClass);
+        visit(target, annotation, proxy);
     }
 
     @Override

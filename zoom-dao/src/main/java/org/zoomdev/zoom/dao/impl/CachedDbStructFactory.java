@@ -18,22 +18,23 @@ public class CachedDbStructFactory implements DbStructFactory {
     private static final String NAME_AND_COMMENT_KEY_NAME = "#@names";
 
 
-    public CachedDbStructFactory(DbStructFactory factory){
+    public CachedDbStructFactory(DbStructFactory factory) {
         this.factory = factory;
     }
+
     /**
      * 缓存
      */
-    private Map<String,Object> pool = new ConcurrentHashMap<String, Object>();
+    private Map<String, Object> pool = new ConcurrentHashMap<String, Object>();
 
-    public <T> T get(String key){
-        return (T)pool.get(key);
+    public <T> T get(String key) {
+        return (T) pool.get(key);
     }
 
     @Override
     public Collection<String> getTableNames() {
         List<String> array = new ArrayList<String>();
-        for(TableNameAndComment data : getNameAndComments()){
+        for (TableNameAndComment data : getNameAndComments()) {
             array.add(data.getName());
         }
         return array;
@@ -41,8 +42,8 @@ public class CachedDbStructFactory implements DbStructFactory {
 
 
     @Override
-    public TableMeta getTableMeta( final String tableName) {
-        return (TableMeta)SingletonUtils.liteDoubleLockMap(pool, tableName, new SingletonUtils.SingletonInit<Object>() {
+    public TableMeta getTableMeta(final String tableName) {
+        return (TableMeta) SingletonUtils.liteDoubleLockMap(pool, tableName, new SingletonUtils.SingletonInit<Object>() {
             @Override
             public Object create() {
                 return factory.getTableMeta(tableName);
@@ -52,7 +53,7 @@ public class CachedDbStructFactory implements DbStructFactory {
 
     @Override
     public void fill(TableMeta meta) {
-        if(meta.getComment()!=null){
+        if (meta.getComment() != null) {
             return;
         }
         factory.fill(meta);
@@ -60,7 +61,7 @@ public class CachedDbStructFactory implements DbStructFactory {
 
     @Override
     public Collection<TableNameAndComment> getNameAndComments() {
-        return (Collection<TableNameAndComment>)SingletonUtils.liteDoubleLockMap(pool, NAME_AND_COMMENT_KEY_NAME, new SingletonUtils.SingletonInit<Object>() {
+        return (Collection<TableNameAndComment>) SingletonUtils.liteDoubleLockMap(pool, NAME_AND_COMMENT_KEY_NAME, new SingletonUtils.SingletonInit<Object>() {
             @Override
             public Object create() {
                 return factory.getNameAndComments();

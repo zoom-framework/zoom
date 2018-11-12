@@ -24,6 +24,6 @@ public class PayloadEvent implements Event {
 
     @Override
     public boolean is(String _name) {
-        return StringUtils.equals(_name,name);
+        return StringUtils.equals(_name, name);
     }
 }

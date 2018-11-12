@@ -12,21 +12,23 @@ import java.lang.annotation.Target;
 public @interface Join {
 
     /**
-     *  表名称
+     * 表名称
      */
     String table();
 
     /**
      * 表名称的别名
+     *
      * @return
      */
     String alias() default "";
 
     /**
      * 字符:[a-zA-Z0-9()><= ]
+     *
      * @return
      */
     String on();
 
-    String type() default  Ar.INNER;
+    String type() default Ar.INNER;
 }

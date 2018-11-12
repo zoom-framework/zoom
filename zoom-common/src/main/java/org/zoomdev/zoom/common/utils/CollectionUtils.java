@@ -5,35 +5,36 @@ import java.util.*;
 public class CollectionUtils {
 
     public static Map<String, Object> asMap(Object... values) {
-		return MapUtils.asMap(values);
-	}
-	
-	public static <T> Set<T> asSet(T...values){
-		Set<T> set = new LinkedHashSet<T>();
-		for (T string : values) {
-			set.add(string);
-		}
-		return set;
-	}
-	
-	public static Map<String, Object> valueMap(Object value,String...keys){
-		Map<String, Object> map = new LinkedHashMap<String,Object>();
-		for (String string : keys) {
-			map.put(string, value);
-		}
-		return map;
-	}
+        return MapUtils.asMap(values);
+    }
+
+    public static <T> Set<T> asSet(T... values) {
+        Set<T> set = new LinkedHashSet<T>();
+        for (T string : values) {
+            set.add(string);
+        }
+        return set;
+    }
+
+    public static Map<String, Object> valueMap(Object value, String... keys) {
+        Map<String, Object> map = new LinkedHashMap<String, Object>();
+        for (String string : keys) {
+            map.put(string, value);
+        }
+        return map;
+    }
 
     public static String[] toArray(List<String> values) {
         return values.toArray(new String[values.size()]);
     }
 
-    public static boolean isEmpty(Map<?,?> map) {
+    public static boolean isEmpty(Map<?, ?> map) {
         return map == null || map.size() == 0;
     }
 
     /**
      * 遍历array,可能转化array类型
+     *
      * @param it
      * @param converter
      * @param <T>
@@ -52,6 +53,7 @@ public class CollectionUtils {
         }
         return list;
     }
+
     public static <T, E> List<E> map(List<T> it, Converter<T, E> converter) {
         List<E> list = new ArrayList<E>(it.size());
         for (T t : it) {
@@ -65,16 +67,16 @@ public class CollectionUtils {
     }
 
     public static interface Convert<T, E> {
-		E convert(T data);
-	}
+        E convert(T data);
+    }
 
-	public static <T,E> Set<E> newSet(Iterable<T> iterable, Convert<T,E> convert) {
+    public static <T, E> Set<E> newSet(Iterable<T> iterable, Convert<T, E> convert) {
 
-		Set<E> set = new LinkedHashSet<E>();
+        Set<E> set = new LinkedHashSet<E>();
 
-		for(T data : iterable){
-			set.add(convert.convert(data));
-		}
-		return set;
-	}
+        for (T data : iterable) {
+            set.add(convert.convert(data));
+        }
+        return set;
+    }
 }

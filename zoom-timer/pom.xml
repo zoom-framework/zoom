@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.zoomdev.zoom</groupId>
         <artifactId>zoom-parent</artifactId>
-        <version>0.2.0</version>
+        <version>0.2.1-SNAPSHOT</version>
     </parent>
 
     <groupId>org.zoomdev.zoom</groupId>
@@ -35,8 +35,6 @@
             <groupId>org.zoomdev.zoom</groupId>
             <artifactId>zoom-common</artifactId>
         </dependency>
-
-
 
 
         <dependency>

@@ -17,8 +17,6 @@ import java.util.List;
 public class RecordEntityFactory extends AbstractEntityFactory {
 
 
-
-
     public RecordEntityFactory(Dao dao) {
         super(dao);
     }
@@ -57,7 +55,7 @@ public class RecordEntityFactory extends AbstractEntityFactory {
     }
 
     @Override
-    public Entity getEntity( Class<?> type, String tableName) {
+    public Entity getEntity(Class<?> type, String tableName) {
         TableMeta tableMeta = getTableMeta(tableName);
 
         //获取到field和column的对应关系
@@ -65,9 +63,9 @@ public class RecordEntityFactory extends AbstractEntityFactory {
 
         RenameUtils.rename(dao, tableMeta, new RenameUtils.ColumnRenameVisitor() {
             @Override
-            public void visit(TableMeta tableMeta, ColumnMeta columnMeta, String fieldName,String selectColumnName) {
+            public void visit(TableMeta tableMeta, ColumnMeta columnMeta, String fieldName, String selectColumnName) {
                 RecordEntityField entityField = new RecordEntityField(
-                         fieldName
+                        fieldName
                 );
                 //单表的情况下无须有as
                 entityField.setSelectColumnName(columnMeta.getName());
@@ -128,7 +126,7 @@ public class RecordEntityFactory extends AbstractEntityFactory {
             @Override
             public void visit(TableMeta tableMeta, ColumnMeta columnMeta, String fieldName, String selectColumnName) {
                 RecordEntityField entityField = new RecordEntityField(fieldName);
-                entityField.setColumn( tableMeta.getName() + "." + columnMeta.getName());
+                entityField.setColumn(tableMeta.getName() + "." + columnMeta.getName());
                 entityField.setSelectColumnName(selectColumnName);
                 //只有clob blob 需要适配，
                 entityField.setCaster(getCaster(columnMeta.getDataType()));

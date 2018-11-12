@@ -20,7 +20,7 @@ class StatementAdapters {
     static StatementAdapter DEFAULT = new StatementAdapter() {
         @Override
         public void adapt(PreparedStatement statement, int index, Object value) throws SQLException {
-            statement.setObject(index,value);
+            statement.setObject(index, value);
         }
     };
 

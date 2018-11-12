@@ -1,49 +1,47 @@
-<project 
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.zoomdev.zoom</groupId>
-		<artifactId>zoom-parent</artifactId>
-		<version>0.2.0</version>
-	</parent>
-	<groupId>org.zoomdev.zoom</groupId>
-	<artifactId>zoom-aop</artifactId>
-	<packaging>jar</packaging>
+<project
+        xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.zoomdev.zoom</groupId>
+        <artifactId>zoom-parent</artifactId>
+        <version>0.2.1-SNAPSHOT</version>
+    </parent>
+    <groupId>org.zoomdev.zoom</groupId>
+    <artifactId>zoom-aop</artifactId>
+    <packaging>jar</packaging>
 
-	<name>zoom-aop</name>
-	<url>http://maven.apache.org</url>
+    <name>zoom-aop</name>
+    <url>http://maven.apache.org</url>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		
-	</properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-	<dependencies>
+    </properties>
 
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.7</version>
-			<scope>test</scope>
-		</dependency>
+    <dependencies>
 
-		<dependency>
-			<groupId>org.zoomdev.zoom</groupId>
-			<artifactId>zoom-common</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.7</version>
+            <scope>test</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>org.zoomdev.zoom</groupId>
-			<artifactId>zoom-ioc</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.javassist</groupId>
-			<artifactId>javassist</artifactId>
-			<version>3.18.2-GA</version>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
+        <dependency>
+            <groupId>org.zoomdev.zoom</groupId>
+            <artifactId>zoom-common</artifactId>
+        </dependency>
 
-	</dependencies>
+        <dependency>
+            <groupId>org.zoomdev.zoom</groupId>
+            <artifactId>zoom-ioc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.18.2-GA</version>
+        </dependency>
+
+    </dependencies>
 </project>

@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-public class AutoParameterParser implements ParameterParser ,Destroyable {
+public class AutoParameterParser implements ParameterParser, Destroyable {
 
     public abstract class AbstractParameterDecoder implements ParameterParser.HttpParameterDecoder {
         private ParameterParser parser;
@@ -50,11 +50,11 @@ public class AutoParameterParser implements ParameterParser ,Destroyable {
     }
 
     public class MapParameterDecoder extends AbstractParameterDecoder {
-		private ParameterParser map;
-		
-		public MapParameterDecoder() {
-			
-		}
+        private ParameterParser map;
+
+        public MapParameterDecoder() {
+
+        }
 
 
         @Override
@@ -67,50 +67,49 @@ public class AutoParameterParser implements ParameterParser ,Destroyable {
             return mapFactory.createParamParser(controllerClass, method, names);
         }
 
-	}
-	
-	private static final MapParameterParserFactory mapFactory = new MapParameterParserFactory();
-	private static final FormParameterParserFactory formFactory = new FormParameterParserFactory();
-	
-	
-	private Class<?> controllerClass;
-	private Method method;
-	private String[] names;
-	
-	private ParameterParser.HttpParameterDecoder[] decoders;
+    }
 
-	public AutoParameterParser(Class<?> controllerClass, Method method, String[] names) {
-		this.controllerClass = controllerClass;
-		this.method = method;
-		this.names = names;
-		for (String name : names) {
-			if(name==null) {
-				throw new RuntimeException("name 不能为null " + controllerClass + ":" + method);
-			}
-		}
-		this.decoders = new ParameterParser.HttpParameterDecoder[] {
-				new RequestParameterDecoder(),
-				new MapParameterDecoder(),
-				
-		};
-	}
-	
-	
-	
-	@Override
-	public void destroy() {
-		this.method = null;
-	}
+    private static final MapParameterParserFactory mapFactory = new MapParameterParserFactory();
+    private static final FormParameterParserFactory formFactory = new FormParameterParserFactory();
 
 
-	@Override
-	public Object[] parse(ActionContext context) throws Exception {
-		for (HttpParameterDecoder httpParameterDecoder : decoders) {
-			Object[] result = httpParameterDecoder.decode(context);
-			if(result!=null)return result;
-		}
-		throw new RuntimeException("不支持的解析参数类型");
-	}
+    private Class<?> controllerClass;
+    private Method method;
+    private String[] names;
+
+    private ParameterParser.HttpParameterDecoder[] decoders;
+
+    public AutoParameterParser(Class<?> controllerClass, Method method, String[] names) {
+        this.controllerClass = controllerClass;
+        this.method = method;
+        this.names = names;
+        for (String name : names) {
+            if (name == null) {
+                throw new RuntimeException("name 不能为null " + controllerClass + ":" + method);
+            }
+        }
+        this.decoders = new ParameterParser.HttpParameterDecoder[]{
+                new RequestParameterDecoder(),
+                new MapParameterDecoder(),
+
+        };
+    }
+
+
+    @Override
+    public void destroy() {
+        this.method = null;
+    }
+
+
+    @Override
+    public Object[] parse(ActionContext context) throws Exception {
+        for (HttpParameterDecoder httpParameterDecoder : decoders) {
+            Object[] result = httpParameterDecoder.decode(context);
+            if (result != null) return result;
+        }
+        throw new RuntimeException("不支持的解析参数类型");
+    }
 
 
 }

@@ -9,7 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 public class MockAction implements ActionHandler {
     private String name;
     private String[] pathVariableNames;
-    public MockAction(String name,String...pathVariableNames) {
+
+    public MockAction(String name, String... pathVariableNames) {
         this.name = name;
         this.pathVariableNames = pathVariableNames;
     }
@@ -29,8 +30,8 @@ public class MockAction implements ActionHandler {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof MockAction) {
-            return ((MockAction)obj).getName().equals(getName());
+        if (obj instanceof MockAction) {
+            return ((MockAction) obj).getName().equals(getName());
         }
         return super.equals(obj);
     }

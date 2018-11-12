@@ -12,14 +12,14 @@ public class EventModule {
 
 
     @IocBean
-    public EventService getEventService(){
+    public EventService getEventService() {
         return new EventServiceImpl();
     }
 
     @Inject
-    public void init(AopFactory aopFactory, IocMethodVisitor methodVisitor, EventService eventService){
+    public void init(AopFactory aopFactory, IocMethodVisitor methodVisitor, EventService eventService) {
         methodVisitor.add(new EventObserverMethodHandler(eventService));
-        aopFactory.addMethodInterceptorFactory(new EventResultMethodInterceptorFactory(eventService),0);
+        aopFactory.addMethodInterceptorFactory(new EventResultMethodInterceptorFactory(eventService), 0);
     }
 
 

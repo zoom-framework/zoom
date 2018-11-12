@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.dao;
 
-public enum  Relation {
+public enum Relation {
 
     OneToMany,
     ManyToOne,

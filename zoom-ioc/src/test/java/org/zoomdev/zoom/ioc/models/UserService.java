@@ -8,8 +8,7 @@ public class UserService {
     private String name;
 
 
-
-    public String getAdmin(){
+    public String getAdmin() {
         return name;
     }
 

@@ -10,9 +10,9 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 public @interface CacheRemove {
 
-	/**
-	 * @see {Cache.name}
-	 * @return
-	 */
-	String format() default "";
+    /**
+     * @return
+     * @see {Cache.name}
+     */
+    String format() default "";
 }

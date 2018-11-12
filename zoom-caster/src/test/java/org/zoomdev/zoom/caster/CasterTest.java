@@ -2,10 +2,9 @@ package org.zoomdev.zoom.caster;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.stubbing.Answer;
 import org.zoomdev.zoom.caster.codec.Base64;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
 import java.lang.reflect.Field;
 import java.sql.Blob;
 import java.sql.Clob;
@@ -14,8 +13,10 @@ import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 //Let's import Mockito statically so that the code looks clearer
-import static org.mockito.Mockito.*;
 
 public class CasterTest {
 
@@ -140,10 +141,7 @@ public class CasterTest {
         private String a;
 
 
-
         private int b;
-
-
 
 
     }
@@ -158,8 +156,6 @@ public class CasterTest {
                 .to("0"), 0);
         assertEquals(Caster.wrap(String.class, int.class)
                 .to(null), 0);
-
-
 
 
         Field field = A.class.getDeclaredField("list");
@@ -177,10 +173,10 @@ public class CasterTest {
         caster.to(3.0f);
     }
 
-    public Map<String,Object> asMap(Object...args){
-        Map<String,Object> map = new HashMap<String, Object>();
-        for(int i=0;i < args.length; i+=2){
-            map.put(args[i].toString(),args[i+1]);
+    public Map<String, Object> asMap(Object... args) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        for (int i = 0; i < args.length; i += 2) {
+            map.put(args[i].toString(), args[i + 1]);
         }
         return map;
     }
@@ -198,8 +194,8 @@ public class CasterTest {
     }
 
 
-    private static class TestClass2{
-        private Map<String,Object> genericField1;
+    private static class TestClass2 {
+        private Map<String, Object> genericField1;
         private List<String> genericField2;
         private Set<String> genericField3;
         private Collection<String> genericField4;
@@ -229,13 +225,13 @@ public class CasterTest {
         ////Clob 转 泛型类型
         /// Map
         Field genericField1 = TestClass2.class.getDeclaredField("genericField1");
-        ValueCaster valueCaster = Caster.wrapType(Clob.class,genericField1.getGenericType());
+        ValueCaster valueCaster = Caster.wrapType(Clob.class, genericField1.getGenericType());
         assertEquals(valueCaster.to(new MockClob("{\"id\":\"testId\"}")),
-                asMap("id","testId") );
+                asMap("id", "testId"));
 
         //错误
         assertEquals(valueCaster.to(new MockClob("{id\":\"testId\"}")),
-                null );
+                null);
     }
 
     @Test
@@ -246,28 +242,27 @@ public class CasterTest {
         Field genericField3 = TestClass2.class.getDeclaredField("genericField3");
         Field genericField4 = TestClass2.class.getDeclaredField("genericField4");
 
-        ValueCaster valueCaster = Caster.wrapType(Clob.class,genericField2.getGenericType());
+        ValueCaster valueCaster = Caster.wrapType(Clob.class, genericField2.getGenericType());
         assertEquals(valueCaster.to(new MockClob("[\"1\",\"2\",\"3\"]")),
-               Arrays.asList("1","2","3") );
+                Arrays.asList("1", "2", "3"));
 
         Set<String> set = new HashSet<String>();
         set.add("1");
         set.add("2");
         set.add("3");
-        valueCaster = Caster.wrapType(Clob.class,genericField3.getGenericType());
+        valueCaster = Caster.wrapType(Clob.class, genericField3.getGenericType());
         assertEquals(valueCaster.to(new MockClob("[\"1\",\"2\",\"3\"]")),
-                set );
+                set);
 
-        valueCaster = Caster.wrapType(Clob.class,genericField4.getGenericType());
+        valueCaster = Caster.wrapType(Clob.class, genericField4.getGenericType());
         assertEquals(valueCaster.to(new MockClob("[\"1\",\"2\",\"3\"]")),
-                Arrays.asList("1","2","3") );
+                Arrays.asList("1", "2", "3"));
 
 
-        valueCaster = Caster.wrapType(Clob.class,genericField4.getGenericType());
+        valueCaster = Caster.wrapType(Clob.class, genericField4.getGenericType());
         assertEquals(valueCaster.to(new MockClob("[\"1\",\"2\",\"3\"]")),
-                Arrays.asList("1","2","3") );
+                Arrays.asList("1", "2", "3"));
     }
-
 
 
 }

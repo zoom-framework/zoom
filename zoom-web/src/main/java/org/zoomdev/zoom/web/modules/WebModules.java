@@ -1,12 +1,12 @@
 package org.zoomdev.zoom.web.modules;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.caster.ValueCaster;
 import org.zoomdev.zoom.common.annotations.Inject;
 import org.zoomdev.zoom.common.annotations.Module;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.web.utils.RequestUtils;
-import org.apache.commons.beanutils.BeanUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -25,32 +25,35 @@ public class WebModules {
         //	Caster.registerCastProvider(new Map2BeanProvider());
 
     }
+
     private static class Map2Bean implements ValueCaster {
         private Class<?> toType;
+
         public Map2Bean(Class<?> toType) {
             this.toType = toType;
         }
 
-        @SuppressWarnings({ "unchecked", "rawtypes" })
+        @SuppressWarnings({"unchecked", "rawtypes"})
         @Override
         public Object to(Object src) {
-            Map data = (Map)src;
+            Map data = (Map) src;
             try {
                 Object result = toType.newInstance();
                 BeanUtils.populate(result, data);
                 return result;
-            }catch (Exception e) {
+            } catch (Exception e) {
                 throw new Caster.CasterException(e);
             }
 
         }
 
     }
+
     static class Request2BeanProvider implements Caster.CasterProvider {
 
         @Override
         public ValueCaster getCaster(Class<?> srcType, Class<?> toType) {
-            if(!srcType.isAssignableFrom(HttpServletRequest.class)) {
+            if (!srcType.isAssignableFrom(HttpServletRequest.class)) {
                 return null;
             }
             return null;
@@ -62,13 +65,13 @@ public class WebModules {
 
         @Override
         public ValueCaster getCaster(Class<?> srcType, Class<?> toType) {
-            if(Map.class.isAssignableFrom(srcType)) {
-                if(Classes.isSimple(toType)) {
+            if (Map.class.isAssignableFrom(srcType)) {
+                if (Classes.isSimple(toType)) {
                     //转化简单类型应该是不行的
                     return null;
                 }
                 //java开头的一律略过
-                if(toType.getName().startsWith("java"))return null;
+                if (toType.getName().startsWith("java")) return null;
 
                 return new Map2Bean(toType);
             }
@@ -79,12 +82,12 @@ public class WebModules {
 
     }
 
-    static class Request2Map implements ValueCaster{
+    static class Request2Map implements ValueCaster {
 
         @Override
         public Object to(Object src) {
-            HttpServletRequest request = (HttpServletRequest)src;
-            return RequestUtils.getParameters( request );
+            HttpServletRequest request = (HttpServletRequest) src;
+            return RequestUtils.getParameters(request);
         }
 
     }

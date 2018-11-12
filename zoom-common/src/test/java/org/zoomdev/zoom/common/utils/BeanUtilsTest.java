@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 public class BeanUtilsTest extends TestCase {
 
 
-    static class A{
+    static class A {
         private String a;
         private int b;
         private float c;
@@ -47,7 +47,7 @@ public class BeanUtilsTest extends TestCase {
     }
 
 
-    public void testSimpleClass(){
+    public void testSimpleClass() {
 
 
     }

@@ -4,13 +4,13 @@ import java.lang.reflect.Method;
 
 /**
  * Action 工厂
- * @author jzoom
  *
+ * @author jzoom
  */
 public interface ActionFactory {
-	
-	Action createAction( Object target, 
-			Class<?> controllerClass,
-			Method method ,
-			ActionInterceptorFactory factory);
+
+    Action createAction(Object target,
+                        Class<?> controllerClass,
+                        Method method,
+                        ActionInterceptorFactory factory);
 }

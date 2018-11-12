@@ -2,169 +2,170 @@ package org.zoomdev.zoom.dao.meta;
 
 /**
  * 字段属性
- * @author jzoom
  *
+ * @author jzoom
  */
 public class ColumnMeta {
-	
-	public static enum KeyType{
-		PRIMARY,
-		UNIQUE,
-		INDEX
-	}
-	
-	/**
-	 * 数据库中的类型
-	 */
-	private Class<?> dataType;
-	
-	private String table;
-	
-	/**
-	 * Sql中的type
-	 */
-	private int type;
-	
-	
-	private KeyType keyType;
-	
-	private boolean nullable;
-	
-	private int maxLen;
 
-	/**
-	 * 是否自动提交
+    public static enum KeyType {
+        PRIMARY,
+        UNIQUE,
+        INDEX
+    }
+
+    /**
+     * 数据库中的类型
+     */
+    private Class<?> dataType;
+
+    private String table;
+
+    /**
+     * Sql中的type
+     */
+    private int type;
+
+
+    private KeyType keyType;
+
+    private boolean nullable;
+
+    private int maxLen;
+
+    /**
+     * 是否自动提交
      * 怎么来判断呢，需要使用driver来，
      * 某些情况下的数据库trigger会自动插入值，需要有一个factory来解释这种情况.
      * 比如oracle查询到对应的trigger则认为是自动增长.   driver.isAuto( table,column ), 要有这么个方法。
      * 比如有些值是在插入的时候使用函数更新，比如mysql的timestamp,这些都需要来判断
-	 */
-	private boolean auto;
+     */
+    private boolean auto;
 
     /**
-	 * 长度
-	 */
-	private int length;
-	
-	/**
-	 * 默认值
-	 */
-	private Object defaultValue;
-	
-	/**
-	 * 字段名称
-	 */
-	private String name;
-	
-	/**
-	 * 数据库中的原始类型，比如mysql的字符串: varchar(100) oracle的VARCHAR2(200)
-	 */
-	private String rawType;
+     * 长度
+     */
+    private int length;
 
-	public Class<?> getDataType() {
-		return dataType;
-	}
+    /**
+     * 默认值
+     */
+    private Object defaultValue;
 
-	public void setDataType(Class<?> type) {
-		this.dataType = type;
-	}
+    /**
+     * 字段名称
+     */
+    private String name;
 
-	public boolean isPrimary() {
-		return keyType == KeyType.PRIMARY;
-	}
+    /**
+     * 数据库中的原始类型，比如mysql的字符串: varchar(100) oracle的VARCHAR2(200)
+     */
+    private String rawType;
 
-	public boolean isAuto() {
-		return auto;
-	}
+    public Class<?> getDataType() {
+        return dataType;
+    }
 
-	public boolean isUnique() {
-		return keyType == KeyType.UNIQUE;
-	}
+    public void setDataType(Class<?> type) {
+        this.dataType = type;
+    }
 
-	public void setAuto(boolean auto) {
-		this.auto = auto;
-	}
+    public boolean isPrimary() {
+        return keyType == KeyType.PRIMARY;
+    }
 
-	public int getLength() {
-		return length;
-	}
+    public boolean isAuto() {
+        return auto;
+    }
 
-	public void setLength(int length) {
-		this.length = length;
-	}
+    public boolean isUnique() {
+        return keyType == KeyType.UNIQUE;
+    }
 
-	public Object getDefaultValue() {
-		return defaultValue;
-	}
+    public void setAuto(boolean auto) {
+        this.auto = auto;
+    }
 
-	public void setDefaultValue(Object defaultValue) {
-		this.defaultValue = defaultValue;
-	}
+    public int getLength() {
+        return length;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setLength(int length) {
+        this.length = length;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public Object getDefaultValue() {
+        return defaultValue;
+    }
 
-	public String getRawType() {
-		return rawType;
-	}
+    public void setDefaultValue(Object defaultValue) {
+        this.defaultValue = defaultValue;
+    }
 
-	public void setRawType(String rawType) {
-		this.rawType = rawType;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public int getType() {
-		return type;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setType(int type) {
-		this.type = type;
-	}
+    public String getRawType() {
+        return rawType;
+    }
 
-	private String comment;
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
-	
-	public String getComment() {
-		return comment;
-	}
+    public void setRawType(String rawType) {
+        this.rawType = rawType;
+    }
 
-	public KeyType getKeyType() {
-		return keyType;
-	}
+    public int getType() {
+        return type;
+    }
 
-	public void setKeyType(KeyType keyType) {
-		this.keyType = keyType;
-	}
+    public void setType(int type) {
+        this.type = type;
+    }
 
-	public boolean isNullable() {
-		return nullable;
-	}
+    private String comment;
 
-	public void setNullable(boolean nullable) {
-		this.nullable = nullable;
-	}
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 
-	public int getMaxLen() {
-		return maxLen;
-	}
+    public String getComment() {
+        return comment;
+    }
 
-	public void setMaxLen(int maxLen) {
-		this.maxLen = maxLen;
-	}
+    public KeyType getKeyType() {
+        return keyType;
+    }
 
-	public String getTable() {
-		return table;
-	}
+    public void setKeyType(KeyType keyType) {
+        this.keyType = keyType;
+    }
 
-	public void setTable(String table) {
-		this.table = table;
-	}
+    public boolean isNullable() {
+        return nullable;
+    }
+
+    public void setNullable(boolean nullable) {
+        this.nullable = nullable;
+    }
+
+    public int getMaxLen() {
+        return maxLen;
+    }
+
+    public void setMaxLen(int maxLen) {
+        this.maxLen = maxLen;
+    }
+
+    public String getTable() {
+        return table;
+    }
+
+    public void setTable(String table) {
+        this.table = table;
+    }
 
 
     @Override

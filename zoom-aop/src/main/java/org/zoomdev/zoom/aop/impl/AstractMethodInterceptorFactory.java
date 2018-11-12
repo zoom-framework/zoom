@@ -18,224 +18,219 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class AstractMethodInterceptorFactory implements AopFactory, Destroyable {
-	public static final String CONFIG_FIELD_NAME = "_$configs";
-	/**
-	 * 所有增强类名称都以这个未结尾
-	 */
-	public static final String TAIL = "$Enhance";
-	
-	/**
-	 * 
-	 */
-	private MethodInterceptorFactory[] aopMakers;
-	private List<Class<?>> createdClasses;
-	private List<AopConfig> createdConfigs;
-	
-	/**
-	 * 这里暂时只允许静态
-	 */
-	private Map<Class<?>, Class<?>> enhanceMap;
-	
-	private List<AopConfig> configs;
-	
-	/**
-	 * list
-	 */
-	private OrderedList<MethodInterceptorFactory> list;
+    public static final String CONFIG_FIELD_NAME = "_$configs";
+    /**
+     * 所有增强类名称都以这个未结尾
+     */
+    public static final String TAIL = "$Enhance";
 
-	public AstractMethodInterceptorFactory(MethodInterceptorFactory... makers) {
-		/**
-		 * 定义一些内置的AopMater
-		 */
-		list = new OrderedList<MethodInterceptorFactory>();
-		list.addAll(makers);
+    /**
+     *
+     */
+    private MethodInterceptorFactory[] aopMakers;
+    private List<Class<?>> createdClasses;
+    private List<AopConfig> createdConfigs;
 
-		configs = new ArrayList<AstractMethodInterceptorFactory.AopConfig>();
-		enhanceMap = new HashMap<Class<?>, Class<?>>();
-		
-		this.createdClasses = new ArrayList<Class<?>>();
-		this.createdConfigs = new ArrayList<AstractMethodInterceptorFactory.AopConfig>();
-		
-		
-	}
-	
-	/**
-	 * 销毁
-	 */
-	public void destroy() {
-		if(enhanceMap != null) {
-			Classes.destroy(enhanceMap);
-			enhanceMap = null;
-		}
-		
-		if(createdConfigs!=null) {
-			Classes.destroy(this.createdConfigs);
-			createdConfigs = null;
-		}
-		
-		if(createdClasses!=null) {
-			for (Class<?> clazz : createdClasses) {
-				try {
-					Classes.set(clazz,CONFIG_FIELD_NAME,null);
-				} catch (Exception e) {
-					
-				}
-			}
-			createdClasses.clear();
-			createdClasses = null;
-		}
-		
-		if(list!=null) {
-			Classes.destroy(list);
-			list = null;
-		}
-		
-		if(aopMakers != null) {
-			Classes.destroy( aopMakers );
-			aopMakers = null;
-		}
-		
-		if(configs!=null) {
-			Classes.destroy(configs);
-			configs = null;
-		}
-		
-	}
-	
-	private void build() {
-		this.aopMakers = list.toArray(new MethodInterceptorFactory[list.size()]);
-	}
+    /**
+     * 这里暂时只允许静态
+     */
+    private Map<Class<?>, Class<?>> enhanceMap;
 
-	public AopFactory addMethodInterceptorFactory(MethodInterceptorFactory factory, int order) {
-		list.add(factory,order);
-		this.aopMakers = null;
-		return this;
-	}
+    private List<AopConfig> configs;
 
-	@Override
-	public AopFactory addFilter(MethodInterceptor interceptor, ClassAndMethodFilter filter, int order) {
-		addMethodInterceptorFactory(new ClassAndMethodFilterMethodInterceptorFactory(filter, interceptor), order);
-		return this;
-	}
-	
-	public AopFactory addFilter(MethodInterceptor interceptor,String pattern,int order) {
-		addMethodInterceptorFactory(new ClassAndMethodFilterMethodInterceptorFactory(pattern, interceptor), order);
-		return this;
-	}
-	
-	public static class AopConfig implements Destroyable{
-		private MethodInterceptor[] interceptors;
-		private Method method;
-		
-		private MethodCaller caller;
-		
-		public AopConfig(Method method,List<MethodInterceptor> interceptors) {
-			this.method = method;
-			this.interceptors = interceptors.toArray(new MethodInterceptor[interceptors.size()]);
-		}
+    /**
+     * list
+     */
+    private OrderedList<MethodInterceptorFactory> list;
 
-		public MethodInterceptor[] getInterceptors() {
-			return interceptors;
-		}
+    public AstractMethodInterceptorFactory(MethodInterceptorFactory... makers) {
+        /**
+         * 定义一些内置的AopMater
+         */
+        list = new OrderedList<MethodInterceptorFactory>();
+        list.addAll(makers);
+
+        configs = new ArrayList<AstractMethodInterceptorFactory.AopConfig>();
+        enhanceMap = new HashMap<Class<?>, Class<?>>();
+
+        this.createdClasses = new ArrayList<Class<?>>();
+        this.createdConfigs = new ArrayList<AstractMethodInterceptorFactory.AopConfig>();
 
 
-		public Method getMethod() {
-			return method;
-		}
+    }
 
-		public MethodCaller getCaller() {
-			return caller;
-		}
+    /**
+     * 销毁
+     */
+    public void destroy() {
+        if (enhanceMap != null) {
+            Classes.destroy(enhanceMap);
+            enhanceMap = null;
+        }
 
-		public void setCaller(MethodCaller caller) {
-			this.caller = caller;
-		}
+        if (createdConfigs != null) {
+            Classes.destroy(this.createdConfigs);
+            createdConfigs = null;
+        }
 
-		@Override
-		public void destroy() {
-			if(this.caller != null) {
-				if(this.caller instanceof Destroyable) {
-					((Destroyable)this.caller).destroy();
-				}
-				this.caller = null;
-			}
-			
-			Classes.destroy(interceptors);
-		}
+        if (createdClasses != null) {
+            for (Class<?> clazz : createdClasses) {
+                try {
+                    Classes.set(clazz, CONFIG_FIELD_NAME, null);
+                } catch (Exception e) {
 
-	}
+                }
+            }
+            createdClasses.clear();
+            createdClasses = null;
+        }
 
-	
+        if (list != null) {
+            Classes.destroy(list);
+            list = null;
+        }
 
-	
+        if (aopMakers != null) {
+            Classes.destroy(aopMakers);
+            aopMakers = null;
+        }
 
-	@Override
-	public Class<?> enhance(Class<?> targetClass)  {
-		assert(targetClass!=null);
-		
-		Class<?> enhanced = enhanceMap.get(targetClass);
-		if(enhanced!=null) {
-			return enhanced;
-		}
-		
-		if(targetClass.getName().endsWith(TAIL)) {
-			return targetClass;
-		}
-		
-		try {
-			return Class.forName(targetClass.getName()+TAIL,false,targetClass.getClassLoader());
-		}catch (ClassNotFoundException e) {
-			
-		}
-		
-		Method[] methods = CachedClasses.getPublicMethods(targetClass);
-		if(methods.length > 0) {
-			
-			List<AopConfig> configs = new ArrayList<AopConfig>();
-			List<MethodInterceptor> interceptors = new ArrayList<MethodInterceptor>();
-			
-			if(aopMakers==null) {
-				build();
-			}
-			
-			for (Method method : methods) {
-				interceptors.clear();
+        if (configs != null) {
+            Classes.destroy(configs);
+            configs = null;
+        }
 
-				for (MethodInterceptorFactory maker : aopMakers) {
-					maker.createMethodInterceptors(targetClass, method, interceptors);
-				}
-				
-				if(interceptors.size() > 0) {
-					configs.add(new AopConfig(method,interceptors));
-				}
-				
-			}
-			
-			if(configs.size() > 0 ) {
-				try {
-					enhanced= enhance(targetClass,configs.toArray(new AopConfig[configs.size()]));
-					
-					
-				} catch (Exception e) {
-					throw new RuntimeException("增强类失败",e);
-				}
+    }
 
-				createdConfigs.addAll(configs);
-				createdClasses.add(targetClass);
-				enhanceMap.put(targetClass, enhanced);
-				this.configs.addAll(configs);
-				return enhanced;
-			}
-			
-		}
-		
-		
-		return targetClass;
-	}
-	
-	
+    private void build() {
+        this.aopMakers = list.toArray(new MethodInterceptorFactory[list.size()]);
+    }
+
+    public AopFactory addMethodInterceptorFactory(MethodInterceptorFactory factory, int order) {
+        list.add(factory, order);
+        this.aopMakers = null;
+        return this;
+    }
+
+    @Override
+    public AopFactory addFilter(MethodInterceptor interceptor, ClassAndMethodFilter filter, int order) {
+        addMethodInterceptorFactory(new ClassAndMethodFilterMethodInterceptorFactory(filter, interceptor), order);
+        return this;
+    }
+
+    public AopFactory addFilter(MethodInterceptor interceptor, String pattern, int order) {
+        addMethodInterceptorFactory(new ClassAndMethodFilterMethodInterceptorFactory(pattern, interceptor), order);
+        return this;
+    }
+
+    public static class AopConfig implements Destroyable {
+        private MethodInterceptor[] interceptors;
+        private Method method;
+
+        private MethodCaller caller;
+
+        public AopConfig(Method method, List<MethodInterceptor> interceptors) {
+            this.method = method;
+            this.interceptors = interceptors.toArray(new MethodInterceptor[interceptors.size()]);
+        }
+
+        public MethodInterceptor[] getInterceptors() {
+            return interceptors;
+        }
 
 
-	protected abstract Class<?> enhance(Class<?> src, AopConfig[] aopConfigs) throws Exception;
+        public Method getMethod() {
+            return method;
+        }
+
+        public MethodCaller getCaller() {
+            return caller;
+        }
+
+        public void setCaller(MethodCaller caller) {
+            this.caller = caller;
+        }
+
+        @Override
+        public void destroy() {
+            if (this.caller != null) {
+                if (this.caller instanceof Destroyable) {
+                    ((Destroyable) this.caller).destroy();
+                }
+                this.caller = null;
+            }
+
+            Classes.destroy(interceptors);
+        }
+
+    }
+
+
+    @Override
+    public Class<?> enhance(Class<?> targetClass) {
+        assert (targetClass != null);
+
+        Class<?> enhanced = enhanceMap.get(targetClass);
+        if (enhanced != null) {
+            return enhanced;
+        }
+
+        if (targetClass.getName().endsWith(TAIL)) {
+            return targetClass;
+        }
+
+        try {
+            return Class.forName(targetClass.getName() + TAIL, false, targetClass.getClassLoader());
+        } catch (ClassNotFoundException e) {
+
+        }
+
+        Method[] methods = CachedClasses.getPublicMethods(targetClass);
+        if (methods.length > 0) {
+
+            List<AopConfig> configs = new ArrayList<AopConfig>();
+            List<MethodInterceptor> interceptors = new ArrayList<MethodInterceptor>();
+
+            if (aopMakers == null) {
+                build();
+            }
+
+            for (Method method : methods) {
+                interceptors.clear();
+
+                for (MethodInterceptorFactory maker : aopMakers) {
+                    maker.createMethodInterceptors(targetClass, method, interceptors);
+                }
+
+                if (interceptors.size() > 0) {
+                    configs.add(new AopConfig(method, interceptors));
+                }
+
+            }
+
+            if (configs.size() > 0) {
+                try {
+                    enhanced = enhance(targetClass, configs.toArray(new AopConfig[configs.size()]));
+
+
+                } catch (Exception e) {
+                    throw new RuntimeException("增强类失败", e);
+                }
+
+                createdConfigs.addAll(configs);
+                createdClasses.add(targetClass);
+                enhanceMap.put(targetClass, enhanced);
+                this.configs.addAll(configs);
+                return enhanced;
+            }
+
+        }
+
+
+        return targetClass;
+    }
+
+
+    protected abstract Class<?> enhance(Class<?> src, AopConfig[] aopConfigs) throws Exception;
 
 }

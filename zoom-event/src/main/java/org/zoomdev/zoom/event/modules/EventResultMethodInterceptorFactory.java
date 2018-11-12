@@ -13,16 +13,17 @@ class EventResultMethodInterceptorFactory extends AnnotationMethodInterceptorFac
 
     private EventService eventService;
 
-    public EventResultMethodInterceptorFactory(EventService eventService){
+    public EventResultMethodInterceptorFactory(EventService eventService) {
         this.eventService = eventService;
     }
+
     @Override
     protected void createMethodInterceptors(EventResult annotation, Method method, List<MethodInterceptor> interceptors) {
-        interceptors.add(new EventResultMethodIngerceptor(eventService,annotation.value()));
+        interceptors.add(new EventResultMethodIngerceptor(eventService, annotation.value()));
     }
 
 
-    static class EventResultMethodIngerceptor implements MethodInterceptor{
+    static class EventResultMethodIngerceptor implements MethodInterceptor {
         public EventResultMethodIngerceptor(EventService eventService, String name) {
             this.eventService = eventService;
             this.name = name;
@@ -30,11 +31,12 @@ class EventResultMethodInterceptorFactory extends AnnotationMethodInterceptorFac
 
         private final EventService eventService;
         private final String name;
+
         @Override
         public void intercept(MethodInvoker invoker) throws Throwable {
             invoker.invoke();
             Object result = invoker.getReturnObject();
-            eventService.notifyObservers(name,result);
+            eventService.notifyObservers(name, result);
         }
     }
 }

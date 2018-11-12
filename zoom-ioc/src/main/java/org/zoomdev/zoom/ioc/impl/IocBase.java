@@ -7,7 +7,7 @@ public class IocBase implements Destroyable {
 
     protected IocContainer ioc;
 
-    public IocBase(IocContainer ioc){
+    public IocBase(IocContainer ioc) {
         this.ioc = ioc;
     }
 

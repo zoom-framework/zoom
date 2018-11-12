@@ -8,6 +8,7 @@ import org.zoomdev.zoom.dao.Ar;
  * List
  * int
  * Object/Record/instance
+ *
  * @param <T>
  */
 public interface DaoReturn<T> {

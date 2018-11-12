@@ -6,16 +6,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 
  * {@link Mapping}
- * 
- * @author jzoom
  *
+ * @author jzoom
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Controller {
-	
-	String key() default "";
+
+    String key() default "";
 
 }

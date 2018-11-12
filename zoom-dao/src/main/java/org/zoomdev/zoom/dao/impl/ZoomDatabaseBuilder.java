@@ -13,7 +13,7 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
 
     private Dao dao;
 
-    ZoomDatabaseBuilder(Dao dao){
+    ZoomDatabaseBuilder(Dao dao) {
         this.dao = dao;
     }
 
@@ -109,19 +109,19 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
 
     @Override
     public void build(Class<?> type, boolean dropIfExists) {
-        assert(type!=null);
+        assert (type != null);
         Field[] fields = CachedClasses.getFields(type);
-        if(fields.length==0){
+        if (fields.length == 0) {
             throw new DaoException("必须至少有一个字段");
         }
 
-        for(int i=0; i < fields.length; ++i){
+        for (int i = 0; i < fields.length; ++i) {
             Field field = fields[i];
-            if(field.isAnnotationPresent(ColumnIgnore.class)){
+            if (field.isAnnotationPresent(ColumnIgnore.class)) {
                 continue;
             }
             Column column = field.getAnnotation(Column.class);
-            if(column!=null){
+            if (column != null) {
                 continue;
             }
 

@@ -9,13 +9,11 @@ import org.zoomdev.zoom.ioc.IocObject;
 import java.util.concurrent.CountDownLatch;
 
 /**
- *
  * 逻辑： 商店销售商品，当商品售出之后推送到商户那边
- *
+ * <p>
  * 修改商品需要登录权限
- *
  */
-public class ShopService implements Initializeable,Destroyable {
+public class ShopService implements Initializeable, Destroyable {
 
 
     @Inject
@@ -27,28 +25,29 @@ public class ShopService implements Initializeable,Destroyable {
     private UserService userService;
 
 
-    public ShopService(UserService userService){
+    public ShopService(UserService userService) {
         this.userService = userService;
     }
+
     /**
      * 都可以浏览
      */
-    public String showProduct(){
-        System.out.println("product is " + userService.getAdmin()+":" + productService.getProduct());
+    public String showProduct() {
+        System.out.println("product is " + userService.getAdmin() + ":" + productService.getProduct());
         countDownLatch.countDown();
         return productService.getProduct();
     }
 
 
-    public void editProduct(String info){
+    public void editProduct(String info) {
         String user = userService.getAdmin();
-        productService.editProduct(user,info);
+        productService.editProduct(user, info);
 
         method.invoke(target);
     }
 
 
-    public String getName(){
+    public String getName() {
         return "Shop";
     }
 
@@ -65,7 +64,8 @@ public class ShopService implements Initializeable,Destroyable {
 
     private IocObject target;
     private IocMethod method;
-    public void setListener(IocObject target,IocMethod method) {
+
+    public void setListener(IocObject target, IocMethod method) {
 
         this.target = target;
         this.method = method;

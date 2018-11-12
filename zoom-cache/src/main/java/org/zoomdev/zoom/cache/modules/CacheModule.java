@@ -13,22 +13,22 @@ import org.zoomdev.zoom.common.annotations.Module;
 @Module(CacheEnable.class)
 public class CacheModule {
 
-	
-	public CacheModule() {
-		
-	}
-	
-	
-	@IocBean
-	public DataCache getCache() {
-		return new EhDataCache();
-	}
 
-	
-	@Inject
-	public void init(AopFactory factory,DataCache dataCache) {
-		factory.addMethodInterceptorFactory(new CacheGetInterceptorFactory(dataCache), 0);
-		factory.addMethodInterceptorFactory(new CacheRemoveInterceptorFactory(dataCache), 0);
-	}
-	
+    public CacheModule() {
+
+    }
+
+
+    @IocBean
+    public DataCache getCache() {
+        return new EhDataCache();
+    }
+
+
+    @Inject
+    public void init(AopFactory factory, DataCache dataCache) {
+        factory.addMethodInterceptorFactory(new CacheGetInterceptorFactory(dataCache), 0);
+        factory.addMethodInterceptorFactory(new CacheRemoveInterceptorFactory(dataCache), 0);
+    }
+
 }

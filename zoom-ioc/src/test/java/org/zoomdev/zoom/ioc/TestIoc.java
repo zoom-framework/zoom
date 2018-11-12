@@ -20,7 +20,6 @@ public class TestIoc extends TestCase {
         );
 
 
-
         IocClassLoader classLoader = ioc.getIocClassLoader();
         ResScanner scanner = ResScanner.me();
         scanner.scan();
@@ -34,29 +33,25 @@ public class TestIoc extends TestCase {
         resolvers.visit(scanner);
 
 
-
         ShopService shopService = ioc.get(ShopService.class);
 
         PushService pushService = ioc.get(PushService.class);
 
-        assertEquals(pushService.getName(),shopService.getName());
+        assertEquals(pushService.getName(), shopService.getName());
 
 
         shopService.showProduct();
 
         shopService.editProduct("test");
 
-        assertEquals(shopService.showProduct(),"test");
+        assertEquals(shopService.showProduct(), "test");
 
 
         IocContainer subIoc = new SimpleIocContainer(
-            ioc.getScope(),
+                ioc.getScope(),
                 ioc.getIocClassLoader(),
                 ioc.getEventListeners()
         );
-
-
-
 
 
         Classes.destroy(ioc);

@@ -23,7 +23,7 @@ public class RecordEntityField extends AbstractEntityField {
 
     @Override
     public Object get(Object target) {
-        return ((DataObject)target).get(field);
+        return ((DataObject) target).get(field);
     }
 
     @Override
@@ -33,6 +33,6 @@ public class RecordEntityField extends AbstractEntityField {
 
     @Override
     public void set(Object data, Object fieldValue) {
-        ((DataObject)data).put(field,fieldValue);
+        ((DataObject) data).put(field, fieldValue);
     }
 }

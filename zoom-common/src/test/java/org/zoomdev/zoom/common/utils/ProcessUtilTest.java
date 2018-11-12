@@ -1,6 +1,5 @@
 package org.zoomdev.zoom.common.utils;
 
-import org.zoomdev.zoom.common.queue.ServiceThread;
 import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;

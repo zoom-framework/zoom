@@ -19,23 +19,22 @@ public class AsyncModuleTest extends TestCase {
 
         JobQueue jobQueue = module.getJobQueue();
 
-        assertEquals(jobQueue,Asyncs.defaultJobQueue());
+        assertEquals(jobQueue, Asyncs.defaultJobQueue());
 
-        Class<?> type  = factory.enhance(TestAsyncService.class);
+        Class<?> type = factory.enhance(TestAsyncService.class);
 
-        TestAsyncService service = (TestAsyncService)type.newInstance();
+        TestAsyncService service = (TestAsyncService) type.newInstance();
 
         CountDownLatch countDownLatch = new CountDownLatch(2);
         service.setCountDownLatch(countDownLatch);
         service.testAsync();
 
 
-
         Future future = service.testAsyncWithFuture();
 
         countDownLatch.await();
 
-        assertEquals(future.get(),(Integer)100);
+        assertEquals(future.get(), (Integer) 100);
 
     }
 }

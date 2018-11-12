@@ -4,7 +4,6 @@ public interface RawAr extends Ar {
 
 
     /**
-     *
      * @param arr
      * @return
      */
@@ -17,12 +16,14 @@ public interface RawAr extends Ar {
     Ar table(String table);
 
 
-
-
     /**
      * dao.ar().table("xxx").set("id",1).set("name","123").insertOrUpdate("id"),当id存在则更新，否则插入
+     *
      * @param keys
      * @return
      */
-    int insertOrUpdate(String...keys);
+    int insertOrUpdate(String... keys);
+
+
+    Ar whereCondition(String key, Object... values);
 }

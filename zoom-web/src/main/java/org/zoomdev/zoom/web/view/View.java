@@ -8,17 +8,16 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * 提供一种轻量的渲染方法
+ *
+ * @author jzoom
  * @see FileView
  * @see org.zoomdev.zoom.web.view.impl.JsonView
  * @see BytesView
  * @see org.zoomdev.zoom.web.view.impl.RedirectView
  * @see StringView
- * 
- * @author jzoom
- *
  */
 public interface View {
-	
-	void render( HttpServletResponse response) throws Exception;
-	
+
+    void render(HttpServletResponse response) throws Exception;
+
 }

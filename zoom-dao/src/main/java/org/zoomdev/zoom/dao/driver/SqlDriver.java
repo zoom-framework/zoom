@@ -1,11 +1,11 @@
 package org.zoomdev.zoom.dao.driver;
 
 
-import java.util.List;
-import java.util.Map;
-
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 import org.zoomdev.zoom.dao.adapters.StatementAdapterFactory;
+
+import java.util.List;
+import java.util.Map;
 
 public interface SqlDriver extends StatementAdapterFactory {
 

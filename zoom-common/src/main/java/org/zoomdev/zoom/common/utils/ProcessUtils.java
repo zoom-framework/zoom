@@ -1,8 +1,5 @@
 package org.zoomdev.zoom.common.utils;
 
-import org.zoomdev.zoom.common.Destroyable;
-import org.zoomdev.zoom.common.io.Io;
-import org.zoomdev.zoom.common.queue.ServiceThread;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.common.Destroyable;
@@ -19,27 +16,30 @@ public class ProcessUtils {
     private static final Log log = LogFactory.getLog(ProcessUtils.class);
 
     public static ProcessController exec(String command) throws IOException {
-        return exec(command,new LogProcessListener());
+        return exec(command, new LogProcessListener());
     }
 
-    public static ProcessController exec(String command,ProcessListener processListener) throws IOException {
-        Process process =  Runtime.getRuntime().exec(command);
-        return new ProcessControllerImpl(process,processListener);
+    public static ProcessController exec(String command, ProcessListener processListener) throws IOException {
+        Process process = Runtime.getRuntime().exec(command);
+        return new ProcessControllerImpl(process, processListener);
     }
 
     public static interface ProcessController extends Destroyable {
         void write(String command) throws IOException;
+
         int waitFor() throws InterruptedException;
     }
 
 
-    public static interface ProcessListener{
+    public static interface ProcessListener {
         void onOutput(String line);
+
         void onExit(int code);
+
         void onException(Exception e);
     }
 
-    static class LogProcessListener implements ProcessListener{
+    static class LogProcessListener implements ProcessListener {
 
         @Override
         public void onOutput(String line) {
@@ -48,12 +48,12 @@ public class ProcessUtils {
 
         @Override
         public void onExit(int code) {
-            log.info("Process exit with code:"+code);
+            log.info("Process exit with code:" + code);
         }
 
         @Override
         public void onException(Exception e) {
-            log.error("Process exception",e);
+            log.error("Process exception", e);
         }
 
     }
@@ -72,7 +72,7 @@ public class ProcessUtils {
         private Thread waitThread;
 
 
-        public ProcessControllerImpl(Process process,ProcessListener processListener) {
+        public ProcessControllerImpl(Process process, ProcessListener processListener) {
             this.process = process;
             this.outputStream = process.getOutputStream();
             this.inputStream = process.getInputStream();
@@ -143,7 +143,7 @@ public class ProcessUtils {
             String line = null;
             try {
                 line = reader.readLine();
-                if(line == null){
+                if (line == null) {
                     execute();
                     return false;
                 }

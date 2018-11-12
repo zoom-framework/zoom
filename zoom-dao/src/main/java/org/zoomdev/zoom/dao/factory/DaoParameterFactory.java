@@ -6,8 +6,8 @@ public interface DaoParameterFactory<T extends Annotation> {
 
 
     DaoParameter create(
-        Class<?> type,
-        T annotation
+            Class<?> type,
+            T annotation
     );
 
     boolean isAnnotation(Annotation annotation);

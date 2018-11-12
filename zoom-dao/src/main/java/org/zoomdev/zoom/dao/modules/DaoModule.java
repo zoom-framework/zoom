@@ -8,11 +8,10 @@ import org.zoomdev.zoom.dao.transaction.TransMethodInterceptorMaker;
 @Module
 public class DaoModule {
 
-	@Inject
-	public void config(AopFactory factory) {
-		factory.addMethodInterceptorFactory(new TransMethodInterceptorMaker(), 10000);
-	}
+    @Inject
+    public void config(AopFactory factory) {
+        factory.addMethodInterceptorFactory(new TransMethodInterceptorMaker(), 10000);
+    }
 
-	
-	
+
 }

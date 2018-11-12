@@ -13,33 +13,35 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ZoomIocClassLoader extends IocBase implements IocClassLoader,Destroyable {
+public class ZoomIocClassLoader extends IocBase implements IocClassLoader, Destroyable {
 
     private Map<IocKey, IocClass> pool = new ConcurrentHashMap<IocKey, IocClass>();
 
-	private ClassEnhancer classEnhancer;
+    private ClassEnhancer classEnhancer;
 
-	public ZoomIocClassLoader(IocContainer ioc){
+    public ZoomIocClassLoader(IocContainer ioc) {
         super(ioc);
 
     }
 
-	@Override
+    @Override
     public IocClass get(IocKey key) {
         return pool.get(key);
-	}
-	@Override
-	public void destroy() {
-		Classes.destroy(pool);
-	}
-	@Override
+    }
+
+    @Override
+    public void destroy() {
+        Classes.destroy(pool);
+    }
+
+    @Override
     public IocClass append(final Class<?> type) {
         final IocKey key = new ZoomIocKey(type);
         return SingletonUtils.liteDoubleLockMap(pool, key, new SingletonUtils.SingletonInit<IocClass>() {
             @Override
             public IocClass create() {
-                if(key.isInterface()){
-                    throw new IocException("找不到"+key.getType()+"对应的配置，是否已经在Ioc容器注册了?");
+                if (key.isInterface()) {
+                    throw new IocException("找不到" + key.getType() + "对应的配置，是否已经在Ioc容器注册了?");
                 }
                 ZoomIocConstructor constructor = ZoomIocConstructor
                         .createFromClass(type, key, ZoomIocClassLoader.this, classEnhancer);
@@ -52,7 +54,7 @@ public class ZoomIocClassLoader extends IocBase implements IocClassLoader,Destro
                 return iocClass;
             }
         });
-	}
+    }
 
     @Override
     public void setClassEnhancer(ClassEnhancer enhancer) {
@@ -65,19 +67,19 @@ public class ZoomIocClassLoader extends IocBase implements IocClassLoader,Destro
     @Override
     public void appendModule(Class<?> moduleClass) {
         try {
-            log.info(String.format( "初始化Module [%s]" ,moduleClass));
+            log.info(String.format("初始化Module [%s]", moduleClass));
             Object module = Classes.newInstance(moduleClass);
-            append(moduleClass,module);
+            append(moduleClass, module);
             //bean
             Method[] methods = CachedClasses.getPublicMethods(moduleClass);
             for (Method method : methods) {
                 IocBean bean = method.getAnnotation(IocBean.class);
-                if(bean != null) {
-                   append(module,method);
+                if (bean != null) {
+                    append(module, method);
                 }
             }
         } catch (Exception e) {
-            throw new IocException("Module初始化失败，Module必须有一个默认构造函数",e);
+            throw new IocException("Module初始化失败，Module必须有一个默认构造函数", e);
         }
     }
 
@@ -101,19 +103,18 @@ public class ZoomIocClassLoader extends IocBase implements IocClassLoader,Destro
 
     @Override
     public IocClass append(Class<?> baseType, Object instance) {
-        return append(baseType,instance,false);
+        return append(baseType, instance, false);
     }
 
     @Override
     public IocClass append(Object moduleInstance, Method method) {
         ZoomIocConstructor constructor = ZoomIocConstructor.createFromIocBean(moduleInstance, method, this);
-		ZoomBeanIocClass iocClass = new ZoomBeanIocClass( ioc,this, constructor, constructor.getKey());
+        ZoomBeanIocClass iocClass = new ZoomBeanIocClass(ioc, this, constructor, constructor.getKey());
         constructor.setIocClass(iocClass);
-		pool.put(constructor.getKey(), iocClass);
+        pool.put(constructor.getKey(), iocClass);
 
         return iocClass;
-	}
-
+    }
 
 
 }

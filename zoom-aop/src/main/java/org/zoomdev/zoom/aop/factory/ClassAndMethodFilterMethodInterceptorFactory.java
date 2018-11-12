@@ -9,28 +9,26 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 public class ClassAndMethodFilterMethodInterceptorFactory implements MethodInterceptorFactory {
-	
 
-	private ClassAndMethodFilter filter;
-	private MethodInterceptor interceptor;
 
-	public ClassAndMethodFilterMethodInterceptorFactory(ClassAndMethodFilter filter, MethodInterceptor interceptor) {
-		this.filter = filter;
-		this.interceptor = interceptor;
-	}
+    private ClassAndMethodFilter filter;
+    private MethodInterceptor interceptor;
 
-	public ClassAndMethodFilterMethodInterceptorFactory(String pattern, MethodInterceptor interceptor) {
-		this( new PatternClassAndMethodFilter(pattern),interceptor);
-	}
-	
-	
-	
+    public ClassAndMethodFilterMethodInterceptorFactory(ClassAndMethodFilter filter, MethodInterceptor interceptor) {
+        this.filter = filter;
+        this.interceptor = interceptor;
+    }
 
-	@Override
-	public void createMethodInterceptors(Class<?> targetClass, Method method, List<MethodInterceptor> interceptors) {
-		if(filter.accept(targetClass) && filter.accept(targetClass,method)) {
-			interceptors.add(interceptor);
-		}
-	}
+    public ClassAndMethodFilterMethodInterceptorFactory(String pattern, MethodInterceptor interceptor) {
+        this(new PatternClassAndMethodFilter(pattern), interceptor);
+    }
+
+
+    @Override
+    public void createMethodInterceptors(Class<?> targetClass, Method method, List<MethodInterceptor> interceptors) {
+        if (filter.accept(targetClass) && filter.accept(targetClass, method)) {
+            interceptors.add(interceptor);
+        }
+    }
 
 }

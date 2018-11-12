@@ -11,16 +11,15 @@ import java.net.URLEncoder;
 public abstract class OutputStreamView implements View {
 
 
-
-    public OutputStreamView(){
+    public OutputStreamView() {
     }
 
     @Override
     public void render(HttpServletResponse response) throws Exception {
         OutputStream os = null;
-        try{
-            response.setHeader("Content-Disposition", new StringBuilder().append( "attachment; filename=")
-                    .append(URLEncoder.encode(getName(), response.getCharacterEncoding())).toString() );
+        try {
+            response.setHeader("Content-Disposition", new StringBuilder().append("attachment; filename=")
+                    .append(URLEncoder.encode(getName(), response.getCharacterEncoding())).toString());
             os = response.getOutputStream();
             writeTo(os);
         } finally {

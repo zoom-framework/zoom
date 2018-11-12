@@ -1,15 +1,14 @@
 package org.zoomdev.zoom.async.impl;
 
 import org.zoomdev.zoom.async.JobQueue;
-import org.zoomdev.zoom.async.impl.AsyncService;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
 /**
  * 提供对外的factory
- * @author jzoom
  *
+ * @author jzoom
  */
 public class Asyncs {
 
@@ -26,22 +25,23 @@ public class Asyncs {
             }
         });
     }
-	
-	/**
-	 * 默认异步任务队列
-	 * 
-	 * @return
-	 */
-	public static JobQueue defaultJobQueue() {
-		return service;
-	}
 
-	/**
-	 * 新的异步任务队列
-	 * @param threadCount
-	 * @return
-	 */
-	public static JobQueue newJobQueue(int threadCount) {
-		return new AsyncService(threadCount);
-	}
+    /**
+     * 默认异步任务队列
+     *
+     * @return
+     */
+    public static JobQueue defaultJobQueue() {
+        return service;
+    }
+
+    /**
+     * 新的异步任务队列
+     *
+     * @param threadCount
+     * @return
+     */
+    public static JobQueue newJobQueue(int threadCount) {
+        return new AsyncService(threadCount);
+    }
 }

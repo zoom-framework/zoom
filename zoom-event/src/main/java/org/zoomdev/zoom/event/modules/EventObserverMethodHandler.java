@@ -16,18 +16,18 @@ class EventObserverMethodHandler extends AnnotationMethodHandler<EventObserver> 
 
     private EventService eventService;
 
-    private Map<String,EventListener> listenerMap = new ConcurrentHashMap<String, EventListener>();
+    private Map<String, EventListener> listenerMap = new ConcurrentHashMap<String, EventListener>();
 
-    public EventObserverMethodHandler(EventService eventService){
+    public EventObserverMethodHandler(EventService eventService) {
         this.eventService = eventService;
     }
 
     @Override
     protected void visit(IocObject target, EventObserver annotation, IocMethod method) {
         String name = annotation.value();
-        EventListener listener = new InnerMethodInvoker(target,method.getMethod());
-        listenerMap.put(method.getUid(),listener);
-        eventService.addListener(name,listener);
+        EventListener listener = new InnerMethodInvoker(target, method.getMethod());
+        listenerMap.put(method.getUid(), listener);
+        eventService.addListener(name, listener);
     }
 
 
@@ -36,10 +36,10 @@ class EventObserverMethodHandler extends AnnotationMethodHandler<EventObserver> 
         String name = annotation.value();
         String uid = method.getUid();
         EventListener listener = listenerMap.get(uid);
-        eventService.removeListener(name,listener);
+        eventService.removeListener(name, listener);
     }
 
-    static class InnerMethodInvoker implements EventListener{
+    static class InnerMethodInvoker implements EventListener {
 
         private int condition;
 
@@ -47,13 +47,13 @@ class EventObserverMethodHandler extends AnnotationMethodHandler<EventObserver> 
             this.target = target;
             this.method = method;
             Class<?>[] types = method.getParameterTypes();
-            if(types.length == 0){
+            if (types.length == 0) {
                 condition = 0;
-            }else if(types.length == 1){
+            } else if (types.length == 1) {
                 Class<?> type = types[0];
-                if(Event.class.isAssignableFrom(type)){
+                if (Event.class.isAssignableFrom(type)) {
                     condition = 1;
-                }else{
+                } else {
                     condition = 2;
                 }
             }
@@ -68,16 +68,16 @@ class EventObserverMethodHandler extends AnnotationMethodHandler<EventObserver> 
 
             try {
                 final int condition = this.condition;
-                if(condition == 0){
+                if (condition == 0) {
                     method.invoke(target.get());
-                }else if(condition == 1){
+                } else if (condition == 1) {
                     method.invoke(target.get(), event);
-                }else{
+                } else {
                     method.invoke(target.get(), event.getName());
                 }
 
             } catch (Exception e) {
-               throw new RuntimeException(e);
+                throw new RuntimeException(e);
             }
         }
     }

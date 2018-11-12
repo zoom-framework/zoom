@@ -20,8 +20,7 @@ public abstract class ZoomIocField extends IocBase implements IocField {
     protected Field field;
 
 
-
-    public ZoomIocField(IocContainer ioc,Field field){
+    public ZoomIocField(IocContainer ioc, Field field) {
         super(ioc);
         field.setAccessible(true);
         this.field = field;

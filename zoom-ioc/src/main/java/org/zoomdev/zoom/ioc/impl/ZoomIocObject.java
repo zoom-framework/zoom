@@ -8,20 +8,20 @@ import org.zoomdev.zoom.ioc.IocClass;
 import org.zoomdev.zoom.ioc.IocEvent;
 import org.zoomdev.zoom.ioc.IocObject;
 
-public class ZoomIocObject implements IocObject,Destroyable {
+public class ZoomIocObject implements IocObject, Destroyable {
 
 
-	private static final Log log = LogFactory.getLog(ZoomIocObject.class);
-	
-	boolean inited;
-	
-	private Object obj;
-	
-	private IocEvent destroy;
+    private static final Log log = LogFactory.getLog(ZoomIocObject.class);
+
+    boolean inited;
+
+    private Object obj;
+
+    private IocEvent destroy;
 
     private IocClass iocClass;
 
-	private IocEvent init;
+    private IocEvent init;
 
     public ZoomIocObject(IocClass iocClass, Object obj, boolean inited, IocEvent iocInit, IocEvent iocDestroy) {
         this.iocClass = iocClass;
@@ -45,51 +45,51 @@ public class ZoomIocObject implements IocObject,Destroyable {
 
     public static IocObject wrap(IocClass iocClass, Object obj, boolean inited) {
         return new ZoomIocObject(iocClass, obj, inited);
-	}
+    }
 
 
-	@Override
-	public void destroy() {
-		if(obj==null)
-			return;
-		log.info("正在销毁"+obj);
-		try{
-            if(destroy!=null) {
+    @Override
+    public void destroy() {
+        if (obj == null)
+            return;
+        log.info("正在销毁" + obj);
+        try {
+            if (destroy != null) {
                 destroy.call(obj);
-            }else {
-                if(obj instanceof Destroyable) {
-                    ((Destroyable)obj).destroy();
+            } else {
+                if (obj instanceof Destroyable) {
+                    ((Destroyable) obj).destroy();
                 }
             }
-        }catch (Throwable t){
-            log.error("销毁对象的时候发生异常",t);
+        } catch (Throwable t) {
+            log.error("销毁对象的时候发生异常", t);
         }
 
-		obj = null;
+        obj = null;
         iocClass = null;
-	}
+    }
 
-	@Override
+    @Override
     public void initialize() {
-		if(init != null){
-		    init.call(obj);
-        }else{
+        if (init != null) {
+            init.call(obj);
+        } else {
             if (obj instanceof Initializeable) {
                 ((Initializeable) obj).initialize();
             }
         }
-	}
+    }
 
-	@Override
-	public Object get() {
-		return obj;
-	}
+    @Override
+    public Object get() {
+        return obj;
+    }
 
-	@Override
-	public void set(Object value) {
-		destroy();
-		this.obj = value;
-	}
+    @Override
+    public void set(Object value) {
+        destroy();
+        this.obj = value;
+    }
 
     @Override
     public IocClass getIocClass() {

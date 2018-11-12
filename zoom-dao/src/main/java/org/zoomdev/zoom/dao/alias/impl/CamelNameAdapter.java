@@ -5,43 +5,42 @@ import org.zoomdev.zoom.dao.adapters.NameAdapter;
 
 /**
  * 驼峰式命名规则
- * @author jzoom
  *
+ * @author jzoom
  */
 public class CamelNameAdapter implements NameAdapter {
 
-	public static final NameAdapter ADAPTER = new CamelNameAdapter();
-	
-	
-	
-	public CamelNameAdapter() {
-	}
+    public static final NameAdapter ADAPTER = new CamelNameAdapter();
 
-	@Override
-	public String getSelectColumn(String field) {
-		return getColumnName(field);
-	}
 
-	@Override
-	public String getFieldName(String column) {
-		return CamelAliasPolicy.DEFAULT.getAlias(column);
-	}
+    public CamelNameAdapter() {
+    }
 
-	@Override
-	public String getOrgFieldName(String column) {
-		return CamelAliasPolicy.DEFAULT.getAlias(column);
-	}
+    @Override
+    public String getSelectColumn(String field) {
+        return getColumnName(field);
+    }
 
-	@Override
-	public String getColumnName(String field) {
+    @Override
+    public String getFieldName(String column) {
+        return CamelAliasPolicy.DEFAULT.getAlias(column);
+    }
 
-		return StrKit.toUnderLine(field);
-	}
+    @Override
+    public String getOrgFieldName(String column) {
+        return CamelAliasPolicy.DEFAULT.getAlias(column);
+    }
 
-	@Override
-	public String getSelectField(String column) {
-		return getFieldName(column);
-	}
+    @Override
+    public String getColumnName(String field) {
+
+        return StrKit.toUnderLine(field);
+    }
+
+    @Override
+    public String getSelectField(String column) {
+        return getFieldName(column);
+    }
 
 
 }

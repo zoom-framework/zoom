@@ -3,11 +3,11 @@ package org.zoomdev.zoom.common.utils;
 
 /**
  * 访问者模式
- * @author jzoom
  *
  * @param <T>
+ * @author jzoom
  */
 public interface Visitor<T> {
 
-	void visit(T data);
+    void visit(T data);
 }

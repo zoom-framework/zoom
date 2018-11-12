@@ -6,34 +6,34 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 public class ZoomIocMethod extends IocBase implements IocMethod {
-	
-	
-	private IocKey[] parameterKeys;
-
-	private final Method method;
-
-	// 唯一id，在ioc容器中的
-	private String uid;
 
 
-	private IocClass iocClass;
+    private IocKey[] parameterKeys;
+
+    private final Method method;
+
+    // 唯一id，在ioc容器中的
+    private String uid;
 
 
-    public ZoomIocMethod(IocContainer ioc,IocClass iocClass,IocKey[] parameterKeys, Method method) {
+    private IocClass iocClass;
+
+
+    public ZoomIocMethod(IocContainer ioc, IocClass iocClass, IocKey[] parameterKeys, Method method) {
         super(ioc);
-        assert(parameterKeys!=null && method!=null && iocClass!=null);
-		this.parameterKeys = parameterKeys;
-		this.iocClass = iocClass;
-		this.method = method;
-	}
+        assert (parameterKeys != null && method != null && iocClass != null);
+        this.parameterKeys = parameterKeys;
+        this.iocClass = iocClass;
+        this.method = method;
+    }
 
 
-	private String getKey(){
+    private String getKey() {
         StringBuilder sb = new StringBuilder();
         sb.append(iocClass.getKey().toString())
                 .append(method.getName());
 
-        for(IocKey key : parameterKeys){
+        for (IocKey key : parameterKeys) {
             sb.append(key.toString());
         }
 
@@ -42,42 +42,41 @@ public class ZoomIocMethod extends IocBase implements IocMethod {
     }
 
     /**
-     *
      * @return
      */
     @Override
     public String getUid() {
 
         return uid == null ? (
-                uid =getKey()
-                )  :uid;
+                uid = getKey()
+        ) : uid;
     }
 
-	@Override
-	public IocKey[] getParameterKeys() {
-		return parameterKeys;
-	}
+    @Override
+    public IocKey[] getParameterKeys() {
+        return parameterKeys;
+    }
 
 
     @Override
     public Object invoke(IocObject obj) {
-		try {
+        try {
             IocObject[] values = new IocObject[parameterKeys.length];
             for (int i = 0, c = parameterKeys.length; i < c; ++i) {
                 values[i] = ioc.get(parameterKeys[i]);
             }
 
             return method.invoke(obj.get(), SimpleIocContainer.getValues(values));
-		} catch (Exception e) {
-			throw new IocException("调用ioc注入函数失败"+method,e);
+        } catch (Exception e) {
+            throw new IocException("调用ioc注入函数失败" + method, e);
         }
     }
 
 
-	@Override
-	public Method getMethod() {
-		return method;
-	}
+    @Override
+    public Method getMethod() {
+        return method;
+    }
 
     @Override
     public <T extends Annotation> boolean isAnnotationPresent(Class<T> annotationClass) {
@@ -88,7 +87,6 @@ public class ZoomIocMethod extends IocBase implements IocMethod {
     public <T extends Annotation> T getAnnotation(Class<T> annotationClass) {
         return method.getAnnotation(annotationClass);
     }
-
 
 
 }

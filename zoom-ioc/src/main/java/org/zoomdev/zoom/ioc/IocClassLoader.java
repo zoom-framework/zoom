@@ -1,27 +1,27 @@
 package org.zoomdev.zoom.ioc;
 
-import org.zoomdev.zoom.ioc.modules.IocModule;
-
 import java.lang.reflect.Method;
 
 public interface IocClassLoader {
 
-	IocClass get(IocKey key);
+    IocClass get(IocKey key);
 
-	/**
-	 * 增加一个IocBean方法配置
-     * @param moduleInstance                module实例
-     * @param method                        module的方法
-	 */
+    /**
+     * 增加一个IocBean方法配置
+     *
+     * @param moduleInstance module实例
+     * @param method         module的方法
+     */
     IocClass append(Object moduleInstance, Method method);
 
-	/**
+    /**
      * 注册增加一个实例
-	 * @param baseType
-	 * @param instance
+     *
+     * @param baseType
+     * @param instance
      * @param initialized
      * @return
-	 */
+     */
     IocClass append(Class<?> baseType, Object instance, boolean initialized);
 
     /**
@@ -31,15 +31,17 @@ public interface IocClassLoader {
      * @param instance
      * @return
      */
-	IocClass append(Class<?> baseType,Object instance);
-	/**
-	 * 直接增加一个实际类
-	 * @param type
-	 */
-	IocClass append(Class<?> type);
+    IocClass append(Class<?> baseType, Object instance);
+
+    /**
+     * 直接增加一个实际类
+     *
+     * @param type
+     */
+    IocClass append(Class<?> type);
 
 
-	void setClassEnhancer(ClassEnhancer enhancer);
+    void setClassEnhancer(ClassEnhancer enhancer);
 
     void appendModule(Class<?> moduleClass);
 }

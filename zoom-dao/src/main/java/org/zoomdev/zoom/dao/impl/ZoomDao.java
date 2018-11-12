@@ -1,5 +1,7 @@
 package org.zoomdev.zoom.dao.impl;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.common.Destroyable;
 import org.zoomdev.zoom.common.io.Io;
 import org.zoomdev.zoom.common.utils.Classes;
@@ -25,8 +27,6 @@ import org.zoomdev.zoom.dao.migrations.DatabaseBuilder;
 import org.zoomdev.zoom.dao.transaction.Trans;
 import org.zoomdev.zoom.dao.transaction.Transactions;
 import org.zoomdev.zoom.dao.utils.DaoUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -130,7 +130,7 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
             String name = metaData.getDatabaseProductName();
             log.info(String.format("检测到数据库产品名称%s", name));
             SqlDriver sqlDriver = createDriver(name);
-            parseDatabaseStruct(metaData,connection);
+            parseDatabaseStruct(metaData, connection);
             this.sqlDriver = sqlDriver;
         } catch (SQLException e) {
             throw new RuntimeException("创建Dao失败,连接数据库错误", e);
@@ -146,7 +146,7 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
             @Override
             public Object call() throws Exception {
                 ResultSet rs = null;
-                try{
+                try {
                     // 这里是个坑，居然还有不返回一直等待的情况，是连接池的原因还是因为其他的？
                     rs = metaData.getTables(null, null, null, null);
                     List<String> names = new ArrayList<String>();
@@ -161,10 +161,10 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
                     ZoomDao.this.dbStructFactory = new CachedDbStructFactory(createDbStructFactory(metaData.getDatabaseProductName()));
 
                     return null;
-                }catch (SQLException e){
+                } catch (SQLException e) {
                     //错误
                     return e;
-                }finally {
+                } finally {
                     DaoUtils.close(rs);
                 }
 
@@ -178,13 +178,13 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
         //这里等待一下
         try {
             Object data = task.get(1000, TimeUnit.MILLISECONDS);
-            if(data instanceof Throwable){
-                throw new DaoException( "初始化失败", (Throwable)data);
+            if (data instanceof Throwable) {
+                throw new DaoException("初始化失败", (Throwable) data);
             }
         } catch (InterruptedException e) {
             return;
         } catch (ExecutionException e) {
-            throw new DaoException( "初始化失败", e.getCause());
+            throw new DaoException("初始化失败", e.getCause());
         } catch (TimeoutException e) {
             DaoUtils.close(connection);
             throw new DaoException("初始化失败，获取表列表超时");
@@ -194,15 +194,15 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
 
     private DbStructFactory createDbStructFactory(String productName) {
         if (Databases.MYSQL.equals(productName)) {
-            return new MysqlDbStruct(this,tableCat);
+            return new MysqlDbStruct(this, tableCat);
         }
 
         if (Databases.H2.equals(productName)) {
-            return new H2DbStrict(this,tableCat);
+            return new H2DbStrict(this, tableCat);
         }
 
         if (Databases.ORACLE.equalsIgnoreCase(productName)) {
-            return new OracleDbStruct(this,tableCat);
+            return new OracleDbStruct(this, tableCat);
         }
 
         throw new RuntimeException(String.format("不支持的数据库产品:%s", productName));
@@ -237,12 +237,12 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
     @Override
     public <T> EAr<T> ar(Class<T> type) {
         EAr<T> ar = (EAr<T>) earHolder.get();
-        Entity entity =  beanEntityFactory.getEntity(type);
+        Entity entity = beanEntityFactory.getEntity(type);
         if (ar == null) {
             lazyLoad();
-            ar = new EntityActiveRecord<T>(this,entity);
+            ar = new EntityActiveRecord<T>(this, entity);
             earHolder.set(ar);
-        }else{
+        } else {
             ar.setEntity(entity);
         }
         return ar;
@@ -251,12 +251,12 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
     @Override
     public EAr<Record> ar(String table) {
         EAr<Record> ar = (EAr<Record>) earHolder.get();
-        Entity entity = recordEntityFactory.getEntity( Record.class, table);
+        Entity entity = recordEntityFactory.getEntity(Record.class, table);
         if (ar == null) {
             lazyLoad();
             ar = new EntityActiveRecord<Record>(this, entity);
             earHolder.set(ar);
-        }else{
+        } else {
             ar.setEntity(entity);
         }
         return ar;
@@ -265,12 +265,12 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
     @Override
     public EAr<Record> ar(String[] tables) {
         EAr<Record> ar = (EAr<Record>) earHolder.get();
-        Entity entity = recordEntityFactory.getEntity( Record.class, tables);
+        Entity entity = recordEntityFactory.getEntity(Record.class, tables);
         if (ar == null) {
             lazyLoad();
             ar = new EntityActiveRecord<Record>(this, entity);
             earHolder.set(ar);
-        }else{
+        } else {
             ar.setEntity(entity);
         }
         return ar;
@@ -291,7 +291,6 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
         lazyLoad();
         return new ActiveRecord(this);
     }
-
 
 
     @Override
@@ -356,7 +355,7 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
         Map<String, String> column2OrgFieldMap = new LinkedHashMap<String, String>();
         boolean first = true;
         for (String table : tables) {
-            TableMeta meta = getDbStructFactory().getTableMeta( table);
+            TableMeta meta = getDbStructFactory().getTableMeta(table);
             String tableAlia = tableAliasPolicy.getAlias(table);
             // 取出每一个表的重命名策略
             AliasPolicy columnAlias = maker.getAliasPolicy(getColumnNames(meta));

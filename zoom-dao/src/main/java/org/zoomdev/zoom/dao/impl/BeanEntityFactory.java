@@ -1,19 +1,17 @@
 package org.zoomdev.zoom.dao.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.caster.ValueCaster;
 import org.zoomdev.zoom.common.utils.*;
 import org.zoomdev.zoom.dao.*;
 import org.zoomdev.zoom.dao.adapters.DataAdapter;
 import org.zoomdev.zoom.dao.adapters.EntityField;
-import org.zoomdev.zoom.dao.adapters.NameAdapter;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 import org.zoomdev.zoom.dao.annotations.*;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.meta.JoinMeta;
 import org.zoomdev.zoom.dao.meta.TableMeta;
-import com.sun.istack.internal.NotNull;
-import org.apache.commons.lang3.StringUtils;
 import org.zoomdev.zoom.dao.utils.DaoUtils;
 
 import java.lang.reflect.Field;
@@ -59,25 +57,25 @@ class BeanEntityFactory extends AbstractEntityFactory {
 
     static final Pattern COLUMN_PATTERN = Pattern.compile("[a-zA-Z0-9]+[\\s]*\\.[\\s]*[a-zA-Z0-9]+|[a-zA-Z0-9]+");
 
-    private Set<String> getJoinAllFields(Map<String,ColumnConfig> map){
+    private Set<String> getJoinAllFields(Map<String, ColumnConfig> map) {
 
         Set<String> allJoinAvaliableNames = new LinkedHashSet<String>();
 
-        for(Map.Entry<String,ColumnConfig> entry : map.entrySet()){
+        for (Map.Entry<String, ColumnConfig> entry : map.entrySet()) {
             ColumnConfig config = entry.getValue();
             ColumnMeta columnMeta = config.columnMeta;
-            if(DaoUtils.isStream(columnMeta.getDataType())){
+            if (DaoUtils.isStream(columnMeta.getDataType())) {
                 continue;
             }
             allJoinAvaliableNames.add(entry.getKey());
 
-            allJoinAvaliableNames.add( config.getFullColumnName() );
+            allJoinAvaliableNames.add(config.getFullColumnName());
         }
 
         return allJoinAvaliableNames;
     }
 
-    private void parseOneForOne(final StringBuilder sb, String part, final Map<String,ColumnConfig> map, final Set<String> joinAllFields) {
+    private void parseOneForOne(final StringBuilder sb, String part, final Map<String, ColumnConfig> map, final Set<String> joinAllFields) {
 
         PatternUtils.visit(part, COLUMN_PATTERN, new PatternUtils.PatternVisitor() {
             @Override
@@ -85,18 +83,18 @@ class BeanEntityFactory extends AbstractEntityFactory {
                 String str = matcher.group();
                 if (str.contains(".")) {
                     //table + column
-                    str = str.replace(" ","");
-                    if(!joinAllFields.contains(str)){
-                        throw new DaoException("找不到"+str+"对应的字段，当前所有可用字段为:"
-                                + StringUtils.join(joinAllFields,","));
+                    str = str.replace(" ", "");
+                    if (!joinAllFields.contains(str)) {
+                        throw new DaoException("找不到" + str + "对应的字段，当前所有可用字段为:"
+                                + StringUtils.join(joinAllFields, ","));
                     }
                     sb.append(str);
                 } else {
                     ColumnConfig columnConfig = map.get(str);
-                    if(columnConfig==null){
-                        throw new DaoException("找不到"+str+"对应的字段，当前所有可用字段为:"
-                            + StringUtils.join(joinAllFields,","));
-                    }else{
+                    if (columnConfig == null) {
+                        throw new DaoException("找不到" + str + "对应的字段，当前所有可用字段为:"
+                                + StringUtils.join(joinAllFields, ","));
+                    } else {
                         sb.append(columnConfig.getFullColumnName());
                     }
                 }
@@ -111,8 +109,8 @@ class BeanEntityFactory extends AbstractEntityFactory {
     }
 
 
-    private String parseOn(String on, final Map<String,ColumnConfig> map, final Set<String> joinAllFields) {
-        if(StringUtils.isEmpty(on)){
+    private String parseOn(String on, final Map<String, ColumnConfig> map, final Set<String> joinAllFields) {
+        if (StringUtils.isEmpty(on)) {
             throw new DaoException("请提供join的条件on");
         }
         final StringBuilder sb = new StringBuilder();
@@ -124,7 +122,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
 
             @Override
             public void onGetRest(String rest) {
-                parseOneForOne(sb, rest,map,joinAllFields);
+                parseOneForOne(sb, rest, map, joinAllFields);
             }
         });
         //再来做一次替换
@@ -151,8 +149,8 @@ class BeanEntityFactory extends AbstractEntityFactory {
             }
 
             assert (!StringUtils.isEmpty(table.value()));
-            return getEntity(type, tables.toArray(new String[tables.size()]),joins);
-        }else{
+            return getEntity(type, tables.toArray(new String[tables.size()]), joins);
+        } else {
             assert (!StringUtils.isEmpty(table.value()));
             return getEntity(type, tableName);
         }
@@ -180,13 +178,13 @@ class BeanEntityFactory extends AbstractEntityFactory {
 
         List<AbstractEntityField> entityFields = new ArrayList<AbstractEntityField>(fields.length);
 
-        for (int index =0; index < fields.length; ++index) {
+        for (int index = 0; index < fields.length; ++index) {
             Field field = fields[index];
             if (field.isAnnotationPresent(ColumnIgnore.class)) {
                 continue;
             }
             field.setAccessible(true);
-            BeanEntityField  entityField = new BeanEntityField(field);
+            BeanEntityField entityField = new BeanEntityField(field);
             entityFields.add(entityField);
             Column column = field.getAnnotation(Column.class);
             if (column != null && !column.value().isEmpty()) {
@@ -272,29 +270,26 @@ class BeanEntityFactory extends AbstractEntityFactory {
         }
 
 
-
-
-
-
         return new BeanEntity(
                 tableName,
                 entityFields.toArray(new EntityField[entityFields.size()]),
-                findPrimaryKeys(entityFields,tableMeta.getColumns(),fields),
-                findAutoGenerateFields( entityFields,tableMeta.getColumns(),fields ),
+                findPrimaryKeys(entityFields, tableMeta.getColumns(), fields),
+                findAutoGenerateFields(entityFields, tableMeta.getColumns(), fields),
                 type,
-                getNamesMap(map,fields),
+                getNamesMap(map, fields),
                 null);
     }
 
     /**
      * 在 where/groupGy等语句中的映射关系,除了fields以外的
+     *
      * @param map
      * @param fields
      * @return
      */
-    private Map<String,String> getNamesMap(Map<String,ColumnMeta> map,Field[] fields){
+    private Map<String, String> getNamesMap(Map<String, ColumnMeta> map, Field[] fields) {
 
-        for(Field field : fields){
+        for (Field field : fields) {
             map.remove(field.getName());
         }
 
@@ -306,14 +301,14 @@ class BeanEntityFactory extends AbstractEntityFactory {
         });
     }
 
-    public Entity getEntity(Class<?> type, String[] tables,Join[] joins) {
-        assert (tables.length>1);
+    public Entity getEntity(Class<?> type, String[] tables, Join[] joins) {
+        assert (tables.length > 1);
         final Map<String, ColumnConfig> map = new LinkedHashMap<String, ColumnConfig>();
         final TableMeta[] tableMetas = new TableMeta[tables.length];
         RenameUtils.rename(dao, tables, new RenameUtils.ColumnRenameVisitor() {
             @Override
             public void visit(TableMeta tableMeta, ColumnMeta columnMeta, String fieldName, String selectColumnName) {
-                if(tableMetas[0]==null){
+                if (tableMetas[0] == null) {
                     tableMetas[0] = tableMeta;
                 }
                 //做一个映射
@@ -328,11 +323,11 @@ class BeanEntityFactory extends AbstractEntityFactory {
 
         JoinMeta[] joinMetas = new JoinMeta[joins.length];
         Set<String> joinAllFields = getJoinAllFields(map);
-        for (int i=0; i < joins.length; ++i) {
+        for (int i = 0; i < joins.length; ++i) {
             Join join = joins[i];
             //
             JoinMeta joinMeta = new JoinMeta();
-            joinMeta.setOn(parseOn(join.on(),map,joinAllFields));
+            joinMeta.setOn(parseOn(join.on(), map, joinAllFields));
             joinMeta.setTable(join.table());
             joinMeta.setType(join.type());
 
@@ -388,22 +383,23 @@ class BeanEntityFactory extends AbstractEntityFactory {
         return new BeanEntity(
                 tables[0],
                 entityFields.toArray(new EntityField[entityFields.size()]),
-                findPrimaryKeys(entityFields,tableMetas[0].getColumns(),fields),
-                findAutoGenerateFields( entityFields,tableMetas[0].getColumns(),fields ),
+                findPrimaryKeys(entityFields, tableMetas[0].getColumns(), fields),
+                findAutoGenerateFields(entityFields, tableMetas[0].getColumns(), fields),
                 type,
-                getMultiTableNamesMap(map,fields),
+                getMultiTableNamesMap(map, fields),
                 joinMetas);
     }
 
     /**
      * 在 where/groupGy等语句中的映射关系,除了fields以外的
+     *
      * @param map
      * @param fields
      * @return
      */
-    private Map<String,String> getMultiTableNamesMap(Map<String,ColumnConfig> map,Field[] fields){
+    private Map<String, String> getMultiTableNamesMap(Map<String, ColumnConfig> map, Field[] fields) {
 
-        for(Field field : fields){
+        for (Field field : fields) {
             map.remove(field.getName());
         }
 
@@ -414,6 +410,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
             }
         });
     }
+
     /**
      * 多个表实际上会在实体类中提现，这里如果出现了多张表，表示和实体类中出现的多表一一对应
      *
@@ -423,7 +420,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
      */
     @Override
     public Entity getEntity(Class<?> type, String[] tables) {
-        return getEntity(type,tables,null);
+        return getEntity(type, tables, null);
     }
 
     private void fillAdapter(AbstractEntityField entityField, Column column, Class<?> dbType, Dao dao) {
@@ -488,10 +485,11 @@ class BeanEntityFactory extends AbstractEntityFactory {
             entityField.setStatementAdapter(StatementAdapters.DEFAULT);
         }
     }
+
     private void fillWithoutColumnAnnotationName(
             AbstractEntityField entityField,
             Field field,
-           TableMeta tableMeta,
+            TableMeta tableMeta,
             ColumnMeta columnMeta,
             String selectColumnName
     ) {
@@ -499,6 +497,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
         entityField.setColumn(tableMeta.getName() + "." + columnMeta.getName());
         entityField.setSelectColumnName(selectColumnName);
     }
+
     private void fillWithoutColumnAnnotationName(
             AbstractEntityField entityField,
             Field field,
@@ -521,7 +520,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
         }
 
         public String getFullColumnName() {
-            return String.format("%s.%s",tableMeta.getName(),columnMeta.getName());
+            return String.format("%s.%s", tableMeta.getName(), columnMeta.getName());
         }
     }
 
@@ -532,7 +531,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
             Field[] fields) {
         List<AutoField> autoFields = new ArrayList<AutoField>();
         List<EntityField> autoRelatedEntityFields = new ArrayList<EntityField>();
-        for(int i=0 , c = entityFields.size(); i < c ; ++i){
+        for (int i = 0, c = entityFields.size(); i < c; ++i) {
             AbstractEntityField entityField = entityFields.get(i);
             AutoField autoField = checkAutoField(fields[i], entityField);
             entityField.setAutoField(autoField);
@@ -547,19 +546,19 @@ class BeanEntityFactory extends AbstractEntityFactory {
         return autoEntity;
     }
 
-    private EntityField[] findPrimaryKeys(List<AbstractEntityField> entityFields,ColumnMeta[] columnMetas,Field[] fields) {
+    private EntityField[] findPrimaryKeys(List<AbstractEntityField> entityFields, ColumnMeta[] columnMetas, Field[] fields) {
         List<EntityField> primaryKeys = new ArrayList<EntityField>(3);
-        for(int i=0 , c = entityFields.size(); i < c ; ++i){
+        for (int i = 0, c = entityFields.size(); i < c; ++i) {
             Field field = fields[i];
             PrimaryKey primaryKey = field.getAnnotation(PrimaryKey.class);
-            if(primaryKey!=null) {
+            if (primaryKey != null) {
                 primaryKeys.add(entityFields.get(i));
             }
         }
-        if(primaryKeys.size() == 0){
-            for(int i=0 , c = columnMetas.length; i < c ; ++i){
+        if (primaryKeys.size() == 0) {
+            for (int i = 0, c = columnMetas.length; i < c; ++i) {
                 ColumnMeta columnMeta = columnMetas[i];
-                if(columnMeta.isPrimary()){
+                if (columnMeta.isPrimary()) {
                     primaryKeys.add(entityFields.get(i));
                 }
             }
@@ -594,7 +593,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
      * @param field
      * @param entityField
      */
-    private AutoField checkAutoField(Field field,AbstractEntityField entityField) {
+    private AutoField checkAutoField(Field field, AbstractEntityField entityField) {
         //数据库的自动无效
 //        if (isAuto) {
 //            //如果已经标注了auto，完全又数据库自己处理，只要指定generated key就好了

@@ -3,15 +3,14 @@ package org.zoomdev.zoom.caster;
 
 /**
  * This interface define a way to cast one class to another class
- * @author Administrator
  *
+ * @author Administrator
  */
 public interface ValueCaster {
-	
-	/**
-	 * 
-	 * @param src		source value
-	 * @return			casted value
-	 */
-	Object to(Object src);
+
+    /**
+     * @param src source value
+     * @return casted value
+     */
+    Object to(Object src);
 }

@@ -31,11 +31,11 @@ public class SimpleDaoInvoker implements DaoInvoker {
 
     @Override
     public Object invoke(Object[] args) {
-        Dao dao = (Dao) ioc.get(new ZoomIocKey(name,Dao.class)).get();
+        Dao dao = (Dao) ioc.get(new ZoomIocKey(name, Dao.class)).get();
         Ar ar = dao.ar();
-        int i=0;
-        for(DaoParameter parameter : parameters){
-            parameter.handle(ar,args[i]);
+        int i = 0;
+        for (DaoParameter parameter : parameters) {
+            parameter.handle(ar, args[i]);
             ++i;
         }
         return null;

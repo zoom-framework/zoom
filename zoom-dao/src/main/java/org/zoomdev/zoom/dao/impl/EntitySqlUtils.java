@@ -7,7 +7,10 @@ import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 import org.zoomdev.zoom.dao.driver.SqlDriver;
 import org.zoomdev.zoom.dao.utils.DaoUtils;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -261,7 +264,6 @@ public class EntitySqlUtils {
     }
 
 
-
     static <T> T buildRecord(
             ResultSet rs,
             Entity entity,
@@ -322,28 +324,19 @@ public class EntitySqlUtils {
     }
 
     static <T> List<T> executeQuery(
-            ConnectionHolder ar,
+            Connection connection,
             SimpleSqlBuilder builder,
             List<EntityField> entityFields,
-            Entity entity,
-            boolean all) {
-        Connection connection = null;
+            Entity entity) throws SQLException {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            connection = ar.getConnection();
             ps = BuilderKit.prepareStatement(connection, builder.sql.toString(), builder.values);
             rs = ps.executeQuery();
             return buildList(rs, entity, entityFields);
-        } catch (Throwable e) {
-            throw new DaoException(builder.printSql(), e);
         } finally {
             DaoUtils.close(rs);
             DaoUtils.close(ps);
-            if (all) {
-                ar.releaseConnection();
-            }
-            builder.clear(all);
         }
     }
 
@@ -368,7 +361,6 @@ public class EntitySqlUtils {
             DaoUtils.close(rs);
             DaoUtils.close(ps);
         }
-
 
 
     }

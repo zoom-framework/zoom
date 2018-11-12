@@ -8,7 +8,7 @@ public class MockClob implements Clob {
 
     private String content;
 
-    public MockClob(String content){
+    public MockClob(String content) {
         this.content = content;
     }
 

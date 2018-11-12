@@ -8,16 +8,16 @@ import org.zoomdev.zoom.timer.annotation.Timer;
 public class TestModule {
 
 
-    public static  class TestService{
+    public static class TestService {
 
-        @Timer(every = Timer.Every.SECOND,everyValue = 1)
-        public void test(){
+        @Timer(every = Timer.Every.SECOND, everyValue = 1)
+        public void test() {
 
         }
     }
 
     @IocBean
-    public TestService getTestService(){
+    public TestService getTestService() {
         return new TestService();
     }
 

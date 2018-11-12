@@ -7,6 +7,7 @@ public interface AutoGenerateValue {
 
     /**
      * 下一个序列值
+     *
      * @return
      */
     Object nextVal();

@@ -10,7 +10,7 @@ public class MockBlob implements Blob {
 
     private byte[] bytes;
 
-    public MockBlob(byte[] bytes){
+    public MockBlob(byte[] bytes) {
 
     }
 

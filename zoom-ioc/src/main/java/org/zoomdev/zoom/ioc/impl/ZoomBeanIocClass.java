@@ -6,7 +6,6 @@ import org.zoomdev.zoom.ioc.*;
  * 一开始，并不知道所有的Constructor,必须要等实例化之后才知道
  *
  * @author jzoom
- *
  */
 public class ZoomBeanIocClass extends ZoomIocClass {
 
@@ -17,17 +16,16 @@ public class ZoomBeanIocClass extends ZoomIocClass {
             IocClassLoader classLoader,
             IocConstructor constructor,
             IocKey key) {
-        super(ioc,classLoader,constructor,key);
+        super(ioc, classLoader, constructor, key);
     }
 
     private boolean injectorCreated = false;
 
 
-
-    private void createInjector(IocContainer ioc,IocScope scope, Object instance){
+    private void createInjector(IocContainer ioc, IocScope scope, Object instance) {
         injectorCreated = true;
-        methods = SimpleIocContainer.parseMethods(ioc,this,instance.getClass(),classLoader);
-        fields = SimpleIocContainer.parseFields(ioc,instance.getClass(),classLoader);
+        methods = SimpleIocContainer.parseMethods(ioc, this, instance.getClass(), classLoader);
+        fields = SimpleIocContainer.parseFields(ioc, instance.getClass(), classLoader);
 
 //        if(fields!=null) {
 //            for (IocField field : fields) {
@@ -70,8 +68,8 @@ public class ZoomBeanIocClass extends ZoomIocClass {
         IocObject obj = getAndCreate(scope, constructor);
         Object instance = obj.get();
 
-        if(!injectorCreated){
-            createInjector(ioc,scope,instance);
+        if (!injectorCreated) {
+            createInjector(ioc, scope, instance);
         }
 
 

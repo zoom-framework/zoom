@@ -2,9 +2,9 @@ package org.zoomdev.zoom.common.filter;
 
 public class AlwaysAcceptFilter<T> implements Filter<T> {
 
-	@Override
-	public boolean accept(T value) {
-		return true;
-	}
+    @Override
+    public boolean accept(T value) {
+        return true;
+    }
 
 }

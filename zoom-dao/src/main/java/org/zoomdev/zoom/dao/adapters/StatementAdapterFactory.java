@@ -5,6 +5,7 @@ import org.zoomdev.zoom.caster.Caster;
 public interface StatementAdapterFactory {
     /**
      * 获取一个Statement的适配器
+     *
      * @param fieldType
      * @param columnType
      * @return

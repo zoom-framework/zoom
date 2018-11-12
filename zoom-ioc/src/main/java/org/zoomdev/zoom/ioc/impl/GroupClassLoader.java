@@ -9,7 +9,7 @@ public class GroupClassLoader extends ZoomIocClassLoader {
 
     private IocClassLoader parent;
 
-    GroupClassLoader(IocContainer ioc,IocClassLoader parent){
+    GroupClassLoader(IocContainer ioc, IocClassLoader parent) {
         super(ioc);
         this.parent = parent;
     }
@@ -17,7 +17,7 @@ public class GroupClassLoader extends ZoomIocClassLoader {
     @Override
     public IocClass get(IocKey key) {
         IocClass iocClass = super.get(key);
-        if(iocClass == null){
+        if (iocClass == null) {
             iocClass = this.parent.get(key);
         }
         return iocClass;

@@ -4,39 +4,39 @@ import java.net.URL;
 
 public interface PluginHolder {
 
-	/**
-	 * 加载信息
-	 * 
-	 * @throws PluginException
-	 */
-	void load() throws PluginException;
+    /**
+     * 加载信息
+     *
+     * @throws PluginException
+     */
+    void load() throws PluginException;
 
-	void install(PluginHost pluginHost);
+    void install(PluginHost pluginHost);
 
-	void uninstall(PluginHost pluginHost);
+    void uninstall(PluginHost pluginHost);
 
-	boolean isInstalled();
+    boolean isInstalled();
 
-	/**
-	 * 启动
-	 * 
-	 * @param host
-	 * @throws PluginException
-	 */
-	void startup(PluginHost host) throws PluginException;
+    /**
+     * 启动
+     *
+     * @param host
+     * @throws PluginException
+     */
+    void startup(PluginHost host) throws PluginException;
 
-	void shutdown(PluginHost host,boolean ignoreError);
+    void shutdown(PluginHost host, boolean ignoreError);
 
-	boolean isRunning();
+    boolean isRunning();
 
-	String getUid();
+    String getUid();
 
-	URL getUrl();
-	
-	String getTitle();
-	
-	String getVersion();
-	
-	String getDescription();
+    URL getUrl();
+
+    String getTitle();
+
+    String getVersion();
+
+    String getDescription();
 
 }

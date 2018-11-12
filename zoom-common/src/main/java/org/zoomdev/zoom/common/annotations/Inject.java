@@ -6,26 +6,28 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD,ElementType.FIELD,ElementType.PARAMETER})
+@Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER})
 public @interface Inject {
-	/**
-	 * 系统调用，优先级最高
-	 */
-	public static final int SYSTEM = 0;
+    /**
+     * 系统调用，优先级最高
+     */
+    public static final int SYSTEM = 0;
 
-	/**
-	 * IoxBean的名臣
-	 * @return
-	 */
-	String value() default "";
+    /**
+     * IoxBean的名臣
+     *
+     * @return
+     */
+    String value() default "";
 
-	/**
-	 * 配置名称,需要改成 Config 标注
-	 * @return
-	 */
-	String config() default "";
-	
-	
-	int order() default SYSTEM;
-	
+    /**
+     * 配置名称,需要改成 Config 标注
+     *
+     * @return
+     */
+    String config() default "";
+
+
+    int order() default SYSTEM;
+
 }

@@ -1,17 +1,17 @@
 package org.zoomdev.zoom.web.parameter.adapter.impl.form;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.zoomdev.zoom.web.action.ActionContext;
 import org.zoomdev.zoom.web.parameter.adapter.ParameterAdapter;
 
-public class NamedFormParameterAdapter implements ParameterAdapter<HttpServletRequest>  {
+import javax.servlet.http.HttpServletRequest;
 
-	public static final ParameterAdapter<HttpServletRequest> ADAPTER = new NamedFormParameterAdapter();
+public class NamedFormParameterAdapter implements ParameterAdapter<HttpServletRequest> {
 
-	@Override
-	public Object get(ActionContext context, HttpServletRequest data, String name, Class<?> type) {
-		return data.getParameter(name);
-	}
+    public static final ParameterAdapter<HttpServletRequest> ADAPTER = new NamedFormParameterAdapter();
+
+    @Override
+    public Object get(ActionContext context, HttpServletRequest data, String name, Class<?> type) {
+        return data.getParameter(name);
+    }
 
 }

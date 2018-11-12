@@ -1,24 +1,24 @@
 package org.zoomdev.zoom.async.modules;
 
 import org.zoomdev.zoom.aop.AopFactory;
+import org.zoomdev.zoom.async.JobQueue;
 import org.zoomdev.zoom.async.aop.AsyncMethodAopMaker;
+import org.zoomdev.zoom.async.impl.Asyncs;
 import org.zoomdev.zoom.common.annotations.Inject;
 import org.zoomdev.zoom.common.annotations.IocBean;
 import org.zoomdev.zoom.common.annotations.Module;
-import org.zoomdev.zoom.async.impl.Asyncs;
-import org.zoomdev.zoom.async.JobQueue;
 
 @Module
 public class AsyncModule {
 
-	@Inject
-	public void config( AopFactory factory) {
-		factory.addMethodInterceptorFactory(new AsyncMethodAopMaker(), 0);
-	}
-
-	@IocBean
-	public JobQueue getJobQueue(){
-	    return Asyncs.defaultJobQueue();
+    @Inject
+    public void config(AopFactory factory) {
+        factory.addMethodInterceptorFactory(new AsyncMethodAopMaker(), 0);
     }
-	
+
+    @IocBean
+    public JobQueue getJobQueue() {
+        return Asyncs.defaultJobQueue();
+    }
+
 }

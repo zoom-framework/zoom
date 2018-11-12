@@ -1,12 +1,5 @@
 package org.zoomdev.zoom.dao.impl;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.logging.Log;
@@ -19,6 +12,13 @@ import org.zoomdev.zoom.common.filter.pattern.PatternFilterFactory;
 import org.zoomdev.zoom.common.utils.Page;
 import org.zoomdev.zoom.dao.*;
 import org.zoomdev.zoom.dao.adapters.EntityField;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 将来与ActiveRecord合并
@@ -57,7 +57,7 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
     }
 
     public EntityActiveRecord(Dao dao, Entity entity) {
-        super(dao.getDataSource(),new SimpleSqlBuilder(dao));
+        super(dao.getDataSource(), new SimpleSqlBuilder(dao));
         this.entity = entity;
         this.dao = dao;
         this.entityFields = new ArrayList<EntityField>();
@@ -78,36 +78,47 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
 
     @Override
     public List<T> find() {
-        entity.setQuerySource(builder);
-        EntitySqlUtils.buildSelect(builder,entity,filter,entityFields);
-        builder.buildSelect();
-        return EntitySqlUtils.executeQuery(this,builder,entityFields,entity,true);
+
+        return execute(new ConnectionExecutor() {
+            @Override
+            public List<T> execute(Connection connection) throws SQLException {
+                entity.setQuerySource(builder);
+                EntitySqlUtils.buildSelect(builder, entity, filter, entityFields);
+                builder.buildSelect();
+                return EntitySqlUtils.executeQuery(connection, builder, entityFields, entity);
+            }
+        });
     }
 
 
-
     @Override
-    public List<T> limit(int position, int size) {
-        entity.setQuerySource(builder);
-        EntitySqlUtils.buildSelect(builder,entity,filter,entityFields);
-        builder.buildLimit(position, size);
-        return EntitySqlUtils.executeQuery(this,builder,entityFields,entity,true);
+    public List<T> limit(final int position, final int size) {
+        return execute(new ConnectionExecutor() {
+            @Override
+            public List<T> execute(Connection connection) throws SQLException {
+                entity.setQuerySource(builder);
+                EntitySqlUtils.buildSelect(builder, entity, filter, entityFields);
+                builder.buildLimit(position, size);
+                return EntitySqlUtils.executeQuery(connection, builder, entityFields, entity);
+            }
+        });
     }
 
     @Override
-    public Page<T> position(int position, int size) {
-        entity.setQuerySource(builder);
-        EntitySqlUtils.buildSelect(builder,entity,filter,entityFields);
-        builder.buildLimit(position, size);
-        try {
-            List<T> list = EntitySqlUtils.executeQuery(this,builder,entityFields,entity,false);
-            int total = count();
-            int page = builder.getPageFromPosition(position, size);
-            return new Page<T>(list, page, size, total);
-        } finally {
-            releaseConnection();
-            builder.clear(true);
-        }
+    public Page<T> position(final int position, final int size) {
+        return execute(new ConnectionExecutor() {
+            @Override
+            public Page<T> execute(Connection connection) throws SQLException {
+                entity.setQuerySource(builder);
+                EntitySqlUtils.buildSelect(builder, entity, filter, entityFields);
+                builder.buildLimit(position, size);
+                List<T> list = EntitySqlUtils.executeQuery(connection, builder, entityFields, entity);
+                builder.clear(false);
+                int total = getValue(connection, "COUNT(*) AS COUNT_", int.class);
+                int page = builder.getPageFromPosition(position, size);
+                return new Page<T>(list, page, size, total);
+            }
+        });
     }
 
     @Override
@@ -134,13 +145,11 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
                 builder
         );
     }
-
-    @Override
-    public int insertOrUpdate(String... fields) {
-        return 0;
-    }
-
-
+//
+//    @Override
+//    public int insertOrUpdate(String... fields) {
+//        return 0;
+//    }
 
 
     /**
@@ -148,34 +157,34 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
      * @return
      */
     public T get(final Object... values) {
-       return execute(new ConnectionExecutor() {
-           @Override
-           public T execute(Connection connection) throws SQLException {
-               if (entity.getPrimaryKeys().length == 0) {
-                   throw new DaoException("本表" + entity.getTable() + "没有主键，系统无法判断条件");
-               }
+        return execute(new ConnectionExecutor() {
+            @Override
+            public T execute(Connection connection) throws SQLException {
+                if (entity.getPrimaryKeys().length == 0) {
+                    throw new DaoException("本表" + entity.getTable() + "没有主键，系统无法判断条件");
+                }
 
-               if (entity.getPrimaryKeys().length != values.length) {
-                   throw new DaoException(
-                           "参数个数" + values.length + "与主键个数" + entity.getPrimaryKeys().length + "不符");
-               }
+                if (entity.getPrimaryKeys().length != values.length) {
+                    throw new DaoException(
+                            "参数个数" + values.length + "与主键个数" + entity.getPrimaryKeys().length + "不符");
+                }
 
-               int index = 0;
-               for (EntityField adapter : entity.getPrimaryKeys()) {
-                   builder.where(adapter.getColumnName(), values[index++]);
-               }
+                int index = 0;
+                for (EntityField adapter : entity.getPrimaryKeys()) {
+                    builder.where(adapter.getColumnName(), values[index++]);
+                }
 
-               return getOne(connection);
-           }
-       });
+                return getOne(connection);
+            }
+        });
 
     }
 
     T getOne(Connection connection) throws SQLException {
         entity.setQuerySource(builder);
-        EntitySqlUtils.buildSelect(builder,entity,filter,entityFields);
+        EntitySqlUtils.buildSelect(builder, entity, filter, entityFields);
         builder.buildSelect();
-        return EntitySqlUtils.executeGet(connection,builder,entity,entityFields);
+        return EntitySqlUtils.executeGet(connection, builder, entity, entityFields);
     }
 
     @Override
@@ -282,19 +291,23 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
     }
 
     public int count() {
-        return value("COUNT(*) AS COUNT_",int.class);
+        return value("COUNT(*) AS COUNT_", int.class);
     }
 
     @Override
     public <E> E value(final String key, final Class<E> typeOfE) {
-       return execute(new ConnectionExecutor() {
-           @Override
-           public E execute(Connection connection) throws SQLException {
-               builder.selectRaw(key);
-               builder.buildSelect();
-               return Caster.to(EntitySqlUtils.executeGetValue(connection,builder),typeOfE);
-           }
-       });
+        return execute(new ConnectionExecutor() {
+            @Override
+            public E execute(Connection connection) throws SQLException {
+                return getValue(connection, key, typeOfE);
+            }
+        });
+    }
+
+    private <E> E getValue(Connection connection, String key, Class<E> typeOfE) throws SQLException {
+        builder.selectRaw(key);
+        builder.buildSelect();
+        return Caster.to(EntitySqlUtils.executeGetValue(connection, builder), typeOfE);
     }
 
     @Override
@@ -328,14 +341,14 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
 
     @Override
     public EAr<T> having(String field, Symbol symbol, Object value) {
-        builder.having(entity.getColumnName(field),symbol,value);
+        builder.having(entity.getColumnName(field), symbol, value);
         return this;
     }
 
     @Override
     public EAr<T> union(SqlBuilder sqlBuilder) {
 
-        SimpleSqlBuilder simpleSqlBuilder = (SimpleSqlBuilder)sqlBuilder;
+        SimpleSqlBuilder simpleSqlBuilder = (SimpleSqlBuilder) sqlBuilder;
 
         builder.sql.append(simpleSqlBuilder.sql);
         builder.values.add(simpleSqlBuilder.values);
@@ -362,13 +375,13 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
 
     @Override
     public EAr<T> select(String select) {
-        filter(select.replace(",","|"));
+        filter(select.replace(",", "|"));
         return this;
     }
 
     @Override
     public EAr<T> select(Iterable<String> select) {
-        filter(StringUtils.join(select,"|"));
+        filter(StringUtils.join(select, "|"));
         return this;
     }
 
@@ -391,11 +404,11 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
         return this;
     }
 
-    @Override
-    public EAr<T> whereCondition(String field, Object... values) {
-        builder.whereCondition(entity.getColumnName(field), values);
-        return this;
-    }
+//    @Override
+//    public EAr<T> whereCondition(String field, Object... values) {
+//        builder.whereCondition(entity.getColumnName(field), values);
+//        return this;
+//    }
 
     @Override
     public EAr<T> where(String field, Symbol symbol, Object value) {

@@ -17,7 +17,6 @@ abstract class AbstractEntityField implements EntityField {
     private AutoField autoField;
 
 
-
     private String column;
 
     private String selectColumnName;

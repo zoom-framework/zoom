@@ -19,8 +19,6 @@ public class TestAsyncService {
     private CountDownLatch countDownLatch;
 
 
-
-
     @Async
     public void testAsync() throws InterruptedException {
 
@@ -39,7 +37,7 @@ public class TestAsyncService {
         System.out.println("yes");
         countDownLatch.countDown();
 
-        return new CompletedFuture<Integer>(100,null);
+        return new CompletedFuture<Integer>(100, null);
 
     }
 }

@@ -11,7 +11,7 @@ public class ZoomConfigIocField extends ZoomIocField {
 
     private String config;
 
-    public ZoomConfigIocField(IocContainer ioc, Field field,String name) {
+    public ZoomConfigIocField(IocContainer ioc, Field field, String name) {
         super(ioc, field);
         this.config = name;
     }
@@ -19,7 +19,7 @@ public class ZoomConfigIocField extends ZoomIocField {
     @Override
     public void set(IocObject obj) {
         try {
-            field.set(obj.get(),Caster.toType(ConfigReader.getDefault().get(config),field.getGenericType()));
+            field.set(obj.get(), Caster.toType(ConfigReader.getDefault().get(config), field.getGenericType()));
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }

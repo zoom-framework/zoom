@@ -8,7 +8,6 @@ public interface AutoEntity {
 
 
     /**
-     *
      * @param connection
      * @param sql
      * @return
@@ -17,6 +16,7 @@ public interface AutoEntity {
 
     /**
      * 在插入之后所做操作
+     *
      * @param data
      * @param ps
      */

@@ -3,39 +3,43 @@ package org.zoomdev.zoom.plugin;
 public interface Plugin {
 
 
-	/**
-	 * 名称
-	 * @return
-	 */
-	String getTitle();
-	
-	/**
-	 * 版本
-	 * @return
-	 */
-	String getVersion();
-	
-	/**
-	 * id
-	 * @return
-	 */
-	String getUId();
-	
-	/**
-	 * 插件描述
-	 * @return
-	 */
-	String getDescription();
-	
-	void shutdown(PluginHost host);
-	
-	void startup(PluginHost host) throws PluginException;
+    /**
+     * 名称
+     *
+     * @return
+     */
+    String getTitle();
 
-	void install(PluginHost pluginHost);
+    /**
+     * 版本
+     *
+     * @return
+     */
+    String getVersion();
 
-	void uninstall(PluginHost pluginHost);
+    /**
+     * id
+     *
+     * @return
+     */
+    String getUId();
 
-	boolean isInstalled();
-	
-	
+    /**
+     * 插件描述
+     *
+     * @return
+     */
+    String getDescription();
+
+    void shutdown(PluginHost host);
+
+    void startup(PluginHost host) throws PluginException;
+
+    void install(PluginHost pluginHost);
+
+    void uninstall(PluginHost pluginHost);
+
+    boolean isInstalled();
+
+
 }

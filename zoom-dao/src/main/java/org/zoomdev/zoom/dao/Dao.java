@@ -40,7 +40,6 @@ public interface Dao extends StatementAdapterFactory {
     <T> EAr<T> ar(Class<T> type);
 
     /**
-     *
      * @param table
      * @return
      */
@@ -48,7 +47,6 @@ public interface Dao extends StatementAdapterFactory {
 
 
     /**
-     *
      * @param tables
      * @return
      */

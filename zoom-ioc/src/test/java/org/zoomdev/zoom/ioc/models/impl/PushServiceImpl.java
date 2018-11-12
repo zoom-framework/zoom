@@ -18,15 +18,14 @@ public class PushServiceImpl implements PushService {
 
     public PushServiceImpl(
             String key
-    ){
+    ) {
         this.key = key;
     }
 
 
+    public void send() {
 
-    public void send(){
-
-        System.out.println( shopService.getName() + "Notify");
+        System.out.println(shopService.getName() + "Notify");
 
     }
 
@@ -36,17 +35,16 @@ public class PushServiceImpl implements PushService {
     }
 
 
-
-    public void init(){
+    public void init() {
     }
 
 
-    public void destroy(){
+    public void destroy() {
 
     }
 
     @TestListener
-    public void notifyMessage(){
+    public void notifyMessage() {
 
         System.out.println("on notify");
     }
