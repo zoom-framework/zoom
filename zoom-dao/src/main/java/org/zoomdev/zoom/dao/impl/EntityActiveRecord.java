@@ -1,5 +1,7 @@
 package org.zoomdev.zoom.dao.impl;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,29 +29,22 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
 
     private static final Log log = LogFactory.getLog(EntityActiveRecord.class);
 
+    public boolean defaultIgnoreNull = true;
+
     private Dao dao;
-    private SimpleSqlBuilder builder;
     private Entity entity;
     private List<EntityField> entityFields;
 
-    private boolean ignoreNull = true;
+    private boolean ignoreNull = defaultIgnoreNull;
 
-    private Map<String, Filter<EntityField>> patterFilterCache =
-            new ConcurrentHashMap<String, Filter<EntityField>>();
+    private static Map<String, Filter<EntityField>> patterFilterCache = new ConcurrentHashMap<String, Filter<EntityField>>();
     /**
      * 对字段进行筛选
      */
     private Filter<EntityField> filter;
 
-    @Override
-    protected String printSql() {
-        return builder.printSql();
-    }
 
-
-
-
-    private Filter<EntityField> createPatternFilter(final String filter) {
+    private static Filter<EntityField> createPatternFilter(final String filter) {
         return SingletonUtils.liteDoubleLockMap(
                 patterFilterCache,
                 filter,
@@ -62,8 +57,7 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
     }
 
     public EntityActiveRecord(Dao dao, Entity entity) {
-        super(dao.getDataSource());
-        this.builder = new SimpleSqlBuilder(dao);
+        super(dao.getDataSource(),new SimpleSqlBuilder(dao));
         this.entity = entity;
         this.dao = dao;
         this.entityFields = new ArrayList<EntityField>();
@@ -84,7 +78,7 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
 
     @Override
     public List<T> find() {
-        entity.setSource(builder);
+        entity.setQuerySource(builder);
         EntitySqlUtils.buildSelect(builder,entity,filter,entityFields);
         builder.buildSelect();
         return EntitySqlUtils.executeQuery(this,builder,entityFields,entity,true);
@@ -94,7 +88,7 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
 
     @Override
     public List<T> limit(int position, int size) {
-        entity.setSource(builder);
+        entity.setQuerySource(builder);
         EntitySqlUtils.buildSelect(builder,entity,filter,entityFields);
         builder.buildLimit(position, size);
         return EntitySqlUtils.executeQuery(this,builder,entityFields,entity,true);
@@ -102,7 +96,7 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
 
     @Override
     public Page<T> position(int position, int size) {
-        entity.setSource(builder);
+        entity.setQuerySource(builder);
         EntitySqlUtils.buildSelect(builder,entity,filter,entityFields);
         builder.buildLimit(position, size);
         try {
@@ -153,63 +147,78 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
      * @param values
      * @return
      */
-    public T get(Object... values) {
-        if (entity.getPrimaryKeys().length == 0) {
-            throw new DaoException("本表" + entity.getTable() + "没有主键，系统无法判断条件");
-        }
+    public T get(final Object... values) {
+       return execute(new ConnectionExecutor() {
+           @Override
+           public T execute(Connection connection) throws SQLException {
+               if (entity.getPrimaryKeys().length == 0) {
+                   throw new DaoException("本表" + entity.getTable() + "没有主键，系统无法判断条件");
+               }
 
-        if (entity.getPrimaryKeys().length != values.length) {
-            throw new DaoException(
-                    "参数个数" + values.length + "与主键个数" + entity.getPrimaryKeys().length + "不符");
-        }
+               if (entity.getPrimaryKeys().length != values.length) {
+                   throw new DaoException(
+                           "参数个数" + values.length + "与主键个数" + entity.getPrimaryKeys().length + "不符");
+               }
 
-        int index = 0;
-        for (EntityField adapter : entity.getPrimaryKeys()) {
-            builder.where(adapter.getColumnName(), values[index++]);
-        }
+               int index = 0;
+               for (EntityField adapter : entity.getPrimaryKeys()) {
+                   builder.where(adapter.getColumnName(), values[index++]);
+               }
 
-        return getOne();
+               return getOne(connection);
+           }
+       });
 
     }
 
-    T getOne(){
-        entity.setSource(builder);
+    T getOne(Connection connection) throws SQLException {
+        entity.setQuerySource(builder);
         EntitySqlUtils.buildSelect(builder,entity,filter,entityFields);
         builder.buildSelect();
-        return EntitySqlUtils.executeGet(this,builder,entity,entityFields);
+        return EntitySqlUtils.executeGet(connection,builder,entity,entityFields);
     }
 
     @Override
     public T get() {
-        if (builder.where.length() == 0) {
-            throw new DaoException("单独查询一个实体至少需要指定一个条件");
-        }
-        return getOne();
+        return execute(new ConnectionExecutor() {
+            @Override
+            public T execute(Connection connection) throws SQLException {
+                if (builder.where.length() == 0) {
+                    throw new DaoException("单独查询一个实体至少需要指定一个条件");
+                }
+                return getOne(connection);
+            }
+        });
     }
 
 
     @Override
-    public int insert(T data) {
-        EntitySqlUtils.buildInsert(
-                builder,
-                dao.getDriver(),
-                entity,
-                data,
-                filter,
-                ignoreNull);
-        return EntitySqlUtils.executeInsert(
-                this,
-                entity,
-                data,
-                builder
-        );
+    public int insert(final T data) {
+        return execute(new ConnectionExecutor() {
+            @Override
+            public Integer execute(Connection connection) throws SQLException {
+                EntitySqlUtils.buildInsert(
+                        builder,
+                        dao.getDriver(),
+                        entity,
+                        data,
+                        filter,
+                        ignoreNull);
+                return EntitySqlUtils.executeInsert(
+                        connection,
+                        entity,
+                        data,
+                        builder
+                );
+            }
+        });
     }
 
     @Override
     public int insert(final Iterable<T> it) {
         final MutableInt result = new MutableInt(0);
         try {
-            ZoomDao.runTrans(
+            ZoomDao.executeTrans(
                     new Runnable() {
                         @Override
                         public void run() {
@@ -229,7 +238,7 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
     public int update(final Iterable<T> it) {
         final MutableInt result = new MutableInt(0);
         try {
-            ZoomDao.runTrans(
+            ZoomDao.executeTrans(
                     new Runnable() {
                         @Override
                         public void run() {
@@ -256,7 +265,7 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
     public int delete(final Iterable<T> it) {
         final MutableInt result = new MutableInt(0);
         try {
-            ZoomDao.runTrans(
+            ZoomDao.executeTrans(
                     new Runnable() {
                         @Override
                         public void run() {
@@ -277,10 +286,15 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
     }
 
     @Override
-    public <E> E value(String key, Class<E> typeOfE) {
-        builder.selectRaw(key);
-        builder.buildSelect();
-        return Caster.to(EntitySqlUtils.executeGetValue(this,builder),int.class);
+    public <E> E value(final String key, final Class<E> typeOfE) {
+       return execute(new ConnectionExecutor() {
+           @Override
+           public E execute(Connection connection) throws SQLException {
+               builder.selectRaw(key);
+               builder.buildSelect();
+               return Caster.to(EntitySqlUtils.executeGetValue(connection,builder),typeOfE);
+           }
+       });
     }
 
     @Override
@@ -320,6 +334,13 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
 
     @Override
     public EAr<T> union(SqlBuilder sqlBuilder) {
+
+        SimpleSqlBuilder simpleSqlBuilder = (SimpleSqlBuilder)sqlBuilder;
+
+        builder.sql.append(simpleSqlBuilder.sql);
+        builder.values.add(simpleSqlBuilder.values);
+
+
         return this;
     }
 
@@ -380,5 +401,12 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
     public EAr<T> where(String field, Symbol symbol, Object value) {
         builder.where(entity.getColumnName(field), symbol, value);
         return this;
+    }
+
+    @Override
+    protected void clear() {
+        super.clear();
+        filter = null;
+        ignoreNull = defaultIgnoreNull;
     }
 }

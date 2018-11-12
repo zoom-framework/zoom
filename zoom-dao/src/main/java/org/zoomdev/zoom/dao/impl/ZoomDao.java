@@ -34,6 +34,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * dao
@@ -84,11 +85,11 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
     }
 
 
-    public static void runTrans(Runnable runnable) throws Throwable {
-        runTrans(Trans.TRANSACTION_READ_COMMITTED, runnable);
+    public static void executeTrans(Runnable runnable) throws Throwable {
+        executeTrans(Trans.TRANSACTION_READ_COMMITTED, runnable);
     }
 
-    public static void runTrans(int level, Runnable runnable) throws Throwable {
+    public static void executeTrans(int level, Runnable runnable) throws Throwable {
         try {
             assert (runnable != null);
             ZoomDao.beginTrans(level);
@@ -129,7 +130,7 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
             String name = metaData.getDatabaseProductName();
             log.info(String.format("检测到数据库产品名称%s", name));
             SqlDriver sqlDriver = createDriver(name);
-            parseDatabaseStruct(metaData);
+            parseDatabaseStruct(metaData,connection);
             this.sqlDriver = sqlDriver;
         } catch (SQLException e) {
             throw new RuntimeException("创建Dao失败,连接数据库错误", e);
@@ -138,23 +139,57 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
         }
     }
 
-    private void parseDatabaseStruct(DatabaseMetaData metaData) throws SQLException {
-        ResultSet rs = null;
-        try {
-            rs = metaData.getTables(null, null, null, null);
-            List<String> names = new ArrayList<String>();
-            String cat = null;
-            while (rs.next()) {
-                String name = rs.getString("TABLE_NAME");
-                cat = rs.getString("TABLE_CAT");
-                names.add(name);
+    private void parseDatabaseStruct(final DatabaseMetaData metaData, Connection connection) {
+
+
+        FutureTask task = new FutureTask(new Callable() {
+            @Override
+            public Object call() throws Exception {
+                ResultSet rs = null;
+                try{
+                    // 这里是个坑，居然还有不返回一直等待的情况，是连接池的原因还是因为其他的？
+                    rs = metaData.getTables(null, null, null, null);
+                    List<String> names = new ArrayList<String>();
+                    String cat = null;
+                    while (rs.next()) {
+                        String name = rs.getString("TABLE_NAME");
+                        cat = rs.getString("TABLE_CAT");
+                        names.add(name);
+                    }
+                    ZoomDao.this.names = names;
+                    ZoomDao.this.tableCat = cat;
+                    ZoomDao.this.dbStructFactory = new CachedDbStructFactory(createDbStructFactory(metaData.getDatabaseProductName()));
+
+                    return null;
+                }catch (SQLException e){
+                    //错误
+                    return e;
+                }finally {
+                    DaoUtils.close(rs);
+                }
+
             }
-            this.names = names;
-            this.tableCat = cat;
-            dbStructFactory = new CachedDbStructFactory(createDbStructFactory(metaData.getDatabaseProductName()));
-        } finally {
-            DaoUtils.close(rs);
+        });
+        // 这里使用一个线程启动，防止程序卡死
+        Thread thread = new Thread(task);
+        thread.setDaemon(true);
+        thread.start();
+
+        //这里等待一下
+        try {
+            Object data = task.get(1000, TimeUnit.MILLISECONDS);
+            if(data instanceof Throwable){
+                throw new DaoException( "初始化失败", (Throwable)data);
+            }
+        } catch (InterruptedException e) {
+            return;
+        } catch (ExecutionException e) {
+            throw new DaoException( "初始化失败", e.getCause());
+        } catch (TimeoutException e) {
+            DaoUtils.close(connection);
+            throw new DaoException("初始化失败，获取表列表超时");
         }
+
     }
 
     private DbStructFactory createDbStructFactory(String productName) {
@@ -283,9 +318,6 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
         return names;
     }
 
-    public void setTableNames(Collection<String> names) {
-        this.names = names;
-    }
 
     private static DetectPrefixAliasPolicyMaker maker = DetectPrefixAliasPolicyMaker.DEFAULT;
 

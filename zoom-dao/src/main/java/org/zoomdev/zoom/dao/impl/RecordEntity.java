@@ -28,8 +28,8 @@ public class RecordEntity extends AbstractEntity {
     }
 
     @Override
-    public void setSource(SqlBuilder builder) {
-        builder.table("");
+    public void setQuerySource(SqlBuilder builder) {
+        builder.table(table);
     }
 
 }

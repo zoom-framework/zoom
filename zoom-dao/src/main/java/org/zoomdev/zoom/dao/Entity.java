@@ -91,5 +91,5 @@ public interface Entity {
      * 为activerecord设置数据， table / join
      * @param builder
      */
-	void setSource(SqlBuilder builder);
+	void setQuerySource(SqlBuilder builder);
 }

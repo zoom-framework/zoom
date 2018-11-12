@@ -50,11 +50,9 @@ public interface SqlBuilder {
      */
     public enum Like {
 
-        BOTH("%%%s%%"),                //like '%{}%'
-        FIRST("%%%s"),                //like '%{}'
-        LAST("%s%%"),                //like '{}%'
-        LEFT("%%%s"),                //like '%{}'
-        RIGHT("%s%%");                //like '{}%'
+        MATCH_BOTH("%%%s%%"),                //like '%{}%'
+        MATCH_END("%%%s"),                //like '%{}'
+        MATCH_START("%s%%");                //like '{}%'
 
         Like(String format) {
             this.format = format;

@@ -21,14 +21,15 @@ import java.util.Map;
 
 public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, ConnectionHolder, Trans {
 
-	private AliasSqlBuilder builder;
 	private Dao dao;
+
+    private AliasSqlBuilder builder;
 
 	private static final Log log = LogFactory.getLog(ActiveRecord.class);
 
 	public ActiveRecord(Dao dao) {
-		super(dao.getDataSource());
-		this.builder = new AliasSqlBuilder(dao);
+		super(dao.getDataSource(),new AliasSqlBuilder(dao));
+		this.builder = (AliasSqlBuilder) super.builder;
 	}
 
 	public List<Record> query(final String sql, final List<Object> values, List<StatementAdapter> adapters,
@@ -377,8 +378,4 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
 	}
 
 
-    @Override
-    protected String printSql() {
-        return builder.printSql();
-    }
 }

@@ -11,11 +11,15 @@ import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.Trans;
 
 public abstract class ThreadLocalConnectionHolder implements ConnectionHolder, Trans {
-	private DataSource dataSource;
-	private Connection connection;
+    protected DataSource dataSource;
+    protected Connection connection;
+	protected SimpleSqlBuilder builder;
 
-	public ThreadLocalConnectionHolder(DataSource dataSource) {
+	public ThreadLocalConnectionHolder(
+			DataSource dataSource,
+			SimpleSqlBuilder builder) {
 		this.dataSource = dataSource;
+		this.builder = builder;
 	}
 
 	@Override
@@ -43,13 +47,17 @@ public abstract class ThreadLocalConnectionHolder implements ConnectionHolder, T
 		try {
 			return executor.execute(getConnection());
 		} catch (SQLException e) {
-			throw new DaoException(printSql(),e);
+			throw new DaoException(builder.printSql(),e);
 		} finally {
-			releaseConnection();
+            clear();
 		}
 	}
 
-	protected abstract String printSql();
+	protected void clear(){
+        builder.clear(true);
+        releaseConnection();
+    }
+
 
 
 	public void releaseConnection() {

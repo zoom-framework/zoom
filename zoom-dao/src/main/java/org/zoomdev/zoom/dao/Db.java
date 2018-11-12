@@ -46,6 +46,15 @@ public class Db {
 			daos[--count] = null;
 		}
 	}
-	
-	
+
+
+    /**
+     * 对于默认的Dao，可以用这种方式来访问
+     * @param type
+     * @param <T>
+     * @return
+     */
+    public static <T> EAr<T> ar( Class<T> type ) {
+		return daos[0].ar(type);
+    }
 }

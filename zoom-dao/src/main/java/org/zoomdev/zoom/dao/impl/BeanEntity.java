@@ -45,11 +45,14 @@ class BeanEntity extends AbstractEntity {
     }
 
     @Override
-    public void setSource(SqlBuilder builder) {
+    public void setQuerySource(SqlBuilder builder) {
         builder.table(table);
-        for(JoinMeta joinMeta : joins){
-            builder.join(joinMeta.getTable(),joinMeta.getOn());
+        if(joins!=null){
+            for(JoinMeta joinMeta : joins){
+                builder.join(joinMeta.getTable(),joinMeta.getOn());
+            }
         }
+
     }
 
 
