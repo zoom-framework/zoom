@@ -437,6 +437,10 @@ public class Base64
 		return dArr;
 	}
 
+	public final static String encodeToString(String input){
+		return encodeToString(input.getBytes(),false);
+	}
+
 	// ****************************************************************************************
 	// * String version
 	// ****************************************************************************************

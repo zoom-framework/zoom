@@ -14,15 +14,13 @@ import org.zoomdev.zoom.dao.meta.JoinMeta;
 import org.zoomdev.zoom.dao.meta.TableMeta;
 import com.sun.istack.internal.NotNull;
 import org.apache.commons.lang3.StringUtils;
+import org.zoomdev.zoom.dao.utils.DaoUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -61,8 +59,25 @@ class BeanEntityFactory extends AbstractEntityFactory {
 
     static final Pattern COLUMN_PATTERN = Pattern.compile("[a-zA-Z0-9]+[\\s]*\\.[\\s]*[a-zA-Z0-9]+|[a-zA-Z0-9]+");
 
+    private Set<String> getJoinAllFields(Map<String,ColumnConfig> map){
 
-    private void parseOneForOne(final StringBuilder sb, String part, final Map<String,ColumnConfig> map) {
+        Set<String> allJoinAvaliableNames = new LinkedHashSet<String>();
+
+        for(Map.Entry<String,ColumnConfig> entry : map.entrySet()){
+            ColumnConfig config = entry.getValue();
+            ColumnMeta columnMeta = config.columnMeta;
+            if(DaoUtils.isStream(columnMeta.getDataType())){
+                continue;
+            }
+            allJoinAvaliableNames.add(entry.getKey());
+
+            allJoinAvaliableNames.add( config.getFullColumnName() );
+        }
+
+        return allJoinAvaliableNames;
+    }
+
+    private void parseOneForOne(final StringBuilder sb, String part, final Map<String,ColumnConfig> map, final Set<String> joinAllFields) {
 
         PatternUtils.visit(part, COLUMN_PATTERN, new PatternUtils.PatternVisitor() {
             @Override
@@ -70,11 +85,17 @@ class BeanEntityFactory extends AbstractEntityFactory {
                 String str = matcher.group();
                 if (str.contains(".")) {
                     //table + column
+                    str = str.replace(" ","");
+                    if(!joinAllFields.contains(str)){
+                        throw new DaoException("找不到"+str+"对应的字段，当前所有可用字段为:"
+                                + StringUtils.join(joinAllFields,","));
+                    }
                     sb.append(str);
                 } else {
                     ColumnConfig columnConfig = map.get(str);
                     if(columnConfig==null){
-                        sb.append(str);
+                        throw new DaoException("找不到"+str+"对应的字段，当前所有可用字段为:"
+                            + StringUtils.join(joinAllFields,","));
                     }else{
                         sb.append(columnConfig.getFullColumnName());
                     }
@@ -90,7 +111,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
     }
 
 
-    private String parseOn(String on, final Map<String,ColumnConfig> map) {
+    private String parseOn(String on, final Map<String,ColumnConfig> map, final Set<String> joinAllFields) {
         if(StringUtils.isEmpty(on)){
             throw new DaoException("请提供join的条件on");
         }
@@ -103,7 +124,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
 
             @Override
             public void onGetRest(String rest) {
-                parseOneForOne(sb, rest,map);
+                parseOneForOne(sb, rest,map,joinAllFields);
             }
         });
         //再来做一次替换
@@ -306,12 +327,12 @@ class BeanEntityFactory extends AbstractEntityFactory {
 
 
         JoinMeta[] joinMetas = new JoinMeta[joins.length];
-
+        Set<String> joinAllFields = getJoinAllFields(map);
         for (int i=0; i < joins.length; ++i) {
             Join join = joins[i];
             //
             JoinMeta joinMeta = new JoinMeta();
-            joinMeta.setOn(parseOn(join.on(),map));
+            joinMeta.setOn(parseOn(join.on(),map,joinAllFields));
             joinMeta.setTable(join.table());
             joinMeta.setType(join.type());
 

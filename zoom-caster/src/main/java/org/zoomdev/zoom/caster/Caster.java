@@ -5,6 +5,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -157,6 +158,7 @@ public class Caster {
 		if (srcType == null) {
 			return wrapFirstVisit(toType);
 		}
+
 		if (toType.isPrimitive()) {
 			//转化的类型指定类的包装类
 			return new WrapPriValueCaster(get(srcType, getWrapClass(toType)  ), toType);
@@ -376,6 +378,9 @@ public class Caster {
 		}
 	}
 
+    /**
+     * convert clob to JavaType
+     */
 	static class MapperClobCaster extends MapperCaster {
 
 		private ValueCaster clobCaster;
@@ -435,7 +440,7 @@ public class Caster {
 			} catch (Exception e) {
 				throw new CasterException(e);
 			} finally {
-				try {reader.close();} catch (IOException e) {}
+                close(reader);
 			}
 		}
 
@@ -464,20 +469,19 @@ public class Caster {
 			is = blob.getBinaryStream();
 			byte[] data = new byte[(int) blob.length()];        // byte[] data = new byte[is.available()];
 			is.read(data);
-			is.close();
 			return data;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		} finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
+            close(is);
 		}
 	}
+
+	private static void close(Closeable closeable){
+        try {if(closeable!=null)closeable.close();} catch (IOException e) {}
+    }
 
 	private static class Blob2String implements ValueCaster {
 		@Override
@@ -608,7 +612,7 @@ public class Caster {
 			} catch (Exception e) {
 				throw new CasterException(e);
 			} finally {
-				try{is.close();}catch (Exception e) {}
+                close(is);
 			}
 		}
 
@@ -624,7 +628,7 @@ public class Caster {
 			} catch (Exception e) {
 				throw new CasterException(e);
 			}finally {
-				try{is.close();}catch (Exception e) {}
+                close(is);
 			}
 		}
 
@@ -639,7 +643,7 @@ public class Caster {
 			} catch (Exception e) {
 				throw new CasterException(e);
 			} finally {
-				try{is.close();}catch (Exception e) {}
+                close(is);
 			}
 		}
 
@@ -655,7 +659,7 @@ public class Caster {
 			} catch (Exception e) {
 				throw new CasterException(e);
 			}finally {
-				try{is.close();}catch (Exception e) {}
+                close(is);
 			}
 		}
 

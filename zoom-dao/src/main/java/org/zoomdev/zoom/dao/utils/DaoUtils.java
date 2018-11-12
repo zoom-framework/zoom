@@ -1,8 +1,6 @@
 package org.zoomdev.zoom.dao.utils;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,4 +37,13 @@ public class DaoUtils {
 		}
 		return map;
 	}
+
+	/**
+	 * 判断一个数据库中的字段类型是否是Stream类型，Clob/Blob
+	 * @param dataType
+	 * @return
+	 */
+    public static boolean isStream(Class<?> dataType) {
+    	return Clob.class.isAssignableFrom(dataType) || Blob.class.isAssignableFrom(dataType);
+    }
 }

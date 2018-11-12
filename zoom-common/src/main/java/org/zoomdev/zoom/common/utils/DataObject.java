@@ -1,9 +1,11 @@
 package org.zoomdev.zoom.common.utils;
 
+import java.sql.Clob;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.zoomdev.zoom.caster.Caster;
+import org.zoomdev.zoom.caster.ValueCaster;
 
 /**
  * 
@@ -11,6 +13,31 @@ import org.zoomdev.zoom.caster.Caster;
  *
  */
 public class DataObject extends HashMap<String, Object> {
+
+
+    static {
+        Caster.register(Map.class, DataObject.class, new ValueCaster() {
+            @Override
+            public Object to(Object src) {
+                return DataObject.wrap((Map<String,Object>) src);
+            }
+        });
+
+
+        Caster.register(String.class, DataObject.class, new ValueCaster() {
+            @Override
+            public Object to(Object src) {
+                return Caster.to(Caster.to(src,Map.class),DataObject.class);
+            }
+        });
+
+        Caster.register(Clob.class, DataObject.class, new ValueCaster() {
+            @Override
+            public Object to(Object src) {
+                return Caster.to(Caster.to(src,String.class),DataObject.class);
+            }
+        });
+    }
 
 	/**
 	 * 
@@ -27,6 +54,10 @@ public class DataObject extends HashMap<String, Object> {
 
 	public DataObject(int initialCapacity) {
 		super(initialCapacity);
+	}
+
+	public static DataObject as(Object...args){
+        return wrap(MapUtils.asMap(args));
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })

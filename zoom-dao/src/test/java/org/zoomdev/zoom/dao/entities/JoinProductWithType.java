@@ -1,8 +1,10 @@
+package org.zoomdev.zoom.dao.entities;
+
 import org.zoomdev.zoom.dao.annotations.*;
 
 @Link({@Join(table = "shp_type", on = "tpId=typeId")})
 @Table("shp_product")
-public class Product {
+public class JoinProductWithType {
 
 
     public int getId() {
@@ -66,16 +68,8 @@ public class Product {
     }
 
     // 类型名称
+    @Column("shp_type.tp_name")
     String typeName;
 
-    public int getTpId() {
-        return tpId;
-    }
-
-    public void setTpId(int tpId) {
-        this.tpId = tpId;
-    }
-
-    int tpId;
 
 }
