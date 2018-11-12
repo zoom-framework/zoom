@@ -1,5 +1,5 @@
 
-![build](https://travis-ci.org/zoom-framework/zoom.svg?branch=master)
+<a href="https://travis-ci.org/zoom-framework/zoom"><img src="https://travis-ci.org/zoom-framework/zoom.svg?branch=master" /></a>
 
 # zoom
 

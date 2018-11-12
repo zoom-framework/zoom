@@ -21,9 +21,16 @@ public class TestTimerModule extends TestCase {
     private static final Log log = LogFactory.getLog(TestTimerModule.class);
 
     public void test() throws IOException {
-
+        log.info("=====================timer =================");
+        log.info("=====================timer =================");
+        log.info("=====================timer =================");
+        log.info("=====================timer =================");
+        log.info("=====================timer =================");
 
         IocContainer ioc = new SimpleIocContainer();
+        ioc.getIocClassLoader().appendModule(IocModule.class);
+        ioc.get(IocModule.class);
+        
         ClassResolvers classResolvers = new ClassResolvers(
                 new SimpleConfigBuilder(ioc)
         );
@@ -32,14 +39,9 @@ public class TestTimerModule extends TestCase {
         classResolvers.visit(scanner);
         //这里如果是maven的测试，可能会扫描不到目录
 
-        ioc.getIocClassLoader().appendModule(IocModule.class);
-        ioc.get(IocModule.class);
+       
 
-        log.info("=====================timer =================");
-        log.info("=====================timer =================");
-        log.info("=====================timer =================");
-        log.info("=====================timer =================");
-        log.info("=====================timer =================");
+       
 
 
         assertEquals(ioc.get(IocModule.class).getClass(),IocModule.class);
