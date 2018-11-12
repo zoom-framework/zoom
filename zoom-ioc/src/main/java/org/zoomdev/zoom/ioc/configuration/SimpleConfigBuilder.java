@@ -83,7 +83,8 @@ public class SimpleConfigBuilder extends ClassResolver {
                     || (app != null && app.getAnnotation(annotationClass) != null)) {
                 types.add(type);
             } else {
-                log.info("没有找到对应的标注:" + annotationClass + " 模块" + type + "未启用,若要启用模块，请使用ApplicationModule标注模块，并使用响应的Enable标注");
+                log.info("没有找到对应的标注:" + annotationClass + " 模块" + type + "未启用," +
+                        "若要启用本模块，请使用ApplicationModule标注主模块，并使用对应的【"+annotationClass.getName()+"】标注");
             }
         }
         if (app != null) {
