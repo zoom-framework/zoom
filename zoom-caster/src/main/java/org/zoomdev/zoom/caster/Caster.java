@@ -144,6 +144,17 @@ public class Caster {
         }
     }
 
+
+    private static class EmptyValueCaster implements ValueCaster{
+
+        @Override
+        public Object to(Object src) {
+            return src;
+        }
+    }
+
+    static EmptyValueCaster EMPTY = new EmptyValueCaster();
+
 	/**
 	 * Get a wrapped ValueCaster that check null value and return default value when value is null.
 	 *
@@ -158,6 +169,10 @@ public class Caster {
 		if (srcType == null) {
 			return wrapFirstVisit(toType);
 		}
+
+		if(srcType == toType || srcType.isAssignableFrom(toType)){
+		    return EMPTY;
+        }
 
 		if (toType.isPrimitive()) {
 			//转化的类型指定类的包装类
@@ -1289,6 +1304,9 @@ public class Caster {
 			//如果一开始并不知道要转什么
 			return wrapFirstVisit(toType);
 		}
+
+
+
 
 		if (toType instanceof ParameterizedType) {
 			return wrapParameterizedType(srcType, (ParameterizedType) toType);
