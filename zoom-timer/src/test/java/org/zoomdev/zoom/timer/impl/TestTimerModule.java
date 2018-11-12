@@ -1,6 +1,8 @@
 package org.zoomdev.zoom.timer.impl;
 
 import junit.framework.TestCase;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.common.res.ClassResolvers;
 import org.zoomdev.zoom.common.res.ResScanner;
 import org.zoomdev.zoom.common.utils.Classes;
@@ -16,6 +18,8 @@ import java.io.IOException;
 
 public class TestTimerModule extends TestCase {
 
+    private static final Log log = LogFactory.getLog(TestTimerModule.class);
+
     public void test() throws IOException {
 
 
@@ -30,6 +34,15 @@ public class TestTimerModule extends TestCase {
 
         ioc.getIocClassLoader().appendModule(IocModule.class);
         ioc.get(IocModule.class);
+
+        log.info("=====================timer =================");
+        log.info("=====================timer =================");
+        log.info("=====================timer =================");
+        log.info("=====================timer =================");
+        log.info("=====================timer =================");
+
+
+        assertEquals(ioc.get(IocModule.class).getClass(),IocModule.class);
 
         TestModule.TestService testModule = ioc.get(TestModule.TestService.class);
 
