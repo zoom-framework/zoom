@@ -87,7 +87,7 @@ public class SimpleConfigBuilder extends ClassResolver {
 			if(annotationClass==Module.class
                     || (app!=null && app.getAnnotation(annotationClass)!=null)
                     || app == null) {
-				log.info(String.format( "初始化Module [%s]" ,type));
+
 				types.add(type);
 			}else {
 				log.info("没有找到对应的标注:" + annotationClass + " 模块"+ type +"未启用");
@@ -98,20 +98,7 @@ public class SimpleConfigBuilder extends ClassResolver {
 		}
 
 		for(Class<?> type : types){
-			try {
-				Object module = Classes.newInstance(type);
-				ioc.getIocClassLoader().append(type,module);
-				//bean
-				Method[] methods = CachedClasses.getPublicMethods(type);
-				for (Method method : methods) {
-					IocBean bean = method.getAnnotation(IocBean.class);
-					if(bean != null) {
-						ioc.getIocClassLoader().append(module,method);
-					}
-				}
-			} catch (Exception e) {
-				throw new IocException("Module初始化失败，Module必须有一个默认构造函数",e);
-			}
+			ioc.getIocClassLoader().appendModule(type);
 		}
 
 		for(Class<?> type : types){

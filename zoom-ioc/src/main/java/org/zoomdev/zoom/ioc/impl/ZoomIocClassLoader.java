@@ -1,7 +1,11 @@
 package org.zoomdev.zoom.ioc.impl;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.common.Destroyable;
+import org.zoomdev.zoom.common.annotations.IocBean;
 import org.zoomdev.zoom.common.designpattern.SingletonUtils;
+import org.zoomdev.zoom.common.utils.CachedClasses;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.ioc.*;
 
@@ -53,6 +57,28 @@ public class ZoomIocClassLoader extends IocBase implements IocClassLoader,Destro
     @Override
     public void setClassEnhancer(ClassEnhancer enhancer) {
         this.classEnhancer = enhancer;
+    }
+
+
+    private static final Log log = LogFactory.getLog(ZoomIocClassLoader.class);
+
+    @Override
+    public void appendModule(Class<?> moduleClass) {
+        try {
+            log.info(String.format( "初始化Module [%s]" ,moduleClass));
+            Object module = Classes.newInstance(moduleClass);
+            append(moduleClass,module);
+            //bean
+            Method[] methods = CachedClasses.getPublicMethods(moduleClass);
+            for (Method method : methods) {
+                IocBean bean = method.getAnnotation(IocBean.class);
+                if(bean != null) {
+                   append(module,method);
+                }
+            }
+        } catch (Exception e) {
+            throw new IocException("Module初始化失败，Module必须有一个默认构造函数",e);
+        }
     }
 
     @Override

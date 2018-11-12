@@ -1,5 +1,7 @@
 package org.zoomdev.zoom.ioc;
 
+import org.zoomdev.zoom.ioc.modules.IocModule;
+
 import java.lang.reflect.Method;
 
 public interface IocClassLoader {
@@ -38,5 +40,6 @@ public interface IocClassLoader {
 
 
 	void setClassEnhancer(ClassEnhancer enhancer);
-	
+
+    void appendModule(Class<?> moduleClass);
 }

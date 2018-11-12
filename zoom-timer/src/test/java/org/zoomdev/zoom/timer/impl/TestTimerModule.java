@@ -8,6 +8,7 @@ import org.zoomdev.zoom.ioc.IocConstructor;
 import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.ioc.configuration.SimpleConfigBuilder;
 import org.zoomdev.zoom.ioc.impl.SimpleIocContainer;
+import org.zoomdev.zoom.ioc.modules.IocModule;
 import org.zoomdev.zoom.timer.impl.modules.TestModule;
 import org.zoomdev.zoom.timer.modules.TimerModule;
 
@@ -25,7 +26,10 @@ public class TestTimerModule extends TestCase {
         ResScanner scanner = ResScanner.me();
         scanner.scan();
         classResolvers.visit(scanner);
+        //这里如果是maven的测试，可能会扫描不到目录
 
+        ioc.getIocClassLoader().appendModule(IocModule.class);
+        ioc.get(IocModule.class);
 
         TestModule.TestService testModule = ioc.get(TestModule.TestService.class);
 
