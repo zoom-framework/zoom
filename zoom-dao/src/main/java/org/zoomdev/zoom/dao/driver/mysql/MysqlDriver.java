@@ -132,7 +132,7 @@ public class MysqlDriver extends AbsDriver {
             case Types.BLOB:
                 return "blob";
             default:
-                throw new RuntimeException("不支持的类型" + columnMeta.getDataType());
+                throw new RuntimeException("不支持的类型" + columnMeta.getType());
         }
 
     }

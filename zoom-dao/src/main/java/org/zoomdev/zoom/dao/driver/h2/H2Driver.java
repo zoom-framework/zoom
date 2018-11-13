@@ -33,7 +33,12 @@ public class H2Driver extends MysqlDriver {
             sb.append("\t");
             protectColumn(sb, columnMeta.getName());
             sb.append(' ');
-            sb.append(formatColumnType(columnMeta));
+            try{
+                sb.append(formatColumnType(columnMeta));
+            }catch (Exception e){
+                throw new RuntimeException("不支持的类型"+columnMeta.getName());
+            }
+
 
 
             if (columnMeta.getDefaultValue() != null) {
@@ -64,11 +69,39 @@ public class H2Driver extends MysqlDriver {
             if( index < table.getColumns().size() - 1){
                 sb.append(",");
             }
+
+            if(index == table.getColumns().size()-1){
+                break;
+            }
             sb.append("\n");
             ++index;
         }
+
+        if(primaryKeys.size() > 1){
+            first = true;
+
+            sb.append(",\n\tPRIMARY KEY (");
+            for(String key : primaryKeys){
+                if(first){
+                    first = false;
+                }else{
+                    sb.append(",");
+                }
+                sb.append(key);
+            }
+            sb.append(")\n");
+
+        }else{
+            sb.append("\n");
+        }
+
         sb.append(")charset=utf8;\n\n");
 
+
+        //primary keys
+
     }
+
+
 
 }

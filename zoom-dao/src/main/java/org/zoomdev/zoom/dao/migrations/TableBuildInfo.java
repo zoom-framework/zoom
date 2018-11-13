@@ -15,31 +15,20 @@ public class TableBuildInfo {
         return createWhenNotExists;
     }
 
-    public void setCreateWhenNotExists(boolean createWhenNotExists) {
-        this.createWhenNotExists = createWhenNotExists;
-    }
 
     public String getComment() {
         return comment;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public List<ColumnMeta> getColumns() {
         return columns;
     }
 
-    public void setColumns(List<ColumnMeta> columns) {
-        this.columns = columns;
-    }
+
 }

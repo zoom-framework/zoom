@@ -61,13 +61,17 @@ public class H2DbStrict extends AbsDbStruct {
 
         List<Record> list = dao.ar()
                 .table("information_schema.columns")
-                .select("TABLE_NAME,COLUMN_NAME,IS_NULLABLE,DATA_TYPE,SEQUENCE_NAME,CHARACTER_MAXIMUM_LENGTH,REMARKS,COLUMN_DEFAULT")
+                .select("TABLE_NAME,COLUMN_NAME,IS_NULLABLE,DATA_TYPE," +
+                        "SEQUENCE_NAME,CHARACTER_MAXIMUM_LENGTH,REMARKS,COLUMN_DEFAULT")
                 .where("TABLE_SCHEMA", "PUBLIC")
                 .where("TABLE_NAME", meta.getName().toUpperCase()).find();
         //index
-        List<Record> indexes = dao.ar().table("INFORMATION_SCHEMA.indexes").select("COLUMN_NAME,INDEX_TYPE_NAME")
+        List<Record> indexes = dao.ar()
+                .table("INFORMATION_SCHEMA.indexes")
+                .select("COLUMN_NAME,INDEX_TYPE_NAME")
                 .where("TABLE_NAME", meta.getName().toUpperCase()).find();
-        Map<String, String> indexesMap = MapUtils.toKeyAndLabel(indexes, "column_name", "index_type_name");
+        Map<String, String> indexesMap = MapUtils
+                .toKeyAndLabel(indexes, "column_name", "index_type_name");
 
         for (Record record : list) {
             String column = record.getString("column_name");

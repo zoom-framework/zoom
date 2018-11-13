@@ -172,7 +172,7 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
     }
 
     @Override
-    public DatabaseBuilder primaryKey() {
+    public DatabaseBuilder keyPrimary() {
         columnMeta.setKeyType(ColumnMeta.KeyType.PRIMARY);
         return this;
     }
@@ -184,13 +184,13 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
     }
 
     @Override
-    public DatabaseBuilder unique() {
+    public DatabaseBuilder keyUnique() {
         columnMeta.setKeyType(ColumnMeta.KeyType.UNIQUE);
         return this;
     }
 
     @Override
-    public DatabaseBuilder index() {
+    public DatabaseBuilder keyIndex() {
         columnMeta.setKeyType(ColumnMeta.KeyType.INDEX);
         return this;
     }

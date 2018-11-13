@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class Record extends DataObject {
 
-    public static Record asRecord(Object... values) {
+    public static Record as(Object... values) {
 
         if (values.length % 2 != 0) {
             throw new RuntimeException("参数个数必须为2的倍数");

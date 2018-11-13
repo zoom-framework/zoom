@@ -4,12 +4,12 @@ import org.zoomdev.zoom.aop.MethodInterceptor;
 import org.zoomdev.zoom.aop.MethodInvoker;
 import org.zoomdev.zoom.aop.factory.AnnotationMethodInterceptorFactory;
 import org.zoomdev.zoom.event.EventService;
-import org.zoomdev.zoom.event.annotations.EventResult;
+import org.zoomdev.zoom.event.annotations.EventNotifier;
 
 import java.lang.reflect.Method;
 import java.util.List;
 
-class EventResultMethodInterceptorFactory extends AnnotationMethodInterceptorFactory<EventResult> {
+class EventResultMethodInterceptorFactory extends AnnotationMethodInterceptorFactory<EventNotifier> {
 
     private EventService eventService;
 
@@ -18,7 +18,7 @@ class EventResultMethodInterceptorFactory extends AnnotationMethodInterceptorFac
     }
 
     @Override
-    protected void createMethodInterceptors(EventResult annotation, Method method, List<MethodInterceptor> interceptors) {
+    protected void createMethodInterceptors(EventNotifier annotation, Method method, List<MethodInterceptor> interceptors) {
         interceptors.add(new EventResultMethodIngerceptor(eventService, annotation.value()));
     }
 

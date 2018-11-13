@@ -1,5 +1,6 @@
 package org.zoomdev.zoom.dao;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.zoomdev.zoom.common.utils.Page;
 
 import java.util.List;
@@ -127,4 +128,6 @@ public interface EAr<T> extends Sql<EAr<T>> {
 
 
     Entity getEntity();
+
+
 }

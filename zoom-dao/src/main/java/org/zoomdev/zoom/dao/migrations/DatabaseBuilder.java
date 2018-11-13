@@ -47,15 +47,14 @@ public interface DatabaseBuilder {
     DatabaseBuilder number();
 
     DatabaseBuilder notNull();
-
-    DatabaseBuilder primaryKey();
-
     /// for mysql
     DatabaseBuilder autoIncement();
 
-    DatabaseBuilder unique();
+    DatabaseBuilder keyPrimary();
 
-    DatabaseBuilder index();
+    DatabaseBuilder keyUnique();
+
+    DatabaseBuilder keyIndex();
 
 
     String buildSql();
