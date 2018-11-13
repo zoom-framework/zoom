@@ -223,7 +223,8 @@ public class ResScanner implements Destroyable {
             while ((entry = inputStream.getNextEntry()) != null) {
                 String name = entry.getName();
                 if (name.endsWith("class")) {
-                    addClass(name.replace(".class", "").replace("/", "."), classLoader, null);
+                    addClass(name.replace(".class", "")
+                            .replace("/", "."), classLoader, null);
                 }
             }
 
@@ -466,32 +467,59 @@ public class ResScanner implements Destroyable {
      */
     public void parseJar(File file, ClassLoader classLoader) throws IOException {
         if (log.isInfoEnabled()) {
-            log.info("正在解析jar文件" + file.getAbsolutePath());
+            log.info("正在解析jar文件:" + file.getAbsolutePath());
         }
-        JarFile jarFile = null;
+        if(!file.exists()){
+            log.error("文件不存在:"+file.getAbsolutePath());
+            return;
+        }
+
+        ZipInputStream inputStream = null;
         try {
-            jarFile = new JarFile(file);
-            Enumeration<JarEntry> entries = jarFile.entries();
-            while (entries.hasMoreElements()) {
-                JarEntry entry = entries.nextElement();
+            InputStream is = new FileInputStream(file);
+            inputStream = new ZipInputStream(is);
+            ZipEntry entry;
+            while ((entry = inputStream.getNextEntry()) != null) {
                 String name = entry.getName();
-                // 如果是一个.class文件 而且不是目录
-                if (name.endsWith(".class") && !entry.isDirectory()) {
-                    // 去掉后面的".class" 获取真正的类名
-                    String className = name.substring(0, name.length() - 6).replace("/", ".");
-                    // 假设同一个className，则应该以文件中的为准
-                    addJarClass(className, classLoader, file);
-                } else {
+                if (name.endsWith(".class")) {
+                    addJarClass(
+                            name.substring(0,name.length()-".class".length())
+                            .replace("/", "."), classLoader, file);
+                }else {
+                    if(entry.isDirectory()){
+                        continue;
+                    }
                     addJarFile(name, classLoader, file);
                 }
             }
+
         } finally {
-            if (jarFile != null)
-                try {
-                    jarFile.close();
-                } catch (Exception e) {
-                }
+            Io.close(inputStream);
         }
+//        JarFile jarFile = null;
+//        try {
+//            jarFile = new JarFile(file);
+//            Enumeration<JarEntry> entries = jarFile.entries();
+//            while (entries.hasMoreElements()) {
+//                JarEntry entry = entries.nextElement();
+//                String name = entry.getName();
+//                // 如果是一个.class文件 而且不是目录
+//                if (name.endsWith(".class") && !entry.isDirectory()) {
+//                    // 去掉后面的".class" 获取真正的类名
+//                    String className = name.substring(0, name.length() - 6).replace("/", ".");
+//                    // 假设同一个className，则应该以文件中的为准
+//                    addJarClass(className, classLoader, file);
+//                } else {
+//                    addJarFile(name, classLoader, file);
+//                }
+//            }
+//        } finally {
+//            if (jarFile != null)
+//                try {
+//                    jarFile.close();
+//                } catch (Exception e) {
+//                }
+//        }
 
     }
 

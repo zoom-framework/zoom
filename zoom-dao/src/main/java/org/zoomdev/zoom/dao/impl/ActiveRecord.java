@@ -131,7 +131,7 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
 
     @Override
     protected void clear() {
-
+        releaseConnection();
     }
 
     @Override

@@ -579,8 +579,7 @@ public class Classes {
 
     public static String[] getClassPathes(){
         String str = System.getProperty("java.class.path");
-        String[] parts = str.split(":|;");
-
+        String[] parts = str.split(System.getProperty("path.separator"));
         return parts;
     }
 }
