@@ -1,7 +1,9 @@
 package org.zoomdev.zoom.dao.driver.oracle;
 
 import org.zoomdev.zoom.dao.driver.AbsDriver;
+import org.zoomdev.zoom.dao.meta.ColumnMeta;
 
+import java.sql.Types;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +35,46 @@ public class OracleDriver extends AbsDriver {
 
         return 0;
     }
+
+    @Override
+    public String formatColumnType(ColumnMeta struct) {
+        switch (struct.getType()) {
+            case Types.INTEGER:
+                return "NUMBER";
+            case Types.SMALLINT:
+                return "NUMBER";
+            case Types.BIGINT:
+                return "NUMBER";
+            case Types.VARCHAR:
+                return new StringBuilder().append("VARCHAR2(")
+                        .append(struct.getMaxLen()).append(")").toString();
+            case Types.NVARCHAR:
+                return new StringBuilder().append("NVARCHAR2(")
+                        .append(struct.getMaxLen()).append(")").toString();
+            case Types.DATE:
+                return "date";
+            case Types.TIME:
+                return "time";
+            case Types.BOOLEAN:
+                return "NUMBER";
+            case Types.TIMESTAMP:
+                return "timestamp";
+            case Types.CHAR:
+                return new StringBuilder().append("CHAR(")
+                        .append(struct.getMaxLen()).append(")").toString();
+            case Types.CLOB:
+                return "CLOB";
+            case Types.BLOB:
+                return "BLOB";
+            case Types.DOUBLE:
+                return "DOUBLE";
+            case Types.NUMERIC:
+                return "NUMBER";
+            default:
+                throw new RuntimeException("不支持的类型"+struct.getDataType());
+        }
+    }
+
 
     @Override
     public void insertOrUpdate(StringBuilder sb, List<Object> values, String tableName, Map<String, Object> data, String... unikeys) {

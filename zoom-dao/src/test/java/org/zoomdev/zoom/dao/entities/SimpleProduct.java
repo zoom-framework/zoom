@@ -9,6 +9,18 @@ import org.zoomdev.zoom.dao.annotations.Table;
 public class SimpleProduct {
 
 
+    @AutoGenerate
+    private int id;
+    private String name;
+    private double price;
+    @Column(adapter = DataAdapters.TimeStamp2String.class)
+    private String createdAt;
+    private int tpId;
+    private String info;
+    private byte[] img;
+    private String thumb;
+
+
     public int getId() {
         return id;
     }
@@ -49,14 +61,6 @@ public class SimpleProduct {
         this.info = info;
     }
 
-    @AutoGenerate
-    private int id;
-
-    private String name;
-
-    private double price;
-
-    String thumb;
 
     public byte[] getImg() {
         return img;
@@ -66,7 +70,6 @@ public class SimpleProduct {
         this.img = img;
     }
 
-    byte[] img;
 
     public String getCreatedAt() {
         return createdAt;
@@ -76,11 +79,7 @@ public class SimpleProduct {
         this.createdAt = createdAt;
     }
 
-    @Column(adapter = DataAdapters.TimeStamp2String.class)
-    String createdAt;
 
-
-    String info;
 
     public int getTpId() {
         return tpId;
@@ -90,6 +89,6 @@ public class SimpleProduct {
         this.tpId = tpId;
     }
 
-    int tpId;
+
 
 }

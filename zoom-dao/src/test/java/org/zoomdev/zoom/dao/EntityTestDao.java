@@ -150,23 +150,17 @@ public class EntityTestDao {
         shop.setTitle("测试商店");
         shop.setAddress("地理位置");
         dao.ar(SimpleShop.class).insert(shop);
-
-
-
         assertEquals(shop.getId(),"1");
     }
 
 
     @Test(expected = DaoException.class)
     public void testCannotFindJoin(){
-
-
         dao.ar(ErrorCannotFindJoin.class).find();
     }
 
     @Test(expected = DaoException.class)
     public void testCannotFindField(){
-
 
         dao.ar(ErrorCannotFindField.class).find();
     }
@@ -176,7 +170,14 @@ public class EntityTestDao {
         GroupByEntity entity = dao.ar(GroupByEntity.class)
                 .groupBy("shpId").get();
 
-        System.out.println(JSON.stringify(entity));
+
+
+     //   System.out.println(JSON.stringify(entity));
+
+    }
+
+    @Test
+    public void testCreateTable(){
 
     }
 }

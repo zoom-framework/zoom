@@ -3,6 +3,7 @@ package org.zoomdev.zoom.dao.meta;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.zoomdev.zoom.common.json.JSON;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.Map;
  *
  * @author jzoom
  */
-public class TableMeta {
+public class TableMeta implements Serializable {
 
     /**
      * 如果有comment，表示已经被填充，下次就不用再次fill了

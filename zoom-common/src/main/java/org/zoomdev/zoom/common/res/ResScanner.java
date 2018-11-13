@@ -8,6 +8,7 @@ import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.common.filter.pattern.PatternFilterFactory;
 import org.zoomdev.zoom.common.io.Io;
 import org.zoomdev.zoom.common.utils.CachedClasses;
+import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.common.utils.PathUtils;
 import org.zoomdev.zoom.common.utils.Visitor;
 
@@ -287,8 +288,7 @@ public class ResScanner implements Destroyable {
      * @return
      */
     private void scanClassPath(ClassLoader classLoader) throws IOException {
-        String str = System.getProperty("java.class.path");
-        String[] parts = str.split(":");
+        String[] parts = Classes.getClassPathes();
         for (String part : parts) {
             File file = new File(part);
             if (!scanned.contains(file)) {

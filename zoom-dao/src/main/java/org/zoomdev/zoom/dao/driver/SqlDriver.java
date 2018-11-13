@@ -3,6 +3,7 @@ package org.zoomdev.zoom.dao.driver;
 
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 import org.zoomdev.zoom.dao.adapters.StatementAdapterFactory;
+import org.zoomdev.zoom.dao.meta.ColumnMeta;
 
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,8 @@ public interface SqlDriver extends StatementAdapterFactory {
     int position2page(int position, int size);
 
     int page2position(int page, int size);
+
+    String formatColumnType(ColumnMeta column);
 
     void insertOrUpdate(StringBuilder sb, List<Object> values, String tableName, Map<String, Object> data, String... unikeys);
 }

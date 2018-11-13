@@ -18,7 +18,7 @@ public interface DatabaseBuilder {
     DatabaseBuilder createIfNotExists(String table);
 
     // commments current context is table, for table, current context is column, for column
-    DatabaseBuilder commments(String commments);
+    DatabaseBuilder comment(String comment);
 
     DatabaseBuilder createTable(String table);
 
@@ -29,7 +29,7 @@ public interface DatabaseBuilder {
     DatabaseBuilder modify(String table, String column);
 
     // Column start
-    DatabaseBuilder varchar(int len);
+    DatabaseBuilder string(int len);
 
     DatabaseBuilder text();
 
@@ -37,7 +37,9 @@ public interface DatabaseBuilder {
 
     DatabaseBuilder date();
 
-    DatabaseBuilder integer(int len);
+    DatabaseBuilder integer();
+
+    DatabaseBuilder bigInt();
 
     DatabaseBuilder number();
 
@@ -51,6 +53,9 @@ public interface DatabaseBuilder {
     DatabaseBuilder unique();
 
     DatabaseBuilder index();
+
+
+    String buildSql();
 
 //
 //    DatabaseBuilder createTrigger(String name);

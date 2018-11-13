@@ -2,7 +2,9 @@ package org.zoomdev.zoom.dao.driver.mysql;
 
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 import org.zoomdev.zoom.dao.driver.AbsDriver;
+import org.zoomdev.zoom.dao.meta.ColumnMeta;
 
+import java.sql.Types;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -84,8 +86,48 @@ public class MysqlDriver extends AbsDriver {
 
     @Override
     public int page2position(int page, int size) {
-        // TODO Auto-generated method stub
         return 0;
+    }
+
+    @Override
+    public String formatColumnType(ColumnMeta columnMeta) {
+        int type = columnMeta.getType();
+        switch (type) {
+            case Types.INTEGER:
+                return "int(32)";
+            case Types.SMALLINT:
+                return "smallint(8)";
+            case Types.BIGINT:
+                return "bigint(64)";
+            case Types.VARCHAR:
+                return new StringBuilder().append("varchar(").append(columnMeta.getMaxLen()).append(")").toString();
+            case Types.NVARCHAR:
+                return new StringBuilder().append("varchar(").append(columnMeta.getMaxLen()).append(")").toString();
+            case Types.DATE:
+                return "date";
+            case Types.TIME:
+                return "time";
+            case Types.BOOLEAN:
+                return "tinyint(1)";
+            case Types.TIMESTAMP:
+                return "timestamp";
+            case Types.CHAR:
+                return new StringBuilder().append("char(").append(columnMeta.getMaxLen()).append(")").toString();
+            case Types.CLOB:
+                if (columnMeta.getMaxLen() == 65535) {
+                    return new StringBuilder().append("text").toString();
+                }
+                return new StringBuilder().append("mediumtext").toString();
+            case Types.NUMERIC:
+                return "int(32)";
+            case Types.DOUBLE:
+                return "double";
+            case Types.BLOB:
+                return "blob";
+            default:
+                throw new RuntimeException("不支持的类型" + columnMeta.getDataType());
+        }
+
     }
 
 

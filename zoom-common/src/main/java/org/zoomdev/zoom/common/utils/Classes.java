@@ -575,4 +575,12 @@ public class Classes {
             return method.getParameterTypes().length;
         }
     }
+
+
+    public static String[] getClassPathes(){
+        String str = System.getProperty("java.class.path");
+        String[] parts = str.split(":|;");
+
+        return parts;
+    }
 }

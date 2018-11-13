@@ -1,11 +1,13 @@
 package org.zoomdev.zoom.dao.meta;
 
+import java.io.Serializable;
+
 /**
  * 字段属性
  *
  * @author jzoom
  */
-public class ColumnMeta {
+public class ColumnMeta implements Serializable {
 
     public static enum KeyType {
         PRIMARY,

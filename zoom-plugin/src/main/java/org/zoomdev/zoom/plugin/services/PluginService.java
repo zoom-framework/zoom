@@ -27,6 +27,12 @@ public class PluginService {
     @Inject
     private PluginHost pluginHost;
 
+    boolean showStartupError;
+
+    private void setShowStartupError(boolean show){
+        this.showStartupError = show;
+    }
+
     // 查询所有的插件
     public synchronized void startup() {
         WebUtils.runAfterAsync(new Runnable() {
@@ -37,7 +43,9 @@ public class PluginService {
                     try {
                         pluginHost.load(new URL(record.getString("uri")));
                     } catch (Exception e) {
-                        log.warn("插件加载失败" + record.getString("id"), e);
+                      if(showStartupError){
+                          log.warn("插件加载失败" + record.getString("id"), e);
+                      }
                     }
                 }
                 try {
