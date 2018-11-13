@@ -11,6 +11,7 @@ import org.zoomdev.zoom.dao.driver.AbsDbStruct;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.meta.ColumnMeta.KeyType;
 import org.zoomdev.zoom.dao.meta.TableMeta;
+import org.zoomdev.zoom.dao.migrations.TableBuildInfo;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -96,5 +97,7 @@ public class H2DbStrict extends AbsDbStruct {
         }
 
     }
+
+
 
 }

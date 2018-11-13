@@ -1,4 +1,4 @@
-package org.zoomdev.zoom.dao.impl;
+package org.zoomdev.zoom.dao.migrations;
 
 import org.zoomdev.zoom.common.utils.CachedClasses;
 import org.zoomdev.zoom.dao.Dao;
@@ -8,6 +8,7 @@ import org.zoomdev.zoom.dao.annotations.ColumnIgnore;
 import org.zoomdev.zoom.dao.driver.SqlDriver;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.migrations.DatabaseBuilder;
+import org.zoomdev.zoom.dao.migrations.TableBuildInfo;
 
 import java.lang.reflect.Field;
 import java.sql.Types;
@@ -17,19 +18,11 @@ import java.util.List;
 public class ZoomDatabaseBuilder implements DatabaseBuilder {
 
 
-    private static class TableMeta {
-
-        boolean createWhenNotExists = false;
-
-        String comment;
-        String name;
-        List<ColumnMeta> columns = new ArrayList<ColumnMeta>();
-    }
 
     private Dao dao;
 
 
-    private List<TableMeta> tables = new ArrayList<TableMeta>();
+    private List<TableBuildInfo> tables = new ArrayList<TableBuildInfo>();
 
     private SqlDriver driver;
 
@@ -55,57 +48,20 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
 
     private class CreateTable extends BuildInfo {
 
-        private TableMeta table;
+        private TableBuildInfo table;
 
 
-        public CreateTable(TableMeta table) {
+        public CreateTable(TableBuildInfo table) {
             this.table = table;
         }
 
         @Override
         void build(StringBuilder sb) {
-            sb.append("CREATE TABLE ");
-            if (table.createWhenNotExists) {
-                sb.append("IF NOT EXISTS ");
-            }
-            driver.protectTable(sb, table.name);
-            sb.append("(\n");
-            boolean first = false;
-            int index = 0;
-            for (ColumnMeta columnMeta : table.columns) {
-                sb.append("\t");
-                driver.protectColumn(sb, columnMeta.getName());
-                sb.append(' ')
-                        .append(driver.formatColumnType(columnMeta))
-                        .append(columnMeta.isNullable() ? " NULL" : " NOT NULL");
-                if (columnMeta.getDefaultValue() != null) {
-                    if (columnMeta.getDefaultValue() instanceof String) {
-                        sb.append(" DEFAULT '").append(columnMeta.getDefaultValue()).append("'");
-                    } else {
-                        sb.append(" DEFAULT ").append(columnMeta.getDefaultValue());
-                    }
-                }
-                if(columnMeta.isPrimary()){
-                    sb.append(" PRIMARY KEY");
-                }
-                if(columnMeta.isAuto()){
-                    sb.append(" auto_increment".toUpperCase());
-                }
-
-                sb.append(" COMMENT").append("'").append(columnMeta.getComment()==null ? "":columnMeta.getComment()).append("'");
-
-                if( index < table.columns.size() - 1){
-                    sb.append(",");
-                }
-                sb.append("\n");
-            }
-            sb.append(") ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='");
-            sb.append(table.comment==null ? "":table.comment)
-                    .append("'\n\n");
+            driver.build(table,sb);
         }
     }
 
-    ZoomDatabaseBuilder(Dao dao) {
+    public ZoomDatabaseBuilder(Dao dao) {
         this.dao = dao;
         this.driver = dao.getDriver();
     }
@@ -119,35 +75,35 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
     @Override
     public DatabaseBuilder createIfNotExists(String table) {
         createTable(table);
-        tableMeta.createWhenNotExists = true;
+        tableBuildInfo.createWhenNotExists = true;
 
         return this;
     }
 
     @Override
     public DatabaseBuilder comment(String comment) {
-        tableMeta.comment = comment;
+        tableBuildInfo.comment = comment;
         return this;
     }
 
     @Override
     public DatabaseBuilder createTable(String table) {
-        tableMeta = new TableMeta();
-        tableMeta.name = table;
-        tables.add(tableMeta);
-        buildInfos.add(new CreateTable(tableMeta));
+        tableBuildInfo = new TableBuildInfo();
+        tableBuildInfo.name = table;
+        tables.add(tableBuildInfo);
+        buildInfos.add(new CreateTable(tableBuildInfo));
         return this;
     }
 
 
-    private TableMeta tableMeta;
+    private TableBuildInfo tableBuildInfo;
     private ColumnMeta columnMeta;
 
     @Override
     public DatabaseBuilder add(String column) {
 
         columnMeta = new ColumnMeta();
-        tableMeta.columns.add(columnMeta);
+        tableBuildInfo.columns.add(columnMeta);
         columnMeta.setNullable(true);
         columnMeta.setName(column);
 
@@ -194,6 +150,12 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
     @Override
     public DatabaseBuilder bigInt() {
         columnMeta.setType(Types.BIGINT);
+        return this;
+    }
+
+    @Override
+    public DatabaseBuilder clob() {
+        columnMeta.setType(Types.CLOB);
         return this;
     }
 
@@ -247,6 +209,7 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
     @Override
     public void build() {
 
+        dao.ar().executeQuery(buildSql());
     }
 
     @Override
@@ -271,5 +234,17 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
         }
 
 
+    }
+
+    @Override
+    public DatabaseBuilder defaultValue(Object value) {
+        columnMeta.setDefaultValue(value);
+        return this;
+    }
+
+    @Override
+    public DatabaseBuilder blob() {
+        columnMeta.setType(Types.BLOB);
+        return this;
     }
 }

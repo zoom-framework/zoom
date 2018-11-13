@@ -78,4 +78,5 @@ public interface Dao extends StatementAdapterFactory {
 
 
     <T> T execute(ConnectionExecutor connectionExecutor);
+
 }

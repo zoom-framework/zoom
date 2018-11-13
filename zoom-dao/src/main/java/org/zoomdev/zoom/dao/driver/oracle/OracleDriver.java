@@ -2,6 +2,7 @@ package org.zoomdev.zoom.dao.driver.oracle;
 
 import org.zoomdev.zoom.dao.driver.AbsDriver;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
+import org.zoomdev.zoom.dao.migrations.TableBuildInfo;
 
 import java.sql.Types;
 import java.util.HashSet;
@@ -13,9 +14,17 @@ import java.util.Set;
 public class OracleDriver extends AbsDriver {
 
     @Override
-    public StringBuilder buildPage(StringBuilder sql, int position, int size) {
-        return sql.insert(0, "SELECT * FROM(SELECT A.*, rownum r FROM (").append(") A WHERE rownum <= ")
-                .append(position + size).append(" ) B WHERE r > ").append(position);
+    public StringBuilder buildPage(
+            StringBuilder sql,
+            List<Object> values,
+            int position,
+            int size) {
+        return sql.insert(0,
+                "SELECT * FROM (SELECT A.*, rownum r FROM (")
+                .append(") A WHERE rownum <= ")
+                .append(position + size)
+                .append(" ) B WHERE r > ")
+                .append(position);
     }
 
     @Override
@@ -71,7 +80,7 @@ public class OracleDriver extends AbsDriver {
             case Types.NUMERIC:
                 return "NUMBER";
             default:
-                throw new RuntimeException("不支持的类型"+struct.getDataType());
+                throw new RuntimeException("不支持的类型" + struct.getDataType());
         }
     }
 
@@ -162,6 +171,11 @@ public class OracleDriver extends AbsDriver {
         }
 
         sb.append(")");
+    }
+
+    @Override
+    public void build(TableBuildInfo buildInfo, StringBuilder sb) {
+
     }
 
 }

@@ -1,5 +1,8 @@
 package org.zoomdev.zoom.dao.migrations;
 
+import org.apache.commons.lang3.ObjectUtils;
+import org.zoomdev.zoom.common.utils.DatetimeUtils;
+
 /**
  * dao.newBuilder()
  * .create("user)
@@ -40,7 +43,7 @@ public interface DatabaseBuilder {
     DatabaseBuilder integer();
 
     DatabaseBuilder bigInt();
-
+    DatabaseBuilder clob();
     DatabaseBuilder number();
 
     DatabaseBuilder notNull();
@@ -68,4 +71,12 @@ public interface DatabaseBuilder {
     // create a table from class directly
     void build(Class<?> type, boolean dropIfExists);
 
+    /**
+     * default value
+     * @param value
+     */
+    DatabaseBuilder defaultValue(Object value);
+
+
+    DatabaseBuilder blob();
 }

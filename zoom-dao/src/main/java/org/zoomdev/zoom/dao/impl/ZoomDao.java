@@ -24,6 +24,7 @@ import org.zoomdev.zoom.dao.driver.oracle.OracleDriver;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.meta.TableMeta;
 import org.zoomdev.zoom.dao.migrations.DatabaseBuilder;
+import org.zoomdev.zoom.dao.migrations.ZoomDatabaseBuilder;
 import org.zoomdev.zoom.dao.transaction.Trans;
 import org.zoomdev.zoom.dao.transaction.Transactions;
 import org.zoomdev.zoom.dao.utils.DaoUtils;
@@ -492,7 +493,7 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
 
     @Override
     public DatabaseBuilder builder() {
-        return null;
+        return new ZoomDatabaseBuilder(this);
     }
 
     @Override

@@ -15,6 +15,150 @@ import java.util.logging.Logger;
 
 
 public class DruidDataSourceProvider implements DataSourceProvider {
+    public int getInitialSize() {
+        return initialSize;
+    }
+
+    public void setInitialSize(int initialSize) {
+        this.initialSize = initialSize;
+    }
+
+    public int getMinIdle() {
+        return minIdle;
+    }
+
+    public void setMinIdle(int minIdle) {
+        this.minIdle = minIdle;
+    }
+
+    public int getMaxActive() {
+        return maxActive;
+    }
+
+    public void setMaxActive(int maxActive) {
+        this.maxActive = maxActive;
+    }
+
+    public long getMaxWait() {
+        return maxWait;
+    }
+
+    public void setMaxWait(long maxWait) {
+        this.maxWait = maxWait;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public long getTimeBetweenEvictionRunsMillis() {
+        return timeBetweenEvictionRunsMillis;
+    }
+
+    public void setTimeBetweenEvictionRunsMillis(long timeBetweenEvictionRunsMillis) {
+        this.timeBetweenEvictionRunsMillis = timeBetweenEvictionRunsMillis;
+    }
+
+    public long getMinEvictableIdleTimeMillis() {
+        return minEvictableIdleTimeMillis;
+    }
+
+    public void setMinEvictableIdleTimeMillis(long minEvictableIdleTimeMillis) {
+        this.minEvictableIdleTimeMillis = minEvictableIdleTimeMillis;
+    }
+
+    public long getTimeBetweenConnectErrorMillis() {
+        return timeBetweenConnectErrorMillis;
+    }
+
+    public void setTimeBetweenConnectErrorMillis(long timeBetweenConnectErrorMillis) {
+        this.timeBetweenConnectErrorMillis = timeBetweenConnectErrorMillis;
+    }
+
+    public String getValidationQuery() {
+        return validationQuery;
+    }
+
+    public void setValidationQuery(String validationQuery) {
+        this.validationQuery = validationQuery;
+    }
+
+    public boolean isTestWhileIdle() {
+        return testWhileIdle;
+    }
+
+    public void setTestWhileIdle(boolean testWhileIdle) {
+        this.testWhileIdle = testWhileIdle;
+    }
+
+    public boolean isTestOnBorrow() {
+        return testOnBorrow;
+    }
+
+    public void setTestOnBorrow(boolean testOnBorrow) {
+        this.testOnBorrow = testOnBorrow;
+    }
+
+    public boolean isTestOnReturn() {
+        return testOnReturn;
+    }
+
+    public void setTestOnReturn(boolean testOnReturn) {
+        this.testOnReturn = testOnReturn;
+    }
+
+    public String getDriverClassName() {
+        return driverClassName;
+    }
+
+    public boolean isRemoveAbandoned() {
+        return removeAbandoned;
+    }
+
+    public void setRemoveAbandoned(boolean removeAbandoned) {
+        this.removeAbandoned = removeAbandoned;
+    }
+
+    public long getRemoveAbandonedTimeoutMillis() {
+        return removeAbandonedTimeoutMillis;
+    }
+
+    public void setRemoveAbandonedTimeoutMillis(long removeAbandonedTimeoutMillis) {
+        this.removeAbandonedTimeoutMillis = removeAbandonedTimeoutMillis;
+    }
+
+    public boolean isLogAbandoned() {
+        return logAbandoned;
+    }
+
+    public void setLogAbandoned(boolean logAbandoned) {
+        this.logAbandoned = logAbandoned;
+    }
+
+    public int getMaxPoolPreparedStatementPerConnectionSize() {
+        return maxPoolPreparedStatementPerConnectionSize;
+    }
+
+    public void setMaxPoolPreparedStatementPerConnectionSize(int maxPoolPreparedStatementPerConnectionSize) {
+        this.maxPoolPreparedStatementPerConnectionSize = maxPoolPreparedStatementPerConnectionSize;
+    }
+
+    public String getFilters() {
+        return filters;
+    }
+
+    public void setFilters(String filters) {
+        this.filters = filters;
+    }
+
     // 基本属性 url、user、password
     // 初始连接池大小、最小空闲连接数、最大活跃连接数
     private int initialSize = 1;
@@ -37,8 +181,10 @@ public class DruidDataSourceProvider implements DataSourceProvider {
     private long timeBetweenConnectErrorMillis = DruidDataSource.DEFAULT_TIME_BETWEEN_CONNECT_ERROR_MILLIS;
 
     /**
-     * hsqldb - "select 1 from INFORMATION_SCHEMA.SYSTEM_USERS" Oracle - "select 1
-     * from dual" DB2 - "select 1 from sysibm.sysdummy1" mysql - "select 1"
+     * hsqldb - "select 1 from INFORMATION_SCHEMA.SYSTEM_USERS"
+     * Oracle - "select 1 from dual"
+     * DB2 - "select 1 from sysibm.sysdummy1"
+     * mysql - "select 1"
      */
     private String validationQuery = "select 1 FROM DUAL";
     private boolean testWhileIdle = true;

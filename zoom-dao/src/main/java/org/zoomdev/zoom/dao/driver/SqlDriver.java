@@ -4,6 +4,7 @@ package org.zoomdev.zoom.dao.driver;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 import org.zoomdev.zoom.dao.adapters.StatementAdapterFactory;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
+import org.zoomdev.zoom.dao.migrations.TableBuildInfo;
 
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,7 @@ public interface SqlDriver extends StatementAdapterFactory {
     StatementAdapter get(Class<?> dataClass, Class<?> columnClass);
 
 
-    StringBuilder buildPage(StringBuilder sql, int position, int size);
+    StringBuilder buildPage(StringBuilder sql,List<Object> values, int position, int size);
 
 
     int position2page(int position, int size);
@@ -44,4 +45,6 @@ public interface SqlDriver extends StatementAdapterFactory {
     String formatColumnType(ColumnMeta column);
 
     void insertOrUpdate(StringBuilder sb, List<Object> values, String tableName, Map<String, Object> data, String... unikeys);
+
+    void build(TableBuildInfo buildInfo,StringBuilder sb);
 }

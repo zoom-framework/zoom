@@ -254,7 +254,7 @@ public class SimpleSqlBuilder implements SqlBuilder {
 
     public void buildLimit(int position, int size) {
         buildSelect();
-        driver.buildPage(sql, position, size);
+        driver.buildPage(sql, values, position, size);
     }
 
     public int getPageFromPosition(int position, int size) {
