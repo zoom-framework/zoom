@@ -21,8 +21,6 @@ import java.util.Map;
 
 public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, ConnectionHolder, Trans {
 
-    private Dao dao;
-
     private AliasSqlBuilder builder;
 
     private static final Log log = LogFactory.getLog(ActiveRecord.class);
@@ -128,6 +126,12 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
     public Record get() {
         builder.buildSelect();
         return get(builder.sql.toString(), builder.getValues(), builder.adapters, builder.nameAdapter);
+    }
+
+
+    @Override
+    protected void clear() {
+
     }
 
     @Override

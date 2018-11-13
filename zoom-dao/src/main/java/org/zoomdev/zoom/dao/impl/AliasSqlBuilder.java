@@ -49,6 +49,13 @@ public class AliasSqlBuilder extends SimpleSqlBuilder {
     }
 
     @Override
+    public SqlBuilder tables(String... tables) {
+        nameAdapter = aliasPolicyManager.getNameAdapter(tables);
+        return super.tables(tables);
+    }
+
+
+    @Override
     public SqlBuilder orderBy(String field, Sort sort) {
         field = nameAdapter.getColumnName(field);
         return super.orderBy(field, sort);
@@ -83,11 +90,6 @@ public class AliasSqlBuilder extends SimpleSqlBuilder {
         return super.set(name, value);
     }
 
-    @Override
-    public SqlBuilder tables(String... tables) {
-        nameAdapter = aliasPolicyManager.getNameAdapter(tables);
-        return super.tables(tables);
-    }
 
 
     @Override
@@ -138,6 +140,7 @@ public class AliasSqlBuilder extends SimpleSqlBuilder {
 
         return super.join(table, sb.toString(), type);
     }
+
 
 
 }

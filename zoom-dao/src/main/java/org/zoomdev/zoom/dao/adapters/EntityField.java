@@ -3,6 +3,8 @@ package org.zoomdev.zoom.dao.adapters;
 import com.sun.istack.internal.Nullable;
 import org.zoomdev.zoom.dao.AutoField;
 
+import java.lang.reflect.Type;
+
 public interface EntityField extends StatementAdapter {
 
     /**
@@ -66,4 +68,6 @@ public interface EntityField extends StatementAdapter {
      */
     @Nullable
     AutoField getAutoField();
+
+    Type getFieldType();
 }

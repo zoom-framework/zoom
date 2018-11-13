@@ -192,9 +192,7 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
         return execute(new ConnectionExecutor() {
             @Override
             public T execute(Connection connection) throws SQLException {
-                if (builder.where.length() == 0) {
-                    throw new DaoException("单独查询一个实体至少需要指定一个条件");
-                }
+
                 return getOne(connection);
             }
         });

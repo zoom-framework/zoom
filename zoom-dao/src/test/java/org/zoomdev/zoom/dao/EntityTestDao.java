@@ -2,17 +2,25 @@ package org.zoomdev.zoom.dao;
 
 import junit.framework.TestCase;
 import org.apache.commons.lang3.ObjectUtils;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.zoomdev.zoom.common.json.JSON;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.common.utils.Page;
 import org.zoomdev.zoom.dao.driver.mysql.MysqlConnDescription;
-import org.zoomdev.zoom.dao.entities.SimpleProduct;
+import org.zoomdev.zoom.dao.entities.*;
 import org.zoomdev.zoom.dao.impl.ZoomDao;
 import org.zoomdev.zoom.dao.provider.DruidDataSourceProvider;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class TestDao extends TestCase {
+import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+public class EntityTestDao {
 
     DataSourceProvider provider = new DruidDataSourceProvider(
             new MysqlConnDescription(
@@ -26,37 +34,37 @@ public class TestDao extends TestCase {
 
     Dao dao;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         dao = new ZoomDao(provider.getDataSource(), false);
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    @After
+    public void tearDown() throws Exception {
         Classes.destroy(dao);
     }
 
     /**
      * 比较一下， 正则表达式缓存和不缓存的速度
      */
+    @Test()
+    public void testEntityJoin() {
 
-//    public void testEntityJoin() {
-//
-//
-//        List<JoinProductWithType> list = dao.ar(JoinProductWithType.class).find();
-//        list = dao.ar(JoinProductWithType.class).filter("id|title").find();
-//
-//        System.out.println(JSON.stringify(list));
-//
-//        JoinProductWithType product = dao.ar(JoinProductWithType.class).where("id",2).get();
-//        product = dao.ar(JoinProductWithType.class).get(2);
-//
-//
-//
-//
-//    }
+
+        List<JoinProductWithType> list = dao.ar(JoinProductWithType.class).find();
+        list = dao.ar(JoinProductWithType.class).filter("id|title").find();
+
+        System.out.println(JSON.stringify(list));
+
+        JoinProductWithType product = dao.ar(JoinProductWithType.class).where("id",2).get();
+        product = dao.ar(JoinProductWithType.class).get(2);
+
+
+
+
+    }
+
+    @Test()
     public void testSimpleEntityQuery() {
 
         // query
@@ -80,6 +88,7 @@ public class TestDao extends TestCase {
 
     }
 
+    @Test()
     public void testSimpleEntityModify() {
 
         SimpleProduct simpleProduct = new SimpleProduct();
@@ -124,4 +133,50 @@ public class TestDao extends TestCase {
         );
     }
 
+
+    @Test()
+    public void testShop(){
+
+        SimpleShop shop = dao.ar(SimpleShop.class).get("1");
+        if(shop!=null){
+            dao.ar(SimpleShop.class).delete(shop);
+        }
+
+        dao.ar().executeUpdate("delete from shp_shop");
+
+
+
+        shop = new SimpleShop();
+        shop.setTitle("测试商店");
+        shop.setAddress("地理位置");
+        dao.ar(SimpleShop.class).insert(shop);
+
+
+
+        assertEquals(shop.getId(),"1");
+    }
+
+
+    @Test(expected = DaoException.class)
+    public void testCannotFindJoin(){
+
+
+        dao.ar(ErrorCannotFindJoin.class).find();
+    }
+
+    @Test(expected = DaoException.class)
+    public void testCannotFindField(){
+
+
+        dao.ar(ErrorCannotFindField.class).find();
+    }
+
+    @Test
+    public void testGroupBy(){
+        GroupByEntity entity = dao.ar(GroupByEntity.class)
+                .groupBy("shpId").get();
+
+        System.out.println(JSON.stringify(entity));
+
+    }
 }

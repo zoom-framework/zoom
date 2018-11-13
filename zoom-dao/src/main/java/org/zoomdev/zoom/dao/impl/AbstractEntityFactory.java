@@ -21,14 +21,4 @@ public abstract class AbstractEntityFactory implements EntityFactory {
         return meta;
     }
 
-    protected static String[] getColumnNames(TableMeta meta) {
-
-        String[] names = new String[meta.getColumns().length];
-        int index = 0;
-        for (ColumnMeta columnMeta : meta.getColumns()) {
-            names[index++] = columnMeta.getName();
-        }
-        return names;
-    }
-
 }

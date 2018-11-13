@@ -219,54 +219,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
 
                 fillAdapter(entityField, column, columnMeta, dao, field);
             }
-//
-//            boolean isAuto = false;
-//            Column column = field.getAnnotation(Column.class);
-//            String selectColumn;
-//            String columnName;
-//            ValueCaster caster;
-//            boolean isPrimaryKey = false;
-//
-//            if (column != null && !StringUtils.isEmpty(column.value())) {
-//
-//                selectColumn = parseColumn(column.value(), index);
-//                columnName = column.value();
-//                entityField.setSelectColumnName(selectColumn);
-//                entityField.setColumn(columnName);
-//                //////// //////// //////// //////// ////////
-//
-//
-//            } else {
-//                ColumnMeta columnMeta = map.get(field.getName());
-//                if (columnMeta == null) {
-//                    throw new DaoException(String.format(ERROR_FORMAT, field, "找不到字段对应的ColumnMeta，当前所有能使用的名称为:" + StringUtils.join(map.keySet(), ",")));
-//                }
-//                columnName = columnMeta.getName();
-//                //计算caster
-//                selectColumn = columnMeta.getName();
-//                isPrimaryKey = columnMeta.isPrimary();
-//                isAuto = columnMeta.isAuto();
-//
-//                entityField.setSelectColumnName(selectColumn);
-//                entityField.setColumn(columnName);
-//                //////// //////// //////// //////// ////////
-//                fillAdapter(entityField, column, columnMeta, dao, field);
-//            }
-//
-//            entityFields.add(entityField);
-//            AutoField autoField = checkAutoField(field, isAuto, entityField);
-//            entityField.setAutoField(autoField);
-//            if (autoField != null) {
-//                autoFields.add(autoField);
-//                autoRelatedEntityFields.add(entityField);
-//            }
-//
-//
-//            if (isPrimaryKey) {
-//                primaryKeys.add(entityField);
-//            }
-//
-//            ++index;
+
         }
 
 
@@ -604,8 +557,22 @@ class BeanEntityFactory extends AbstractEntityFactory {
         //如果数据库没有标注auto，那么由用户来处理
         AutoGenerate autoGenerate = field.getAnnotation(AutoGenerate.class);
         if (autoGenerate != null) {
+            if(autoGenerate.factory() != AutoGenerateValue.class){
+                //有factory
+                try {
+                    return new AutoGenerateValueUsingFactory(
+                            // 显示直接初始化，后期在加入ioc容器
+                            autoGenerate.factory().newInstance()
+                    );
+                } catch (Exception e) {
+                    throw new DaoException("不能初始化"+autoGenerate.factory());
+                }
+            }
             return new DatabaseAutoGenerateKey();
         }
+
+
+
         return null;
     }
 
@@ -622,7 +589,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
         public Object generageValue(Object entity, EntityField entityField) {
             //当调用的时候，直接设置值
             Object value = factory.nextVal();
-            entityField.set(entity, value);
+            entityField.set(entity, Caster.toType(value,entityField.getFieldType()));
             return value;
         }
 
@@ -674,20 +641,8 @@ class BeanEntityFactory extends AbstractEntityFactory {
         }
     }
 
-    private void checkUniqueField(Field field, boolean isUnique, BeanEntity entityField) {
 
-    }
 
-    private void checkPrimaryKeyField() {
-
-    }
-
-    /// rs = ps.getGeneratedKeys();
-    //                if(rs.next()){
-    //                    autoField.set(data, autoField.getFieldValue(rs.getObject(1)) );
-    //                }else{
-    //                    log.error("自动生成的字段没有生成成功"+entity.getTable());
-    //                }
 
     private ValueCaster createWrappedValueCaster(
             final DataAdapter dataAdapter, final ValueCaster valueCaster) {

@@ -8,6 +8,7 @@ import org.zoomdev.zoom.dao.Entity;
 import org.zoomdev.zoom.dao.adapters.EntityField;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.meta.TableMeta;
+import org.zoomdev.zoom.dao.utils.DaoUtils;
 
 import java.sql.Blob;
 import java.sql.Clob;
@@ -65,7 +66,8 @@ public class RecordEntityFactory extends AbstractEntityFactory {
             @Override
             public void visit(TableMeta tableMeta, ColumnMeta columnMeta, String fieldName, String selectColumnName) {
                 RecordEntityField entityField = new RecordEntityField(
-                        fieldName
+                        fieldName,
+                        DaoUtils.normalizeType(columnMeta.getDataType())
                 );
                 //单表的情况下无须有as
                 entityField.setSelectColumnName(columnMeta.getName());
@@ -125,7 +127,7 @@ public class RecordEntityFactory extends AbstractEntityFactory {
         RenameUtils.rename(dao, tables, new RenameUtils.ColumnRenameVisitor() {
             @Override
             public void visit(TableMeta tableMeta, ColumnMeta columnMeta, String fieldName, String selectColumnName) {
-                RecordEntityField entityField = new RecordEntityField(fieldName);
+                RecordEntityField entityField = new RecordEntityField(fieldName, DaoUtils.normalizeType(columnMeta.getDataType()));
                 entityField.setColumn(tableMeta.getName() + "." + columnMeta.getName());
                 entityField.setSelectColumnName(selectColumnName);
                 //只有clob blob 需要适配，

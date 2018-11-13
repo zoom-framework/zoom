@@ -3,6 +3,7 @@ package org.zoomdev.zoom.dao.impl;
 import org.zoomdev.zoom.dao.DaoException;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 
 class BeanEntityField extends AbstractEntityField {
 
@@ -37,6 +38,11 @@ class BeanEntityField extends AbstractEntityField {
         } catch (IllegalAccessException e) {
             throw new DaoException("设置值出错" + field + " value:" + fieldValue, e);
         }
+    }
+
+    @Override
+    public Type getFieldType() {
+        return field.getGenericType();
     }
 
 

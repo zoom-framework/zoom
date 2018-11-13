@@ -56,4 +56,19 @@ public class DaoUtils {
     public static boolean isStream(Class<?> dataType) {
         return Clob.class.isAssignableFrom(dataType) || Blob.class.isAssignableFrom(dataType);
     }
+
+    /**
+     * 如果是Stream，获取对应的类型
+     * @param dataType
+     * @return
+     */
+    public static Class<?> normalizeType(Class<?> dataType) {
+        if(Clob.class.isAssignableFrom(dataType)){
+            return String.class;
+        }
+        if(Blob.class.isAssignableFrom(dataType)){
+            return byte[].class;
+        }
+        return dataType;
+    }
 }

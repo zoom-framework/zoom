@@ -1,6 +1,8 @@
 package org.zoomdev.zoom.dao.entities;
 
+import org.zoomdev.zoom.dao.DataAdapters;
 import org.zoomdev.zoom.dao.annotations.AutoGenerate;
+import org.zoomdev.zoom.dao.annotations.Column;
 import org.zoomdev.zoom.dao.annotations.Table;
 
 @Table("shp_product")
@@ -74,6 +76,7 @@ public class SimpleProduct {
         this.createdAt = createdAt;
     }
 
+    @Column(adapter = DataAdapters.TimeStamp2String.class)
     String createdAt;
 
 
