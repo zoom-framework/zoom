@@ -185,7 +185,18 @@ public class OracleDriver extends AbsDriver {
     }
 
     @Override
-    public void build(TableBuildInfo table, List<String> sqlList) {
+    public String buildDropIfExists(String table) {
+        String str = "declare num number; begin " +
+                "select count(1) into num from user_tables where table_name = upper('"+table+"') ;" +
+                "if num > 0 then " +
+                "execute immediate 'drop table "+table+"' ;" +
+                "end if;" +
+                "end;";
+        return str;
+    }
+
+    @Override
+    public void buildTable(TableBuildInfo table, List<String> sqlList) {
         List<String> primaryKeys = new ArrayList<String>(3);
 
         ColumnMeta autoIncreaseColumn = null;

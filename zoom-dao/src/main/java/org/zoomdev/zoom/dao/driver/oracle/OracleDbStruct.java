@@ -17,12 +17,12 @@ import java.util.*;
 
 public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
 
-    private String dbName;
+    private String user;
 
 
-    public OracleDbStruct(Dao dao, String dbName) {
+    public OracleDbStruct(Dao dao, String user) {
         super(dao);
-        this.dbName = dbName;
+        this.user = user;
     }
 
 
@@ -139,13 +139,40 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
     }
 
     @Override
-    public Collection<String> getTriggers() {
-        return null;
+    public Map<String, Collection<String>> getTriggers() {
+       List<Record> triggers = dao.ar().table("all_tables")
+                .select("all_tables.table_name,trigger_name")
+                .join("all_triggers",
+                        "all_triggers.table_name=all_tables.table_name and all_triggers.trigger_name=CONCAT(all_tables.table_name,'_INCREASE')")
+                .where("all_tables.owner", user.toUpperCase())
+               .find();
+        Map<String, Collection<String>> triggerMap = new HashMap<String, Collection<String>>();
+        for (Record record : triggers) {
+            String tableName = record.getString("TABLE_NAME");
+            Collection<String> list = triggerMap.get(tableName);
+            if(list==null){
+                list = new ArrayList<String>();
+                triggerMap.put(tableName,list);
+            }
+            list.add( record.getString("TRIGGER_NAME"));
+        }
+        return triggerMap;
     }
+
 
     @Override
     public Collection<String> getSequences() {
-        return null;
+        List<Record> allSequnce = dao.ar()
+                .table("all_sequences")
+                .select("SEQUENCE_NAME")
+                //.where("SEQUENCE_OWNER", user.toUpperCase())
+                .find();
+
+        Set<String> sequences = new HashSet<String>();
+        for (Record record : allSequnce) {
+            sequences.add(record.getString("SEQUENCE_NAME"));
+        }
+        return sequences;
     }
 
 }

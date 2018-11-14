@@ -108,5 +108,8 @@ public interface Ar extends Trans, ConnectionHolder, Sql<Ar> {
     int executeUpdate(String sql, Object... args);
 
 
+    int execute(String sql);
+
+
     Ar selectMax(String field);
 }

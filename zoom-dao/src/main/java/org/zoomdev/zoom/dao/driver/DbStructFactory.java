@@ -3,6 +3,7 @@ package org.zoomdev.zoom.dao.driver;
 import org.zoomdev.zoom.dao.meta.TableMeta;
 
 import java.util.Collection;
+import java.util.Map;
 
 
 public interface DbStructFactory {
@@ -74,7 +75,7 @@ public interface DbStructFactory {
      * 所有trigger名称
      * @return
      */
-    Collection<String> getTriggers();
+    Map<String,Collection<String>> getTriggers();
 
     /**
      * 所有sequence名称

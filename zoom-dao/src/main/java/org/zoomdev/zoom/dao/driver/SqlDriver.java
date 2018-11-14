@@ -46,7 +46,11 @@ public interface SqlDriver extends StatementAdapterFactory {
 
     void insertOrUpdate(StringBuilder sb, List<Object> values, String tableName, Map<String, Object> data, String... unikeys);
 
-    void build(TableBuildInfo buildInfo,List<String> sqlList);
+
+
+    String buildDropIfExists(String table);
+
+    void buildTable(TableBuildInfo buildInfo, List<String> sqlList);
 
     String protectTable(String tableName);
 
@@ -56,4 +60,5 @@ public interface SqlDriver extends StatementAdapterFactory {
      * @return
      */
     String getTableCatFromUrl(String url);
+
 }

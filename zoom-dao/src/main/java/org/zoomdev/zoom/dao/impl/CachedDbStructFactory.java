@@ -72,8 +72,8 @@ public class CachedDbStructFactory implements DbStructFactory {
     }
 
     @Override
-    public Collection<String> getTriggers() {
-        return (Collection<String>) SingletonUtils.liteDoubleLockMap(pool, ALL_TRIGGERS, new SingletonUtils.SingletonInit<Object>() {
+    public Map<String,Collection<String>> getTriggers() {
+        return (Map<String, Collection<String>>) SingletonUtils.liteDoubleLockMap(pool, ALL_TRIGGERS, new SingletonUtils.SingletonInit<Object>() {
             @Override
             public Object create() {
                 return factory.getTriggers();

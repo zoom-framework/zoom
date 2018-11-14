@@ -14,7 +14,13 @@ public class DaoUtils {
         } catch (Exception e) {
         }
     }
+    public static void close(Statement ps) {
 
+        if (ps != null) try {
+            ps.close();
+        } catch (Exception e) {
+        }
+    }
     public static void close(PreparedStatement ps) {
 
         if (ps != null) try {

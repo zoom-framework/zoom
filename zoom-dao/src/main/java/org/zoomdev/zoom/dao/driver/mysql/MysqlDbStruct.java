@@ -15,6 +15,7 @@ import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
 
@@ -50,9 +51,10 @@ public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
     }
 
     @Override
-    public Collection<String> getTriggers() {
+    public Map<String, Collection<String>> getTriggers() {
         return null;
     }
+
 
     @Override
     public Collection<String> getSequences() {
@@ -138,8 +140,6 @@ public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
             columnMeta.setNullable(record.getString("IS_NULLABLE").equals("YES"));
             columnMeta.setMaxLen(record.getInt("CHARACTER_MAXIMUM_LENGTH"));
             columnMeta.setRawType(record.getString("DATA_TYPE"));
-
-
         }
 
     }

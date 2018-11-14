@@ -124,7 +124,15 @@ public class MysqlDriver extends AbsDriver {
     }
 
     @Override
-    public void build(TableBuildInfo table, List<String> sqlList) {
+    public String buildDropIfExists(String table) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("DROP TABLE IF EXISTS ");
+        protectTable(sb,table);
+        return sb.toString();
+    }
+
+    @Override
+    public void buildTable(TableBuildInfo table, List<String> sqlList) {
 
         List<String> primaryKeys = new ArrayList<String>(3);
         StringBuilder sb = new StringBuilder();

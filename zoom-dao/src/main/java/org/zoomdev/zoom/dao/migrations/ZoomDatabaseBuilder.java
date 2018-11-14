@@ -1,17 +1,10 @@
 package org.zoomdev.zoom.dao.migrations;
 
-import org.zoomdev.zoom.common.utils.CachedClasses;
 import org.zoomdev.zoom.dao.Dao;
-import org.zoomdev.zoom.dao.DaoException;
-import org.zoomdev.zoom.dao.annotations.Column;
-import org.zoomdev.zoom.dao.annotations.ColumnIgnore;
 import org.zoomdev.zoom.dao.driver.SqlDriver;
 import org.zoomdev.zoom.dao.impl.ZoomDao;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
-import org.zoomdev.zoom.dao.migrations.DatabaseBuilder;
-import org.zoomdev.zoom.dao.migrations.TableBuildInfo;
 
-import java.lang.reflect.Field;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,23 +48,10 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
 
         @Override
         void build(List<String> sqls) {
-//            StringBuilder sb = new StringBuilder();
-//            sb.append("DROP TABLE IF EXISTS ");
-//            driver.protectTable(sb,table);
-//            sb.append(";\n");
-//            sqls.add(sb.toString());
 
-            String str = "declare\n" +
-                    "            num   number;\n" +
-                    "            begin\n" +
-                    "            select count(1) into num from user_tables where table_name = upper('"+table+"') ;\n" +
-                    "            if num > 0 then\n" +
-                    "            execute immediate 'drop table "+table+"' ;\n" +
-                    "            end if;\n" +
-                    "            end;";
+            sqls.add( driver.buildDropIfExists(table));
 
 
-            sqls.add(str);
         }
     }
 
@@ -86,7 +66,7 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
 
         @Override
         void build(List<String> sqls) {
-            driver.build(table,sqls);
+            driver.buildTable(table,sqls);
         }
     }
 
@@ -244,7 +224,7 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
                 for(BuildInfo buildInfo : buildInfos){
                     buildInfo.build(list);
                     for(String str : list){
-                        dao.ar().executeUpdate(str);
+                        dao.ar().execute(str);
                     }
 
                     list.clear();

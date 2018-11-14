@@ -52,9 +52,10 @@ public class H2DbStruct extends AbsDbStruct {
     }
 
     @Override
-    public Collection<String> getTriggers() {
+    public Map<String, Collection<String>> getTriggers() {
         return null;
     }
+
 
     @Override
     public Collection<String> getSequences() {

@@ -10,10 +10,7 @@ import org.zoomdev.zoom.dao.alias.NameAdapter;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 import org.zoomdev.zoom.dao.utils.DaoUtils;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -386,6 +383,26 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
     @Override
     public int executeUpdate(String sql, Object... args) {
         return _executeUpdate(sql,Arrays.asList(args));
+    }
+
+    @Override
+    public int execute(final String sql) {
+        return execute(new ConnectionExecutor() {
+            @Override
+            public Integer execute(Connection connection) throws SQLException {
+                Statement statement = null;
+                try{
+                    statement = connection.createStatement();
+                    builder.sql.append(sql);
+                    return statement.executeUpdate(sql);
+                }catch (SQLException e){
+                    throw e;
+                }finally {
+                    DaoUtils.close(statement);
+                    builder.clear(true);
+                }
+            }
+        });
     }
 
     public int _executeUpdate(String sql, List<Object> values) {
