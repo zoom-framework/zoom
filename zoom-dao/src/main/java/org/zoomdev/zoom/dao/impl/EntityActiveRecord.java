@@ -140,15 +140,7 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
 
     private void validateRecord(Record record){
         Set<String> allKeys = new HashSet<String>(record.size());
-
-        for(String key : record.keySet()){
-            if(key.startsWith("@")){
-                allKeys.add(key.substring(1));
-            }else{
-                allKeys.add(key);
-            }
-        }
-
+        allKeys.addAll(record.keySet());
 
         for(EntityField entityField : entity.getEntityFields()){
             allKeys.remove(entityField.getFieldName());
@@ -156,7 +148,9 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
 
         if(allKeys.size() > 0){
             throw new DaoException("Record中包含多余字段:"+
-            StringUtils.join(allKeys,","));
+            StringUtils.join(allKeys,",")+"所有可能的字段为"+StringUtils.join(
+                    entity.getAvailableFields(),","
+            ));
         }
 
     }

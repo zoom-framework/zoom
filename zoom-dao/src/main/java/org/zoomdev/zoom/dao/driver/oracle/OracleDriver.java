@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public class OracleDriver extends AbsDriver {
 
@@ -173,13 +174,22 @@ public class OracleDriver extends AbsDriver {
     }
 
     @Override
-    public void build(TableBuildInfo buildInfo, StringBuilder sb) {
+    public void build(TableBuildInfo buildInfo, List<String> sqlList) {
 
     }
+
 
     @Override
     public String protectTable(String tableName) {
         return tableName;
+    }
+
+
+
+    @Override
+    public String getTableCatFromUrl(String url) {
+        //jdbc:oracle:thin:@SERVER:PORT:DB
+        return url.substring(url.lastIndexOf(":")+1).toUpperCase();
     }
 
 }

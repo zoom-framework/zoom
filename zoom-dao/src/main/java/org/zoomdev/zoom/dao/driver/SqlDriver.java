@@ -46,7 +46,14 @@ public interface SqlDriver extends StatementAdapterFactory {
 
     void insertOrUpdate(StringBuilder sb, List<Object> values, String tableName, Map<String, Object> data, String... unikeys);
 
-    void build(TableBuildInfo buildInfo,StringBuilder sb);
+    void build(TableBuildInfo buildInfo,List<String> sqlList);
 
     String protectTable(String tableName);
+
+    /**
+     * 解析连接信息，获取表目录（数据库名称）
+     * @param url
+     * @return
+     */
+    String getTableCatFromUrl(String url);
 }

@@ -75,4 +75,7 @@ public interface Dao extends StatementAdapterFactory {
     <T> T execute(ConnectionExecutor connectionExecutor);
 
     EntityFactory getEntityFactory();
+
+
+    String getURL();
 }

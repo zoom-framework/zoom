@@ -114,14 +114,15 @@ public abstract class AbstractEntity implements Entity {
         if (column == null) {
             throw new DaoException(
                     String.format("找不到字段%s对应的列名称,所有可能的字段列表为" +
-                                    StringUtils.join(getAvaliableFields(), ","),
+                                    StringUtils.join(getAvailableFields(), ","),
                             field));
         }
         return column;
     }
 
 
-    protected Set<String> getAvaliableFields() {
+    @Override
+    public Set<String> getAvailableFields() {
         Set<String> list = new LinkedHashSet<String>();
 
         for (EntityField entityField : entityFields) {
@@ -157,7 +158,7 @@ public abstract class AbstractEntity implements Entity {
             throw new DaoException("请提供join的条件on");
         }
         final StringBuilder sb = new StringBuilder();
-        final Set<String> joinAllFields = getAvaliableFields();
+        final Set<String> joinAllFields = getAvailableFields();
         PatternUtils.visit(on, AND_OR_PATTERN, new PatternUtils.PatternVisitor() {
             @Override
             public void onGetPattern(Matcher matcher) {

@@ -4,13 +4,13 @@ import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 import org.zoomdev.zoom.dao.driver.AbsDriver;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.migrations.TableBuildInfo;
+import org.zoomdev.zoom.dao.migrations.ZoomDatabaseBuilder;
 
+import java.net.URI;
+import java.net.URL;
 import java.sql.Types;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 public class MysqlDriver extends AbsDriver {
 
@@ -42,6 +42,17 @@ public class MysqlDriver extends AbsDriver {
     public String protectTable(String tableName) {
 
         return protectColumn(tableName);
+    }
+
+    @Override
+    public String getTableCatFromUrl(String url) {
+        //jdbc:mysql://SERVER:PORT/DBNAME?useUnicode=true&characterEncoding=UTF-8
+        int n = url.lastIndexOf("?");
+        if(n > 0){
+            url = url.substring(0,n);
+        }
+
+        return url.substring(url.lastIndexOf("/")+1);
     }
 
     protected String protectName(String name) {
@@ -113,6 +124,122 @@ public class MysqlDriver extends AbsDriver {
     }
 
     @Override
+    public void build(TableBuildInfo table, List<String> sqlList) {
+
+        List<String> primaryKeys = new ArrayList<String>(3);
+        StringBuilder sb = new StringBuilder();
+
+        for (ColumnMeta columnMeta : table.getColumns()) {
+            if(columnMeta.isPrimary()){
+                primaryKeys.add(columnMeta.getName());
+            }
+        }
+
+        sb.append("CREATE TABLE ");
+        if (table.isCreateWhenNotExists()) {
+            sb.append("IF NOT EXISTS ");
+        }
+        protectTable(sb, table.getName());
+        sb.append("(\n");
+        boolean first = false;
+        int index = 0;
+        for (ColumnMeta columnMeta : table.getColumns()) {
+            sb.append("\t");
+            protectColumn(sb, columnMeta.getName());
+            sb.append(' ');
+            try{
+                sb.append(formatColumnType(columnMeta));
+            }catch (Exception e){
+                throw new RuntimeException("不支持的类型"+columnMeta.getName());
+            }
+
+
+
+            if (columnMeta.getDefaultValue() != null) {
+                if (columnMeta.getDefaultValue() instanceof String) {
+                    sb.append(" DEFAULT '").append(columnMeta.getDefaultValue()).append("'");
+                } else {
+                    if(columnMeta.getDefaultValue() instanceof ZoomDatabaseBuilder.FunctionValue){
+                        sb.append(" DEFAULT ").append(((ZoomDatabaseBuilder.FunctionValue)columnMeta.getDefaultValue()).getValue());
+                    }else{
+                        sb.append(" DEFAULT ").append(columnMeta.getDefaultValue());
+                    }
+
+                }
+            }else{
+                if(columnMeta.isPrimary()){
+                    if(columnMeta.isAuto()){
+                        sb.append(" PRIMARY KEY");
+                        sb.append(" auto_increment".toUpperCase());
+                    }else{
+                        //single primary key
+                        if(primaryKeys.size() == 1){
+                            sb.append(" PRIMARY KEY");
+                        }
+                    }
+                }else{
+                    sb.append(columnMeta.isNullable()
+                            ? " NULL"
+                            : " NOT NULL");
+                }
+            }
+            //sb.append(" COMMENT '").append(columnMeta.getComment()==null ? "":columnMeta.getComment()).append("'");
+
+            if( index < table.getColumns().size() - 1){
+                sb.append(",");
+            }
+
+            if(index == table.getColumns().size()-1){
+                break;
+            }
+            sb.append("\n");
+            ++index;
+        }
+
+        if(primaryKeys.size() > 1){
+            first = true;
+
+            sb.append(",\n\tPRIMARY KEY (");
+            for(String key : primaryKeys){
+                if(first){
+                    first = false;
+                }else{
+                    sb.append(",");
+                }
+                sb.append(key);
+            }
+            sb.append(")\n");
+
+        }else{
+            sb.append("\n");
+        }
+
+        sb.append(")charset=utf8;\n");
+
+        sqlList.add(sb.toString());
+
+        //index
+
+        for (ColumnMeta columnMeta : table.getColumns()) {
+
+            if(columnMeta.isIndex()){
+                sb.setLength(0);
+                sb.append("CREATE INDEX ")
+                        .append("IDX_")
+                        .append(table.getName())
+                        .append("_")
+                        .append(columnMeta.getName())
+                        .append(" ON ")
+                        .append(table.getName())
+                        .append("(")
+                        .append(columnMeta.getName())
+                        .append(");\n");
+                sqlList.add(sb.toString());
+            }
+        }
+    }
+
+    @Override
     public int page2position(int page, int size) {
         return 0;
     }
@@ -164,50 +291,6 @@ public class MysqlDriver extends AbsDriver {
     }
 
 
-    @Override
-    public void build(TableBuildInfo table, StringBuilder sb) {
-//        sb.append("CREATE TABLE ");
-//        if (table.isCreateWhenNotExists()) {
-//            sb.append("IF NOT EXISTS ");
-//        }
-//        protectTable(sb, table.getName());
-//        sb.append("(\n");
-//        boolean first = false;
-//        int index = 0;
-//        for (ColumnMeta columnMeta : table.getColumns()) {
-//            sb.append("\t");
-//            protectColumn(sb, columnMeta.getName());
-//            sb.append(' ')
-//                    .append(formatColumnType(columnMeta))
-//                    .append(columnMeta.isNullable()
-//                            ? " NULL"
-//                            : " NOT NULL");
-//            if (columnMeta.getDefaultValue() != null) {
-//                if (columnMeta.getDefaultValue() instanceof String) {
-//                    sb.append(" DEFAULT '").append(columnMeta.getDefaultValue()).append("'");
-//                } else {
-//                    sb.append(" DEFAULT ").append(columnMeta.getDefaultValue());
-//                }
-//            }
-//            if(columnMeta.isPrimary()){
-//                sb.append(" PRIMARY KEY");
-//            }
-//            if(columnMeta.isAuto()){
-//                sb.append(" auto_increment".toUpperCase());
-//            }
-//
-//            sb.append(" COMMENT '").append(columnMeta.getComment()==null ? "":columnMeta.getComment()).append("'");
-//
-//            if( index < table.getColumns().size() - 1){
-//                sb.append(",");
-//            }
-//            sb.append("\n");
-//            ++index;
-//        }
-//        sb.append(") ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='");
-//        sb.append(table.getComment()==null ? "":table.getComment())
-//                .append("'\n\n");
-    }
 
 
 }

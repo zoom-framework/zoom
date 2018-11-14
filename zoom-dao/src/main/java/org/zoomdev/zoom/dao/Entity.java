@@ -7,6 +7,7 @@ import org.zoomdev.zoom.dao.meta.JoinMeta;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Set;
 
 /**
  * 绑定数据库字段和实体类字段
@@ -115,4 +116,6 @@ public interface Entity {
 
 
     String parseOn(String on);
+
+    Set<String> getAvailableFields();
 }

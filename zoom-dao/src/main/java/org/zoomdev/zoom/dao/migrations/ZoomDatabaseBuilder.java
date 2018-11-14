@@ -6,6 +6,7 @@ import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.annotations.Column;
 import org.zoomdev.zoom.dao.annotations.ColumnIgnore;
 import org.zoomdev.zoom.dao.driver.SqlDriver;
+import org.zoomdev.zoom.dao.impl.ZoomDao;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.migrations.DatabaseBuilder;
 import org.zoomdev.zoom.dao.migrations.TableBuildInfo;
@@ -29,7 +30,7 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
     private List<BuildInfo> buildInfos = new ArrayList<BuildInfo>();
 
     private static abstract class BuildInfo {
-        abstract void build(StringBuilder sb);
+        abstract void build(List<String> sqls);
     }
 
     public static class FunctionValue{
@@ -53,10 +54,12 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
         }
 
         @Override
-        void build(StringBuilder sb) {
+        void build(List<String> sqls) {
+            StringBuilder sb = new StringBuilder();
             sb.append("DROP TABLE IF EXISTS ");
             driver.protectTable(sb,table);
             sb.append(";\n");
+            sqls.add(sb.toString());
         }
     }
 
@@ -70,8 +73,8 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
         }
 
         @Override
-        void build(StringBuilder sb) {
-            driver.build(table,sb);
+        void build(List<String> sqls) {
+            driver.build(table,sqls);
         }
     }
 
@@ -212,9 +215,9 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
     @Override
     public String buildSql() {
         StringBuilder sb = new StringBuilder();
-
+        List<String> list = new ArrayList<String>();
         for(BuildInfo buildInfo : buildInfos){
-            buildInfo.build(sb);
+            buildInfo.build(list);
         }
 
         return sb.toString();
@@ -222,8 +225,23 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
 
     @Override
     public void build() {
+        final List<String> list = new ArrayList<String>();
+        ZoomDao.executeTrans(new Runnable() {
+            @Override
+            public void run() {
+                for(BuildInfo buildInfo : buildInfos){
+                    buildInfo.build(list);
+                    for(String str : list){
+                        dao.ar().executeUpdate(str);
+                    }
 
-        dao.ar().executeQuery(buildSql());
+                    list.clear();
+                }
+            }
+        });
+
+
+
     }
 
     @Override
