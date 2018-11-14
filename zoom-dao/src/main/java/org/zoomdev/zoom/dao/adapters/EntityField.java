@@ -79,4 +79,10 @@ public interface EntityField extends StatementAdapter {
      * @return
      */
     Type getFieldType();
+
+    /**
+     * 对数据进行校验
+     * @param data
+     */
+    void validate(Object data);
 }

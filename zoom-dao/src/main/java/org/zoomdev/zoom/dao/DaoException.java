@@ -1,6 +1,8 @@
 package org.zoomdev.zoom.dao;
 
-public class DaoException extends RuntimeException {
+import org.zoomdev.zoom.common.exceptions.ZoomException;
+
+public class DaoException extends ZoomException {
 
     public DaoException(Throwable e) {
         super(e);

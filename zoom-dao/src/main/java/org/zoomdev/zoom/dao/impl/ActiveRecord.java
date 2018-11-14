@@ -178,6 +178,17 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
         return this;
     }
 
+    /**
+     * 直接指定
+     * @param nameAdapter
+     * @return
+     */
+    @Override
+    public Ar nameAdapter(NameAdapter nameAdapter) {
+        builder.nameAdapter = nameAdapter;
+        return this;
+    }
+
 
     @Override
     public int insertOrUpdate(String... keys) {

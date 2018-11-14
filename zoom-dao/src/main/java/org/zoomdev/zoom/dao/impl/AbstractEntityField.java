@@ -69,6 +69,11 @@ abstract class AbstractEntityField implements EntityField {
         return selectColumnName;
     }
 
+    @Override
+    public void validate(Object value) {
+
+    }
+
     public void setColumn(String column) {
         this.column = column;
     }

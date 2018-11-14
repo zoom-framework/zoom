@@ -1,7 +1,9 @@
 package org.zoomdev.zoom.web.exception;
 
 
-public class StatusException extends RuntimeException implements RestException {
+import org.zoomdev.zoom.common.exceptions.ZoomException;
+
+public class StatusException extends ZoomException implements RestException {
     /**
      * 418 错误信息
      *

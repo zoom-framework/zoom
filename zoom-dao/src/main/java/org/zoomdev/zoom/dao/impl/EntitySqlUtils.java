@@ -168,7 +168,10 @@ public class EntitySqlUtils {
         if (index == 0) {
             throw new DaoException("至少更新一个字段");
         }
-        sql.append(where);
+        if(where.length()>0){
+            sql.append(" where ").append(where);
+        }
+
     }
 
     public static void entityCondition(SimpleSqlBuilder builder, Entity entity, Object data) {

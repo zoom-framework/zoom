@@ -15,7 +15,7 @@ import org.zoomdev.zoom.dao.alias.NameAdapterFactory;
 import org.zoomdev.zoom.dao.alias.impl.*;
 import org.zoomdev.zoom.dao.driver.DbStructFactory;
 import org.zoomdev.zoom.dao.driver.SqlDriver;
-import org.zoomdev.zoom.dao.driver.h2.H2DbStrict;
+import org.zoomdev.zoom.dao.driver.h2.H2DbStruct;
 import org.zoomdev.zoom.dao.driver.h2.H2Driver;
 import org.zoomdev.zoom.dao.driver.mysql.MysqlDbStruct;
 import org.zoomdev.zoom.dao.driver.mysql.MysqlDriver;
@@ -199,7 +199,7 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
         }
 
         if (Databases.H2.equals(productName)) {
-            return new H2DbStrict(this, tableCat);
+            return new H2DbStruct(this, tableCat);
         }
 
         if (Databases.ORACLE.equalsIgnoreCase(productName)) {

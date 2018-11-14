@@ -7,27 +7,27 @@ import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.common.utils.MapUtils;
 import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.Record;
+import org.zoomdev.zoom.dao.alias.impl.ToLowerCaseNameAdapter;
 import org.zoomdev.zoom.dao.driver.AbsDbStruct;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.meta.ColumnMeta.KeyType;
 import org.zoomdev.zoom.dao.meta.TableMeta;
-import org.zoomdev.zoom.dao.migrations.TableBuildInfo;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public class H2DbStrict extends AbsDbStruct {
+public class H2DbStruct extends AbsDbStruct {
 
     private String dbName;
 
-    public H2DbStrict(Dao dao, String dbName) {
+    public H2DbStruct(Dao dao, String dbName) {
         super(dao);
         this.dbName = dbName;
     }
 
-    private static final Log log = LogFactory.getLog(H2DbStrict.class);
+    private static final Log log = LogFactory.getLog(H2DbStruct.class);
 
 
     @Override
@@ -61,6 +61,7 @@ public class H2DbStrict extends AbsDbStruct {
 
         List<Record> list = dao.ar()
                 .table("information_schema.columns")
+                .nameAdapter(ToLowerCaseNameAdapter.DEFAULT)
                 .select("TABLE_NAME,COLUMN_NAME,IS_NULLABLE,DATA_TYPE," +
                         "SEQUENCE_NAME,CHARACTER_MAXIMUM_LENGTH,REMARKS,COLUMN_DEFAULT")
                 .where("TABLE_SCHEMA", "PUBLIC")
@@ -68,6 +69,7 @@ public class H2DbStrict extends AbsDbStruct {
         //index
         List<Record> indexes = dao.ar()
                 .table("INFORMATION_SCHEMA.indexes")
+                .nameAdapter(ToLowerCaseNameAdapter.DEFAULT)
                 .select("COLUMN_NAME,INDEX_TYPE_NAME")
                 .where("TABLE_NAME", meta.getName().toUpperCase()).find();
         Map<String, String> indexesMap = MapUtils

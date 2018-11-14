@@ -334,6 +334,9 @@ public class SimpleSqlBuilder implements SqlBuilder {
 
 
     public SqlBuilder selectRaw(String fields) {
+        if(select.length()>0){
+            select.append(",");
+        }
         select.append(fields);
         return this;
     }

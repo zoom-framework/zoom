@@ -15,35 +15,35 @@ public class ValidateUtilTest {
 
     @Test
     public void testVariable() {
-        assertTrue(ValidUtils.isJavaVariableName("$c123"));
-        assertTrue(ValidUtils.isJavaVariableName("_a$c123"));
-        assertTrue(ValidUtils.isJavaVariableName("a$cA123"));
-        assertFalse(ValidUtils.isJavaVariableName("a$c123."));
-        assertFalse(ValidUtils.isJavaVariableName("$c123."));
-        assertFalse(ValidUtils.isJavaVariableName("a$c123-"));
-        assertFalse(ValidUtils.isJavaVariableName("1a$c123"));
+        assertTrue(ValidateUtils.isJavaVariableName("$c123"));
+        assertTrue(ValidateUtils.isJavaVariableName("_a$c123"));
+        assertTrue(ValidateUtils.isJavaVariableName("a$cA123"));
+        assertFalse(ValidateUtils.isJavaVariableName("a$c123."));
+        assertFalse(ValidateUtils.isJavaVariableName("$c123."));
+        assertFalse(ValidateUtils.isJavaVariableName("a$c123-"));
+        assertFalse(ValidateUtils.isJavaVariableName("1a$c123"));
 
-        assertFalse(ValidUtils.isJavaVariableName(""));
-        assertFalse(ValidUtils.isJavaVariableName(null));
+        assertFalse(ValidateUtils.isJavaVariableName(""));
+        assertFalse(ValidateUtils.isJavaVariableName(null));
     }
 
     @Test
     public void testClassName() {
-        assertTrue(ValidUtils.isJavaClassName("$c123"));
-        assertTrue(ValidUtils.isJavaClassName("_a$c123"));
-        assertTrue(ValidUtils.isJavaClassName("a$cA123"));
-        assertFalse(ValidUtils.isJavaClassName("a$c123."));
-        assertFalse(ValidUtils.isJavaClassName("$c123."));
-        assertFalse(ValidUtils.isJavaClassName("a$c123-"));
-        assertFalse(ValidUtils.isJavaClassName("1a$c123"));
+        assertTrue(ValidateUtils.isJavaClassName("$c123"));
+        assertTrue(ValidateUtils.isJavaClassName("_a$c123"));
+        assertTrue(ValidateUtils.isJavaClassName("a$cA123"));
+        assertFalse(ValidateUtils.isJavaClassName("a$c123."));
+        assertFalse(ValidateUtils.isJavaClassName("$c123."));
+        assertFalse(ValidateUtils.isJavaClassName("a$c123-"));
+        assertFalse(ValidateUtils.isJavaClassName("1a$c123"));
 
 
-        assertTrue(ValidUtils.isJavaClassName("$c123._test123"));
-        assertFalse(ValidUtils.isJavaClassName("$c123._test123."));
-        assertFalse(ValidUtils.isJavaClassName(".$c123._test123"));
+        assertTrue(ValidateUtils.isJavaClassName("$c123._test123"));
+        assertFalse(ValidateUtils.isJavaClassName("$c123._test123."));
+        assertFalse(ValidateUtils.isJavaClassName(".$c123._test123"));
 
-        assertFalse(ValidUtils.isJavaClassName(""));
-        assertFalse(ValidUtils.isJavaClassName(null));
+        assertFalse(ValidateUtils.isJavaClassName(""));
+        assertFalse(ValidateUtils.isJavaClassName(null));
     }
 
 }

@@ -132,7 +132,7 @@ public class MysqlDriver extends AbsDriver {
                 }
                 return new StringBuilder().append("mediumtext").toString();
             case Types.NUMERIC:
-                return "int(32)";
+                return "double";
             case Types.DOUBLE:
                 return "double";
             case Types.BLOB:

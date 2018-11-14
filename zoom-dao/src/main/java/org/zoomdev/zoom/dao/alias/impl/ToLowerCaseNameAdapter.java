@@ -4,6 +4,8 @@ import org.zoomdev.zoom.dao.alias.NameAdapter;
 
 public class ToLowerCaseNameAdapter implements NameAdapter {
 
+    public static final NameAdapter DEFAULT = new ToLowerCaseNameAdapter();
+
     @Override
     public String getSelectColumn(String field) {
         return field.toUpperCase();

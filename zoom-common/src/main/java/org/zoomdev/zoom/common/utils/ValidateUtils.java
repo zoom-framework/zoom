@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
  *
  * @author jzoom
  */
-public class ValidUtils {
+public class ValidateUtils {
 
     static final Pattern VARIABLE_PATTERN = Pattern.compile("^[a-zA-Z_$][a-zA-Z_0-9$]+");
 

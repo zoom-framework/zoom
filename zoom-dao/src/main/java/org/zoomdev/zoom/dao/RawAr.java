@@ -1,5 +1,7 @@
 package org.zoomdev.zoom.dao;
 
+import org.zoomdev.zoom.dao.alias.NameAdapter;
+
 public interface RawAr extends Ar {
 
 
@@ -14,6 +16,7 @@ public interface RawAr extends Ar {
      * @return
      */
     Ar table(String table);
+
 
 
     /**

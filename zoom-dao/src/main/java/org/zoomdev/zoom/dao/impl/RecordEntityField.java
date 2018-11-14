@@ -50,4 +50,6 @@ public class RecordEntityField extends AbstractEntityField {
     public Type getFieldType() {
         return type;
     }
+
+
 }

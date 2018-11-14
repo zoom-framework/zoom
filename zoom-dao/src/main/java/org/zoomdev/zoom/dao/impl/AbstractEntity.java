@@ -121,4 +121,11 @@ public abstract class AbstractEntity implements Entity {
 
         return StringUtils.join(list, ",");
     }
+
+    @Override
+    public void validate(Object data) {
+        for(EntityField field : entityFields){
+            field.validate(field.get(data));
+        }
+    }
 }

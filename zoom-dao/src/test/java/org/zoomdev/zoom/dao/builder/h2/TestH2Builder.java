@@ -6,9 +6,13 @@ import org.zoomdev.zoom.common.utils.PathUtils;
 import org.zoomdev.zoom.dao.AbstractDaoTest;
 import org.zoomdev.zoom.dao.DataSourceProvider;
 import org.zoomdev.zoom.dao.Record;
+import org.zoomdev.zoom.dao.SqlBuilder;
 import org.zoomdev.zoom.dao.provider.DruidDataSourceProvider;
 
 import java.io.File;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class TestH2Builder extends AbstractDaoTest {
 
@@ -58,19 +62,28 @@ public class TestH2Builder extends AbstractDaoTest {
                 .add("tp_id").integer().keyIndex()
                 .add("shp_id").integer().keyIndex()
 
+
+                .dropIfExists("type")
+                .createTable("type")
+                .add("tp_id").integer().keyPrimary().autoIncement()
+                .add("tp_title").string(100).keyIndex().notNull()
+                .add("shp_id").string(30).keyIndex().notNull()
+                .keyIndex()
+
+
                 .dropIfExists("collection")
                 .createTable("collection")
                 .add("pro_id").integer().keyPrimary()
                 .add("usr_id").integer().keyPrimary()
                 .add("order").integer()
 
-                .dropIfExists("business")
-                .createTable("business")
-                .add("bs_id").string(30).keyPrimary()
-                .add("bs_title").string(100)
-                .add("bs_level").integer()
-                .add("bs_starts").number()
-                .add("bs_sales").integer()
+                .dropIfExists("shop")
+                .createTable("shop")
+                .add("shp_id").string(30).keyPrimary()
+                .add("shp_title").string(100)
+                .add("shp_level").integer()
+                .add("shp_stars").number()
+                .add("shp_sales").integer()
                 .buildSql();
 
 
@@ -78,19 +91,72 @@ public class TestH2Builder extends AbstractDaoTest {
 
         dao.ar().executeUpdate(sql);
 
+
+        final String FIRST_BUSINESS = "firstBusiness";
+
         Record record = Record.as(
-                "id", "firstBusiness",
+                "id", FIRST_BUSINESS,
                 "title", "天下第一家",
-                "level",1,
-                "stars",4.9,
-                "sales",100000
+                "level", 1,
+                "stars", 4.9,
+                "sales", 100000
         );
         //商家注册 (add)
-        dao.ar("business")
+        dao.ar("shop")
                 .insert(record);
 
 
+        record = Record.as(
+                "id", "second",
+                "title", "弱弱的第二家",
+                "level", 2,
+                "stars", 2.9,
+                "sales", 100
+        );
+        //商家注册 (add)
+        dao.ar("shop")
+                .insert(record);
+
+        //verify business
+        List<Record> result = dao.ar("business").orderBy("id", SqlBuilder.Sort.DESC).find();
+        assertEquals(result.get(0), record);
+
+        // 商家编辑信息
+
+        assertEquals(dao.ar("shop").update(
+                Record.as(
+                        "id", FIRST_BUSINESS,
+                        "title", "牛逼的第一家"
+                )
+        ),1);
+
+        assertEquals(dao.ar("shop").update(
+                Record.as(
+                        "id", "找不到这家",
+                        "title", "牛逼的第一家"
+                )
+        ),0);
+
+        // 是不是真的改了?
+        assertEquals(dao.ar("shop").filter("title").get(FIRST_BUSINESS),
+                Record.as("title","牛逼的第一家"));
+
+
+        // 商家编辑分类
+        assertEquals(dao.ar("type")
+                .insert(Record.as(
+                        "shpId", FIRST_BUSINESS,
+                        "title","好吃到爆的饭"
+                        )),1);
+
+
+
         //商家编辑商品 (add/edit)
+
+        dao.ar("product")
+                .insert(Record.as(
+                        "id", FIRST_BUSINESS
+                ));
 
         //买家注册 (add)
 

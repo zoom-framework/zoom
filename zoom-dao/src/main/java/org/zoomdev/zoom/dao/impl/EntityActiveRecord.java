@@ -29,18 +29,20 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
     private static final Log log = LogFactory.getLog(EntityActiveRecord.class);
 
     public boolean defaultIgnoreNull = true;
+    public boolean defaultStrict = true;
 
-    private Dao dao;
-    private Entity entity;
-    private List<EntityField> entityFields;
+    protected Dao dao;
+    protected Entity entity;
+    protected List<EntityField> entityFields;
 
-    private boolean ignoreNull = defaultIgnoreNull;
+    protected boolean ignoreNull = defaultIgnoreNull;
+    protected boolean strict = defaultStrict;
 
-    private static Map<String, Filter<EntityField>> patterFilterCache = new ConcurrentHashMap<String, Filter<EntityField>>();
+    protected static Map<String, Filter<EntityField>> patterFilterCache = new ConcurrentHashMap<String, Filter<EntityField>>();
     /**
      * 对字段进行筛选
      */
-    private Filter<EntityField> filter;
+    protected Filter<EntityField> filter;
 
 
     private static Filter<EntityField> createPatternFilter(final String filter) {
@@ -129,6 +131,9 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
 
     @Override
     public int update(T data) {
+
+
+        entity.validate(data);
         EntitySqlUtils.entityCondition(builder, entity, data);
 
         EntitySqlUtils.buildUpdate(
@@ -200,6 +205,7 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
 
     @Override
     public int insert(final T data) {
+        entity.validate(data);
         return execute(new ConnectionExecutor() {
             @Override
             public Integer execute(Connection connection) throws SQLException {
@@ -260,6 +266,12 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
     @Override
     public Entity getEntity() {
         return entity;
+    }
+
+    @Override
+    public EAr<T> strict(boolean strict) {
+        this.strict = strict;
+        return this;
     }
 
     @Override
@@ -374,6 +386,7 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
         entityFields.clear();
         filter = null;
         ignoreNull = defaultIgnoreNull;
+        strict = defaultStrict;
     }
 
 

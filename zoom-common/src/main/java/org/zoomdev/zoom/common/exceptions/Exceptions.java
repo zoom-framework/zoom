@@ -1,4 +1,4 @@
-package org.zoomdev.zoom.common.exception;
+package org.zoomdev.zoom.common.exceptions;
 
 public class Exceptions {
 
