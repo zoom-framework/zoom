@@ -1,7 +1,6 @@
 package org.zoomdev.zoom.dao.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.caster.Caster;
@@ -57,7 +56,7 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
     }
 
     public EntityActiveRecord(Dao dao, Entity entity) {
-        super(dao.getDataSource(), new SimpleSqlBuilder(dao));
+        super(dao.getDataSource(), new SimpleSqlBuilder(dao.getDriver()));
         this.entity = entity;
         this.dao = dao;
         this.entityFields = new ArrayList<EntityField>();
@@ -115,7 +114,7 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
                 List<T> list = EntitySqlUtils.executeQuery(connection, builder, entityFields, entity);
                 builder.clear(false);
                 int total = getValue(connection, "COUNT(*) AS COUNT_", int.class);
-                int page = builder.getPageFromPosition(position, size);
+                int page = builder.position2page(position, size);
                 return new Page<T>(list, page, size, total);
             }
         });
@@ -130,7 +129,7 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
 
     @Override
     public int update(T data) {
-        EntitySqlUtils.entityConditon(builder, entity, data);
+        EntitySqlUtils.entityCondition(builder, entity, data);
 
         EntitySqlUtils.buildUpdate(
                 builder,
@@ -221,72 +220,16 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
         });
     }
 
-    @Override
-    public int insert(final Iterable<T> it) {
-        final MutableInt result = new MutableInt(0);
-        try {
-            ZoomDao.executeTrans(
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            for (T t : it) {
-                                result.add(insert(t));
-                            }
-                        }
-                    });
-        } catch (Throwable throwable) {
-            throw new DaoException(throwable);
-        }
 
-        return result.getValue();
-    }
-
-    @Override
-    public int update(final Iterable<T> it) {
-        final MutableInt result = new MutableInt(0);
-        try {
-            ZoomDao.executeTrans(
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            for (T t : it) {
-                                result.add(update(t));
-                            }
-                        }
-                    });
-        } catch (Throwable throwable) {
-            throw new DaoException(throwable);
-        }
-
-        return result.getValue();
-    }
 
     @Override
     public int delete(T data) {
-        EntitySqlUtils.entityConditon(builder, entity, data);
+        EntitySqlUtils.entityCondition(builder, entity, data);
         builder.buildDelete();
         return EntitySqlUtils.executeUpdate(this, builder);
     }
 
-    @Override
-    public int delete(final Iterable<T> it) {
-        final MutableInt result = new MutableInt(0);
-        try {
-            ZoomDao.executeTrans(
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            for (T t : it) {
-                                result.add(delete(t));
-                            }
-                        }
-                    });
-        } catch (Throwable throwable) {
-            throw new DaoException(throwable);
-        }
 
-        return result.getValue();
-    }
 
     public int count() {
         return value("COUNT(*) AS COUNT_", int.class);
@@ -317,6 +260,12 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
     @Override
     public Entity getEntity() {
         return entity;
+    }
+
+    @Override
+    public EAr<T> orWhere(SqlBuilder.Condition condition) {
+        builder.orWhere(condition);
+        return this;
     }
 
     @Override
@@ -391,6 +340,11 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
     }
 
     @Override
+    public EAr<T> whereNotNull(String name) {
+        return null;
+    }
+
+    @Override
     public <E> EAr<T> whereIn(String field, E... values) {
         builder.whereIn(entity.getColumnName(field), values);
         return this;
@@ -417,7 +371,70 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
     @Override
     protected void clear() {
         super.clear();
+        entityFields.clear();
         filter = null;
         ignoreNull = defaultIgnoreNull;
     }
+
+
+//
+//    @Override
+//    public int insert(final Iterable<T> it) {
+//        final MutableInt result = new MutableInt(0);
+//        try {
+//            ZoomDao.executeTrans(
+//                    new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            for (T t : it) {
+//                                result.add(insert(t));
+//                            }
+//                        }
+//                    });
+//        } catch (Throwable throwable) {
+//            throw new DaoException(throwable);
+//        }
+//
+//        return result.getValue();
+//    }
+//
+//    @Override
+//    public int update(final Iterable<T> it) {
+//        final MutableInt result = new MutableInt(0);
+//        try {
+//            ZoomDao.executeTrans(
+//                    new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            for (T t : it) {
+//                                result.add(update(t));
+//                            }
+//                        }
+//                    });
+//        } catch (Throwable throwable) {
+//            throw new DaoException(throwable);
+//        }
+//
+//        return result.getValue();
+//    }
+//
+//    @Override
+//    public int delete(final Iterable<T> it) {
+//        final MutableInt result = new MutableInt(0);
+//        try {
+//            ZoomDao.executeTrans(
+//                    new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            for (T t : it) {
+//                                result.add(delete(t));
+//                            }
+//                        }
+//                    });
+//        } catch (Throwable throwable) {
+//            throw new DaoException(throwable);
+//        }
+//
+//        return result.getValue();
+//    }
 }

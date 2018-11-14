@@ -53,12 +53,6 @@ public interface EAr<T> extends Sql<EAr<T>> {
      */
     int update(T data);
 
-//    /**
-//     * dao.ar().table("xxx").set("id",1).set("name","123").insertOrUpdate("id"),当id存在则更新，否则插入
-//     * @param keys
-//     * @return
-//     */
-//    int insertOrUpdate(String...keys);
 
 
     T get();
@@ -80,24 +74,7 @@ public interface EAr<T> extends Sql<EAr<T>> {
      */
     int insert(T data);
 
-    /**
-     * 批量插入
-     *
-     * @param it
-     * @return
-     */
-    int insert(Iterable<T> it);
 
-    /**
-     * 批量更新
-     *
-     * @param it
-     * @return
-     */
-    int update(Iterable<T> it);
-
-
-    int delete(Iterable<T> it);
 
     /**
      * 删除实体
@@ -105,7 +82,6 @@ public interface EAr<T> extends Sql<EAr<T>> {
      * @return
      */
     int delete(T data);
-
 
     /**
      * 获取记录数量           dao.ar(Book.class).count();/dar.ar("book").count()
@@ -129,5 +105,26 @@ public interface EAr<T> extends Sql<EAr<T>> {
 
     Entity getEntity();
 
+
+
+
+
+//    /**
+//     * 批量插入
+//     *
+//     * @param it
+//     * @return
+//     */
+//    int insert(Iterable<T> it);
+//
+//    /**
+//     * 批量更新
+//     *
+//     * @param it
+//     * @return
+//     */
+//    int update(Iterable<T> it);
+//
+//    int delete(Iterable<T> it);
 
 }

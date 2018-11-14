@@ -54,7 +54,6 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
     }
 
     public Record get(String sql, List<Object> values,
-                      List<StatementAdapter> adapters,
                       NameAdapter nameAdapter) {
         Connection connection = null;
         PreparedStatement ps = null;
@@ -119,14 +118,18 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
     @Override
     public List<Record> find() {
         builder.buildSelect();
-        return query(builder.sql.toString(), builder.getValues(), new ArrayList<StatementAdapter>(), true);
+        return query(builder.sql.toString(), builder.values,
+                new ArrayList<StatementAdapter>(), true);
     }
 
     @Override
     public Record get() {
         builder.buildSelect();
-        return get(builder.sql.toString(), builder.getValues(), builder.adapters, builder.nameAdapter);
+        return get(builder.sql.toString(),
+                builder.values,
+                builder.nameAdapter);
     }
+
 
 
     @Override
@@ -150,13 +153,12 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
     @Override
     public Page<Record> position(int position, int size) {
         builder.buildLimit(position, size);
-
         try {
             List<Record> list =
                     query(builder.sql.toString(),
                             builder.values, new ArrayList<StatementAdapter>(), false);
             int total = getCount();
-            int page = builder.getPageFromPosition(position, size);
+            int page = builder.position2page(position, size);
             return new Page<Record>(list, page, size, total);
         } finally {
             builder.clear(true);
@@ -180,40 +182,44 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
     @Override
     public int insertOrUpdate(String... keys) {
         builder.insertOrUpdate(keys);
-        return executeUpdate(builder.sql.toString(), builder.values, builder.adapters);
+        return executeUpdate(builder.sql.toString(), builder.values);
     }
+
+
+
+
 
     @SuppressWarnings("unchecked")
     @Override
     public int insert(Map<String, Object> data) {
         assert (data != null);
         builder.setAll(data);
-        builder.buildInsert();
-        return executeUpdate(builder.sql.toString(), builder.values, builder.adapters);
+        return insert();
     }
 
     @Override
     public int insert() {
         builder.buildInsert();
-        return executeUpdate(builder.sql.toString(), builder.values, builder.adapters);
+        return _executeUpdate(builder.sql.toString(), builder.values);
     }
 
     @Override
     public int update() {
         builder.buildUpdate();
-        return executeUpdate(builder.sql.toString(), builder.values, builder.adapters);
+        return _executeUpdate(builder.sql.toString(), builder.values);
     }
 
     @Override
-    public int update(Map<String, Object> record) {
-        builder.buildUpdate(record);
-        return executeUpdate(builder.sql.toString(), builder.values, builder.adapters);
+    public int update(Map<String, Object> data) {
+        assert (data != null);
+        builder.setAll(data);
+        return update();
     }
 
     @Override
     public int delete() {
         builder.buildDelete();
-        return executeUpdate(builder.sql.toString(), builder.values, builder.adapters);
+        return _executeUpdate(builder.sql.toString(), builder.values);
     }
 
     @Override
@@ -225,6 +231,12 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
     @Override
     public Ar set(String key, Object value) {
         builder.set(key, value);
+        return this;
+    }
+
+    @Override
+    public Ar orWhere(SqlBuilder.Condition condition) {
+        builder.orWhere(condition);
         return this;
     }
 
@@ -301,6 +313,12 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
     }
 
     @Override
+    public Ar whereNotNull(String name) {
+        builder.whereNotNull(name);
+        return this;
+    }
+
+    @Override
     public <T> T getValue(String select, Class<T> classOfT) {
         Record record = select(select).get();
         if (record == null) {
@@ -344,28 +362,16 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
 
     @Override
     public Ar selectMax(String field) {
-        builder.selectMax(field);
+        builder.selectMax(field,field);
         return this;
     }
 
     @Override
     public int executeUpdate(String sql, Object... args) {
-        Connection connection = null;
-        PreparedStatement ps = null;
-        try {
-            connection = getConnection();
-            ps = BuilderKit.prepareStatement(connection, sql, Arrays.asList(args));
-            return ps.executeUpdate();
-        } catch (SQLException e) {
-            throw new DaoException(sql.toString(), e);
-        } finally {
-            DaoUtils.close(ps);
-            releaseConnection();
-            builder.clear(true);
-        }
+        return _executeUpdate(sql,Arrays.asList(args));
     }
 
-    public int executeUpdate(String sql, List<Object> values, List<StatementAdapter> adapters) {
+    public int _executeUpdate(String sql, List<Object> values) {
         Connection connection = null;
         PreparedStatement ps = null;
         try {

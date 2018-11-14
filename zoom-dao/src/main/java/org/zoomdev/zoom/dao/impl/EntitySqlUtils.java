@@ -171,7 +171,7 @@ public class EntitySqlUtils {
         sql.append(where);
     }
 
-    public static void entityConditon(SimpleSqlBuilder builder, Entity entity, Object data) {
+    public static void entityCondition(SimpleSqlBuilder builder, Entity entity, Object data) {
         // 主键
         for (EntityField adapter : entity.getPrimaryKeys()) {
             builder.where(adapter.getColumnName(), adapter.get(data));
@@ -288,7 +288,6 @@ public class EntitySqlUtils {
             Entity entity,
             Filter<EntityField> filter,
             List<EntityField> entityFields) {
-        entityFields.clear();
         // build select
         for (EntityField field : entity.getEntityFields()) {
             if (filter == null || filter.accept(field)) {
@@ -331,7 +330,10 @@ public class EntitySqlUtils {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = BuilderKit.prepareStatement(connection, builder.sql.toString(), builder.values);
+            ps = BuilderKit.prepareStatement(
+                    connection,
+                    builder.sql.toString(),
+                    builder.values);
             rs = ps.executeQuery();
             return buildList(rs, entity, entityFields);
         } finally {

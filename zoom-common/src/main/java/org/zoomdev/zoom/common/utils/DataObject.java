@@ -5,12 +5,13 @@ import org.zoomdev.zoom.caster.ValueCaster;
 
 import java.sql.Clob;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
  * @author jzoom
  */
-public class DataObject extends HashMap<String, Object> {
+public class DataObject extends LinkedHashMap<String, Object> {
 
 
     static {

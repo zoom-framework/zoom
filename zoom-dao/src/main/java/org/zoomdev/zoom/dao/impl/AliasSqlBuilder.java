@@ -20,7 +20,7 @@ public class AliasSqlBuilder extends SimpleSqlBuilder {
 
 
     public AliasSqlBuilder(Dao dao) {
-        super(dao);
+        super(dao.getDriver());
         this.dao = dao;
         this.aliasPolicyManager = dao.getNameAdapterFactory();
     }
@@ -62,9 +62,9 @@ public class AliasSqlBuilder extends SimpleSqlBuilder {
     }
 
     @Override
-    protected SqlBuilder whereImpl(String name, Symbol symbol, Object value, String relation) {
+    protected SqlBuilder whereImpl(StringBuilder where,String name, Symbol symbol, Object value, String relation) {
         name = nameAdapter.getColumnName(name);
-        return super.whereImpl(name, symbol, value, relation);
+        return super.whereImpl(where,name, symbol, value, relation);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class AliasSqlBuilder extends SimpleSqlBuilder {
 
 
     @Override
-    protected void parsePart(StringBuilder sql, String part) {
+    protected void parseSelectColumn(StringBuilder sql, String part) {
         Matcher matcher;
         if ((matcher = BuilderKit.AS_PATTERN.matcher(part)).matches()) {
             driver.protectColumn(sql, matcher.group(1));

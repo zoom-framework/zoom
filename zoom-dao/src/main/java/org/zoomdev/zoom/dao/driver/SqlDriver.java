@@ -35,7 +35,7 @@ public interface SqlDriver extends StatementAdapterFactory {
     StatementAdapter get(Class<?> dataClass, Class<?> columnClass);
 
 
-    StringBuilder buildPage(StringBuilder sql,List<Object> values, int position, int size);
+    StringBuilder buildLimit(StringBuilder sql, List<Object> values, int position, int size);
 
 
     int position2page(int position, int size);

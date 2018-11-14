@@ -15,6 +15,16 @@ public interface EntityField extends StatementAdapter {
      */
     Object get(Object target);
 
+    /**
+     * 设置值
+     *
+     * @param data
+     * @param fieldValue
+     */
+    void set(Object data, Object fieldValue);
+
+
+
 
     /**
      * 将数据库中的值转为实体类的值
@@ -45,13 +55,7 @@ public interface EntityField extends StatementAdapter {
      */
     String getSelectColumnName();
 
-    /**
-     * 设置值
-     *
-     * @param data
-     * @param fieldValue
-     */
-    void set(Object data, Object fieldValue);
+
 
     /**
      * PrepareStatement的适配器
@@ -69,5 +73,10 @@ public interface EntityField extends StatementAdapter {
     @Nullable
     AutoField getAutoField();
 
+
+    /**
+     * 字段类型,对于Record模式来说，除了Clob/Blob都与数据库一致
+     * @return
+     */
     Type getFieldType();
 }

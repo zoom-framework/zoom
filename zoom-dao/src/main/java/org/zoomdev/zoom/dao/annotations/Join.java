@@ -1,6 +1,7 @@
 package org.zoomdev.zoom.dao.annotations;
 
 import org.zoomdev.zoom.dao.Ar;
+import org.zoomdev.zoom.dao.SqlBuilder;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -30,5 +31,5 @@ public @interface Join {
      */
     String on();
 
-    String type() default Ar.INNER;
+    String type() default SqlBuilder.INNER;
 }

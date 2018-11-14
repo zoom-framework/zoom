@@ -47,8 +47,10 @@ public class BuilderKit {
             values.add(value);
             driver.protectColumn(sql, name);
         }
+        sql.append(") VALUES (");
         //?
-        join(sql.append(") VALUES ("), record.size()).append(')');
+        join(sql, record.size())
+                .append(')');
 
     }
 
@@ -74,59 +76,9 @@ public class BuilderKit {
 
     private static final Log log = LogFactory.getLog(BuilderKit.class);
 
-    public static PreparedStatement prepareStatementForAdapters(
-            Connection connection,
-            String sql,
-            List<Object> values,
-            List<StatementAdapter> adapters) throws SQLException {
-        if (log.isDebugEnabled()) {
-            log.debug(String.format(sql.replace("?", "'%s'"), values.toArray(new Object[values.size()])));
-        }
-
-        PreparedStatement ps = connection.prepareStatement(sql);
-        for (int index = 0, c = values.size(); index < c; ++index) {
-            StatementAdapter adapter = adapters.get(index);
-            adapter.adapt(ps, index + 1, values.get(index));
-        }
-        return ps;
-    }
 
 
-    public static <T> T build(Entity entity,
-                              EntityField[] entityAdapters,
-                              int entityAdaptersCount,
-                              ResultSet rs) throws SQLException {
-        Object data = entity.newInstance();
-        ResultSetMetaData metaData = rs.getMetaData();
-        for (int i = 0; i < entityAdaptersCount; ++i) {
-            EntityField adapter = entityAdapters[i];
-            try {
 
-                Object r = rs.getObject(i + 1);
-//                System.err.println( metaData.getColumnLabel(i+1) + ":" + r.getClass()+" "+ adapter.getFieldName() +":"+adapter.getField().getType() );
-                adapter.set(data, adapter.getFieldValue(r));
-            } catch (Exception e) {
-                throw new DaoException("不能设置查询结果" + adapter.getFieldName(), e);
-            }
-
-        }
-        return (T) data;
-    }
-
-    public static <T> List<T> buildList(Entity entity,
-                                        EntityField[] entityAdapters,
-                                        int entityAdaptersCount,
-                                        ResultSet rs) throws SQLException {
-
-        List<T> list = new ArrayList<T>();
-        while (rs.next()) {
-            T data = build(entity, entityAdapters, entityAdaptersCount, rs);
-            list.add(data);
-        }
-
-        return list;
-
-    }
 
 
     public static PreparedStatement prepareStatement(
@@ -144,30 +96,7 @@ public class BuilderKit {
         return ps;
     }
 
-    public static PreparedStatement prepareStatement(
-            Connection connection,
-            String sql,
-            List<Object> values,
-            List<StatementAdapter> adapters) throws SQLException {
 
-        PreparedStatement ps = connection.prepareStatement(sql);
-        for (int index = 0, c = values.size(); index < c; ++index) {
-            StatementAdapter adapter = adapters.get(index);
-            adapter.adapt(ps, index + 1, values.get(index));
-        }
-        return ps;
-    }
-
-    public static void prepareStatement(
-            PreparedStatement ps,
-            List<Object> values,
-            List<StatementAdapter> adapters) throws SQLException {
-
-        for (int index = 0, c = values.size(); index < c; ++index) {
-            StatementAdapter adapter = adapters.get(index);
-            adapter.adapt(ps, index + 1, values.get(index));
-        }
-    }
 
     private static ValueCaster blobCaster;
     private static ValueCaster clobCaster;

@@ -8,22 +8,26 @@ import org.zoomdev.zoom.common.expression.Symbol;
  * @param <T>
  */
 public interface Sql<T extends Sql> {
-
-
-    String INNER = "INNER";
-    String LEFT = "LEFT";
-    String RIGHT = "RIGHT";
+    /**
+     * or where ...
+     *
+     * @param condition
+     * @return
+     */
+    T orWhere(SqlBuilder.Condition condition);
 
 
     T where(String key, Object value);
 
     T orWhere(String key, Object value);
 
+    T whereNotNull(String name);
+
+
     <E> T whereIn(String key, E... values);
 
     T like(String name, SqlBuilder.Like like, Object value);
 
-//    T whereCondition(String key,Object...values);
 
     T where(String key, Symbol symbol, Object value);
 

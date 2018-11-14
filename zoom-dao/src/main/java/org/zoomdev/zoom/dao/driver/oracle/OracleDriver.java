@@ -14,17 +14,16 @@ import java.util.Set;
 public class OracleDriver extends AbsDriver {
 
     @Override
-    public StringBuilder buildPage(
+    public StringBuilder buildLimit(
             StringBuilder sql,
             List<Object> values,
             int position,
             int size) {
+        values.add(position + size);
+        values.add(position);
         return sql.insert(0,
-                "SELECT * FROM (SELECT A.*, rownum r FROM (")
-                .append(") A WHERE rownum <= ")
-                .append(position + size)
-                .append(" ) B WHERE r > ")
-                .append(position);
+                "SELECT * FROM (SELECT A.*, ROWNUM R FROM (")
+                .append(") A WHERE ROWNUM <= ?) B WHERE R > ?");
     }
 
     @Override

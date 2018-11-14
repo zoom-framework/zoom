@@ -2,9 +2,15 @@ package org.zoomdev.zoom.dao;
 
 import org.zoomdev.zoom.common.expression.Symbol;
 
+import java.util.List;
 import java.util.Map;
 
 public interface SqlBuilder {
+
+    String INNER = "INNER";
+    String LEFT = "LEFT";
+    String RIGHT = "RIGHT";
+
 
 
     enum Sort {
@@ -87,6 +93,9 @@ public interface SqlBuilder {
      */
     SqlBuilder like(String name, Like like, Object value);
 
+
+
+    SqlBuilder orLike(String name, Like like, Object value);
 
     /**
      * @param name
@@ -209,15 +218,6 @@ public interface SqlBuilder {
      */
     SqlBuilder table(String table);
 
-    SqlBuilder selectSum(String field);
-
-    SqlBuilder selectMax(String field);
-
-    SqlBuilder selectMin(String field);
-
-    SqlBuilder count();
-
-    SqlBuilder selectAvg(String field);
 
     /**
      * select("selectSum(count) as count,selectMin(id),a ,b ","c","d")
@@ -227,11 +227,34 @@ public interface SqlBuilder {
      */
     SqlBuilder select(String fields);
 
+    SqlBuilder selectSum(String field,String alias);
+
+    SqlBuilder selectMax(String field,String alias);
+
+    SqlBuilder selectMin(String field,String alias);
+
+    SqlBuilder selectCount(String alias);
+
+    SqlBuilder selectAvg(String field,String alias);
+
+
 
     SqlBuilder set(String name, Object value);
 
     SqlBuilder setAll(Map<String, Object> data);
 
+    SqlBuilder clear();
+
+
+    List<Object> values();
+
+    void buildSelect();
+    void buildDelete();
+    void buildUpdate();
+    void buildInsert();
+    void buildLimit(int position,int limit);
+
+    String sql();
 
     String printSql();
 

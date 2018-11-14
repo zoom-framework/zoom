@@ -16,9 +16,13 @@ public class MysqlDriver extends AbsDriver {
 
     @Override
     public StringBuilder protectColumn(StringBuilder sb, String name) {
-        if (name.contains(".")) {
-            sb.append(name);
-            return sb;
+        int n;
+        if ((n = name.indexOf(".")) > 0) {
+            String table = name.substring(0, n);
+            String column = name.substring(n + 1);
+            return sb
+                    .append('`').append(table).append("`.`")
+                    .append(column).append('`');
         }
         return sb.append('`').append(name).append('`');
     }
@@ -29,7 +33,9 @@ public class MysqlDriver extends AbsDriver {
         if ((n = name.indexOf(".")) > 0) {
             String table = name.substring(0, n);
             String column = name.substring(n + 1);
-            return new StringBuilder().append('`').append(table).append("`.`").append(column).append('`').toString();
+            return new StringBuilder()
+                    .append('`').append(table).append("`.`")
+                    .append(column).append('`').toString();
         }
         return new StringBuilder().append('`').append(name).append('`').toString();
     }
@@ -40,14 +46,14 @@ public class MysqlDriver extends AbsDriver {
     }
 
     @Override
-    public StringBuilder buildPage(
+    public StringBuilder buildLimit(
             StringBuilder sql,
             List<Object> values,
             int position, int size) {
-        return sql.append(" LIMIT ")
-                .append(position)
-                .append(',')
-                .append(size);
+        values.add(position);
+        values.add(size);
+        return sql.append(" LIMIT ?,?");
+
     }
 
 
@@ -136,6 +142,7 @@ public class MysqlDriver extends AbsDriver {
         }
 
     }
+
     @Override
     public void build(TableBuildInfo table, StringBuilder sb) {
 //        sb.append("CREATE TABLE ");
