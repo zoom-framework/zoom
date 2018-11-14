@@ -14,7 +14,7 @@ import org.zoomdev.zoom.dao.impl.SimpleSqlBuilder;
 
 import static junit.framework.Assert.assertEquals;
 
-public class TestSqlBuilddr{
+public class TestSqlBuilder {
 
     @Test
     public void testWhere(){

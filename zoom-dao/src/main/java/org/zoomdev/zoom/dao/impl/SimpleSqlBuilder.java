@@ -328,7 +328,7 @@ public class SimpleSqlBuilder implements SqlBuilder {
 
     @Override
     public SqlBuilder selectCount(String alias) {
-        selectRaw("COUNT(*) AS COUNT");
+        selectFunc("*",alias,"COUNT");
         return this;
     }
 

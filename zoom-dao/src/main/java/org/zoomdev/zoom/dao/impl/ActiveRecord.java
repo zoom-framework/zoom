@@ -7,12 +7,11 @@ import org.zoomdev.zoom.common.expression.Symbol;
 import org.zoomdev.zoom.common.utils.Page;
 import org.zoomdev.zoom.dao.*;
 import org.zoomdev.zoom.dao.alias.NameAdapter;
-import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 import org.zoomdev.zoom.dao.utils.DaoUtils;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -27,67 +26,43 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
         this.builder = (AliasSqlBuilder) super.builder;
     }
 
-    public List<Record> query(final String sql, final List<Object> values, List<StatementAdapter> adapters,
-                              final boolean all) {
+    public List<Record> query() {
 
         return execute(new ConnectionExecutor() {
             @Override
             public List<Record> execute(Connection connection) throws SQLException {
-                PreparedStatement ps = null;
-                ResultSet rs = null;
-                try {
-                    ps = BuilderKit.prepareStatement(connection, sql, values);
-                    rs = ps.executeQuery();
-                    return BuilderKit.build(rs, builder.nameAdapter);
-                } catch (SQLException e) {
-                    throw new DaoException(builder.printSql(), e);
-                } finally {
-                    DaoUtils.close(rs);
-                    DaoUtils.close(ps);
-                    builder.clear(all);
-                }
+                return BuilderKit.executeQuery(connection,builder,builder.nameAdapter);
             }
         });
     }
 
-    public Record get(String sql, List<Object> values,
-                      NameAdapter nameAdapter) {
-        Connection connection = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            connection = getConnection();
-            ps = BuilderKit.prepareStatement(connection, sql, values);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                return BuilderKit.buildOne(rs, nameAdapter);
-            }
-            return null;
-        } catch (SQLException e) {
-            throw new DaoException(builder.printSql(), e);
-        } finally {
-            DaoUtils.close(rs);
-            DaoUtils.close(ps);
-            releaseConnection();
-            builder.clear(true);
-        }
+    public Record get(final String sql, final List<Object> values,
+                      final NameAdapter nameAdapter) {
+       return execute(new ConnectionExecutor() {
+           @Override
+           public Record execute(Connection connection) throws SQLException {
+               PreparedStatement ps = null;
+               ResultSet rs = null;
+               try {
+                   ps = BuilderKit.prepareStatement(connection, sql, values);
+                   rs = ps.executeQuery();
+                   if (rs.next()) {
+                       return BuilderKit.buildOne(rs, nameAdapter);
+                   }
+                   return null;
+               } finally {
+                   DaoUtils.close(rs);
+                   DaoUtils.close(ps);
+               }
+           }
+       });
     }
 
-    //不一致的地方:
-    // 返回值，参数，过程，一致的地方： 都是获取connection先
-    // 查询 和  更新 两类
-    // page 、 list  单个
-    //  ResultSet 映射成为Record或者实体类
-    // QueryExecutor:
 
-//	public static  class QueryExecutor implements ConnectionExecutor{
-//
-//	}
 
 
     public ResultSet execute(final String sql,
                              final List<Object> values,
-                             final List<StatementAdapter> adapters,
                              final boolean all) {
         return execute(new ConnectionExecutor() {
 
@@ -101,11 +76,8 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
                     ps = BuilderKit.prepareStatement(connection, sql, values);
                     rs = ps.executeQuery();
                     return rs;
-                } catch (SQLException e) {
-                    throw new DaoException(sql.toString(), e);
                 } finally {
                     DaoUtils.close(ps);
-                    builder.clear(all);
                 }
             }
         });
@@ -115,8 +87,7 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
     @Override
     public List<Record> find() {
         builder.buildSelect();
-        return query(builder.sql.toString(), builder.values,
-                new ArrayList<StatementAdapter>(), true);
+        return query();
     }
 
     @Override
@@ -129,15 +100,11 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
 
 
 
-    @Override
-    protected void clear() {
-        releaseConnection();
-    }
 
     @Override
     public List<Record> limit(int position, int size) {
         builder.buildLimit(position, size);
-        return query(builder.sql.toString(), builder.values, new ArrayList<StatementAdapter>(), true);
+        return query();
     }
 
     @Override
@@ -148,18 +115,22 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
     }
 
     @Override
-    public Page<Record> position(int position, int size) {
-        builder.buildLimit(position, size);
-        try {
-            List<Record> list =
-                    query(builder.sql.toString(),
-                            builder.values, new ArrayList<StatementAdapter>(), false);
-            int total = getCount();
-            int page = builder.position2page(position, size);
-            return new Page<Record>(list, page, size, total);
-        } finally {
-            builder.clear(true);
-        }
+    public Page<Record> position(final int position, final int size) {
+
+        return execute(new ConnectionExecutor() {
+            @Override
+            public Page<Record> execute(Connection connection) throws SQLException {
+                builder.buildLimit(position, size);
+                try {
+                    List<Record> list = BuilderKit.executeQuery(connection,builder,builder.nameAdapter);
+                    int total = getValue(connection,DaoUtils.SELECT_COUNT,int.class);
+                    int page = builder.position2page(position, size);
+                    return new Page<Record>(list, page, size, total);
+                } finally {
+                    builder.clear(true);
+                }
+            }
+        });
 
     }
 
@@ -305,7 +276,9 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
 
     @Override
     public List<Record> executeQuery(String sql, Object... args) {
-        return query(sql, Arrays.asList(args), new ArrayList<StatementAdapter>(), true);
+        builder.sql.append(sql);
+        Collections.addAll(builder.values,args);
+        return query();
     }
 
     @Override
@@ -342,14 +315,26 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
         return record.get(as, classOfT);
     }
 
-    public int getCount() {
-        Record record = selectRaw("count(*)").get();
-        if (record == null) {
-            return Caster.to(null, int.class);
-        }
-        return record.get("count(*)", int.class);
+    @Override
+    public int count() {
+        return value(DaoUtils.SELECT_COUNT, int.class);
     }
 
+    @Override
+    public <E> E value(final String key, final Class<E> typeOfE) {
+        return execute(new ConnectionExecutor() {
+            @Override
+            public E execute(Connection connection) throws SQLException {
+                return getValue(connection, key, typeOfE);
+            }
+        });
+    }
+
+    private <E> E getValue(Connection connection, String key, Class<E> typeOfE) throws SQLException {
+        builder.selectRaw(key);
+        builder.buildSelect();
+        return Caster.to(EntitySqlUtils.executeGetValue(connection, builder), typeOfE);
+    }
     @Override
     public <E> Ar whereIn(String key, E... values) {
         builder.whereIn(key, values);
@@ -399,26 +384,24 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
                     throw e;
                 }finally {
                     DaoUtils.close(statement);
-                    builder.clear(true);
                 }
             }
         });
     }
 
-    public int _executeUpdate(String sql, List<Object> values) {
-        Connection connection = null;
-        PreparedStatement ps = null;
-        try {
-            connection = getConnection();
-            ps = BuilderKit.prepareStatement(connection, sql, values);
-            return ps.executeUpdate();
-        } catch (SQLException e) {
-            throw new DaoException(sql.toString(), e);
-        } finally {
-            DaoUtils.close(ps);
-            releaseConnection();
-            builder.clear(true);
-        }
+    public int _executeUpdate(final String sql, final List<Object> values) {
+       return execute(new ConnectionExecutor() {
+           @Override
+           public Integer execute(Connection connection) throws SQLException {
+               PreparedStatement ps = null;
+               try {
+                   ps = BuilderKit.prepareStatement(connection, sql, values);
+                   return ps.executeUpdate();
+               } finally {
+                   DaoUtils.close(ps);
+               }
+           }
+       });
     }
 
 

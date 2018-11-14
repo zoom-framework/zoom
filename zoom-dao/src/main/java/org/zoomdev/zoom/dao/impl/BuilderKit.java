@@ -5,10 +5,12 @@ import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.caster.ValueCaster;
 import org.zoomdev.zoom.dao.DaoException;
+import org.zoomdev.zoom.dao.Entity;
 import org.zoomdev.zoom.dao.Record;
 import org.zoomdev.zoom.dao.adapters.EntityField;
 import org.zoomdev.zoom.dao.alias.NameAdapter;
 import org.zoomdev.zoom.dao.driver.SqlDriver;
+import org.zoomdev.zoom.dao.utils.DaoUtils;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -171,6 +173,23 @@ public class BuilderKit {
             result.add(build(columnCount, rs, types, labelNames));
         }
         return result;
+    }
+
+    public static List<Record> executeQuery( Connection connection,
+                                             SimpleSqlBuilder builder,
+                                             NameAdapter nameAdapter) throws SQLException {
+
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = BuilderKit.prepareStatement(connection, builder.sql.toString(), builder.values);
+            rs = ps.executeQuery();
+            return BuilderKit.build(rs, nameAdapter);
+        } finally {
+            DaoUtils.close(rs);
+            DaoUtils.close(ps);
+        }
+
     }
 
     public static final List<Record> build(ResultSet rs, NameAdapter policy) throws SQLException {

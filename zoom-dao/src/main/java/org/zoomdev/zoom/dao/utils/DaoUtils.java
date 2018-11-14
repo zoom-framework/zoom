@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 public class DaoUtils {
+    public static final String SELECT_COUNT = "COUNT(*) AS COUNT_";
+
     public static void close(ResultSet rs) {
         if (rs != null) try {
             rs.close();
@@ -37,21 +39,6 @@ public class DaoUtils {
     }
 
 
-    /**
-     * 将list转为map
-     *
-     * @param list
-     * @param pk
-     * @return
-     */
-    public static Map<Object, Record> list2map(List<Record> list, String pk) {
-        if (list == null) return null;
-        Map<Object, Record> map = new HashMap<Object, Record>(list.size());
-        for (Record record : list) {
-            map.put(record.get(pk), record);
-        }
-        return map;
-    }
 
     /**
      * 判断一个数据库中的字段类型是否是Stream类型，Clob/Blob

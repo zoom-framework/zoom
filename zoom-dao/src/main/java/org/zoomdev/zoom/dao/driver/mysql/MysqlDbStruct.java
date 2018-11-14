@@ -61,42 +61,6 @@ public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
         return null;
     }
 
-    private static Class<?> convertType(String type) {
-        if (type.equals("varchar")) {
-            return String.class;
-        } else if (type.equals("int")) {
-            return Integer.class;
-        } else if (type.contains("text")) {
-            return String.class;
-        } else if (type.contains("blob")) {
-            return Blob.class;
-        } else if (type.contains("date")) {
-            return java.sql.Date.class;
-        } else if (type.equals("datetime")) {
-            return java.sql.Date.class;
-        } else if (type.equals("time")) {
-            return java.sql.Time.class;
-        } else if (type.equals("double")) {
-            return Double.class;
-        } else if (type.equals("tinyint")) {
-            return Boolean.class;
-        } else if (type.equals("smallint")) {
-            return Short.class;
-        } else if (type.equals("mediumint")) {
-            return Integer.class;
-        } else if (type.equals("bigint")) {
-            return Long.class;
-        } else if (type.equals("decimal")) {
-            return Double.class;
-        } else if (type.equals("timestamp")) {
-            return Integer.class;
-        } else if (type.equals("year")) {
-            return Integer.class;
-        } else if (type.equals("char")) {
-            return String.class;
-        }
-        throw new RuntimeException("Not supported type " + type);
-    }
 
 
     @Override
