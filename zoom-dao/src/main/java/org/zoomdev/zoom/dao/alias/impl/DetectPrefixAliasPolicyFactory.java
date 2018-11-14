@@ -10,37 +10,22 @@ import java.util.Map.Entry;
 
 /**
  * 自动检测字段的前缀，并以驼峰式来重命名 {@link AliasPolicyFactory}
- * 这个是针对单表的
+ * 策略是：
+ * 所谓前缀：是第一个下划线前面的部分加上下划线，比如TP_ID,前缀为TP_
+ * 以第一个字段出现的前缀作为全部字段的前缀，还有个前提是这个前缀出现的次数最多
+ *
+ * 当第一个前缀
  *
  * @author jzoom
  */
-public class DetectPrefixAliasPolicyMaker implements AliasPolicyFactory {
+public class DetectPrefixAliasPolicyFactory implements AliasPolicyFactory {
 
-    public static final AliasPolicyFactory DEFAULT = new DetectPrefixAliasPolicyMaker();
+    public static final AliasPolicyFactory DEFAULT = new DetectPrefixAliasPolicyFactory();
 
 
-    private DetectPrefixAliasPolicyMaker() {
+    private DetectPrefixAliasPolicyFactory() {
 
     }
-
-//	@Override
-//	public NameAdapter getColumnAliasPolicy(TableMeta table) {
-//
-//		if (aliasPolicy != null) {
-//			Map<String, String> map = new HashMap<String, String>();
-//			for (ColumnMeta columnInfo : table.getColumns()) {
-//				map.put(aliasPolicy.getAlias(columnInfo.getName()), columnInfo.getName());
-//			}
-//			return new MapNameAdapter(aliasPolicy, map);
-//		} else {
-//			return CamelNameAdapter.ADAPTER;
-//		}
-//
-//	}
-
-//	private String findNotEmpty() {
-//		
-//	}
 
     // 这个逻辑如果数据库字段比较规范是够用的，不够再说
     @Override
@@ -66,12 +51,13 @@ public class DetectPrefixAliasPolicyMaker implements AliasPolicyFactory {
             key = countMap.keySet().iterator().next();
             aliasPolicy = new PrefixAliasPolicy(new StringBuilder(key).append("_").toString());
         } else {
+
             for (Entry<String, MutableInt> entry : countMap.entrySet()) {
                 if (first == null) {
                     first = entry.getValue();
                     key = entry.getKey();
                 } else {
-                    if (first.intValue() > entry.getValue().intValue()) {
+                    if (first.intValue() >= entry.getValue().intValue()) {
                         aliasPolicy = new PrefixAliasPolicy(new StringBuilder(key).append("_").toString());
                     }
                     break;
@@ -79,9 +65,11 @@ public class DetectPrefixAliasPolicyMaker implements AliasPolicyFactory {
             }
         }
 
-        if (aliasPolicy != null) {
+        if(aliasPolicy!=null){
+
             return aliasPolicy;
         }
+
 
         return CamelAliasPolicy.DEFAULT;
     }

@@ -32,7 +32,7 @@ public class TestRenamePolicy extends TestCase {
 
     public void testAliasPolicyFactory(){
 
-        AliasPolicyFactory factory = DetectPrefixAliasPolicyMaker.DEFAULT;
+        AliasPolicyFactory factory = DetectPrefixAliasPolicyFactory.DEFAULT;
         AliasPolicy aliasPolicy = factory.getAliasPolicy(new String[]{
                 "TP_ID",
                 "TP_NAME",
@@ -44,7 +44,7 @@ public class TestRenamePolicy extends TestCase {
 
         assertEquals(
                 aliasPolicy.getAlias("TP_ID"),
-                "tpId"
+                "id"
         );
 
         assertEquals(
@@ -72,6 +72,40 @@ public class TestRenamePolicy extends TestCase {
                 "rnId"
         );
 
+
+        aliasPolicy = factory.getAliasPolicy(new String[]{
+                "id",
+                "name",
+                "RN_ID",
+                "RN_NAME",
+                "RN_TEST"
+        });
+
+        assertEquals(
+                aliasPolicy.getAlias("RN_ID"),
+                "rnId"
+        );
+
+        assertEquals(
+                aliasPolicy.getAlias("RN_NAME"),
+                "rnName"
+        );
+
+        aliasPolicy = factory.getAliasPolicy(new String[]{
+                "TP_ID",
+                "TP_NAME",
+                "TP_COUNT",
+        });
+
+        assertEquals(
+                aliasPolicy.getAlias("TP_ID"),
+                "id"
+        );
+
+        assertEquals(
+                aliasPolicy.getAlias("TP_NAME"),
+                "name"
+        );
     }
 
 }

@@ -319,7 +319,7 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
     }
 
 
-    private static AliasPolicyFactory maker = DetectPrefixAliasPolicyMaker.DEFAULT;
+    private static AliasPolicyFactory maker = DetectPrefixAliasPolicyFactory.DEFAULT;
 
     private String[] getColumnNames(TableMeta meta) {
 
