@@ -295,6 +295,12 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
         return this;
     }
 
+    @Override
+    public Ar whereNull(String field) {
+        builder.whereNull(field);
+        return this;
+    }
+
     public Ar selectRaw(String select) {
         builder.selectRaw(select);
         return this;

@@ -20,11 +20,9 @@ public class MysqlDriver extends AbsDriver {
         if ((n = name.indexOf(".")) > 0) {
             String table = name.substring(0, n);
             String column = name.substring(n + 1);
-            return sb
-                    .append('`').append(table).append("`.`")
-                    .append(column).append('`');
+            return protectName(sb,table).append(".").append(column);
         }
-        return sb.append('`').append(name).append('`');
+        return protectName(sb,name);
     }
 
     @Override
@@ -33,11 +31,28 @@ public class MysqlDriver extends AbsDriver {
         if ((n = name.indexOf(".")) > 0) {
             String table = name.substring(0, n);
             String column = name.substring(n + 1);
-            return new StringBuilder()
-                    .append('`').append(table).append("`.`")
-                    .append(column).append('`').toString();
+
+            return protectName(new StringBuilder(),table)
+                    .append(".").append(column).toString();
         }
-        return new StringBuilder().append('`').append(name).append('`').toString();
+        return protectName(name);
+    }
+
+    @Override
+    public String protectTable(String tableName) {
+
+        return protectColumn(tableName);
+    }
+
+    protected String protectName(String name) {
+        return protectName(new StringBuilder(), name).toString();
+    }
+
+    protected StringBuilder protectName(
+            StringBuilder sb, String name
+    ) {
+        return sb
+                .append('`').append(name).append("`");
     }
 
     @Override
@@ -142,6 +157,12 @@ public class MysqlDriver extends AbsDriver {
         }
 
     }
+
+    @Override
+    public StringBuilder protectTable(StringBuilder sb, String name) {
+        return protectColumn(sb,name);
+    }
+
 
     @Override
     public void build(TableBuildInfo table, StringBuilder sb) {

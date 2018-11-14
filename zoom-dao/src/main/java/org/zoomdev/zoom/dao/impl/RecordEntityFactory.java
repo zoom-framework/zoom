@@ -55,8 +55,8 @@ public class RecordEntityFactory extends AbstractEntityFactory {
         return primaryKeys;
     }
 
-    @Override
-    public Entity getEntity(Class<?> type, String tableName) {
+
+    public Entity getEntityOne(Class<?> type, String tableName) {
         TableMeta tableMeta = getTableMeta(tableName);
 
         //获取到field和column的对应关系
@@ -120,30 +120,36 @@ public class RecordEntityFactory extends AbstractEntityFactory {
     }
 
     @Override
-    public Entity getEntity(Class<?> type, String[] tables) {
-        // 得到一个映射关系
-        final List<RecordEntityField> entityFields = new ArrayList<RecordEntityField>();
+    public Entity getEntity(Class<?> type, String... tables) {
+        if(tables.length==1){
+            return getEntityOne(type,tables[0]);
+        }else{
+            // 得到一个映射关系
+            final List<RecordEntityField> entityFields = new ArrayList<RecordEntityField>();
 
-        RenameUtils.rename(dao, tables, new RenameUtils.ColumnRenameVisitor() {
-            @Override
-            public void visit(TableMeta tableMeta, ColumnMeta columnMeta, String fieldName, String selectColumnName) {
-                RecordEntityField entityField = new RecordEntityField(fieldName, DaoUtils.normalizeType(columnMeta.getDataType()));
-                entityField.setColumn(tableMeta.getName() + "." + columnMeta.getName());
-                entityField.setSelectColumnName(selectColumnName);
-                //只有clob blob 需要适配，
-                entityField.setCaster(getCaster(columnMeta.getDataType()));
-                //
-                entityField.setStatementAdapter(dao.getStatementAdapter(columnMeta.getDataType()));
+            RenameUtils.rename(dao, tables, new RenameUtils.ColumnRenameVisitor() {
+                @Override
+                public void visit(TableMeta tableMeta, ColumnMeta columnMeta, String fieldName, String selectColumnName) {
+                    RecordEntityField entityField = new RecordEntityField(fieldName, DaoUtils.normalizeType(columnMeta.getDataType()));
+                    entityField.setColumn(tableMeta.getName() + "." + columnMeta.getName());
+                    entityField.setSelectColumnName(selectColumnName);
+                    //只有clob blob 需要适配，
+                    entityField.setCaster(getCaster(columnMeta.getDataType()));
+                    //
+                    entityField.setStatementAdapter(dao.getStatementAdapter(columnMeta.getDataType()));
 
-                entityFields.add(entityField);
-            }
-        });
+                    entityFields.add(entityField);
+                }
+            });
 
-        return new RecordEntity(
-                tables[0],
-                entityFields.toArray(new EntityField[entityFields.size()]),
-                null,
-                null,
-                null);
+            return new RecordEntity(
+                    tables[0],
+                    entityFields.toArray(new EntityField[entityFields.size()]),
+                    null,
+                    null,
+                    null);
+        }
     }
+
+
 }

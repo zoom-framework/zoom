@@ -1,5 +1,7 @@
 package org.zoomdev.zoom.dao.meta;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import java.io.Serializable;
 
 /**
@@ -8,6 +10,11 @@ import java.io.Serializable;
  * @author jzoom
  */
 public class ColumnMeta implements Serializable {
+
+
+    public boolean isIndex() {
+        return keyType == KeyType.INDEX;
+    }
 
     public static enum KeyType {
         PRIMARY,
@@ -28,6 +35,7 @@ public class ColumnMeta implements Serializable {
     private int type;
 
 
+    @JsonIgnore
     private KeyType keyType;
 
     private boolean nullable;

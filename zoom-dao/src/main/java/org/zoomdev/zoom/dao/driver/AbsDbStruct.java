@@ -21,7 +21,7 @@ public abstract class AbsDbStruct implements DbStructFactory {
 
 
     protected String getQueryTableMetaStatement(String table) {
-        return "select * from " + table + " where 1=2";
+        return "select * from " + dao.getDriver().protectTable(table) + " where 1=2";
     }
 
     @Override

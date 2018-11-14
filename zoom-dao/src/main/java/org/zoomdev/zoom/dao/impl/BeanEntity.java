@@ -28,6 +28,13 @@ class BeanEntity extends AbstractEntity {
         this.joins = joins;
         this.type = type;
 
+
+        for (JoinMeta join : joins) {
+
+            join.setOn(parseOn(join.getOn()));
+        }
+
+
     }
 
     @Override
@@ -54,8 +61,6 @@ class BeanEntity extends AbstractEntity {
         }
 
     }
-
-
 
 
 }

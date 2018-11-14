@@ -14,9 +14,7 @@ import org.zoomdev.zoom.dao.adapters.EntityField;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -105,6 +103,15 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
         });
     }
 
+    protected void remove2(List<Object> values){
+        if(values.size()==0){
+            values.clear();
+            return;
+        }
+        values.remove(values.size()-1);
+        values.remove(values.size()-1);
+    }
+
     @Override
     public Page<T> position(final int position, final int size) {
         return execute(new ConnectionExecutor() {
@@ -115,6 +122,8 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
                 builder.buildLimit(position, size);
                 List<T> list = EntitySqlUtils.executeQuery(connection, builder, entityFields, entity);
                 builder.clear(false);
+                remove2(builder.values);
+                //最后两个参数要移除掉
                 int total = getValue(connection, "COUNT(*) AS COUNT_", int.class);
                 int page = builder.position2page(position, size);
                 return new Page<T>(list, page, size, total);
@@ -129,9 +138,36 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
     }
 
 
+    private void validateRecord(Record record){
+        Set<String> allKeys = new HashSet<String>(record.size());
+
+        for(String key : record.keySet()){
+            if(key.startsWith("@")){
+                allKeys.add(key.substring(1));
+            }else{
+                allKeys.add(key);
+            }
+        }
+
+
+        for(EntityField entityField : entity.getEntityFields()){
+            allKeys.remove(entityField.getFieldName());
+        }
+
+        if(allKeys.size() > 0){
+            throw new DaoException("Record中包含多余字段:"+
+            StringUtils.join(allKeys,","));
+        }
+
+    }
+
     @Override
     public int update(T data) {
-
+        assert(data!=null);
+        if(data instanceof Record && strict){
+            //检测一下
+            validateRecord((Record)data);
+        }
 
         entity.validate(data);
         EntitySqlUtils.entityCondition(builder, entity, data);
@@ -205,6 +241,13 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
 
     @Override
     public int insert(final T data) {
+        assert(data!=null);
+
+        if(data instanceof Record && strict){
+            validateRecord((Record) data);
+        }
+
+
         entity.validate(data);
         return execute(new ConnectionExecutor() {
             @Override
@@ -323,12 +366,12 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
 
     @Override
     public EAr<T> join(String table, String on) {
-        return this;
+        return join(table,on,SqlBuilder.INNER);
     }
 
     @Override
     public EAr<T> join(String table, String on, String type) {
-
+        builder.join(table,entity.parseOn(on), type);
         return this;
     }
 
@@ -344,6 +387,12 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
         return this;
     }
 
+    @Override
+    public EAr<T> whereNull(String field) {
+        builder.whereNull(entity.getColumnName(field));
+        return this;
+    }
+
 
     @Override
     public EAr<T> orWhere(String field, Object value) {
@@ -353,7 +402,8 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
 
     @Override
     public EAr<T> whereNotNull(String name) {
-        return null;
+        builder.whereNotNull(entity.getColumnName(name));
+        return this;
     }
 
     @Override

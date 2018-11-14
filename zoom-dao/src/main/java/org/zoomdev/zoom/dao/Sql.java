@@ -60,4 +60,5 @@ public interface Sql<T extends Sql> {
     T select(Iterable<String> select);
 
 
+    T whereNull(String field);
 }

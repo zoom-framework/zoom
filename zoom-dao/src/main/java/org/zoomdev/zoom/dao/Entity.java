@@ -2,6 +2,7 @@ package org.zoomdev.zoom.dao;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.zoomdev.zoom.dao.adapters.EntityField;
+import org.zoomdev.zoom.dao.meta.JoinMeta;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -35,6 +36,13 @@ public interface Entity {
      * @return
      */
     EntityField[] getPrimaryKeys();
+
+    /**
+     * 获取field
+     * @param name
+     * @return
+     */
+    EntityField getFieldByName(String name);
 
     /**
      * 绑定到哪个实体类
@@ -104,4 +112,7 @@ public interface Entity {
      * @param data
      */
     void validate(Object data);
+
+
+    String parseOn(String on);
 }

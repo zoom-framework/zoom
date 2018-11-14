@@ -32,6 +32,18 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
         abstract void build(StringBuilder sb);
     }
 
+    public static class FunctionValue{
+        String value;
+
+        public FunctionValue(String value){
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
     private class DropTableIfExists extends BuildInfo {
 
         private String table;
@@ -42,7 +54,9 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
 
         @Override
         void build(StringBuilder sb) {
-            sb.append(String.format("DROP TABLE IF EXISTS %s;\n", table));
+            sb.append("DROP TABLE IF EXISTS ");
+            driver.protectTable(sb,table);
+            sb.append(";\n");
         }
     }
 
@@ -215,23 +229,8 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
     @Override
     public void build(Class<?> type, boolean dropIfExists) {
         assert (type != null);
-        Field[] fields = CachedClasses.getFields(type);
-        if (fields.length == 0) {
-            throw new DaoException("必须至少有一个字段");
-        }
 
-        for (int i = 0; i < fields.length; ++i) {
-            Field field = fields[i];
-            if (field.isAnnotationPresent(ColumnIgnore.class)) {
-                continue;
-            }
-            Column column = field.getAnnotation(Column.class);
-            if (column != null) {
-                continue;
-            }
-
-
-        }
+        //dao.getEntityFactory();
 
 
     }
@@ -247,4 +246,13 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
         columnMeta.setType(Types.BLOB);
         return this;
     }
+
+    @Override
+    public DatabaseBuilder defaultFunction(String value) {
+        columnMeta.setDefaultValue(new FunctionValue(value));
+        return this;
+    }
+
+
+
 }

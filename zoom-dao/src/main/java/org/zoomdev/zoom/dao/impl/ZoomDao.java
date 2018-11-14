@@ -86,11 +86,11 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
     }
 
 
-    public static void executeTrans(Runnable runnable) throws Throwable {
+    public static void executeTrans(Runnable runnable) {
         executeTrans(Trans.TRANSACTION_READ_COMMITTED, runnable);
     }
 
-    public static void executeTrans(int level, Runnable runnable) throws Throwable {
+    public static void executeTrans(int level, Runnable runnable) {
         try {
             assert (runnable != null);
             ZoomDao.beginTrans(level);
@@ -98,7 +98,10 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
             ZoomDao.commitTrans();
         } catch (Throwable e) {
             ZoomDao.rollbackTrans();
-            throw e;
+            if(e instanceof DaoException){
+                throw (DaoException)e;
+            }
+            throw new DaoException(e);
         }
 
     }
@@ -115,6 +118,11 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
 
     public <T> T execute(ConnectionExecutor executor) {
         return ar().execute(executor);
+    }
+
+    @Override
+    public EntityFactory getEntityFactory() {
+        return beanEntityFactory;
     }
 
     public DbStructFactory getDbStructFactory() {
@@ -178,7 +186,7 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
 
         //这里等待一下
         try {
-            Object data = task.get(1000, TimeUnit.MILLISECONDS);
+            Object data = task.get(10000, TimeUnit.MILLISECONDS);
             if (data instanceof Throwable) {
                 throw new DaoException("初始化失败", (Throwable) data);
             }
@@ -250,21 +258,7 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
     }
 
     @Override
-    public EAr<Record> ar(String table) {
-        EAr<Record> ar = (EAr<Record>) earHolder.get();
-        Entity entity = recordEntityFactory.getEntity(Record.class, table);
-        if (ar == null) {
-            lazyLoad();
-            ar = new EntityActiveRecord<Record>(this, entity);
-            earHolder.set(ar);
-        } else {
-            ar.setEntity(entity);
-        }
-        return ar;
-    }
-
-    @Override
-    public EAr<Record> ar(String[] tables) {
+    public EAr<Record> ar(String... tables) {
         EAr<Record> ar = (EAr<Record>) earHolder.get();
         Entity entity = recordEntityFactory.getEntity(Record.class, tables);
         if (ar == null) {
@@ -276,6 +270,7 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
         }
         return ar;
     }
+
 
 
     private void lazyLoad() {

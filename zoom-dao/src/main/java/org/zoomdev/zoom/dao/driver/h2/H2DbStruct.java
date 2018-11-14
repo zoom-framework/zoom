@@ -102,6 +102,11 @@ public class H2DbStruct extends AbsDbStruct {
 
         }
 
+
+
+        if(meta.getComment()==null){
+            meta.setComment("");
+        }
     }
 
 

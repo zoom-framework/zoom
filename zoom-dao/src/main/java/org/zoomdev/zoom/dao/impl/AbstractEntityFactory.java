@@ -21,4 +21,9 @@ public abstract class AbstractEntityFactory implements EntityFactory {
         return meta;
     }
 
+    @Override
+    public void clearCache() {
+
+    }
+
 }

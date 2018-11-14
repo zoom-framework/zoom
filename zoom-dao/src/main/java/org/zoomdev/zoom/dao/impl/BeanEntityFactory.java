@@ -28,108 +28,8 @@ class BeanEntityFactory extends AbstractEntityFactory {
         super(dao);
     }
 
-    private static final Pattern AND_OR_PATTERN = Pattern.compile("[\\s]+(and)[\\s]+|[\\s]+(or)[\\s]+", Pattern.CASE_INSENSITIVE);
-
-    /**
-     * 使用Pattern对字符串分割
-     *
-     * @param target
-     * @param pattern
-     * @return
-     */
-    public static List<String> split(String target, Pattern pattern) {
-        assert (target != null && pattern != null);
-        List<String> list = new ArrayList<String>();
-        Matcher matcher = pattern.matcher(target);
-        int start = 0;
-        while (matcher.find()) {
-            list.add(target.substring(start, matcher.start()));
-            list.add(matcher.group(1));
-            start = matcher.end();
-        }
-
-        list.add(target.substring(start));
-
-        return list;
-
-    }
 
 
-    static final Pattern COLUMN_PATTERN = Pattern.compile("[a-zA-Z0-9]+[\\s]*\\.[\\s]*[a-zA-Z0-9]+|[a-zA-Z0-9]+");
-
-    private Set<String> getJoinAllFields(Map<String, ColumnConfig> map) {
-
-        Set<String> allJoinAvaliableNames = new LinkedHashSet<String>();
-
-        for (Map.Entry<String, ColumnConfig> entry : map.entrySet()) {
-            ColumnConfig config = entry.getValue();
-            ColumnMeta columnMeta = config.columnMeta;
-            if (DaoUtils.isStream(columnMeta.getDataType())) {
-                continue;
-            }
-            allJoinAvaliableNames.add(entry.getKey());
-
-            allJoinAvaliableNames.add(config.getFullColumnName());
-        }
-
-        return allJoinAvaliableNames;
-    }
-
-    private void parseOneForOne(final StringBuilder sb, String part, final Map<String, ColumnConfig> map, final Set<String> joinAllFields) {
-
-        PatternUtils.visit(part, COLUMN_PATTERN, new PatternUtils.PatternVisitor() {
-            @Override
-            public void onGetPattern(Matcher matcher) {
-                String str = matcher.group();
-                if (str.contains(".")) {
-                    //table + column
-                    str = str.replace(" ", "");
-                    if (!joinAllFields.contains(str)) {
-                        throw new DaoException("找不到" + str + "对应的字段，当前所有可用字段为:"
-                                + StringUtils.join(joinAllFields, ","));
-                    }
-                    sb.append(str);
-                } else {
-                    ColumnConfig columnConfig = map.get(str);
-                    if (columnConfig == null) {
-                        throw new DaoException("找不到" + str + "对应的字段，当前所有可用字段为:"
-                                + StringUtils.join(joinAllFields, ","));
-                    } else {
-                        sb.append(columnConfig.getFullColumnName());
-                    }
-                }
-            }
-
-            @Override
-            public void onGetRest(String rest) {
-                sb.append(rest);
-            }
-        });
-
-    }
-
-
-    private String parseOn(String on, final Map<String, ColumnConfig> map, final Set<String> joinAllFields) {
-        if (StringUtils.isEmpty(on)) {
-            throw new DaoException("请提供join的条件on");
-        }
-        final StringBuilder sb = new StringBuilder();
-        PatternUtils.visit(on, AND_OR_PATTERN, new PatternUtils.PatternVisitor() {
-            @Override
-            public void onGetPattern(Matcher matcher) {
-                sb.append(matcher.group());
-            }
-
-            @Override
-            public void onGetRest(String rest) {
-                parseOneForOne(sb, rest, map, joinAllFields);
-            }
-        });
-        //再来做一次替换
-
-
-        return sb.toString();
-    }
 
     @Override
     public Entity getEntity(final Class<?> type) {
@@ -149,17 +49,22 @@ class BeanEntityFactory extends AbstractEntityFactory {
             }
 
             assert (!StringUtils.isEmpty(table.value()));
-            return getEntity(type, tables.toArray(new String[tables.size()]), joins);
+            return getEntityJoins(type, tables.toArray(new String[tables.size()]), joins);
         } else {
             assert (!StringUtils.isEmpty(table.value()));
-            return getEntity(type, tableName);
+            return getEntityOne(type, tableName);
         }
 
 
     }
 
+
     @Override
-    public Entity getEntity(final Class<?> type, final String tableName) {
+    public Entity getEntity(final Class<?> type, String...tables) {
+        return getEntityOne(type,tables[0]);
+    }
+
+    public Entity getEntityOne(final Class<?> type, final String tableName) {
 
         TableMeta tableMeta = getTableMeta(tableName);
 
@@ -254,7 +159,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
         });
     }
 
-    public Entity getEntity(Class<?> type, String[] tables, Join[] joins) {
+    public Entity getEntityJoins(Class<?> type, String[] tables, Join[] joins) {
         assert (tables.length > 1);
         final Map<String, ColumnConfig> map = new LinkedHashMap<String, ColumnConfig>();
         final TableMeta[] tableMetas = new TableMeta[tables.length];
@@ -272,15 +177,12 @@ class BeanEntityFactory extends AbstractEntityFactory {
                 ));
             }
         });
-
-
         JoinMeta[] joinMetas = new JoinMeta[joins.length];
-        Set<String> joinAllFields = getJoinAllFields(map);
         for (int i = 0; i < joins.length; ++i) {
             Join join = joins[i];
             //
             JoinMeta joinMeta = new JoinMeta();
-            joinMeta.setOn(parseOn(join.on(), map, joinAllFields));
+            joinMeta.setOn(join.on());
             joinMeta.setTable(join.table());
             joinMeta.setType(join.type());
 
@@ -364,17 +266,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
         });
     }
 
-    /**
-     * 多个表实际上会在实体类中提现，这里如果出现了多张表，表示和实体类中出现的多表一一对应
-     *
-     * @param type
-     * @param tables
-     * @return
-     */
-    @Override
-    public Entity getEntity(Class<?> type, String[] tables) {
-        return getEntity(type, tables, null);
-    }
+
 
     private void fillAdapter(AbstractEntityField entityField, Column column, Class<?> dbType, Dao dao) {
         try {

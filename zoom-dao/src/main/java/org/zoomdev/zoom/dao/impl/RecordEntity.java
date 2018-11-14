@@ -1,10 +1,17 @@
 package org.zoomdev.zoom.dao.impl;
 
+import org.apache.commons.lang3.StringUtils;
+import org.zoomdev.zoom.common.utils.PatternUtils;
+import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.Record;
 import org.zoomdev.zoom.dao.SqlBuilder;
 import org.zoomdev.zoom.dao.adapters.EntityField;
+import org.zoomdev.zoom.dao.meta.JoinMeta;
 
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RecordEntity extends AbstractEntity {
     RecordEntity(String table,

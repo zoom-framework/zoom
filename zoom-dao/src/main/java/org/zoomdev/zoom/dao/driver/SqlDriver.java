@@ -47,4 +47,6 @@ public interface SqlDriver extends StatementAdapterFactory {
     void insertOrUpdate(StringBuilder sb, List<Object> values, String tableName, Map<String, Object> data, String... unikeys);
 
     void build(TableBuildInfo buildInfo,StringBuilder sb);
+
+    String protectTable(String tableName);
 }

@@ -177,4 +177,9 @@ public class OracleDriver extends AbsDriver {
 
     }
 
+    @Override
+    public String protectTable(String tableName) {
+        return tableName;
+    }
+
 }

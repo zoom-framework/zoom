@@ -39,18 +39,13 @@ public interface Dao extends StatementAdapterFactory {
      */
     <T> EAr<T> ar(Class<T> type);
 
-    /**
-     * @param table
-     * @return
-     */
-    EAr<Record> ar(String table);
 
 
     /**
      * @param tables
      * @return
      */
-    EAr<Record> ar(String[] tables);
+    EAr<Record> ar(String...tables);
 
     /**
      * 获取数据库结构
@@ -79,4 +74,5 @@ public interface Dao extends StatementAdapterFactory {
 
     <T> T execute(ConnectionExecutor connectionExecutor);
 
+    EntityFactory getEntityFactory();
 }

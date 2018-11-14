@@ -3,6 +3,7 @@ package org.zoomdev.zoom.dao.driver.h2;
 import org.zoomdev.zoom.dao.driver.mysql.MysqlDriver;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.migrations.TableBuildInfo;
+import org.zoomdev.zoom.dao.migrations.ZoomDatabaseBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +46,12 @@ public class H2Driver extends MysqlDriver {
                 if (columnMeta.getDefaultValue() instanceof String) {
                     sb.append(" DEFAULT '").append(columnMeta.getDefaultValue()).append("'");
                 } else {
-                    sb.append(" DEFAULT ").append(columnMeta.getDefaultValue());
+                    if(columnMeta.getDefaultValue() instanceof ZoomDatabaseBuilder.FunctionValue){
+                        sb.append(" DEFAULT ").append(((ZoomDatabaseBuilder.FunctionValue)columnMeta.getDefaultValue()).getValue());
+                    }else{
+                        sb.append(" DEFAULT ").append(columnMeta.getDefaultValue());
+                    }
+
                 }
             }else{
                 if(columnMeta.isPrimary()){
@@ -95,10 +101,26 @@ public class H2Driver extends MysqlDriver {
             sb.append("\n");
         }
 
-        sb.append(")charset=utf8;\n\n");
+        sb.append(")charset=utf8;\n");
 
+        //index
 
-        //primary keys
+        for (ColumnMeta columnMeta : table.getColumns()) {
+            if(columnMeta.isIndex()){
+                sb.append("CREATE INDEX ")
+                        .append("IDX_")
+                        .append(table.getName())
+                        .append("_")
+                        .append(columnMeta.getName())
+                        .append(" ON ")
+                        .append(table.getName())
+                        .append("(")
+                        .append(columnMeta.getName())
+                        .append(");\n");
+            }
+        }
+
+        sb.append("\n");
 
     }
 

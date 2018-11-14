@@ -88,4 +88,9 @@ public class AbstractRecord<T extends Sql> implements Sql<T> {
     public T select(Iterable<String> select) {
         return null;
     }
+
+    @Override
+    public T whereNull(String field) {
+        return null;
+    }
 }

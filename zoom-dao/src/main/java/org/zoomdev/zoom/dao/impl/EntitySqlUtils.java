@@ -76,7 +76,9 @@ public class EntitySqlUtils {
         List<Object> values = builder.values;
 
         EntityField[] fields = entity.getEntityFields();
-        sql.append("INSERT INTO ").append(entity.getTable()).append(" (");
+        sql.append("INSERT INTO ").append(
+                driver.protectTable(entity.getTable())
+        ).append(" (");
         boolean first = true;
         int index = 0;
         String[] specialValues = new String[fields.length];
@@ -177,8 +179,11 @@ public class EntitySqlUtils {
     public static void entityCondition(SimpleSqlBuilder builder, Entity entity, Object data) {
         // 主键
         for (EntityField adapter : entity.getPrimaryKeys()) {
-            builder.where(adapter.getColumnName(), adapter.get(data));
-            builder.adapters.add(adapter);
+            Object value = adapter.get(data);
+            if(value != null){
+                builder.where(adapter.getColumnName(), value);
+                builder.adapters.add(adapter);
+            }
         }
     }
 

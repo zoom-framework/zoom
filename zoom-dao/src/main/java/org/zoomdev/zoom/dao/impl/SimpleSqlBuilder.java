@@ -178,7 +178,7 @@ public class SimpleSqlBuilder implements SqlBuilder {
 
     private void checkValue(Object value) {
         if (value == null) {
-            throw new RuntimeException("值为null?请使用whereNull或者whereNotNull版本");
+            throw new DaoException("值为null?请使用whereNull或者whereNotNull版本");
         }
     }
 

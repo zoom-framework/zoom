@@ -78,4 +78,11 @@ public interface DatabaseBuilder {
 
 
     DatabaseBuilder blob();
+
+    /**
+     * 默认值是调用系统函数
+     * @param value
+     * @return
+     */
+    DatabaseBuilder defaultFunction(String value);
 }
