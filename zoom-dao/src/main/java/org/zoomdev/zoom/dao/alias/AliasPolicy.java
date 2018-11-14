@@ -9,10 +9,10 @@ public interface AliasPolicy {
     /**
      * 根据实际名称获取别名
      *
-     * @param column
+     * @param name
      * @return
      */
-    String getAlias(String column);
+    String getAlias(String name);
 
 
 }

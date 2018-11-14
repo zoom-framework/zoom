@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.dao.alias.impl;
 
-import org.zoomdev.zoom.dao.adapters.NameAdapter;
+import org.zoomdev.zoom.dao.alias.NameAdapter;
 import org.zoomdev.zoom.dao.alias.AliasPolicy;
 
 import java.util.Map;

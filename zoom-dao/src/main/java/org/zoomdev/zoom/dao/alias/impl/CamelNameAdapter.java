@@ -1,7 +1,7 @@
 package org.zoomdev.zoom.dao.alias.impl;
 
 import org.zoomdev.zoom.common.utils.StrKit;
-import org.zoomdev.zoom.dao.adapters.NameAdapter;
+import org.zoomdev.zoom.dao.alias.NameAdapter;
 
 /**
  * 驼峰式命名规则

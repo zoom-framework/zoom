@@ -3,7 +3,7 @@ package org.zoomdev.zoom.dao.impl;
 import org.zoomdev.zoom.common.utils.StrKit;
 import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.alias.AliasPolicy;
-import org.zoomdev.zoom.dao.alias.AliasPolicyMaker;
+import org.zoomdev.zoom.dao.alias.AliasPolicyFactory;
 import org.zoomdev.zoom.dao.alias.impl.CamelAliasPolicy;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.meta.TableMeta;
@@ -23,7 +23,7 @@ class RenameUtils {
     }
 
 
-    private static AliasPolicy getAliasPolicyForNames(AliasPolicyMaker maker, String[] names) {
+    private static AliasPolicy getAliasPolicyForNames(AliasPolicyFactory maker, String[] names) {
         AliasPolicy aliasPolicy = maker.getAliasPolicy(names);
         if (aliasPolicy == null) {
             aliasPolicy = CamelAliasPolicy.DEFAULT;
@@ -47,7 +47,7 @@ class RenameUtils {
                               ColumnRenameVisitor visitor) {
 
 
-        AliasPolicyMaker maker = dao.getAliasPolicyMaker();
+        AliasPolicyFactory maker = dao.getAliasPolicyMaker();
         AliasPolicy aliasPolicy = maker.getAliasPolicy(getColumnNames(tableMeta));
         for (ColumnMeta columnMeta : tableMeta.getColumns()) {
             String field = aliasPolicy.getAlias(columnMeta.getName());
@@ -70,7 +70,7 @@ class RenameUtils {
     public static void rename(Dao dao,
                               String[] tables,
                               ColumnRenameVisitor visitor) {
-        AliasPolicyMaker maker = dao.getAliasPolicyMaker();
+        AliasPolicyFactory maker = dao.getAliasPolicyMaker();
         AliasPolicy tableAliasPolicy = getAliasPolicyForNames(maker, tables);
 
         boolean first = true;

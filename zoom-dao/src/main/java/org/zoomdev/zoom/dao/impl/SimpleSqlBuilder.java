@@ -72,11 +72,18 @@ public class SimpleSqlBuilder implements SqlBuilder {
         }
         sql.append(" FROM ")
                 .append(table)
-                .append(join)
-                .append(where)
-                .append(groupBy)
-                .append(having)
-                .append(orderBy);
+                .append(join);
+
+        if (where.length() > 0) {
+            sql.append(" WHERE ");
+        }
+        sql.append(where);
+        sql.append(groupBy);
+
+        if (having.length() > 0) {
+            sql.append(" HAVING ").append(having);
+        }
+        sql.append(orderBy);
     }
 
     public void buildUpdate() {
@@ -129,15 +136,8 @@ public class SimpleSqlBuilder implements SqlBuilder {
     }
 
 
-    private void andWhere() {
-        whereRelation(AND);
-    }
 
-    private void orWhere() {
-        whereRelation(OR);
-    }
-
-    private void whereRelation(String relation) {
+    private void whereRelation(StringBuilder where,String relation) {
         if (condition) {
             condition = false;
         } else {
@@ -158,8 +158,9 @@ public class SimpleSqlBuilder implements SqlBuilder {
 
     private SqlBuilder relationLike(String name, Like like, Object value, String relation, boolean not) {
         assert (name != null);
+
         checkValue(value);
-        whereRelation(relation);
+        whereRelation(where,relation);
 
         where.append(name);
         if (not) {
@@ -191,7 +192,7 @@ public class SimpleSqlBuilder implements SqlBuilder {
 
     protected SqlBuilder whereImpl(StringBuilder where, String name, Symbol symbol, Object value, String relation) {
         checkValue(value);
-        whereRelation(relation);
+        whereRelation(where,relation);
         where.append(name).append(symbol.value()).append("?");
         addValue(name, value);
         return this;
@@ -220,8 +221,9 @@ public class SimpleSqlBuilder implements SqlBuilder {
     }
 
     private SqlBuilder whereNull(String name, String relation, boolean not) {
-        whereRelation(relation);
+
         StringBuilder where = this.where;
+        whereRelation(where,relation);
         where.append(name);
         where.append(" IS ");
         if (not) where.append("NOT ");
@@ -246,7 +248,7 @@ public class SimpleSqlBuilder implements SqlBuilder {
 
     protected SqlBuilder whereIn(String name, String relation, boolean not, Object... values) {
         StringBuilder where = this.where;
-        whereRelation(relation);
+        whereRelation(where,relation);
         where.append(name);
         if (not) {
             where.append(" NOT");
@@ -394,10 +396,10 @@ public class SimpleSqlBuilder implements SqlBuilder {
      * @param column
      */
     protected void parseSelectColumn(StringBuilder sql, String column) {
-        if(column.contains("'")){
+        if (column.contains("'")) {
             throw new DaoException("字段中不能包含',具体的值必须写在参数中");
         }
-        sql.append(column);
+        sql.append(column.trim());
     }
 
     /**
@@ -479,14 +481,14 @@ public class SimpleSqlBuilder implements SqlBuilder {
 
     @Override
     public SqlBuilder where(Condition condition) {
-        andWhere();
+        whereRelation(where,AND);
         conditionWhere(condition);
         return this;
     }
 
     @Override
     public SqlBuilder orWhere(Condition condition) {
-        orWhere();
+        whereRelation(where,OR);
         conditionWhere(condition);
         return this;
 
@@ -496,11 +498,6 @@ public class SimpleSqlBuilder implements SqlBuilder {
     @Override
     public SqlBuilder having(String name, Symbol symbol, Object value) {
 
-        if (sql.length() == 0) {
-            having.append(" HAVING ");
-        } else {
-            having.append(AND);
-        }
 
         whereImpl(having, name, symbol, value, AND);
 
@@ -533,8 +530,8 @@ public class SimpleSqlBuilder implements SqlBuilder {
      * @param function
      * @return
      */
-    protected SqlBuilder selectFunc(String field,String alias, String function) {
-        if(select.length()>0){
+    protected SqlBuilder selectFunc(String field, String alias, String function) {
+        if (select.length() > 0) {
             select.append(",");
         }
         select.append(function).append("(");
@@ -545,23 +542,23 @@ public class SimpleSqlBuilder implements SqlBuilder {
     }
 
     @Override
-    public SqlBuilder selectMax(String field,String alias) {
-        return selectFunc(field, alias,"MAX");
+    public SqlBuilder selectMax(String field, String alias) {
+        return selectFunc(field, alias, "MAX");
     }
 
     @Override
-    public SqlBuilder selectSum(String field,String alias) {
-        return selectFunc(field, alias,"SUM");
+    public SqlBuilder selectSum(String field, String alias) {
+        return selectFunc(field, alias, "SUM");
     }
 
     @Override
-    public SqlBuilder selectMin(String field,String alias) {
-        return selectFunc(field, alias,"MIN");
+    public SqlBuilder selectMin(String field, String alias) {
+        return selectFunc(field, alias, "MIN");
     }
 
     @Override
-    public SqlBuilder selectAvg(String field,String alias) {
-        return selectFunc(field, alias,"AVG");
+    public SqlBuilder selectAvg(String field, String alias) {
+        return selectFunc(field, alias, "AVG");
     }
 
 }

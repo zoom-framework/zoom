@@ -4,7 +4,7 @@ import org.zoomdev.zoom.common.expression.Symbol;
 import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.SqlBuilder;
-import org.zoomdev.zoom.dao.adapters.NameAdapter;
+import org.zoomdev.zoom.dao.alias.NameAdapter;
 import org.zoomdev.zoom.dao.alias.NameAdapterFactory;
 
 import java.util.Map;

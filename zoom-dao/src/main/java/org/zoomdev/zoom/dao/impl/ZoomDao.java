@@ -7,10 +7,10 @@ import org.zoomdev.zoom.common.io.Io;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.common.utils.StrKit;
 import org.zoomdev.zoom.dao.*;
-import org.zoomdev.zoom.dao.adapters.NameAdapter;
+import org.zoomdev.zoom.dao.alias.NameAdapter;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 import org.zoomdev.zoom.dao.alias.AliasPolicy;
-import org.zoomdev.zoom.dao.alias.AliasPolicyMaker;
+import org.zoomdev.zoom.dao.alias.AliasPolicyFactory;
 import org.zoomdev.zoom.dao.alias.NameAdapterFactory;
 import org.zoomdev.zoom.dao.alias.impl.*;
 import org.zoomdev.zoom.dao.driver.DbStructFactory;
@@ -319,7 +319,7 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
     }
 
 
-    private static DetectPrefixAliasPolicyMaker maker = DetectPrefixAliasPolicyMaker.DEFAULT;
+    private static AliasPolicyFactory maker = DetectPrefixAliasPolicyMaker.DEFAULT;
 
     private String[] getColumnNames(TableMeta meta) {
 
@@ -487,7 +487,7 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
     }
 
     @Override
-    public AliasPolicyMaker getAliasPolicyMaker() {
+    public AliasPolicyFactory getAliasPolicyMaker() {
         return maker;
     }
 

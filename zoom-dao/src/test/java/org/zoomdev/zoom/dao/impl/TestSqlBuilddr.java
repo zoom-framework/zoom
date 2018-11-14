@@ -176,7 +176,7 @@ public class TestSqlBuilddr{
 
 
         assertEquals(sqlBuilder.having.toString(),
-                " HAVING id>?");
+                "id>?");
         assertEquals(sqlBuilder.values.get(0),1);
         sqlBuilder.clear(true);
     }
@@ -207,12 +207,14 @@ public class TestSqlBuilddr{
         sqlBuilder.table("student")
                 .select("id")
                 .selectAvg("score","score")
+                .where("cls_id",1)
+                .where("score",Symbol.GT,60)
                 .orderBy("id",SqlBuilder.Sort.ASC)
                 .groupBy("score")
                 .having("AVG(score)",Symbol.GT,60);
         sqlBuilder.buildSelect();
         assertEquals(sqlBuilder.sql.toString(),
-                "SELECT id,AVG(score) AS score FROM student GROUP BY score HAVING AVG(score)>? ORDER BY id ASC");
+                "SELECT id,AVG(score) AS score FROM student WHERE cls_id=? AND score>? GROUP BY score HAVING AVG(score)>? ORDER BY id ASC");
         sqlBuilder.clear();
 
     }
@@ -360,5 +362,28 @@ public class TestSqlBuilddr{
         assertEquals(sqlBuilder.values().get(2),"三班");
 
         sqlBuilder.clear();
+    }
+
+
+    @Test
+    public void testSelect2(){
+        SqlDriver driver = new MysqlDriver();
+        SimpleSqlBuilder sqlBuilder = new SimpleSqlBuilder(driver);
+
+        sqlBuilder.select("id,  name");
+        assertEquals(sqlBuilder.select.toString(),
+                "id,name");
+        sqlBuilder.clear();
+
+
+
+        sqlBuilder.select("table1.id,tabl22.name");
+        assertEquals(sqlBuilder.select.toString(),
+                "table1.id,tabl22.name");
+        sqlBuilder.clear();
+
+
+
+
     }
 }

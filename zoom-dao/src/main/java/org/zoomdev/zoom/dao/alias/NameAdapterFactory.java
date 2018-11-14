@@ -1,7 +1,5 @@
 package org.zoomdev.zoom.dao.alias;
 
-import org.zoomdev.zoom.dao.adapters.NameAdapter;
-
 /**
  * 对字段的重命名策略
  * <p>

@@ -2,6 +2,11 @@ package org.zoomdev.zoom.common.utils;
 
 public class StrKit {
 
+    /**
+     * 首字母大写
+     * @param string
+     * @return
+     */
     public static String upperCaseFirst(String string) {
         if (string == null) return null;
         char[] arr = string.toCharArray();
@@ -36,7 +41,11 @@ public class StrKit {
         return result.toString();
     }
 
-
+    /**
+     * 驼峰式变成下划线
+     * @param str
+     * @return
+     */
     public static String toUnderLine(String str) {
         assert (str != null);
         //反向命名

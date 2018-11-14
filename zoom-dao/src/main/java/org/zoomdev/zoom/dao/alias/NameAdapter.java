@@ -1,4 +1,4 @@
-package org.zoomdev.zoom.dao.adapters;
+package org.zoomdev.zoom.dao.alias;
 
 /**
  * 名称适配器

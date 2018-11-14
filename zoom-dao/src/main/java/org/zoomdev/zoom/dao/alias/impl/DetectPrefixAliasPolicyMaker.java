@@ -2,24 +2,24 @@ package org.zoomdev.zoom.dao.alias.impl;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.zoomdev.zoom.dao.alias.AliasPolicy;
-import org.zoomdev.zoom.dao.alias.AliasPolicyMaker;
+import org.zoomdev.zoom.dao.alias.AliasPolicyFactory;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * 自动检测字段的前缀，并以驼峰式来重命名 {@link AliasPolicyMaker}
+ * 自动检测字段的前缀，并以驼峰式来重命名 {@link AliasPolicyFactory}
  * 这个是针对单表的
  *
  * @author jzoom
  */
-public class DetectPrefixAliasPolicyMaker implements AliasPolicyMaker {
+public class DetectPrefixAliasPolicyMaker implements AliasPolicyFactory {
 
-    public static final DetectPrefixAliasPolicyMaker DEFAULT = new DetectPrefixAliasPolicyMaker();
+    public static final AliasPolicyFactory DEFAULT = new DetectPrefixAliasPolicyMaker();
 
 
-    public DetectPrefixAliasPolicyMaker() {
+    private DetectPrefixAliasPolicyMaker() {
 
     }
 
