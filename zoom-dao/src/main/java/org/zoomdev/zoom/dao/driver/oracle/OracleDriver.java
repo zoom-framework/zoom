@@ -3,16 +3,24 @@ package org.zoomdev.zoom.dao.driver.oracle;
 import org.zoomdev.zoom.dao.driver.AbsDriver;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.migrations.TableBuildInfo;
+import org.zoomdev.zoom.dao.migrations.ZoomDatabaseBuilder;
 
 import java.sql.Types;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.regex.Pattern;
 
 public class OracleDriver extends AbsDriver {
+
+    private OracleAutoIncreaseProvider autoIncreaseProvider;
+
+    public OracleDriver(){
+        this(new SimpleOracleAutoIncreaseProvider());
+    }
+
+    public OracleDriver(OracleAutoIncreaseProvider autoIncreaseProvider){
+        this.autoIncreaseProvider = autoIncreaseProvider;
+    }
+
 
     @Override
     public StringBuilder buildLimit(
@@ -25,6 +33,9 @@ public class OracleDriver extends AbsDriver {
         return sql.insert(0,
                 "SELECT * FROM (SELECT A.*, ROWNUM R FROM (")
                 .append(") A WHERE ROWNUM <= ?) B WHERE R > ?");
+    }
+    public void setAutoIncreaseProvider(OracleAutoIncreaseProvider autoIncreaseProvider) {
+        this.autoIncreaseProvider = autoIncreaseProvider;
     }
 
     @Override
@@ -174,9 +185,114 @@ public class OracleDriver extends AbsDriver {
     }
 
     @Override
-    public void build(TableBuildInfo buildInfo, List<String> sqlList) {
+    public void build(TableBuildInfo table, List<String> sqlList) {
+        List<String> primaryKeys = new ArrayList<String>(3);
+
+        ColumnMeta autoIncreaseColumn = null;
+
+        StringBuilder sb = new StringBuilder();
+        for (ColumnMeta columnMeta : table.getColumns()) {
+            if (columnMeta.isPrimary()) {
+                primaryKeys.add(columnMeta.getName());
+            }
+        }
+
+        sb.append("CREATE TABLE ");
+        if (table.isCreateWhenNotExists()) {
+            sb.append("IF NOT EXISTS ");
+        }
+        protectTable(sb, table.getName());
+        sb.append("(\n");
+        boolean first = false;
+        int index = 0;
+        for (ColumnMeta columnMeta : table.getColumns()) {
+            sb.append("\t");
+            protectColumn(sb, columnMeta.getName());
+            sb.append(' ');
+            try {
+                sb.append(formatColumnType(columnMeta));
+            } catch (Exception e) {
+                throw new RuntimeException("不支持的类型" + columnMeta.getName());
+            }
+
+
+            if (columnMeta.getDefaultValue() != null) {
+                if (columnMeta.getDefaultValue() instanceof String) {
+                    sb.append(" DEFAULT '").append(columnMeta.getDefaultValue()).append("'");
+                } else {
+                    if (columnMeta.getDefaultValue() instanceof ZoomDatabaseBuilder.FunctionValue) {
+                        sb.append(" DEFAULT ").append(((ZoomDatabaseBuilder.FunctionValue) columnMeta.getDefaultValue()).getValue());
+                    } else {
+                        sb.append(" DEFAULT ").append(columnMeta.getDefaultValue());
+                    }
+
+                }
+            } else {
+                if (columnMeta.isPrimary()) {
+                    if (columnMeta.isAuto()) {
+                        sb.append(" PRIMARY KEY");
+                        // sb.append(" auto_increment".toUpperCase());
+                        autoIncreaseColumn = columnMeta;
+
+                    } else {
+                        //single primary key
+                        if (primaryKeys.size() == 1) {
+                            sb.append(" PRIMARY KEY");
+                        }
+                    }
+                } else {
+                    sb.append(columnMeta.isNullable() ? " NULL" : " NOT NULL");
+                }
+            }
+            //sb.append(" COMMENT '").append(columnMeta.getComment()==null ? "":columnMeta.getComment()).append("'");
+
+            if (index < table.getColumns().size() - 1) {
+                sb.append(",");
+            }
+
+            if (index == table.getColumns().size() - 1) {
+                break;
+            }
+            sb.append("\n");
+            ++index;
+        }
+
+        if (primaryKeys.size() > 1) {
+            first = true;
+
+            sb.append(",\n\tPRIMARY KEY (");
+            for (String key : primaryKeys) {
+                if (first) {
+                    first = false;
+                } else {
+                    sb.append(",");
+                }
+                sb.append(key);
+            }
+            sb.append(")\n");
+
+        } else {
+            sb.append("\n");
+        }
+
+        sb.append(")");
+        sqlList.add(sb.toString());
+
+
+        buildIndex(table,sqlList);
+
+        if(autoIncreaseColumn!=null){
+            if(autoIncreaseProvider!=null){
+                autoIncreaseProvider.buildAutoIncrease(
+                        table,autoIncreaseColumn,sqlList
+                );
+            }
+        }
+
+
 
     }
+
 
 
     @Override
@@ -185,11 +301,11 @@ public class OracleDriver extends AbsDriver {
     }
 
 
-
     @Override
     public String getTableCatFromUrl(String url) {
         //jdbc:oracle:thin:@SERVER:PORT:DB
-        return url.substring(url.lastIndexOf(":")+1).toUpperCase();
+        return url.substring(url.lastIndexOf(":") + 1).toUpperCase();
     }
+
 
 }

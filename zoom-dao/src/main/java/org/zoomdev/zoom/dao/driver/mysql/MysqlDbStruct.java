@@ -49,6 +49,16 @@ public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
         return result;
     }
 
+    @Override
+    public Collection<String> getTriggers() {
+        return null;
+    }
+
+    @Override
+    public Collection<String> getSequences() {
+        return null;
+    }
+
     private static Class<?> convertType(String type) {
         if (type.equals("varchar")) {
             return String.class;

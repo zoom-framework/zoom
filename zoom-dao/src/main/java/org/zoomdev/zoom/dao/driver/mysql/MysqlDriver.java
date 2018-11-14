@@ -219,24 +219,7 @@ public class MysqlDriver extends AbsDriver {
         sqlList.add(sb.toString());
 
         //index
-
-        for (ColumnMeta columnMeta : table.getColumns()) {
-
-            if(columnMeta.isIndex()){
-                sb.setLength(0);
-                sb.append("CREATE INDEX ")
-                        .append("IDX_")
-                        .append(table.getName())
-                        .append("_")
-                        .append(columnMeta.getName())
-                        .append(" ON ")
-                        .append(table.getName())
-                        .append("(")
-                        .append(columnMeta.getName())
-                        .append(");\n");
-                sqlList.add(sb.toString());
-            }
-        }
+        buildIndex(table,sqlList);
     }
 
     @Override

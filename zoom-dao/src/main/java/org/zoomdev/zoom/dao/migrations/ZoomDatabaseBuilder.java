@@ -55,11 +55,23 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
 
         @Override
         void build(List<String> sqls) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("DROP TABLE IF EXISTS ");
-            driver.protectTable(sb,table);
-            sb.append(";\n");
-            sqls.add(sb.toString());
+//            StringBuilder sb = new StringBuilder();
+//            sb.append("DROP TABLE IF EXISTS ");
+//            driver.protectTable(sb,table);
+//            sb.append(";\n");
+//            sqls.add(sb.toString());
+
+            String str = "declare\n" +
+                    "            num   number;\n" +
+                    "            begin\n" +
+                    "            select count(1) into num from user_tables where table_name = upper('"+table+"') ;\n" +
+                    "            if num > 0 then\n" +
+                    "            execute immediate 'drop table "+table+"' ;\n" +
+                    "            end if;\n" +
+                    "            end;";
+
+
+            sqls.add(str);
         }
     }
 

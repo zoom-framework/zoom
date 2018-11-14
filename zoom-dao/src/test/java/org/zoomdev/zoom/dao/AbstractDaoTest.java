@@ -23,9 +23,12 @@ public abstract class AbstractDaoTest {
     public void after(){
         Classes.destroy(dao);
         //connection count ==0;
-        DruidDataSource dataSource = (DruidDataSource) dao.getDataSource();
+        if(dao!=null){
+            DruidDataSource dataSource = (DruidDataSource) dao.getDataSource();
 
-        assertEquals (dataSource.getActiveCount(),0);
+            assertEquals (dataSource.getActiveCount(),0);
+
+        }
 
 
     }

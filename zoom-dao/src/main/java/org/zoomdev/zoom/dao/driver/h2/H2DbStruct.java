@@ -52,6 +52,16 @@ public class H2DbStruct extends AbsDbStruct {
     }
 
     @Override
+    public Collection<String> getTriggers() {
+        return null;
+    }
+
+    @Override
+    public Collection<String> getSequences() {
+        return null;
+    }
+
+    @Override
     public Collection<String> getTableNames() {
         return null;
     }

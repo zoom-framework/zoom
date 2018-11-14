@@ -6,6 +6,7 @@ import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.Record;
+import org.zoomdev.zoom.dao.alias.impl.ToLowerCaseNameAdapter;
 import org.zoomdev.zoom.dao.driver.AbsDbStruct;
 import org.zoomdev.zoom.dao.driver.DbStructFactory;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
@@ -23,6 +24,8 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
         super(dao);
         this.dbName = dbName;
     }
+
+
 
     private static final Log log = LogFactory.getLog(OracleDbStruct.class);
 
@@ -67,7 +70,9 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
 
     @Override
     public void fill(TableMeta meta) {
-        List<Record> list = dao.ar().executeQuery("SELECT TABLE_NAME as \"name\",COMMENTS as \"comment\" FROM user_tab_comments WHERE TABLE_NAME=?", meta.getName().toUpperCase());
+        List<Record> list = dao.ar()
+                .executeQuery(
+                        "SELECT TABLE_NAME as \"name\",COMMENTS as \"comment\" FROM user_tab_comments WHERE TABLE_NAME=?", meta.getName().toUpperCase());
         if (list.size() > 0) {
             meta.setComment(list.get(0).getString("comment"));
         } else {
@@ -76,7 +81,8 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
 
         Map<String, String> keyTypes = getKeyTypes(meta.getName().toUpperCase());
 
-        List<Record> columns = dao.ar().executeQuery("SELECT cols.table_name,cols.column_name,cols.DATA_PRECISION,cols.NULLABLE,cols.DATA_DEFAULT,cols.DATA_TYPE,cols.DATA_LENGTH,COMMENTS FROM cols "
+        List<Record> columns = dao.ar()
+                .executeQuery("SELECT cols.table_name,cols.column_name,cols.DATA_PRECISION,cols.NULLABLE,cols.DATA_DEFAULT,cols.DATA_TYPE,cols.DATA_LENGTH,COMMENTS FROM cols "
                 + "join user_tables on user_tables.table_name=cols.table_name "
                 + "left join user_col_comments on cols.COLUMN_NAME=user_col_comments.column_name and cols.TABLE_name=user_col_comments.TABLE_name"
                 + " where cols.table_name=?", meta.getName().toUpperCase());
@@ -113,14 +119,14 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
 
         }
 
-
     }
 
     @Override
     public Collection<TableNameAndComment> getNameAndComments()
 
     {
-        List<Record> list = dao.ar().executeQuery("SELECT TABLE_NAME as \"name\",COMMENTS as \"comment\" FROM user_tab_comments");
+        List<Record> list = dao.ar()
+                .executeQuery("SELECT TABLE_NAME as \"name\",COMMENTS as \"comment\" FROM user_tab_comments");
 
         List<TableNameAndComment> result = new ArrayList<TableNameAndComment>(list.size());
         for (Record record : list) {
@@ -130,6 +136,16 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
         }
 
         return result;
+    }
+
+    @Override
+    public Collection<String> getTriggers() {
+        return null;
+    }
+
+    @Override
+    public Collection<String> getSequences() {
+        return null;
     }
 
 }

@@ -1,6 +1,7 @@
 package org.zoomdev.zoom.dao.builder;
 
 import org.junit.Test;
+import org.zoomdev.zoom.common.json.JSON;
 import org.zoomdev.zoom.common.utils.Page;
 import org.zoomdev.zoom.dao.*;
 import org.zoomdev.zoom.dao.impl.ZoomDao;
@@ -48,7 +49,7 @@ public abstract class TestBuilder extends AbstractDaoTest {
                 .createTable("collection")
                 .add("pro_id").integer().keyPrimary()
                 .add("usr_id").integer().keyPrimary()
-                .add("order").integer()
+                .add("c_order").integer()
 
                 .dropIfExists("shop")
                 .createTable("shop")
@@ -59,8 +60,8 @@ public abstract class TestBuilder extends AbstractDaoTest {
                 .add("shp_sales").integer()
 
                 //订单 , 关键字???
-                .dropIfExists("order")
-                .createTable("order")
+                .dropIfExists("shp_order")
+                .createTable("shp_order")
                 .add("ord_id").integer().keyPrimary().autoIncement()
                 .add("shp_id").string(30).notNull()
                 .add("pro_id").integer().notNull()
@@ -70,9 +71,6 @@ public abstract class TestBuilder extends AbstractDaoTest {
 
 
                 .build();
-
-
-
 
 
 
@@ -104,8 +102,9 @@ public abstract class TestBuilder extends AbstractDaoTest {
                 .insert(record);
 
         //verify business
-        List<Record> result = dao.ar("shop").orderBy("id", SqlBuilder.Sort.DESC).find();
-        assertEquals(result.get(0), record);
+        List<Record> result = dao.ar("shop")
+                .orderBy("id", SqlBuilder.Sort.DESC).find();
+        assertEquals(JSON.stringify(result.get(0)), JSON.stringify(record));
 
         // 商家编辑信息
 
@@ -213,7 +212,7 @@ public abstract class TestBuilder extends AbstractDaoTest {
                             if(dao.ar().executeUpdate(
                                     "update product set pro_count=pro_count-? where pro_id=? and pro_count>?",
                                     count,1,count) > 0){
-                                dao.ar("order")
+                                dao.ar("shp_order")
                                         .insert(Record.as(
                                                 "shpId",FIRST_BUSINESS,
                                                 "count",count,

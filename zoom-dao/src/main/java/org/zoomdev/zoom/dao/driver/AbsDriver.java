@@ -1,9 +1,12 @@
 package org.zoomdev.zoom.dao.driver;
 
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
+import org.zoomdev.zoom.dao.meta.ColumnMeta;
+import org.zoomdev.zoom.dao.migrations.TableBuildInfo;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 
 public abstract class AbsDriver implements SqlDriver {
     private static DefaultStatementAdapter defaultStatementAdapter = new DefaultStatementAdapter();
@@ -49,7 +52,36 @@ public abstract class AbsDriver implements SqlDriver {
     }
 
 
+    protected static String buildCommentOnTable(String table,String comment){
+        return String.format("COMMENT ON TABLE %s IS '%s",table,comment);
+    }
 
+
+    protected static String buildCommentOnColumn(String table,String column,String comment){
+        return String.format("COMMENT ON %s.%s IS '%s",table,column,comment);
+    }
+
+    protected static void buildIndex(TableBuildInfo table, List<String> sqlList){
+        StringBuilder sb = new StringBuilder();
+        //index
+        for (ColumnMeta columnMeta : table.getColumns()) {
+
+            if (columnMeta.isIndex()) {
+                sb.setLength(0);
+                sb.append("CREATE INDEX ")
+                        .append("IDX_")
+                        .append(table.getName())
+                        .append("_")
+                        .append(columnMeta.getName())
+                        .append(" ON ")
+                        .append(table.getName())
+                        .append("(")
+                        .append(columnMeta.getName())
+                        .append(")");
+                sqlList.add(sb.toString());
+            }
+        }
+    }
     @Override
     public StatementAdapter getStatementAdapter(Class<?> columnType) {
         return null;

@@ -16,6 +16,8 @@ public class CachedDbStructFactory implements DbStructFactory {
 
     //保证与表名称不一样就行了
     private static final String NAME_AND_COMMENT_KEY_NAME = "#@names";
+    private static final String ALL_TRIGGERS = "#@triggers";
+    private static final String ALL_SEQUENCES = "#@sequences";
 
 
     public CachedDbStructFactory(DbStructFactory factory) {
@@ -65,6 +67,26 @@ public class CachedDbStructFactory implements DbStructFactory {
             @Override
             public Object create() {
                 return factory.getNameAndComments();
+            }
+        });
+    }
+
+    @Override
+    public Collection<String> getTriggers() {
+        return (Collection<String>) SingletonUtils.liteDoubleLockMap(pool, ALL_TRIGGERS, new SingletonUtils.SingletonInit<Object>() {
+            @Override
+            public Object create() {
+                return factory.getTriggers();
+            }
+        });
+    }
+
+    @Override
+    public Collection<String> getSequences() {
+        return (Collection<String>) SingletonUtils.liteDoubleLockMap(pool, ALL_SEQUENCES, new SingletonUtils.SingletonInit<Object>() {
+            @Override
+            public Object create() {
+                return factory.getSequences();
             }
         });
     }
