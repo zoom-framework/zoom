@@ -1,7 +1,11 @@
 package org.zoomdev.zoom.dao.driver.oracle;
 
+import org.zoomdev.zoom.dao.Dao;
+import org.zoomdev.zoom.dao.auto.AutoField;
 import org.zoomdev.zoom.dao.driver.AbsDriver;
+import org.zoomdev.zoom.dao.driver.AutoGenerateProvider;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
+import org.zoomdev.zoom.dao.meta.TableMeta;
 import org.zoomdev.zoom.dao.migrations.TableBuildInfo;
 import org.zoomdev.zoom.dao.migrations.ZoomDatabaseBuilder;
 
@@ -9,16 +13,16 @@ import java.sql.Types;
 import java.util.*;
 import java.util.Map.Entry;
 
-public class OracleDriver extends AbsDriver {
+public class OracleDriver extends AbsDriver implements AutoGenerateProvider {
 
-    private OracleAutoIncreaseProvider autoIncreaseProvider;
+    private AutoGenerateProvider autoGenerateProvider;
 
     public OracleDriver(){
         this(new SimpleOracleAutoIncreaseProvider());
     }
 
-    public OracleDriver(OracleAutoIncreaseProvider autoIncreaseProvider){
-        this.autoIncreaseProvider = autoIncreaseProvider;
+    public OracleDriver(AutoGenerateProvider autoIncreaseProvider){
+        this.autoGenerateProvider = autoIncreaseProvider;
     }
 
 
@@ -34,8 +38,8 @@ public class OracleDriver extends AbsDriver {
                 "SELECT * FROM (SELECT A.*, ROWNUM R FROM (")
                 .append(") A WHERE ROWNUM <= ?) B WHERE R > ?");
     }
-    public void setAutoIncreaseProvider(OracleAutoIncreaseProvider autoIncreaseProvider) {
-        this.autoIncreaseProvider = autoIncreaseProvider;
+    public void setAutoGenerateProvider(AutoGenerateProvider autoGenerateProvider) {
+        this.autoGenerateProvider = autoGenerateProvider;
     }
 
     @Override
@@ -293,8 +297,8 @@ public class OracleDriver extends AbsDriver {
         buildIndex(table,sqlList);
 
         if(autoIncreaseColumn!=null){
-            if(autoIncreaseProvider!=null){
-                autoIncreaseProvider.buildAutoIncrease(
+            if(autoGenerateProvider !=null){
+                autoGenerateProvider.buildAutoIncrease(
                         table,autoIncreaseColumn,sqlList
                 );
             }
@@ -319,4 +323,18 @@ public class OracleDriver extends AbsDriver {
     }
 
 
+    @Override
+    public void buildAutoIncrease(TableBuildInfo table, ColumnMeta autoColumn, List<String> sqlList) {
+        if(autoGenerateProvider !=null){
+            autoGenerateProvider.buildAutoIncrease(table,autoColumn,sqlList);
+        }
+    }
+
+    @Override
+    public AutoField createAutoField(Dao dao, TableMeta tableMeta, ColumnMeta columnMeta) {
+        if(autoGenerateProvider !=null){
+            return autoGenerateProvider.createAutoField(dao,tableMeta,columnMeta);
+        }
+        return null;
+    }
 }

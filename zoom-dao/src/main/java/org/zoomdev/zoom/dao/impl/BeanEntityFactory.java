@@ -9,10 +9,13 @@ import org.zoomdev.zoom.dao.adapters.DataAdapter;
 import org.zoomdev.zoom.dao.adapters.EntityField;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 import org.zoomdev.zoom.dao.annotations.*;
+import org.zoomdev.zoom.dao.auto.AutoField;
+import org.zoomdev.zoom.dao.auto.AutoGenerateValueUsingFactory;
+import org.zoomdev.zoom.dao.auto.DatabaseAutoGenerateKey;
+import org.zoomdev.zoom.dao.auto.SequenceAutoGenerateKey;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.meta.JoinMeta;
 import org.zoomdev.zoom.dao.meta.TableMeta;
-import org.zoomdev.zoom.dao.utils.DaoUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -20,7 +23,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 class BeanEntityFactory extends AbstractEntityFactory {
 
@@ -439,14 +441,6 @@ class BeanEntityFactory extends AbstractEntityFactory {
      * @param entityField
      */
     private AutoField checkAutoField(Field field, AbstractEntityField entityField) {
-        //数据库的自动无效
-//        if (isAuto) {
-//            //如果已经标注了auto，完全又数据库自己处理，只要指定generated key就好了
-//
-//            return new DatabaseAutoGenerateKey();
-//        }
-
-        //如果数据库没有标注auto，那么由用户来处理
         AutoGenerate autoGenerate = field.getAnnotation(AutoGenerate.class);
         if (autoGenerate != null) {
             if(autoGenerate.factory() != AutoGenerateValue.class){
@@ -460,6 +454,12 @@ class BeanEntityFactory extends AbstractEntityFactory {
                     throw new DaoException("不能初始化"+autoGenerate.factory());
                 }
             }
+
+
+            if(!autoGenerate.sequence().isEmpty()){
+                return new SequenceAutoGenerateKey(autoGenerate.sequence());
+            }
+
             return new DatabaseAutoGenerateKey();
         }
 
@@ -468,70 +468,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
         return null;
     }
 
-    static class AutoGenerateValueUsingFactory extends DatabaseAutoGenerateKey {
 
-        private AutoGenerateValue factory;
-
-        AutoGenerateValueUsingFactory(AutoGenerateValue factory) {
-            this.factory = factory;
-        }
-
-
-        @Override
-        public Object generageValue(Object entity, EntityField entityField) {
-            //当调用的时候，直接设置值
-            Object value = factory.nextVal();
-            entityField.set(entity, Caster.toType(value,entityField.getFieldType()));
-            return value;
-        }
-
-        //不是数据库自动生成
-        @Override
-        public boolean isDatabaseGeneratedKey() {
-            return false;
-        }
-    }
-
-    static class SequenceAutoGenerateKey extends DatabaseAutoGenerateKey {
-
-        private String sequenceName;
-
-        public SequenceAutoGenerateKey(String sequenceName) {
-            this.sequenceName = sequenceName;
-        }
-
-        @Override
-        public String getSqlInsert(Object entity, EntityField entityField) {
-            return String.format("(SELECT %s.NEXT_VAL() FROM DUAL)", sequenceName);
-        }
-    }
-
-    static class DatabaseAutoGenerateKey implements AutoField {
-
-
-        DatabaseAutoGenerateKey() {
-        }
-
-        @Override
-        public boolean notGenerateWhenHasValue() {
-            return false;
-        }
-
-        @Override
-        public boolean isDatabaseGeneratedKey() {
-            return true;
-        }
-
-        @Override
-        public String getSqlInsert(Object entity, EntityField entityField) {
-            return null;
-        }
-
-        @Override
-        public Object generageValue(Object entity, EntityField entityField) {
-            return null;
-        }
-    }
 
 
 

@@ -1,7 +1,7 @@
 package org.zoomdev.zoom.dao.adapters;
 
 import com.sun.istack.internal.Nullable;
-import org.zoomdev.zoom.dao.AutoField;
+import org.zoomdev.zoom.dao.auto.AutoField;
 
 import java.lang.reflect.Type;
 

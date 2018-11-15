@@ -1,4 +1,4 @@
-package org.zoomdev.zoom.dao;
+package org.zoomdev.zoom.dao.auto;
 
 import org.zoomdev.zoom.dao.adapters.EntityField;
 
@@ -15,7 +15,8 @@ public interface AutoField {
     boolean notGenerateWhenHasValue();
 
     /**
-     * 是否是数据库自动生成  , 用于 prepareStatement(sql,  new String[]{ keys })
+     * 是否是数据库自动生成
+     *  用于 prepareStatement(sql,  new String[]{ keys })
      *
      * @return
      */
@@ -34,5 +35,5 @@ public interface AutoField {
      *
      * @return
      */
-    Object generageValue(Object entity, EntityField entityField);
+    Object generateValue(Object entity, EntityField entityField);
 }

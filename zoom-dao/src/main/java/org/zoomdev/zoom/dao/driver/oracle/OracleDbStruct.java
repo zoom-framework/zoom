@@ -5,7 +5,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.dao.Dao;
+import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.Record;
+import org.zoomdev.zoom.dao.alias.impl.EmptyNameAdapter;
 import org.zoomdev.zoom.dao.alias.impl.ToLowerCaseNameAdapter;
 import org.zoomdev.zoom.dao.driver.AbsDbStruct;
 import org.zoomdev.zoom.dao.driver.DbStructFactory;
@@ -22,7 +24,17 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
 
     public OracleDbStruct(Dao dao, String user) {
         super(dao);
-        this.user = user;
+//        try{
+//            List<Record> list = dao.ar().executeQuery("select USERNAME from user_users");
+//            if(list.size() > 0){
+//                Record record = list.get(0);
+//                user = record.getString("USERNAME");
+//            }
+//        }catch (Exception e){
+//            throw new DaoException("查询用户信息表user_users失败，请确认本账户是否可以查看用户信息",e);
+//        }
+
+        //System.out.println(list);
     }
 
 
@@ -100,7 +112,8 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
             //key type
             //columnMeta.setAuto(record.getString("EXTRA").equals("auto_increment"));
 
-            String keyType = keyTypes.get(new StringBuilder().append(meta.getName().toUpperCase()).append(column).toString());
+            String keyType = keyTypes.get(new StringBuilder()
+                    .append(meta.getName().toUpperCase()).append(column).toString());
             if (keyType != null) {
                 if (keyType.equals("P")) {
                     columnMeta.setKeyType(KeyType.PRIMARY);
@@ -140,11 +153,12 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
 
     @Override
     public Map<String, Collection<String>> getTriggers() {
-       List<Record> triggers = dao.ar().table("all_tables")
-                .select("all_tables.table_name,trigger_name")
-                .join("all_triggers",
-                        "all_triggers.table_name=all_tables.table_name and all_triggers.trigger_name=CONCAT(all_tables.table_name,'_INCREASE')")
-                .where("all_tables.owner", user.toUpperCase())
+       List<Record> triggers = dao.ar()
+               .table("all_triggers")
+               .nameAdapter(EmptyNameAdapter.DEFAULT)
+               .join("user_users","all_triggers.owner=user_users.username")
+                .select("table_name,trigger_name")
+                //.where("owner", user.toUpperCase())
                .find();
         Map<String, Collection<String>> triggerMap = new HashMap<String, Collection<String>>();
         for (Record record : triggers) {
@@ -164,8 +178,10 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
     public Collection<String> getSequences() {
         List<Record> allSequnce = dao.ar()
                 .table("all_sequences")
+                .nameAdapter(EmptyNameAdapter.DEFAULT)
+                .join("user_users","all_sequences.SEQUENCE_OWNER=user_users.username")
                 .select("SEQUENCE_NAME")
-                //.where("SEQUENCE_OWNER", user.toUpperCase())
+               // .where("SEQUENCE_OWNER", user.toUpperCase())
                 .find();
 
         Set<String> sequences = new HashSet<String>();

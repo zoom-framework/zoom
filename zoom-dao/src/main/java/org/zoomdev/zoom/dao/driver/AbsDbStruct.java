@@ -63,10 +63,13 @@ public abstract class AbsDbStruct implements DbStructFactory {
         });
 
 
+        fill(tableMeta);
+
+
         return tableMeta;
     }
 
-
+    public abstract void fill(TableMeta meta);
     /**
      * 清除缓存
      */

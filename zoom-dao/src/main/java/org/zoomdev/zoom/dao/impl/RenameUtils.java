@@ -61,7 +61,6 @@ class RenameUtils {
                               ColumnRenameVisitor visitor) {
 
         TableMeta tableMeta = dao.getDbStructFactory().getTableMeta(table);
-        dao.getDbStructFactory().fill(tableMeta);
 
         rename(dao, tableMeta, visitor);
 
@@ -76,7 +75,6 @@ class RenameUtils {
         boolean first = true;
         for (String table : tables) {
             TableMeta tableMeta = dao.getDbStructFactory().getTableMeta(table);
-            dao.getDbStructFactory().fill(tableMeta);
             String tableAliasName = tableAliasPolicy.getAlias(table);
             // 取出每一个表的重命名策略
             AliasPolicy columnAliasPolicy = getAliasPolicyForNames(maker, getColumnNames(tableMeta));

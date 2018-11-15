@@ -4,6 +4,7 @@ import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.dao.*;
 import org.zoomdev.zoom.dao.adapters.EntityField;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
+import org.zoomdev.zoom.dao.auto.AutoField;
 import org.zoomdev.zoom.dao.driver.SqlDriver;
 import org.zoomdev.zoom.dao.utils.DaoUtils;
 
@@ -90,7 +91,7 @@ public class EntitySqlUtils {
                 String specialValue;
                 if ((specialValue = autoField.getSqlInsert(data, entityField)) != null) {
                     specialValues[index] = specialValue;
-                } else if ((value = autoField.generageValue(data, entityField)) != null) {
+                } else if ((value = autoField.generateValue(data, entityField)) != null) {
                     if (first) {
                         first = false;
                     } else {

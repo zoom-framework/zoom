@@ -2,10 +2,13 @@ package org.zoomdev.zoom.dao.impl;
 
 import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.caster.ValueCaster;
-import org.zoomdev.zoom.dao.AutoField;
+import org.zoomdev.zoom.dao.EntityFactory;
+import org.zoomdev.zoom.dao.auto.AutoField;
 import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.Entity;
 import org.zoomdev.zoom.dao.adapters.EntityField;
+import org.zoomdev.zoom.dao.auto.DatabaseAutoGenerateKey;
+import org.zoomdev.zoom.dao.driver.AutoGenerateProvider;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.meta.TableMeta;
 import org.zoomdev.zoom.dao.utils.DaoUtils;
@@ -96,9 +99,18 @@ public class RecordEntityFactory extends AbstractEntityFactory {
         int index = 0;
         List<String> generatedKeys = new ArrayList<String>();
         List<EntityField> generatedEntityFields = new ArrayList<EntityField>();
+
+        List<AbstractEntityField> primaryKeys = new ArrayList<AbstractEntityField>();
+
         for (ColumnMeta columnMeta : tableMeta.getColumns()) {
+            AutoField autoField = null;
             if (columnMeta.isAuto()) {
-                AutoField autoField = new BeanEntityFactory.DatabaseAutoGenerateKey();
+                autoField = new DatabaseAutoGenerateKey();
+            }
+            if(columnMeta.isPrimary()){
+                primaryKeys.add(entityFields.get(index));
+            }
+            if(autoField!=null){
                 AbstractEntityField entityField = entityFields.get(index);
                 entityField.setAutoField(autoField);
                 if (autoField.isDatabaseGeneratedKey()) {
@@ -109,11 +121,35 @@ public class RecordEntityFactory extends AbstractEntityFactory {
             ++index;
         }
 
+
+
+
         if (generatedKeys.size() > 0) {
             return new ZoomAutoEntity(
                     generatedKeys.toArray(new String[generatedKeys.size()]),
                     generatedEntityFields.toArray(new EntityField[generatedEntityFields.size()])
             );
+        }else{
+
+            if(  primaryKeys.size() == 1  ){
+                AbstractEntityField pk = primaryKeys.get(0);
+                index = entityFields.indexOf(pk);
+
+                if(dao.getDriver() instanceof AutoGenerateProvider){
+                    AutoField autoField = ((AutoGenerateProvider)dao.getDriver())
+                            .createAutoField( dao, tableMeta,tableMeta.getColumns()[index]);
+                    if(autoField!=null){
+                        pk.setAutoField(autoField);
+                    }
+                    return new ZoomAutoEntity(
+                            new String[]{pk.getColumnName()},
+                            new EntityField[]{pk}
+                    );
+                }
+
+            }
+
+
         }
 
         return null;

@@ -53,13 +53,6 @@ public class CachedDbStructFactory implements DbStructFactory {
         });
     }
 
-    @Override
-    public void fill(TableMeta meta) {
-        if (meta.getComment() != null) {
-            return;
-        }
-        factory.fill(meta);
-    }
 
     @Override
     public Collection<TableNameAndComment> getNameAndComments() {

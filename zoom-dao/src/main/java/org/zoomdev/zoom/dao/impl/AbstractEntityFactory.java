@@ -17,7 +17,6 @@ public abstract class AbstractEntityFactory implements EntityFactory {
 
     protected TableMeta getTableMeta(String tableName) {
         TableMeta meta = dao.getDbStructFactory().getTableMeta(tableName);
-        dao.getDbStructFactory().fill(meta);
         return meta;
     }
 

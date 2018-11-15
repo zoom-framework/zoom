@@ -62,7 +62,6 @@ public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
     }
 
 
-
     @Override
     public void fill(TableMeta meta) {
         List<Record> list = dao.ar().executeQuery(

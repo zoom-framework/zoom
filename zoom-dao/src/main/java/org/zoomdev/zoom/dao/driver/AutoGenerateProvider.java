@@ -1,6 +1,9 @@
-package org.zoomdev.zoom.dao.driver.oracle;
+package org.zoomdev.zoom.dao.driver;
 
+import org.zoomdev.zoom.dao.Dao;
+import org.zoomdev.zoom.dao.auto.AutoField;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
+import org.zoomdev.zoom.dao.meta.TableMeta;
 import org.zoomdev.zoom.dao.migrations.TableBuildInfo;
 
 import java.util.List;
@@ -12,8 +15,11 @@ import java.util.List;
  * 2、是否在判断自增长的时候使用trigger是否存在
  *
  */
-public interface OracleAutoIncreaseProvider {
+public interface AutoGenerateProvider {
 
 
     void buildAutoIncrease(TableBuildInfo table, ColumnMeta autoColumn,List<String> sqlList);
+
+
+    AutoField createAutoField(Dao dao,TableMeta tableMeta, ColumnMeta columnMeta);
 }

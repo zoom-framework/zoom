@@ -56,12 +56,6 @@ public interface DbStructFactory {
      */
     TableMeta getTableMeta(String tableName);
 
-    /**
-     * 填充更加详细的信息，必须要有访问系统表的权限,没有也不影响一般的查询
-     *
-     * @param meta
-     */
-    void fill(TableMeta meta);
 
     /**
      * 获取表的名称和注释，必须要有访问系统表的权限
