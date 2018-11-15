@@ -59,11 +59,11 @@ public abstract class AbsDbStruct implements DbStructFactory {
 
             }
 
-
         });
 
-
-        fill(tableMeta);
+        if(tableMeta.getComment()==null){
+            fill(tableMeta);
+        }
 
 
         return tableMeta;

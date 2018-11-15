@@ -45,12 +45,14 @@ public class CachedDbStructFactory implements DbStructFactory {
 
     @Override
     public TableMeta getTableMeta(final String tableName) {
-        return (TableMeta) SingletonUtils.liteDoubleLockMap(pool, tableName, new SingletonUtils.SingletonInit<Object>() {
+        TableMeta tableMeta= (TableMeta) SingletonUtils.liteDoubleLockMap(pool, tableName, new SingletonUtils.SingletonInit<Object>() {
             @Override
             public Object create() {
                 return factory.getTableMeta(tableName);
             }
         });
+
+        return tableMeta;
     }
 
 
@@ -82,6 +84,11 @@ public class CachedDbStructFactory implements DbStructFactory {
                 return factory.getSequences();
             }
         });
+    }
+
+    @Override
+    public void fill(TableMeta tableMeta) {
+
     }
 
     @Override

@@ -8,6 +8,7 @@ import org.zoomdev.zoom.dao.Trans;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 public abstract class ThreadLocalConnectionHolder implements ConnectionHolder, Trans {
     protected DataSource dataSource;
@@ -40,7 +41,14 @@ public abstract class ThreadLocalConnectionHolder implements ConnectionHolder, T
         final Connection connection = this.connection;
         return connection == null ? (this.connection = ZoomDao.getConnection(dataSource)) : connection;
     }
-
+    protected void remove2(List<Object> values){
+        if(values.size()==0){
+            values.clear();
+            return;
+        }
+        values.remove(values.size()-1);
+        values.remove(values.size()-1);
+    }
     @Override
     public <T> T execute(ConnectionExecutor executor) {
         try {

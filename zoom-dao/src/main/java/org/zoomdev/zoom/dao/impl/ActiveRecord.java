@@ -121,14 +121,12 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
             @Override
             public Page<Record> execute(Connection connection) throws SQLException {
                 builder.buildLimit(position, size);
-                try {
-                    List<Record> list = BuilderKit.executeQuery(connection,builder,builder.nameAdapter);
-                    int total = getValue(connection,DaoUtils.SELECT_COUNT,int.class);
-                    int page = builder.position2page(position, size);
-                    return new Page<Record>(list, page, size, total);
-                } finally {
-                    builder.clear(true);
-                }
+                List<Record> list = BuilderKit.executeQuery(connection,builder,builder.nameAdapter);
+                builder.clear(false);
+                remove2(builder.values);
+                int total = getValue(connection,DaoUtils.SELECT_COUNT,int.class);
+                int page = builder.position2page(position, size);
+                return new Page<Record>(list, page, size, total);
             }
         });
 

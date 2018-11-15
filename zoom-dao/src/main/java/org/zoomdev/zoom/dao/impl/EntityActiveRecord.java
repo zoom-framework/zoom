@@ -103,14 +103,7 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
         });
     }
 
-    protected void remove2(List<Object> values){
-        if(values.size()==0){
-            values.clear();
-            return;
-        }
-        values.remove(values.size()-1);
-        values.remove(values.size()-1);
-    }
+
 
     @Override
     public Page<T> position(final int position, final int size) {

@@ -77,6 +77,7 @@ public interface DbStructFactory {
      */
     Collection<String> getSequences();
 
+    void fill(TableMeta tableMeta);
 
     /**
      * 清除缓存

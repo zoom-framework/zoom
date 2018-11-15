@@ -7,8 +7,10 @@ import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.common.utils.MapUtils;
 import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.Record;
+import org.zoomdev.zoom.dao.SqlBuilder;
 import org.zoomdev.zoom.dao.alias.impl.ToLowerCaseNameAdapter;
 import org.zoomdev.zoom.dao.driver.AbsDbStruct;
+import org.zoomdev.zoom.dao.impl.SimpleSqlBuilder;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.meta.ColumnMeta.KeyType;
 import org.zoomdev.zoom.dao.meta.TableMeta;
@@ -32,7 +34,7 @@ public class H2DbStruct extends AbsDbStruct {
 
     @Override
     public Collection<TableNameAndComment> getNameAndComments() {
-        List<Record> list = dao.ar().table("information_schema.tables")
+        List<Record> list = dao.table("information_schema.tables")
                 .select("TABLE_NAME as NAME,REMARKS AS COMMENT")
                 .where("TABLE_SCHEMA", "PUBLIC")
                 .find();
@@ -67,22 +69,42 @@ public class H2DbStruct extends AbsDbStruct {
         return null;
     }
 
+    public Record toLowcase(Record record){
+
+        Record record1 = new Record();
+        for(Map.Entry<String,Object> entry: record.entrySet()){
+
+            record1.put(entry.getKey().toLowerCase(),entry.getValue());
+        }
+
+        return record1;
+
+    }
+
+    private List<Record> toLowcase(List<Record> list){
+        List<Record> records = new ArrayList<Record>();
+
+        for(Record record : list){
+            records.add( toLowcase(record) );
+        }
+        return records;
+    }
+
     @Override
     public void fill(TableMeta meta) {
 
-        List<Record> list = dao.ar()
-                .table("information_schema.columns")
-                .nameAdapter(ToLowerCaseNameAdapter.DEFAULT)
-                .select("TABLE_NAME,COLUMN_NAME,IS_NULLABLE,DATA_TYPE," +
-                        "SEQUENCE_NAME,CHARACTER_MAXIMUM_LENGTH,REMARKS,COLUMN_DEFAULT")
-                .where("TABLE_SCHEMA", "PUBLIC")
-                .where("TABLE_NAME", meta.getName().toUpperCase()).find();
+        List<Record> list = dao
+                .ar().executeQuery("select TABLE_NAME,COLUMN_NAME,IS_NULLABLE,DATA_TYPE,SEQUENCE_NAME,CHARACTER_MAXIMUM_LENGTH,REMARKS,COLUMN_DEFAULT from " +
+                        "information_schema.columns where TABLE_SCHEMA=? and TABLE_NAME=?","PUBLIC",meta.getName().toUpperCase());
+
+        list = toLowcase(list);
+
         //index
-        List<Record> indexes = dao.ar()
-                .table("INFORMATION_SCHEMA.indexes")
-                .nameAdapter(ToLowerCaseNameAdapter.DEFAULT)
-                .select("COLUMN_NAME,INDEX_TYPE_NAME")
-                .where("TABLE_NAME", meta.getName().toUpperCase()).find();
+        List<Record> indexes = dao
+                .ar().executeQuery("select COLUMN_NAME,INDEX_TYPE_NAME from INFORMATION_SCHEMA.indexes where TABLE_NAME=?", meta.getName().toUpperCase());
+        indexes = toLowcase(indexes);
+
+
         Map<String, String> indexesMap = MapUtils
                 .toKeyAndLabel(indexes, "column_name", "index_type_name");
 
