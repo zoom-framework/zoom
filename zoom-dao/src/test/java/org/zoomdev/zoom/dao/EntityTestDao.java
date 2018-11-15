@@ -34,6 +34,12 @@ public class EntityTestDao {
 
     Dao dao;
 
+
+    @Test
+    public void testEntity(){
+
+    }
+
     @Before
     public void setUp() throws Exception {
         dao = new ZoomDao(provider.getDataSource(), false);
@@ -167,8 +173,8 @@ public class EntityTestDao {
 
     @Test
     public void testGroupBy(){
-        GroupByEntity entity = dao.ar(GroupByEntity.class)
-                .groupBy("shpId").get();
+//        GroupByEntity entity = dao.ar(GroupByEntity.class)
+//                .groupBy("shpId").get();
 
 
 

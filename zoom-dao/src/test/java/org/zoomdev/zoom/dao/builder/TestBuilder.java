@@ -74,6 +74,20 @@ public abstract class TestBuilder extends AbstractDaoTest {
 
 
 
+        final String test_business = "testBusiness";
+
+        Record testRecors = Record.as(
+                "id", test_business,
+                "title", "测试行家",
+                "level", 1,
+                "stars", 4.9,
+                "sales", 100000
+        );
+        dao.ar("shop").insert(testRecors);
+        dao.ar("shop").delete(testRecors);
+
+        dao.table("shop").insert(testRecors);
+        dao.table("shop").where("id",test_business).delete();
 
 
         final String FIRST_BUSINESS = "firstBusiness";
@@ -200,7 +214,7 @@ public abstract class TestBuilder extends AbstractDaoTest {
         Executor executor = Executors.newFixedThreadPool(10);
 
         List<Future> futures = new ArrayList<Future>();
-        for(int i=0; i < 100; ++i){
+        for(int i=0; i < 10; ++i){
             Future future = ((ExecutorService) executor).submit(new Runnable() {
                 @Override
                 public void run() {

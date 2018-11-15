@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.zoomdev.zoom</groupId>
         <artifactId>zoom-parent</artifactId>
-        <version>0.2.2-SNAPSHOT</version>
+        <version>0.2.3-SNAPSHOT</version>
     </parent>
     <groupId>org.zoomdev.zoom</groupId>
     <artifactId>zoom-dao</artifactId>
@@ -77,12 +77,12 @@
             <optional>true</optional>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>com.oracle</groupId>-->
-            <!--<artifactId>ojdbc</artifactId>-->
-            <!--<version>10.2.0.4.0</version>-->
-            <!--<scope>test</scope>-->
-            <!--<optional>true</optional>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc</artifactId>
+            <version>10.2.0.4.0</version>
+            <scope>test</scope>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 </project>
