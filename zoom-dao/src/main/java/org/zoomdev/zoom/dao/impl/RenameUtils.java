@@ -8,6 +8,9 @@ import org.zoomdev.zoom.dao.alias.impl.CamelAliasPolicy;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.meta.TableMeta;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * 重命名相关策略
  */
@@ -42,36 +45,52 @@ class RenameUtils {
         void visit(TableMeta tableMeta, ColumnMeta columnMeta, String fieldName, String selectColumnName);
     }
 
-    public static void rename(Dao dao,
-                              TableMeta tableMeta,
-                              ColumnRenameVisitor visitor) {
+    private static Map<String, ColumnRenameConfig> rename(Dao dao, TableMeta tableMeta) {
 
 
         AliasPolicyFactory maker = dao.getAliasPolicyMaker();
         AliasPolicy aliasPolicy = maker.getAliasPolicy(getColumnNames(tableMeta));
+        Map<String,ColumnRenameConfig> config = new LinkedHashMap<String, ColumnRenameConfig>();
         for (ColumnMeta columnMeta : tableMeta.getColumns()) {
-            String field = aliasPolicy.getAlias(columnMeta.getName());
-            visitor.visit(tableMeta, columnMeta, field, columnMeta.getName());
+            String fieldName = aliasPolicy.getAlias(columnMeta.getName());
+
+            config.put(fieldName,new ColumnRenameConfig(
+                    tableMeta,
+                    columnMeta,
+                    columnMeta.getName(),
+                    columnMeta.getName()
+            ));
         }
+        return config;
 
     }
 
-    public static void rename(Dao dao,
-                              String table,
-                              ColumnRenameVisitor visitor) {
+    public static Map<String, ColumnRenameConfig> rename(Dao dao,
+                                                         String table) {
 
         TableMeta tableMeta = dao.getDbStructFactory().getTableMeta(table);
 
-        rename(dao, tableMeta, visitor);
+        return rename(dao, tableMeta);
 
     }
+    static class ColumnRenameConfig {
+        TableMeta tableMeta;
+        ColumnMeta columnMeta;
+        String selectColumnName;
+        String columnName;
 
-    public static void rename(Dao dao,
-                              String[] tables,
-                              ColumnRenameVisitor visitor) {
+        public ColumnRenameConfig(TableMeta tableMeta, ColumnMeta columnMeta, String selectColumnName,String columnName) {
+            this.tableMeta = tableMeta;
+            this.columnMeta = columnMeta;
+            this.selectColumnName = selectColumnName;
+            this.columnName = columnName;
+        }
+
+    }
+    public static Map<String,ColumnRenameConfig>  rename(Dao dao, String[] tables) {
         AliasPolicyFactory maker = dao.getAliasPolicyMaker();
         AliasPolicy tableAliasPolicy = getAliasPolicyForNames(maker, tables);
-
+        Map<String,ColumnRenameConfig> config = new LinkedHashMap<String, ColumnRenameConfig>();
         boolean first = true;
         for (String table : tables) {
             TableMeta tableMeta = dao.getDbStructFactory().getTableMeta(table);
@@ -87,10 +106,18 @@ class RenameUtils {
                         dao.getDriver().protectColumn(columnMeta.getName()),
                         dao.getDriver().protectColumn(StrKit.toUnderLine(fieldName) + "_")
                 );
-                visitor.visit(tableMeta, columnMeta, fieldName, selectColumnName);
 
+                String columnName =  String.format("%s.%s", tableMeta.getName(), columnMeta.getName());
+
+                config.put(fieldName,new ColumnRenameConfig(
+                        tableMeta,
+                        columnMeta,
+                        selectColumnName,
+                        columnName
+                ));
             }
             if (first) first = false;
         }
+        return config;
     }
 }

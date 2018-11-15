@@ -2,6 +2,7 @@ package org.zoomdev.zoom.dao.adapters;
 
 import com.sun.istack.internal.Nullable;
 import org.zoomdev.zoom.dao.auto.AutoField;
+import org.zoomdev.zoom.dao.meta.ColumnMeta;
 
 import java.lang.reflect.Type;
 
@@ -75,6 +76,13 @@ public interface EntityField extends StatementAdapter {
 
 
     /**
+     * 本来的字段名称,在多表情况下，可能与 {@link EntityField#getFieldName()} 不一致
+     * @return
+     */
+    String getOriginalFieldName();
+
+
+    /**
      * 字段类型,对于Record模式来说，除了Clob/Blob都与数据库一致
      * @return
      */
@@ -85,4 +93,10 @@ public interface EntityField extends StatementAdapter {
      * @param data
      */
     void validate(Object data);
+
+    /**
+     * 数据库字段描述,并不是所有EntityField都有这个字段的，只有真实对应数据库中某个字段才有。
+     * @return
+     */
+    ColumnMeta getColumnMeta();
 }

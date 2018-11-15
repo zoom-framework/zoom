@@ -17,6 +17,7 @@ import java.sql.Blob;
 import java.sql.Clob;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class RecordEntityFactory extends AbstractEntityFactory {
 
@@ -60,29 +61,36 @@ public class RecordEntityFactory extends AbstractEntityFactory {
 
 
     public Entity getEntityOne(Class<?> type, String tableName) {
-        TableMeta tableMeta = getTableMeta(tableName);
 
         //获取到field和column的对应关系
-        final List<RecordEntityField> entityFields = new ArrayList<RecordEntityField>(tableMeta.getColumns().length);
+        final List<RecordEntityField> entityFields = new ArrayList<RecordEntityField>();
 
-        RenameUtils.rename(dao, tableMeta, new RenameUtils.ColumnRenameVisitor() {
-            @Override
-            public void visit(TableMeta tableMeta, ColumnMeta columnMeta, String fieldName, String selectColumnName) {
-                RecordEntityField entityField = new RecordEntityField(
-                        fieldName,
-                        DaoUtils.normalizeType(columnMeta.getDataType())
-                );
-                //单表的情况下无须有as
-                entityField.setSelectColumnName(columnMeta.getName());
-                entityField.setColumn(columnMeta.getName());
-                //只有clob blob 需要适配，
-                entityField.setCaster(getCaster(columnMeta.getDataType()));
-                //
-                entityField.setStatementAdapter(dao.getStatementAdapter(columnMeta.getDataType()));
+        Map<String,RenameUtils.ColumnRenameConfig> map =  RenameUtils.rename(dao, tableName);
+        RenameUtils.ColumnRenameConfig firstTable = map.values().iterator().next();
+        TableMeta tableMeta = firstTable.tableMeta;
 
-                entityFields.add(entityField);
-            }
-        });
+        for (Map.Entry<String,RenameUtils.ColumnRenameConfig> entry : map.entrySet()) {
+            String fieldName = entry.getKey();
+            RenameUtils.ColumnRenameConfig config = entry.getValue();
+            ColumnMeta columnMeta = config.columnMeta;
+            tableMeta = config.tableMeta;
+            String selectColumnName = config.selectColumnName;
+
+            RecordEntityField entityField = new RecordEntityField(
+                    fieldName,
+                    DaoUtils.normalizeType(columnMeta.getDataType())
+            );
+            //单表的情况下无须有as
+            entityField.setSelectColumnName(columnMeta.getName());
+            entityField.setColumn(columnMeta.getName());
+            //只有clob blob 需要适配，
+            entityField.setCaster(getCaster(columnMeta.getDataType()));
+            //
+            entityField.setStatementAdapter(dao.getStatementAdapter(columnMeta.getDataType()));
+            entityField.setOriginalFieldName(columnMeta.getName());
+            entityField.setColumnMeta(columnMeta);
+            entityFields.add(entityField);
+        }
 
 
         return new RecordEntity(
@@ -122,8 +130,6 @@ public class RecordEntityFactory extends AbstractEntityFactory {
         }
 
 
-
-
         if (generatedKeys.size() > 0) {
             return new ZoomAutoEntity(
                     generatedKeys.toArray(new String[generatedKeys.size()]),
@@ -131,7 +137,7 @@ public class RecordEntityFactory extends AbstractEntityFactory {
             );
         }else{
 
-            if(  primaryKeys.size() == 1  ){
+            if( primaryKeys.size() == 1 ){
                 AbstractEntityField pk = primaryKeys.get(0);
                 index = entityFields.indexOf(pk);
 
@@ -155,6 +161,25 @@ public class RecordEntityFactory extends AbstractEntityFactory {
         return null;
     }
 
+
+    private RecordEntityField createEntityFieldFromConfig(String fieldName,RenameUtils.ColumnRenameConfig config){
+        ColumnMeta columnMeta = config.columnMeta;
+        TableMeta tableMeta = config.tableMeta;
+        String selectColumnName = config.selectColumnName;
+
+        RecordEntityField entityField = new RecordEntityField(fieldName, DaoUtils.normalizeType(columnMeta.getDataType()));
+        entityField.setColumn(tableMeta.getName() + "." + columnMeta.getName());
+        entityField.setSelectColumnName(selectColumnName);
+        //只有clob blob 需要适配，
+        entityField.setCaster(getCaster(columnMeta.getDataType()));
+        //
+        entityField.setStatementAdapter(dao.getStatementAdapter(columnMeta.getDataType()));
+        entityField.setColumnMeta(columnMeta);
+
+
+        return entityField;
+    }
+
     @Override
     public Entity getEntity(Class<?> type, String... tables) {
         if(tables.length==1){
@@ -163,21 +188,15 @@ public class RecordEntityFactory extends AbstractEntityFactory {
             // 得到一个映射关系
             final List<RecordEntityField> entityFields = new ArrayList<RecordEntityField>();
 
-            RenameUtils.rename(dao, tables, new RenameUtils.ColumnRenameVisitor() {
-                @Override
-                public void visit(TableMeta tableMeta, ColumnMeta columnMeta, String fieldName, String selectColumnName) {
-                    RecordEntityField entityField = new RecordEntityField(fieldName, DaoUtils.normalizeType(columnMeta.getDataType()));
-                    entityField.setColumn(tableMeta.getName() + "." + columnMeta.getName());
-                    entityField.setSelectColumnName(selectColumnName);
-                    //只有clob blob 需要适配，
-                    entityField.setCaster(getCaster(columnMeta.getDataType()));
-                    //
-                    entityField.setStatementAdapter(dao.getStatementAdapter(columnMeta.getDataType()));
+            Map<String,RenameUtils.ColumnRenameConfig> map = RenameUtils.rename(
+                dao,tables
+            );
 
-                    entityFields.add(entityField);
-                }
-            });
-
+            for (Map.Entry<String,RenameUtils.ColumnRenameConfig> entry : map.entrySet()) {
+                String fieldName = entry.getKey();
+                RenameUtils.ColumnRenameConfig config = entry.getValue();
+                entityFields.add(createEntityFieldFromConfig(fieldName,config));
+            }
             return new RecordEntity(
                     tables[0],
                     entityFields.toArray(new EntityField[entityFields.size()]),

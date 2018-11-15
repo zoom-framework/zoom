@@ -92,11 +92,7 @@ public abstract class AbstractEntity implements Entity {
     }
 
 
-    @Override
-    public String getColumnName(String field) {
-        if (field == null) {
-            throw new NullPointerException("字段名称为空");
-        }
+    private String getColumnNameByFieldName(String field){
         String column = file2column.get(field);
         if (column == null) {
             EntityField entityField = getFieldByName(field);
@@ -118,6 +114,16 @@ public abstract class AbstractEntity implements Entity {
                             field));
         }
         return column;
+    }
+
+
+    @Override
+    public String getColumnName(String field) {
+        if (field == null) {
+            throw new NullPointerException("字段名称为空");
+        }
+
+        return  getColumnNameByFieldName(field);
     }
 
 
@@ -192,13 +198,8 @@ public abstract class AbstractEntity implements Entity {
                     }
                     sb.append(str);
                 } else {
-                    EntityField entityField = getFieldByName(str);
-                    if (entityField == null) {
-                        throw new DaoException("找不到" + str + "对应的字段，当前所有可用字段为:"
-                                + StringUtils.join(joinAllFields, ","));
-                    } else {
-                        sb.append( entityField.getColumnName());
-                    }
+                    String column = getColumnNameByFieldName(str);
+                    sb.append( column);
                 }
             }
 

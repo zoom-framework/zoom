@@ -70,13 +70,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
 
         TableMeta tableMeta = getTableMeta(tableName);
 
-        final Map<String, ColumnMeta> map = new LinkedHashMap<String, ColumnMeta>(tableMeta.getColumns().length);
-        RenameUtils.rename(dao, tableName, new RenameUtils.ColumnRenameVisitor() {
-            @Override
-            public void visit(TableMeta tableMeta, ColumnMeta columnMeta, String fieldName, String selectColumnName) {
-                map.put(fieldName, columnMeta);
-            }
-        });
+        final Map<String, RenameUtils.ColumnRenameConfig> map = RenameUtils.rename(dao,tableName);
 
 
         Field[] fields = CachedClasses.getFields(type);
@@ -109,8 +103,8 @@ class BeanEntityFactory extends AbstractEntityFactory {
                 );
 
             } else {
-                ColumnMeta columnMeta = map.get(field.getName());
-                if (columnMeta == null) {
+                RenameUtils.ColumnRenameConfig config = map.get(field.getName());
+                if (config == null) {
                     throw new DaoException(String.format(
                             ERROR_FORMAT,
                             field,
@@ -120,11 +114,11 @@ class BeanEntityFactory extends AbstractEntityFactory {
                         entityField,
                         field,
                         tableMeta,
-                        columnMeta,
-                        columnMeta.getName()
+                        config.columnMeta,
+                        config.columnMeta.getName()
                 );
 
-                fillAdapter(entityField, column, columnMeta, dao, field);
+                fillAdapter(entityField, column, config.columnMeta, dao, field);
             }
 
         }
@@ -147,38 +141,25 @@ class BeanEntityFactory extends AbstractEntityFactory {
      * @param fields
      * @return
      */
-    private Map<String, String> getNamesMap(Map<String, ColumnMeta> map, Field[] fields) {
+    private Map<String, String> getNamesMap(Map<String, RenameUtils.ColumnRenameConfig> map, Field[] fields) {
 
         for (Field field : fields) {
             map.remove(field.getName());
         }
 
-        return MapUtils.convert(map, new Converter<ColumnMeta, String>() {
+        return MapUtils.convert(map, new Converter<RenameUtils.ColumnRenameConfig, String>() {
             @Override
-            public String convert(ColumnMeta data) {
-                return data.getName();
+            public String convert(RenameUtils.ColumnRenameConfig data) {
+                return data.columnMeta.getName();
             }
         });
     }
 
     public Entity getEntityJoins(Class<?> type, String[] tables, Join[] joins) {
         assert (tables.length > 1);
-        final Map<String, ColumnConfig> map = new LinkedHashMap<String, ColumnConfig>();
-        final TableMeta[] tableMetas = new TableMeta[tables.length];
-        RenameUtils.rename(dao, tables, new RenameUtils.ColumnRenameVisitor() {
-            @Override
-            public void visit(TableMeta tableMeta, ColumnMeta columnMeta, String fieldName, String selectColumnName) {
-                if (tableMetas[0] == null) {
-                    tableMetas[0] = tableMeta;
-                }
-                //做一个映射
-                map.put(fieldName, new ColumnConfig(
-                        tableMeta,
-                        columnMeta,
-                        selectColumnName
-                ));
-            }
-        });
+        Map<String,RenameUtils.ColumnRenameConfig> map = RenameUtils.rename(dao, tables);
+        RenameUtils.ColumnRenameConfig firstTable = map.values().iterator().next();
+        TableMeta tableMeta = firstTable.tableMeta;
         JoinMeta[] joinMetas = new JoinMeta[joins.length];
         for (int i = 0; i < joins.length; ++i) {
             Join join = joins[i];
@@ -220,28 +201,29 @@ class BeanEntityFactory extends AbstractEntityFactory {
                 );
 
             } else {
-                ColumnConfig columnConfig = map.get(field.getName());
-                if (columnConfig == null) {
+                RenameUtils.ColumnRenameConfig columnRenameConfig = map.get(field.getName());
+                if (columnRenameConfig == null) {
                     throw new DaoException(String.format(
                             ERROR_FORMAT,
                             field,
                             "找不到字段对应的ColumnMeta，当前所有能使用的名称为:" + StringUtils.join(map.keySet(), ",")));
                 }
+
                 fillWithoutColumnAnnotationName(
                         entityField,
                         field,
-                        columnConfig
+                        columnRenameConfig
                 );
 
-                fillAdapter(entityField, column, columnConfig.columnMeta, dao, field);
+                fillAdapter(entityField, column, columnRenameConfig.columnMeta, dao, field);
             }
 
         }
         return new BeanEntity(
                 tables[0],
                 entityFields.toArray(new EntityField[entityFields.size()]),
-                findPrimaryKeys(entityFields, tableMetas[0].getColumns(), fields),
-                findAutoGenerateFields(entityFields, tableMetas[0].getColumns(), fields),
+                findPrimaryKeys(entityFields, tableMeta.getColumns(), fields),
+                findAutoGenerateFields(entityFields, tableMeta.getColumns(), fields),
                 type,
                 getMultiTableNamesMap(map, fields),
                 joinMetas);
@@ -254,16 +236,16 @@ class BeanEntityFactory extends AbstractEntityFactory {
      * @param fields
      * @return
      */
-    private Map<String, String> getMultiTableNamesMap(Map<String, ColumnConfig> map, Field[] fields) {
+    private Map<String, String> getMultiTableNamesMap(Map<String, RenameUtils.ColumnRenameConfig> map, Field[] fields) {
 
         for (Field field : fields) {
             map.remove(field.getName());
         }
 
-        return MapUtils.convert(map, new Converter<ColumnConfig, String>() {
+        return MapUtils.convert(map, new Converter<RenameUtils.ColumnRenameConfig, String>() {
             @Override
-            public String convert(ColumnConfig data) {
-                return data.tableMeta.getName() + ":" + data.columnMeta.getName();
+            public String convert(RenameUtils.ColumnRenameConfig data) {
+                return data.tableMeta.getName() + "," + data.columnMeta.getName();
             }
         });
     }
@@ -341,35 +323,24 @@ class BeanEntityFactory extends AbstractEntityFactory {
             String selectColumnName
     ) {
 
+        entityField.setOriginalFieldName(columnMeta.getName());
         entityField.setColumn(tableMeta.getName() + "." + columnMeta.getName());
         entityField.setSelectColumnName(selectColumnName);
+        entityField.setColumnMeta(columnMeta);
     }
 
     private void fillWithoutColumnAnnotationName(
             AbstractEntityField entityField,
             Field field,
-            ColumnConfig columnConfig
+            RenameUtils.ColumnRenameConfig columnRenameConfig
     ) {
-
-        entityField.setColumn(columnConfig.tableMeta.getName() + "." + columnConfig.columnMeta.getName());
-        entityField.setSelectColumnName(columnConfig.selectColumnName);
+        entityField.setOriginalFieldName(columnRenameConfig.columnMeta.getName());
+        entityField.setColumn(columnRenameConfig.tableMeta.getName() + "." + columnRenameConfig.columnMeta.getName());
+        entityField.setSelectColumnName(columnRenameConfig.selectColumnName);
+        entityField.setColumnMeta(columnRenameConfig.columnMeta);
     }
 
-    private static class ColumnConfig {
-        TableMeta tableMeta;
-        ColumnMeta columnMeta;
-        String selectColumnName;
 
-        public ColumnConfig(TableMeta tableMeta, ColumnMeta columnMeta, String selectColumnName) {
-            this.tableMeta = tableMeta;
-            this.columnMeta = columnMeta;
-            this.selectColumnName = selectColumnName;
-        }
-
-        public String getFullColumnName() {
-            return String.format("%s.%s", tableMeta.getName(), columnMeta.getName());
-        }
-    }
 
 
     private AutoEntity findAutoGenerateFields(
@@ -393,9 +364,13 @@ class BeanEntityFactory extends AbstractEntityFactory {
         return autoEntity;
     }
 
-    private EntityField[] findPrimaryKeys(List<AbstractEntityField> entityFields, ColumnMeta[] columnMetas, Field[] fields) {
+
+
+    private EntityField[] findPrimaryKeys(List<AbstractEntityField> entityFields,
+                                          ColumnMeta[] columnMetas,
+                                          Field[] fields) {
         List<EntityField> primaryKeys = new ArrayList<EntityField>(3);
-        for (int i = 0, c = entityFields.size(); i < c; ++i) {
+        for (int i = 0, c = fields.length; i < c; ++i) {
             Field field = fields[i];
             PrimaryKey primaryKey = field.getAnnotation(PrimaryKey.class);
             if (primaryKey != null) {
@@ -403,11 +378,15 @@ class BeanEntityFactory extends AbstractEntityFactory {
             }
         }
         if (primaryKeys.size() == 0) {
-            for (int i = 0, c = columnMetas.length; i < c; ++i) {
-                ColumnMeta columnMeta = columnMetas[i];
-                if (columnMeta.isPrimary()) {
-                    primaryKeys.add(entityFields.get(i));
+            for (int i = 0, c = entityFields.size(); i < c; ++i) {
+
+                AbstractEntityField entityField = entityFields.get(i);
+                if(entityField.getColumnMeta()!=null
+                        && entityField.getColumnMeta().isPrimary()){
+                    primaryKeys.add(entityField);
+
                 }
+
             }
         }
 

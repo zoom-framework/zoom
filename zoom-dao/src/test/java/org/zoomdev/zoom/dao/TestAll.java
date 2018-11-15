@@ -9,6 +9,7 @@ import org.zoomdev.zoom.dao.rename.TestRenamePolicy;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({TestH2Builder.class,TestMysqlBuilder.class,
-        TestRenamePolicy.class,TestSqlBuilder.class})
+        TestRenamePolicy.class,TestSqlBuilder.class,
+    EntityTestDao.class})
 public class TestAll {
 }

@@ -4,6 +4,7 @@ import org.zoomdev.zoom.caster.ValueCaster;
 import org.zoomdev.zoom.dao.auto.AutoField;
 import org.zoomdev.zoom.dao.adapters.EntityField;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
+import org.zoomdev.zoom.dao.meta.ColumnMeta;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -16,12 +17,26 @@ abstract class AbstractEntityField implements EntityField {
 
     private AutoField autoField;
 
+    @Override
+    public ColumnMeta getColumnMeta() {
+        return columnMeta;
+    }
+
+    public void setColumnMeta(ColumnMeta columnMeta) {
+        this.columnMeta = columnMeta;
+    }
+
+    private ColumnMeta columnMeta;
+
+
+    private String originalFieldName;
 
     private String column;
 
     private String selectColumnName;
 
     AbstractEntityField() {
+
     }
 
     public void setCaster(ValueCaster caster) {
@@ -43,7 +58,13 @@ abstract class AbstractEntityField implements EntityField {
         return column;
     }
 
-
+    @Override
+    public String getOriginalFieldName(){
+        return originalFieldName;
+    }
+    public void setOriginalFieldName(String originalFieldName) {
+        this.originalFieldName = originalFieldName;
+    }
     @Override
     public StatementAdapter getStatementAdapter() {
         return statementAdapter;
