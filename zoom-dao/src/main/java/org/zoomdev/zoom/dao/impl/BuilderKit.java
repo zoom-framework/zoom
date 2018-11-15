@@ -286,7 +286,10 @@ public class BuilderKit {
         if (where.length() <= 0) {
             throw new DaoException("Whole table delete is not valid!");
         }
-        sql.append("DELETE FROM ").append(table).append(where);
+        sql.append("DELETE FROM ").append(table);
+        if(where.length()>0){
+            sql.append(" WHERE ").append(where);
+        }
     }
 
     public static final Pattern AS_PATTERN = Pattern.compile("([a-z_\\(\\)\\.\\[\\]]+)[\\s]+as[\\s]+([a-z_]+)", Pattern.CASE_INSENSITIVE);

@@ -261,6 +261,7 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
     @Override
     public int delete(T data) {
         EntitySqlUtils.entityCondition(builder, entity, data);
+        builder.table(entity.getTable());
         builder.buildDelete();
         return EntitySqlUtils.executeUpdate(this, builder);
     }

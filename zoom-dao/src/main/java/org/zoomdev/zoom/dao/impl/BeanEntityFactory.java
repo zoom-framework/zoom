@@ -245,7 +245,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
         return MapUtils.convert(map, new Converter<RenameUtils.ColumnRenameConfig, String>() {
             @Override
             public String convert(RenameUtils.ColumnRenameConfig data) {
-                return data.tableMeta.getName() + "," + data.columnMeta.getName();
+                return data.tableMeta.getName() + "." + data.columnMeta.getName();
             }
         });
     }
@@ -384,9 +384,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
                 if(entityField.getColumnMeta()!=null
                         && entityField.getColumnMeta().isPrimary()){
                     primaryKeys.add(entityField);
-
                 }
-
             }
         }
 
