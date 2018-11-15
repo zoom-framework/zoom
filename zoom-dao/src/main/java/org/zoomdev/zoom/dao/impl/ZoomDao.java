@@ -85,6 +85,10 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
         load();
     }
 
+    public void release(){
+        arholder.set(null);
+        earHolder.set(null);
+    }
 
     public static void executeTrans(Runnable runnable) {
         executeTrans(Trans.TRANSACTION_READ_COMMITTED, runnable);
@@ -372,6 +376,7 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
         }
 
     }
+
 
     public static boolean releaseConnection(DataSource dataSource, Connection connection) {
         Transactions transactions = getTransaction();

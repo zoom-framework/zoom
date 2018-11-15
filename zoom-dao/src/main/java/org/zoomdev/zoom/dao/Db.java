@@ -57,4 +57,13 @@ public class Db {
     public static <T> EAr<T> ar(Class<T> type) {
         return daos[0].ar(type);
     }
+
+    public static void release() {
+        visit(new Visitor<Dao>() {
+            @Override
+            public void visit(Dao data) {
+                data.release();
+            }
+        });
+    }
 }

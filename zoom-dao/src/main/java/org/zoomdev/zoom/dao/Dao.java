@@ -78,4 +78,7 @@ public interface Dao extends StatementAdapterFactory {
 
 
     String getURL();
+
+
+    void release();
 }
