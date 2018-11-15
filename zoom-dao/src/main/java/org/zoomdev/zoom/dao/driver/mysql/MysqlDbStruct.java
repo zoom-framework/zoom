@@ -105,6 +105,9 @@ public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
             columnMeta.setRawType(record.getString("DATA_TYPE"));
         }
 
+        if(meta.getComment()==null){
+            meta.setComment("");
+        }
     }
 
 }

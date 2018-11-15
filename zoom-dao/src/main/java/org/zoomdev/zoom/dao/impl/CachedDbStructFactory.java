@@ -1,6 +1,8 @@
 package org.zoomdev.zoom.dao.impl;
 
+import org.zoomdev.zoom.common.Destroyable;
 import org.zoomdev.zoom.common.designpattern.SingletonUtils;
+import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.dao.driver.DbStructFactory;
 import org.zoomdev.zoom.dao.meta.TableMeta;
 
@@ -10,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class CachedDbStructFactory implements DbStructFactory {
+public class CachedDbStructFactory implements DbStructFactory,Destroyable {
 
     private DbStructFactory factory;
 
@@ -94,5 +96,10 @@ public class CachedDbStructFactory implements DbStructFactory {
     @Override
     public void clearCache() {
         pool.clear();
+    }
+
+    @Override
+    public void destroy() {
+        Classes.destroy(pool);
     }
 }

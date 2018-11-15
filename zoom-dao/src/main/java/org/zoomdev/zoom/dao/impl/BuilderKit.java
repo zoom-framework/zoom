@@ -269,7 +269,10 @@ public class BuilderKit {
             driver.protectColumn(sql, entry.getKey()).append("=?");
         }
 
-        sql.append(where);
+        if(where.length()>0){
+            sql.append(" WHERE ").append(where);
+        }
+
     }
 
     /**
