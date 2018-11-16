@@ -11,6 +11,7 @@ import org.zoomdev.zoom.common.filter.pattern.PatternFilterFactory;
 import org.zoomdev.zoom.common.utils.Page;
 import org.zoomdev.zoom.dao.*;
 import org.zoomdev.zoom.dao.adapters.EntityField;
+import org.zoomdev.zoom.dao.utils.DaoUtils;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -22,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @param <T>
  */
-public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implements EAr<T> {
+public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
 
     private static final Log log = LogFactory.getLog(EntityActiveRecord.class);
 
@@ -117,7 +118,7 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
                 builder.clear(false);
                 remove2(builder.values);
                 //最后两个参数要移除掉
-                int total = getValue(connection, "COUNT(*) AS COUNT_", int.class);
+                int total = EntitySqlUtils.getValue(connection,builder, DaoUtils.SELECT_COUNT, int.class);
                 int page = builder.position2page(position, size);
                 return new Page<T>(list, page, size, total);
             }
@@ -149,6 +150,36 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
     }
 
     @Override
+    public int delete() {
+
+        return execute(new ConnectionExecutor() {
+            @Override
+            public Integer execute(Connection connection) throws SQLException {
+                builder.table(entity.getTable());
+                builder.buildDelete();
+                return EntitySqlUtils.executeUpdate(connection, builder);
+            }
+        });
+    }
+
+
+    @Override
+    public int delete(final T data) {
+       return execute(new ConnectionExecutor() {
+           @Override
+           public Integer execute(Connection connection) throws SQLException {
+               EntitySqlUtils.entityCondition(builder, entity, data);
+               builder.table(entity.getTable());
+               builder.buildDelete();
+               return EntitySqlUtils.executeUpdate(connection, builder);
+           }
+       });
+    }
+
+
+
+
+    @Override
     public int update(T data) {
         assert(data!=null);
         if(data instanceof Record && strict){
@@ -167,10 +198,15 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
                 filter,
                 ignoreNull);
 
-        return EntitySqlUtils.executeUpdate(
-                this,
-                builder
-        );
+        return execute(new ConnectionExecutor() {
+            @Override
+            public Integer execute(Connection connection) throws SQLException {
+                return EntitySqlUtils.executeUpdate(
+                        connection,
+                        builder
+                );
+            }
+        });
     }
 //
 //    @Override
@@ -258,35 +294,8 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
 
 
 
-    @Override
-    public int delete(T data) {
-        EntitySqlUtils.entityCondition(builder, entity, data);
-        builder.table(entity.getTable());
-        builder.buildDelete();
-        return EntitySqlUtils.executeUpdate(this, builder);
-    }
 
 
-
-    public int count() {
-        return value("COUNT(*) AS COUNT_", int.class);
-    }
-
-    @Override
-    public <E> E value(final String key, final Class<E> typeOfE) {
-        return execute(new ConnectionExecutor() {
-            @Override
-            public E execute(Connection connection) throws SQLException {
-                return getValue(connection, key, typeOfE);
-            }
-        });
-    }
-
-    private <E> E getValue(Connection connection, String key, Class<E> typeOfE) throws SQLException {
-        builder.selectRaw(key);
-        builder.buildSelect();
-        return Caster.to(EntitySqlUtils.executeGetValue(connection, builder), typeOfE);
-    }
 
     @Override
     public EAr<T> setEntity(Entity entity) {
@@ -304,6 +313,7 @@ public class EntityActiveRecord<T> extends ThreadLocalConnectionHolder implement
         this.strict = strict;
         return this;
     }
+
 
     @Override
     public EAr<T> orWhere(SqlBuilder.Condition condition) {

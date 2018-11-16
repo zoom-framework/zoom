@@ -16,30 +16,17 @@ public class CamelNameAdapter implements NameAdapter {
     public CamelNameAdapter() {
     }
 
-    @Override
-    public String getSelectColumn(String field) {
-        return getColumnName(field);
-    }
 
     @Override
     public String getFieldName(String column) {
         return CamelAliasPolicy.DEFAULT.getAlias(column);
     }
 
-    @Override
-    public String getOrgFieldName(String column) {
-        return CamelAliasPolicy.DEFAULT.getAlias(column);
-    }
 
     @Override
     public String getColumnName(String field) {
 
         return StrKit.toUnderLine(field);
-    }
-
-    @Override
-    public String getSelectField(String column) {
-        return getFieldName(column);
     }
 
 

@@ -118,6 +118,8 @@ public interface EAr<T> extends Sql<EAr<T>> {
     EAr<T> strict(boolean strict);
 
 
+    int delete();
+
 //    /**
 //     * 批量插入
 //     *

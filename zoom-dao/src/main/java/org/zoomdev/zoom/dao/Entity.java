@@ -114,7 +114,11 @@ public interface Entity {
      */
     void validate(Object data);
 
-
+    /**
+     * 解析join
+     * @param on
+     * @return
+     */
     String parseOn(String on);
 
     Set<String> getAvailableFields();

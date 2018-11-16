@@ -15,15 +15,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, ConnectionHolder, Trans {
+public class ActiveRecord extends AbstractRecord implements RawAr, ConnectionHolder, Trans {
 
-    private AliasSqlBuilder builder;
 
     private static final Log log = LogFactory.getLog(ActiveRecord.class);
 
+    private NameAdapter nameAdapter;
+
     public ActiveRecord(Dao dao) {
-        super(dao.getDataSource(), new AliasSqlBuilder(dao));
-        this.builder = (AliasSqlBuilder) super.builder;
+        super(dao.getDataSource(), new SimpleSqlBuilder(dao.getDriver()));
     }
 
     public List<Record> query() {
@@ -31,7 +31,7 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
         return execute(new ConnectionExecutor() {
             @Override
             public List<Record> execute(Connection connection) throws SQLException {
-                return BuilderKit.executeQuery(connection,builder,builder.nameAdapter);
+                return BuilderKit.executeQuery(connection,builder,nameAdapter);
             }
         });
     }
@@ -95,7 +95,7 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
         builder.buildSelect();
         return get(builder.sql.toString(),
                 builder.values,
-                builder.nameAdapter);
+                nameAdapter);
     }
 
 
@@ -121,10 +121,10 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
             @Override
             public Page<Record> execute(Connection connection) throws SQLException {
                 builder.buildLimit(position, size);
-                List<Record> list = BuilderKit.executeQuery(connection,builder,builder.nameAdapter);
+                List<Record> list = BuilderKit.executeQuery(connection,builder,nameAdapter);
                 builder.clear(false);
                 remove2(builder.values);
-                int total = getValue(connection,DaoUtils.SELECT_COUNT,int.class);
+                int total = EntitySqlUtils.getValue(connection,builder,DaoUtils.SELECT_COUNT,int.class);
                 int page = builder.position2page(position, size);
                 return new Page<Record>(list, page, size, total);
             }
@@ -151,7 +151,7 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
      */
     @Override
     public Ar nameAdapter(NameAdapter nameAdapter) {
-        builder.nameAdapter = nameAdapter;
+        this.nameAdapter = nameAdapter;
         return this;
     }
 
@@ -231,12 +231,15 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
 
     @Override
     public Ar groupBy(String field) {
-        return null;
+        builder.groupBy(field);
+        return this;
     }
 
     @Override
     public Ar having(String field, Symbol symbol, Object value) {
-        return null;
+
+        builder.having(field,symbol,value);
+        return this;
     }
 
     @Override
@@ -303,36 +306,8 @@ public class ActiveRecord extends ThreadLocalConnectionHolder implements RawAr, 
         return this;
     }
 
-    @Override
-    public <T> T getValue(String select, Class<T> classOfT) {
-        Record record = select(select).get();
-        if (record == null) {
-            return Caster.to(null, classOfT);
-        }
-        String as = BuilderKit.parseAs(select);
-        return record.get(as, classOfT);
-    }
 
-    @Override
-    public int count() {
-        return value(DaoUtils.SELECT_COUNT, int.class);
-    }
 
-    @Override
-    public <E> E value(final String key, final Class<E> typeOfE) {
-        return execute(new ConnectionExecutor() {
-            @Override
-            public E execute(Connection connection) throws SQLException {
-                return getValue(connection, key, typeOfE);
-            }
-        });
-    }
-
-    private <E> E getValue(Connection connection, String key, Class<E> typeOfE) throws SQLException {
-        builder.selectRaw(key);
-        builder.buildSelect();
-        return Caster.to(EntitySqlUtils.executeGetValue(connection, builder), typeOfE);
-    }
     @Override
     public <E> Ar whereIn(String key, E... values) {
         builder.whereIn(key, values);

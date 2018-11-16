@@ -86,8 +86,8 @@ public abstract class TestBuilder extends AbstractDaoTest {
         dao.ar("shop").insert(testRecors);
         dao.ar("shop").delete(testRecors);
 
-        dao.table("shop").insert(testRecors);
-        dao.table("shop").where("id",test_business).delete();
+ //       dao.table("shop").insert(testRecors);
+ //       dao.table("shop").where("id",test_business).delete();
 
 
         final String FIRST_BUSINESS = "firstBusiness";

@@ -2,6 +2,7 @@ package org.zoomdev.zoom.dao;
 
 import org.zoomdev.zoom.dao.adapters.StatementAdapterFactory;
 import org.zoomdev.zoom.dao.alias.AliasPolicyFactory;
+import org.zoomdev.zoom.dao.alias.NameAdapter;
 import org.zoomdev.zoom.dao.alias.NameAdapterFactory;
 import org.zoomdev.zoom.dao.driver.DbStructFactory;
 import org.zoomdev.zoom.dao.driver.SqlDriver;
@@ -54,7 +55,6 @@ public interface Dao extends StatementAdapterFactory {
      */
     DbStructFactory getDbStructFactory();
 
-    NameAdapterFactory getNameAdapterFactory();
 
     /**
      * 清除缓存
@@ -81,4 +81,6 @@ public interface Dao extends StatementAdapterFactory {
 
 
     void release();
+
+    void setNameAdapter(NameAdapter aDefault);
 }

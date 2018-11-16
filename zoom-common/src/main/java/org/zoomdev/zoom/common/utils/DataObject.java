@@ -60,7 +60,7 @@ public class DataObject extends LinkedHashMap<String, Object> {
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public static DataObject wrap(Map data) {
+    public static DataObject wrap(Map<String,Object> data) {
         DataObject dataObject = new DataObject();
         dataObject.putAll(data);
         return dataObject;

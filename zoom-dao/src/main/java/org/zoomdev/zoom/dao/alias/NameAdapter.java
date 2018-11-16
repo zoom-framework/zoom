@@ -20,14 +20,6 @@ public interface NameAdapter {
     String getFieldName(String column);
 
     /**
-     * 未改名的原来的字段
-     *
-     * @param column
-     * @return
-     */
-    String getOrgFieldName(String column);
-
-    /**
      * 从实体类字段名称获取数据库名称
      *
      * @param field
@@ -35,20 +27,4 @@ public interface NameAdapter {
      */
     String getColumnName(String field);
 
-    /**
-     * 在sql语句中的select 后面的字段，可能为 {xx as bb} / xx /table.column
-     *
-     * @param field
-     * @return
-     */
-    String getSelectColumn(String field);
-
-
-    /**
-     * 前端展示的名称
-     *
-     * @param column
-     * @return
-     */
-    String getSelectField(String column);
 }

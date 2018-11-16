@@ -1,5 +1,6 @@
 package org.zoomdev.zoom.dao.impl;
 
+import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.dao.*;
 import org.zoomdev.zoom.dao.adapters.EntityField;
@@ -16,6 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EntitySqlUtils {
+    public static <E> E getValue(Connection connection, SimpleSqlBuilder builder,String key, Class<E> typeOfE) throws SQLException {
+        builder.selectRaw(key);
+        builder.buildSelect();
+        return Caster.to(EntitySqlUtils.executeGetValue(connection, builder), typeOfE);
+    }
+
     static class PatterFilter implements Filter<EntityField> {
 
         private Filter<String> pattern;
@@ -46,21 +53,15 @@ public class EntitySqlUtils {
     public static final char COMMA = ',';  //comma
 
     public static int executeUpdate(
-            final ConnectionHolder ar,
-            final SimpleSqlBuilder builder) {
-        return ar.execute(new ConnectionExecutor() {
-            @Override
-            public Integer execute(Connection connection) throws SQLException {
-                PreparedStatement ps = null;
-                try {
-                    ps = prepareStatement(connection, builder);
-                    return ps.executeUpdate();
-                } finally {
-                    DaoUtils.close(ps);
-                    builder.clear(true);
-                }
-            }
-        });
+            final Connection connection,
+            final SimpleSqlBuilder builder) throws SQLException {
+        PreparedStatement ps = null;
+        try {
+            ps = prepareStatement(connection, builder);
+            return ps.executeUpdate();
+        } finally {
+            DaoUtils.close(ps);
+        }
     }
 
     public static void buildInsert(

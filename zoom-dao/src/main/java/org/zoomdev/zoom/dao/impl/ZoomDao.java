@@ -42,7 +42,7 @@ import java.util.concurrent.*;
  *
  * @author jzoom
  */
-public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
+public class ZoomDao implements Dao, Destroyable{
 
     private static final Log log = LogFactory.getLog(Dao.class);
 
@@ -52,7 +52,7 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
     private DbStructFactory dbStructFactory;
     private boolean lazyLoad;
 
-    private NameAdapterFactory nameAdapterMaker;
+    private NameAdapter nameAdapter;
     private Collection<String> names;
 
     private EntityFactory recordEntityFactory;
@@ -88,6 +88,11 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
     public void release(){
         arholder.set(null);
         earHolder.set(null);
+    }
+
+    @Override
+    public void setNameAdapter(NameAdapter nameAdapter) {
+        this.nameAdapter = nameAdapter;
     }
 
     public static void executeTrans(Runnable runnable) {
@@ -202,6 +207,7 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
             ar = createAr();
             arholder.set(ar);
         }
+        ar.nameAdapter(nameAdapter);
         return ar;
     }
 
@@ -282,76 +288,7 @@ public class ZoomDao implements Dao, Destroyable, NameAdapterFactory {
         return names;
     }
 
-    @Override
-    public NameAdapter getNameAdapter(String table) {
-        TableMeta meta = getDbStructFactory().getTableMeta(table);
-        AliasPolicy aliasPolicy = maker.getAliasPolicy(getColumnNames(meta));
-        if (aliasPolicy != null) {
-            Map<String, String> map = new HashMap<String, String>();
-            for (ColumnMeta columnInfo : meta.getColumns()) {
-                map.put(aliasPolicy.getAlias(columnInfo.getName()), columnInfo.getName());
-            }
-            return new PrefixMapNameAdapter(aliasPolicy, map);
-        }
-        return CamelNameAdapter.ADAPTER;
-    }
 
-    @Override
-    public NameAdapter getNameAdapter(String[] tables) {
-
-        AliasPolicy tableAliasPolicy = maker.getAliasPolicy(tables);
-        // 得到一个映射关系
-        Map<String, String> field2columnMap = new LinkedHashMap<String, String>();
-        Map<String, String> column2fieldMap = new LinkedHashMap<String, String>();
-        Map<String, String> field2AsMap = new LinkedHashMap<String, String>();
-        Map<String, String> column2OrgFieldMap = new LinkedHashMap<String, String>();
-        boolean first = true;
-        for (String table : tables) {
-            TableMeta meta = getDbStructFactory().getTableMeta(table);
-            String tableAlia = tableAliasPolicy.getAlias(table);
-            // 取出每一个表的重命名策略
-            AliasPolicy columnAlias = maker.getAliasPolicy(getColumnNames(meta));
-            if (columnAlias == null) {
-                columnAlias = CamelAliasPolicy.DEFAULT;
-            }
-            for (ColumnMeta column : meta.getColumns()) {
-                String alias = columnAlias.getAlias(column.getName());
-                //如果是第一个表，则直接使用字段名称，否则使用table.column的形式
-                String fieldName = first ? alias : (tableAlia + StrKit.upperCaseFirst(alias));
-
-                String columnName = first ? column.getName() : (table + "." + column.getName());
-
-                String underLineName = StrKit.toUnderLine(fieldName);
-
-                String asColumnName = table + "." + getDriver().protectColumn(column.getName())
-                        + " AS "
-                        + getDriver().protectColumn(underLineName + "_");
-
-                //原始的
-                field2AsMap.put(columnName, asColumnName);
-                field2AsMap.put(fieldName, asColumnName);
-
-                field2columnMap.put(fieldName, table + "." + column.getName());
-                column2fieldMap.put(columnName, fieldName);
-
-                column2OrgFieldMap.put(columnName, alias);
-            }
-            if (first) {
-                first = false;
-            }
-        }
-
-        return new MapNameAdapter(field2columnMap, column2fieldMap, field2AsMap, column2OrgFieldMap);
-    }
-
-    @Override
-    public NameAdapterFactory getNameAdapterFactory() {
-        return nameAdapterMaker == null ? this : nameAdapterMaker;
-    }
-
-    public void setNameAdapterMaker(NameAdapterFactory nameAdapterMaker) {
-        this.nameAdapterMaker = nameAdapterMaker;
-    }
 
     @Override
     public RawAr getAr() {

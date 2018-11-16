@@ -28,15 +28,6 @@ public class MapNameAdapter implements NameAdapter {
         this.column2OrgFieldMap = column2OrgFieldMap;
     }
 
-    @Override
-    public String getOrgFieldName(String column) {
-        return column2OrgFieldMap.get(column);
-    }
-
-    @Override
-    public String getSelectColumn(String field) {
-        return field2AsMap.get(field);
-    }
 
     @Override
     public String getFieldName(String column) {
@@ -57,9 +48,5 @@ public class MapNameAdapter implements NameAdapter {
         return column;
     }
 
-    @Override
-    public String getSelectField(String column) {
-        return StrKit.toCamel(column);
-    }
 
 }

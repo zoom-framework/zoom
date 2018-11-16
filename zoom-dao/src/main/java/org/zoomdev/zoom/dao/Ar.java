@@ -69,15 +69,6 @@ public interface Ar extends Trans, ConnectionHolder, Sql<Ar> {
 
     Record get();
 
-    /**
-     * 获取一个值
-     *
-     * @param select
-     * @param classOfT
-     * @param <T>
-     * @return
-     */
-    <T> T getValue(String select, Class<T> classOfT);
 
     /**
      * 插入一个实体对象或者Record

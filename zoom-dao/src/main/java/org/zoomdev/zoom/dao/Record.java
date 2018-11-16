@@ -19,6 +19,10 @@ public class Record extends DataObject {
         return data;
     }
 
+    public static Record wrap(Map<String,Object> data){
+        return new Record(data);
+    }
+
 
     public Record(Map<? extends String, ? extends Object> m) {
         super(m);

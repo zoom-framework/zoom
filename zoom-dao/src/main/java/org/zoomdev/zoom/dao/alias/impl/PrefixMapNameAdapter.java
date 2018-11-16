@@ -22,25 +22,12 @@ public class PrefixMapNameAdapter implements NameAdapter {
         this.field2ColumnMap = field2ColumnMap;
     }
 
-    @Override
-    public String getSelectColumn(String field) {
-        return getColumnName(field);
-    }
-
-    @Override
-    public String getSelectField(String column) {
-        return getFieldName(column);
-    }
 
     @Override
     public String getFieldName(String column) {
         return aliasPolicy.getAlias(column);
     }
 
-    @Override
-    public String getOrgFieldName(String column) {
-        return getFieldName(column);
-    }
 
     @Override
     public String getColumnName(String field) {

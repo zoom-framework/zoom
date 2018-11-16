@@ -108,18 +108,7 @@ public class BuilderKit {
 
     }
 
-    public static final Record buildOne(ResultSet rs, List<String> names) throws SQLException {
-        ResultSetMetaData rsmd = rs.getMetaData();
-        int columnCount = rsmd.getColumnCount();
-        Record map = new Record();
-        for (int i = 1; i <= columnCount; i++) {
-            int type = rsmd.getColumnType(i);
-            String name = rsmd.getColumnName(i);
-            map.put(names.get(i - 1), getValue(type, rs, i));
-        }
 
-        return map;
-    }
 
     public static final Record buildOne(ResultSet rs, NameAdapter policy) throws SQLException {
         ResultSetMetaData rsmd = rs.getMetaData();
@@ -128,7 +117,7 @@ public class BuilderKit {
         for (int i = 1; i <= columnCount; i++) {
             int type = rsmd.getColumnType(i);
             String name = rsmd.getColumnName(i);
-            map.put(policy.getSelectField(name), getValue(type, rs, i));
+            map.put(policy.getFieldName(name), getValue(type, rs, i));
         }
 
         return map;
@@ -214,7 +203,7 @@ public class BuilderKit {
     private static final void buildLabelNamesAndTypes(ResultSetMetaData rsmd, String[] labelNames, int[] types, NameAdapter policy) throws SQLException {
         if (policy != null) {
             for (int i = 1; i < labelNames.length; i++) {
-                labelNames[i] = policy.getSelectField(rsmd.getColumnLabel(i));
+                labelNames[i] = policy.getFieldName(rsmd.getColumnLabel(i));
                 types[i] = rsmd.getColumnType(i);
             }
         } else {
@@ -225,25 +214,7 @@ public class BuilderKit {
         }
     }
 
-    public static void buildUpdate(
-            StringBuilder sql,
-            String tableName,
-            EntityField[] updatedFields,
-            int count
-    ) {
-        sql.append("UPDATE ").append(tableName);
-        boolean first = true;
-        for (int i = 0; i < count; ++i) {
-            EntityField field = updatedFields[i];
-            if (first) {
-                first = false;
-                sql.append(" SET ");
-            } else {
-                sql.append(',');
-            }
-            sql.append(field.getColumnName()).append("=?");
-        }
-    }
+
 
 
     public static void buildUpdate(
@@ -295,19 +266,6 @@ public class BuilderKit {
     public static final Pattern AS_PATTERN = Pattern.compile("([a-z_\\(\\)\\.\\[\\]]+)[\\s]+as[\\s]+([a-z_]+)", Pattern.CASE_INSENSITIVE);
 
 
-    /**
-     * 将select中的as解析出来
-     *
-     * @param select
-     * @return
-     */
-    public static String parseAs(String select) {
-        Matcher matcher = null;
-        if ((matcher = BuilderKit.AS_PATTERN.matcher(select)).matches()) {
-            return matcher.group(2);
-        }
-        return select;
-    }
 
 
 }
