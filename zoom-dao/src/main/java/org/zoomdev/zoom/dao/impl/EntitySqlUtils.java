@@ -261,9 +261,16 @@ public class EntitySqlUtils {
             List<StatementAdapter> adapters) throws SQLException {
 
         PreparedStatement ps = connection.prepareStatement(sql);
-        for (int index = 0, c = values.size(); index < c; ++index) {
-            StatementAdapter adapter = adapters.get(index);
-            adapter.adapt(ps, index + 1, values.get(index));
+        for (int index = 0, c = values.size(), m = adapters.size(); index < c; ++index) {
+            if(index >= m){
+
+                ps.setObject(index+1,values.get(index));
+
+            }else{
+                StatementAdapter adapter = adapters.get(index);
+                adapter.adapt(ps, index + 1, values.get(index));
+            }
+
         }
         return ps;
     }
