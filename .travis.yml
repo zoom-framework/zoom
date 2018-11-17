@@ -9,7 +9,7 @@ jdk:
   - oraclejdk8
 
 install:
-  - sh ./.boot/database/oracle/install.sh
+  - sh ./.boot/database/oracle/run.sh
 
 after_success:
   - mvn jacoco:report coveralls:report
