@@ -1,5 +1,9 @@
 #!/bin/bash
 
+WORKSPACE=$(cd `dirname $0`; pwd)
+
+cd ./.boot/database/oracle
+
 docker build -t oracle/test .
 
 # startup oracle
