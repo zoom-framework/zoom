@@ -11,18 +11,43 @@ import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 class StatementAdapters {
 
     static String2Clob STRING2CLOB = new String2Clob();
     static ByteArray2Blob BYTEARRAY2BLOB = new ByteArray2Blob();
 
+    static Map<String,StatementAdapter> pool = new ConcurrentHashMap<String, StatementAdapter>();
+
+    static String getKey(Class<?> fieldType, Class<?> columnType){
+        return fieldType.getName() + ":" + columnType.getName();
+    }
     static StatementAdapter DEFAULT = new StatementAdapter() {
         @Override
         public void adapt(PreparedStatement statement, int index, Object value) throws SQLException {
             statement.setObject(index, value);
         }
     };
+    static void add(Class<?> fieldType, Class<?> columnType){
+        pool.put(getKey(fieldType,columnType),new CasterProxyStatementAdapter(
+                Caster.wrap(fieldType,columnType),
+                DEFAULT
+        ));
+    }
+
+    static {
+
+        add(Map.class,String.class);
+        add(Collection.class,String.class);
+
+
+    }
+
+
+
 
     /**
      * 获取一个从实体类到数据库的数据适配器
@@ -57,6 +82,12 @@ class StatementAdapters {
             //先转成byte[]
             return new CasterProxyStatementAdapter(Caster.wrap(fieldType, byte[].class), BYTEARRAY2BLOB);
         }
+
+        StatementAdapter adapter = pool.get(getKey(fieldType,columnType));
+        if(adapter!=null){
+            return adapter;
+        }
+
         return DEFAULT;
         //return new CasterStatementAdapter(Caster.wrap(fieldType, columnType));
     }

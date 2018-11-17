@@ -120,22 +120,22 @@ public interface EAr<T> extends Sql<EAr<T>> {
 
     int delete();
 
-//    /**
-//     * 批量插入
-//     *
-//     * @param it
-//     * @return
-//     */
-//    int insert(Iterable<T> it);
-//
-//    /**
-//     * 批量更新
-//     *
-//     * @param it
-//     * @return
-//     */
-//    int update(Iterable<T> it);
-//
-//    int delete(Iterable<T> it);
+    /**
+     * 批量插入
+     *
+     * @param it
+     * @return
+     */
+    int insert(Iterable<T> it);
+
+    /**
+     * 批量更新
+     *
+     * @param it
+     * @return
+     */
+    int update(Iterable<T> it);
+
+    int delete(Iterable<T> it);
 
 }

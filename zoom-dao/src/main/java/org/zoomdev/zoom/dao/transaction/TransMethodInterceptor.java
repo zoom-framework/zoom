@@ -2,6 +2,7 @@ package org.zoomdev.zoom.dao.transaction;
 
 import org.zoomdev.zoom.aop.MethodInterceptor;
 import org.zoomdev.zoom.aop.MethodInvoker;
+import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.dao.impl.ZoomDao;
 
 public class TransMethodInterceptor implements MethodInterceptor {
@@ -23,7 +24,7 @@ public class TransMethodInterceptor implements MethodInterceptor {
             ZoomDao.commitTrans();
         } catch (Throwable e) {
             ZoomDao.rollbackTrans();
-            throw e;
+            throw Classes.getCause(e);
         }
     }
 

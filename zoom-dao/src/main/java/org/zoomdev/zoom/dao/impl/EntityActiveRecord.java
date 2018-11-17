@@ -1,6 +1,7 @@
 package org.zoomdev.zoom.dao.impl;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.caster.Caster;
@@ -157,7 +158,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
             public Integer execute(Connection connection) throws SQLException {
                 builder.table(entity.getTable());
                 builder.buildDelete();
-                return EntitySqlUtils.executeUpdate(connection, builder);
+                return BuilderKit.executeUpdate(connection, builder);
             }
         });
     }
@@ -438,64 +439,61 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
     }
 
 
-//
-//    @Override
-//    public int insert(final Iterable<T> it) {
-//        final MutableInt result = new MutableInt(0);
-//        try {
-//            ZoomDao.executeTrans(
-//                    new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            for (T t : it) {
-//                                result.add(insert(t));
-//                            }
-//                        }
-//                    });
-//        } catch (Throwable throwable) {
-//            throw new DaoException(throwable);
-//        }
-//
-//        return result.getValue();
-//    }
-//
-//    @Override
-//    public int update(final Iterable<T> it) {
-//        final MutableInt result = new MutableInt(0);
-//        try {
-//            ZoomDao.executeTrans(
-//                    new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            for (T t : it) {
-//                                result.add(update(t));
-//                            }
-//                        }
-//                    });
-//        } catch (Throwable throwable) {
-//            throw new DaoException(throwable);
-//        }
-//
-//        return result.getValue();
-//    }
-//
-//    @Override
-//    public int delete(final Iterable<T> it) {
-//        final MutableInt result = new MutableInt(0);
-//        try {
-//            ZoomDao.executeTrans(
-//                    new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            for (T t : it) {
-//                                result.add(delete(t));
-//                            }
-//                        }
-//                    });
-//        } catch (Throwable throwable) {
-//            throw new DaoException(throwable);
-//        }
-//
-//        return result.getValue();
-//    }
+    public <E> E value(final String key, final Class<E> typeOfE) {
+        entity.setQuerySource(builder);
+        return execute(new ConnectionExecutor() {
+            @Override
+            public E execute(Connection connection) throws SQLException {
+                return EntitySqlUtils.getValue(connection,builder, key, typeOfE);
+            }
+        });
+    }
+
+    @Override
+    public int insert(final Iterable<T> it) {
+        final MutableInt result = new MutableInt(0);
+        ZoomDao.executeTrans(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        for (T t : it) {
+                            result.add(insert(t));
+                        }
+                    }
+                });
+
+        return result.getValue();
+    }
+
+    @Override
+    public int update(final Iterable<T> it) {
+        final MutableInt result = new MutableInt(0);
+        ZoomDao.executeTrans(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        for (T t : it) {
+                            result.add(update(t));
+                        }
+                    }
+                });
+
+        return result.getValue();
+    }
+
+    @Override
+    public int delete(final Iterable<T> it) {
+        final MutableInt result = new MutableInt(0);
+        ZoomDao.executeTrans(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        for (T t : it) {
+                            result.add(delete(t));
+                        }
+                    }
+                });
+
+        return result.getValue();
+    }
 }

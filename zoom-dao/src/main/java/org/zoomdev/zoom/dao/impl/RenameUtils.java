@@ -58,7 +58,8 @@ class RenameUtils {
                     tableMeta,
                     columnMeta,
                     columnMeta.getName(),
-                    columnMeta.getName()
+                    columnMeta.getName(),
+                    fieldName
             ));
         }
         return config;
@@ -77,15 +78,17 @@ class RenameUtils {
         TableMeta tableMeta;
         ColumnMeta columnMeta;
         String selectColumnName;
+        String orginalName;
 
         // 可能为 table.column 或者 column
         String columnName;
 
-        public ColumnRenameConfig(TableMeta tableMeta, ColumnMeta columnMeta, String selectColumnName,String columnName) {
+        public ColumnRenameConfig(TableMeta tableMeta, ColumnMeta columnMeta, String selectColumnName,String columnName,String orginalName) {
             this.tableMeta = tableMeta;
             this.columnMeta = columnMeta;
             this.selectColumnName = selectColumnName;
             this.columnName = columnName;
+            this.orginalName = orginalName;
         }
 
     }
@@ -115,7 +118,8 @@ class RenameUtils {
                         tableMeta,
                         columnMeta,
                         selectColumnName,
-                        columnName
+                        columnName,
+                        columnAliasName
                 ));
             }
             if (first) first = false;

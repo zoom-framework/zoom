@@ -184,6 +184,8 @@ public class EntitySqlUtils {
         }
         if(where.length()>0){
             sql.append(" where ").append(where);
+        }else{
+            throw new DaoException("至少需要一个where条件");
         }
 
     }

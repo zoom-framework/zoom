@@ -177,13 +177,13 @@ public class ActiveRecord extends AbstractRecord implements RawAr, ConnectionHol
     @Override
     public int insert() {
         builder.buildInsert();
-        return _executeUpdate(builder.sql.toString(), builder.values);
+        return _executeUpdate();
     }
 
     @Override
     public int update() {
         builder.buildUpdate();
-        return _executeUpdate(builder.sql.toString(), builder.values);
+        return _executeUpdate();
     }
 
     @Override
@@ -196,7 +196,7 @@ public class ActiveRecord extends AbstractRecord implements RawAr, ConnectionHol
     @Override
     public int delete() {
         builder.buildDelete();
-        return _executeUpdate(builder.sql.toString(), builder.values);
+        return _executeUpdate();
     }
 
     @Override
@@ -340,7 +340,9 @@ public class ActiveRecord extends AbstractRecord implements RawAr, ConnectionHol
 
     @Override
     public int executeUpdate(String sql, Object... args) {
-        return _executeUpdate(sql,Arrays.asList(args));
+        builder.sql.append(sql);
+        Collections.addAll(builder.values,args);
+        return _executeUpdate();
     }
 
     @Override
@@ -362,17 +364,13 @@ public class ActiveRecord extends AbstractRecord implements RawAr, ConnectionHol
         });
     }
 
-    public int _executeUpdate(final String sql, final List<Object> values) {
+    public int _executeUpdate() {
        return execute(new ConnectionExecutor() {
            @Override
            public Integer execute(Connection connection) throws SQLException {
-               PreparedStatement ps = null;
-               try {
-                   ps = BuilderKit.prepareStatement(connection, sql, values);
-                   return ps.executeUpdate();
-               } finally {
-                   DaoUtils.close(ps);
-               }
+               return BuilderKit.executeUpdate(
+                       connection,builder
+               );
            }
        });
     }

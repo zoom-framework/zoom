@@ -35,6 +35,14 @@ public class CollectionUtils {
         return result;
     }
 
+    public static <T> void visit(Iterable<T> list, Visitor<T> visitor) {
+
+        for(T data : list){
+            visitor.visit(data);
+        }
+
+    }
+
 
     static interface KeyValue {
         String getKeyValue(Object data, String... keys);

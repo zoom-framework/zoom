@@ -11,6 +11,8 @@ public class Transactions {
 
     private int level;
 
+    private int refCount;
+
     private List<Transaction> transactions = new ArrayList<Transaction>();
 
     public Connection getConnection(DataSource dataSource) throws SQLException {
@@ -28,6 +30,11 @@ public class Transactions {
 
     public Transactions(int level) {
         this.level = level;
+        this.refCount = 1;
+    }
+
+    public void addRefCount(){
+        ++refCount;
     }
 
     public void commit() {
@@ -36,9 +43,7 @@ public class Transactions {
                 transaction.commit();
             } catch (Throwable e) {
                 //失败
-
             }
-
         }
         clean();
     }
@@ -62,4 +67,7 @@ public class Transactions {
         clean();
     }
 
+    public int subRefCount() {
+        return --refCount;
+    }
 }

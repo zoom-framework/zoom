@@ -87,8 +87,8 @@ public class ZoomDao implements Dao, Destroyable{
     }
 
     public void release(){
-        arholder.set(null);
-        earHolder.set(null);
+        arholder.remove();
+        earHolder.remove();
     }
 
     @Override
@@ -340,17 +340,19 @@ public class ZoomDao implements Dao, Destroyable{
             transactions = new Transactions(level);
             threadLocal.set(transactions);
         } else {
-            log.warn("transaction已经开始，level不会改变");
+            transactions.addRefCount();
         }
     }
 
     public static void commitTrans() {
         Transactions transactions = getTransaction();
         if (transactions != null) {
-            try {
-                transactions.commit();
-            } finally {
-                threadLocal.remove();
+            if(0==transactions.subRefCount()){
+                try {
+                    transactions.commit();
+                } finally {
+                    threadLocal.remove();
+                }
             }
         }
     }
@@ -358,10 +360,12 @@ public class ZoomDao implements Dao, Destroyable{
     public static void rollbackTrans() {
         Transactions transactions = getTransaction();
         if (transactions != null) {
-            try {
-                transactions.rollback();
-            } finally {
-                threadLocal.remove();
+            if(0 == transactions.subRefCount()){
+                try {
+                    transactions.rollback();
+                } finally {
+                    threadLocal.remove();
+                }
             }
         }
     }

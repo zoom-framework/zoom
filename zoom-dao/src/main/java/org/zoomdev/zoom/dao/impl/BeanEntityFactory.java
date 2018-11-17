@@ -71,7 +71,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
         public void handle(AbstractEntityField entityField, CreateContext context) {
             if(context.config!=null){
                 ColumnMeta columnMeta = context.config.columnMeta;
-                entityField.setOriginalFieldName(columnMeta.getName());
+                entityField.setOriginalFieldName(context.config.orginalName);
                 entityField.setColumn(context.config.columnName);
                 entityField.setSelectColumnName(context.config.selectColumnName);
                 entityField.setColumnMeta(columnMeta);
@@ -311,7 +311,6 @@ class BeanEntityFactory extends AbstractEntityFactory {
             if (field.isAnnotationPresent(ColumnIgnore.class)) {
                 continue;
             }
-            field.setAccessible(true);
             BeanEntityField entityField = new BeanEntityField(field);
             entityFields.add(entityField);
 

@@ -129,7 +129,7 @@ public class RecordEntityFactory extends AbstractEntityFactory {
         //
         entityField.setStatementAdapter(dao.getStatementAdapter(null,columnMeta.getDataType()));
         entityField.setColumnMeta(columnMeta);
-        entityField.setOriginalFieldName(columnMeta.getName());
+        entityField.setOriginalFieldName(config.orginalName);
 
 
         return entityField;

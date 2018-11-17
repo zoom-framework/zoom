@@ -266,6 +266,14 @@ public class BuilderKit {
     public static final Pattern AS_PATTERN = Pattern.compile("([a-z_\\(\\)\\.\\[\\]]+)[\\s]+as[\\s]+([a-z_]+)", Pattern.CASE_INSENSITIVE);
 
 
-
-
+    public static Integer executeUpdate(Connection connection,
+                                        SimpleSqlBuilder builder) throws SQLException {
+        PreparedStatement ps = null;
+        try {
+            ps = BuilderKit.prepareStatement(connection, builder.sql.toString(), builder.values);
+            return ps.executeUpdate();
+        } finally {
+            DaoUtils.close(ps);
+        }
+    }
 }

@@ -57,7 +57,7 @@ public class DetectPrefixAliasPolicyFactory implements AliasPolicyFactory {
                     first = entry.getValue();
                     key = entry.getKey();
                 } else {
-                    if (first.intValue() >= entry.getValue().intValue()) {
+                    if (first.intValue() > entry.getValue().intValue()) {
                         aliasPolicy = new PrefixAliasPolicy(new StringBuilder(key).append("_").toString());
                     }
                     break;
