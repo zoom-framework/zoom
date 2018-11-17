@@ -29,7 +29,9 @@ public class CachedEntityFactory implements EntityFactory {
         public int hashCode() {
             int h = this.h;
             if (h == 0) {
-                h = 31 + type.hashCode();
+                if(type!=null){
+                    h = 31 + type.hashCode();
+                }
                 for(String table : tables){
                     h = 31 * h + table.hashCode();
                 }
@@ -53,12 +55,14 @@ public class CachedEntityFactory implements EntityFactory {
         }
     }
 
+    private BeanEntityFactory beanEntityFactory;
+    private RecordEntityFactory recordEntityFactory;
 
-    public CachedEntityFactory(EntityFactory proxy) {
-        this.proxy = proxy;
+    public CachedEntityFactory(BeanEntityFactory beanEntityFactory,RecordEntityFactory recordEntityFactory) {
+       this.beanEntityFactory = beanEntityFactory;
+       this.recordEntityFactory = recordEntityFactory;
     }
 
-    private EntityFactory proxy;
     private Map<EntityKey,Entity> map = new ConcurrentHashMap<EntityKey, Entity>();
 
 
@@ -71,17 +75,17 @@ public class CachedEntityFactory implements EntityFactory {
         return SingletonUtils.liteDoubleLockMap(map, new EntityKey(type), new SingletonUtils.SingletonInit<Entity>() {
             @Override
             public Entity create() {
-                return proxy.getEntity(type);
+                return beanEntityFactory.getEntity(type);
             }
         });
     }
 
     @Override
-    public Entity getEntity(final Class<?> type, final String... tables) {
-        return SingletonUtils.liteDoubleLockMap(map, new EntityKey(type,tables), new SingletonUtils.SingletonInit<Entity>() {
+    public Entity getEntity(final String... tables) {
+        return SingletonUtils.liteDoubleLockMap(map, new EntityKey(null,tables), new SingletonUtils.SingletonInit<Entity>() {
             @Override
             public Entity create() {
-                return proxy.getEntity(type,tables);
+                return recordEntityFactory.getEntity(tables);
             }
         });
     }

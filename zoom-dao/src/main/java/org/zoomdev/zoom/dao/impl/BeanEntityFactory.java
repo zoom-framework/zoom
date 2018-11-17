@@ -30,6 +30,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 
 class BeanEntityFactory extends AbstractEntityFactory {
@@ -79,7 +80,8 @@ class BeanEntityFactory extends AbstractEntityFactory {
                     entityField.setColumn(context.column.value());
                     entityField.setSelectColumnName(context.column.value());
                 }else{
-                    throw new DaoException("绑定实体类出错，找不到字段的配置" + context.field);
+                    throw new DaoException("绑定实体类出错，找不到字段的配置" + context.field+"当前所有可用字段为" +
+                    StringUtils.join(context.getAvliableFields(),","));
                 }
             }
         }
@@ -152,13 +154,19 @@ class BeanEntityFactory extends AbstractEntityFactory {
         RenameUtils.ColumnRenameConfig config;
         DataAdapter dataAdapter;
         Type[] types;
+        Map<String,RenameUtils.ColumnRenameConfig> map;
 
         public Class<?> getDbType() {
             return config == null ? null : config.columnMeta.getDataType();
         }
 
-        CreateContext(Field field, Map<String, RenameUtils.ColumnRenameConfig> map) throws Exception {
 
+        public Set<String> getAvliableFields(){
+            return map.keySet();
+        }
+
+        CreateContext(Field field, Map<String, RenameUtils.ColumnRenameConfig> map) throws Exception {
+            this.map = map;
             this.field = field;
             this.column = field.getAnnotation(Column.class);
             if (this.column != null && this.column.adapter() != DataAdapter.class) {
@@ -268,7 +276,6 @@ class BeanEntityFactory extends AbstractEntityFactory {
     }
 
 
-    @Override
     public Entity getEntity(final Class<?> type) {
         Table table = type.getAnnotation(Table.class);
         if (table == null) {
@@ -316,6 +323,9 @@ class BeanEntityFactory extends AbstractEntityFactory {
                 }
 
             } catch (Exception e) {
+                if(e instanceof DaoException){
+                    throw (DaoException)e;
+                }
                 throw new DaoException("绑定Entity失败，发生异常:"+type,e);
             }
         }
@@ -331,12 +341,6 @@ class BeanEntityFactory extends AbstractEntityFactory {
 
     }
 
-
-    @Override
-    public Entity getEntity(final Class<?> type, String... tables) {
-
-        return getEntity(type);
-    }
 
 
     /**

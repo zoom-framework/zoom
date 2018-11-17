@@ -48,14 +48,16 @@ public class ZoomDao implements Dao, Destroyable{
 
     private SqlDriver sqlDriver;
     private DataSource dataSource;
-    private EntityFactory beanEntityFactory;
+    private EntityFactory entityFactory;
+
+
     private DbStructFactory dbStructFactory;
     private boolean lazyLoad;
 
     private NameAdapter nameAdapter;
     private Collection<String> names;
 
-    private EntityFactory recordEntityFactory;
+
 
     private ThreadLocal<RawAr> arholder = new ThreadLocal<RawAr>();
 
@@ -77,8 +79,7 @@ public class ZoomDao implements Dao, Destroyable{
         this.dataSource = dataSource;
         this.lazyLoad = lazyLoad;
         Db.register(this);
-        beanEntityFactory = new CachedEntityFactory(new BeanEntityFactory(this));
-        recordEntityFactory = new CachedEntityFactory(new RecordEntityFactory(this));
+        entityFactory = new CachedEntityFactory(new BeanEntityFactory(this),new RecordEntityFactory(this));
         if (lazyLoad) {
             return;
         }
@@ -118,8 +119,7 @@ public class ZoomDao implements Dao, Destroyable{
     @Override
     public void destroy() {
         Classes.destroy(dbStructFactory);
-        Classes.destroy(beanEntityFactory);
-        Classes.destroy(recordEntityFactory);
+        Classes.destroy(entityFactory);
 
         Io.closeAny(dataSource);
         Db.unregister(this);
@@ -129,10 +129,6 @@ public class ZoomDao implements Dao, Destroyable{
         return ar().execute(executor);
     }
 
-    @Override
-    public EntityFactory getEntityFactory() {
-        return beanEntityFactory;
-    }
 
     @Override
     public String getURL() {
@@ -142,6 +138,16 @@ public class ZoomDao implements Dao, Destroyable{
     public DbStructFactory getDbStructFactory() {
         lazyLoad();
         return dbStructFactory;
+    }
+
+    @Override
+    public Entity getEntity(Class<?> type) {
+        return entityFactory.getEntity(type);
+    }
+
+    @Override
+    public Entity getEntity(String... tables) {
+        return entityFactory.getEntity(tables);
     }
 
     private void load() {
@@ -214,7 +220,7 @@ public class ZoomDao implements Dao, Destroyable{
     @Override
     public <T> EAr<T> ar(Class<T> type) {
         EAr<T> ar = (EAr<T>) earHolder.get();
-        Entity entity = beanEntityFactory.getEntity(type);
+        Entity entity = entityFactory.getEntity(type);
         if (ar == null) {
             lazyLoad();
             ar = new EntityActiveRecord<T>(this, entity);
@@ -228,7 +234,7 @@ public class ZoomDao implements Dao, Destroyable{
     @Override
     public EAr<Record> ar(String... tables) {
         EAr<Record> ar = (EAr<Record>) earHolder.get();
-        Entity entity = recordEntityFactory.getEntity(Record.class, tables);
+        Entity entity = entityFactory.getEntity(tables);
         if (ar == null) {
             lazyLoad();
             ar = new EntityActiveRecord<Record>(this, entity);
@@ -363,8 +369,7 @@ public class ZoomDao implements Dao, Destroyable{
     @Override
     public void clearCache() {
         dbStructFactory.clearCache();
-        recordEntityFactory.clearCache();
-        beanEntityFactory.clearCache();
+        entityFactory.clearCache();
     }
 
     @Override

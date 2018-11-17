@@ -9,7 +9,7 @@ import org.zoomdev.zoom.dao.meta.TableMeta;
 
 import java.util.Map;
 
-public abstract class AbstractEntityFactory implements EntityFactory {
+public abstract class AbstractEntityFactory {
 
     protected final Dao dao;
 
@@ -43,7 +43,6 @@ public abstract class AbstractEntityFactory implements EntityFactory {
         return meta;
     }
 
-    @Override
     public void clearCache() {
 
     }

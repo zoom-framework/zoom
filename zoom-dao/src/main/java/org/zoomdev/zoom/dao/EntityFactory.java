@@ -23,11 +23,10 @@ public interface EntityFactory {
     /**
      * 根据实体类和表，获取到一个Entity绑定关系,
      *
-     * @param type
-     * @param tables 一个实体类允许绑定多个表
+     * @param tables
      * @return
      */
-    Entity getEntity(Class<?> type, String...tables);
+    Entity getEntity( String...tables);
 
 
     void clearCache();

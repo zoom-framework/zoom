@@ -29,11 +29,6 @@ public class RecordEntityFactory extends AbstractEntityFactory {
         handlers = new ArrayList<ContextHandler>();
     }
 
-    @Override
-    public Entity getEntity(Class<?> type) {
-        throw new DaoException("RecordEntityFactory的getEntity方法是无效的");
-    }
-
 
     private ValueCaster getCaster(Class<?> columnType) {
         if (columnType == Clob.class) {
@@ -140,8 +135,7 @@ public class RecordEntityFactory extends AbstractEntityFactory {
         return entityField;
     }
 
-    @Override
-    public Entity getEntity(Class<?> type, String... tables) {
+    public Entity getEntity(String... tables) {
         final List<RecordEntityField> entityFields = new ArrayList<RecordEntityField>();
         Map<String,RenameUtils.ColumnRenameConfig> map;
 

@@ -56,6 +56,10 @@ public interface Dao extends StatementAdapterFactory {
     DbStructFactory getDbStructFactory();
 
 
+    Entity getEntity(Class<?> type);
+    Entity getEntity(String...tables);
+
+
     /**
      * 清除缓存
      */
@@ -74,7 +78,6 @@ public interface Dao extends StatementAdapterFactory {
 
     <T> T execute(ConnectionExecutor connectionExecutor);
 
-    EntityFactory getEntityFactory();
 
 
     String getURL();
