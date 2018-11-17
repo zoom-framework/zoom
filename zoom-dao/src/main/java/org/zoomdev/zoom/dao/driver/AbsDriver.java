@@ -82,10 +82,7 @@ public abstract class AbsDriver implements SqlDriver {
             }
         }
     }
-    @Override
-    public StatementAdapter getStatementAdapter(Class<?> columnType) {
-        return null;
-    }
+
 
     @Override
     public StatementAdapter getStatementAdapter(Class<?> fieldType, Class<?> columnType) {

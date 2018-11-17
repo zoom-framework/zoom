@@ -2,6 +2,7 @@ package org.zoomdev.zoom.dao.impl;
 
 import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.caster.ValueCaster;
+import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.EntityFactory;
 import org.zoomdev.zoom.dao.auto.AutoField;
 import org.zoomdev.zoom.dao.Dao;
@@ -21,14 +22,16 @@ import java.util.Map;
 
 public class RecordEntityFactory extends AbstractEntityFactory {
 
+    private List<ContextHandler> handlers;
 
     public RecordEntityFactory(Dao dao) {
         super(dao);
+        handlers = new ArrayList<ContextHandler>();
     }
 
     @Override
     public Entity getEntity(Class<?> type) {
-        return null;
+        throw new DaoException("RecordEntityFactory的getEntity方法是无效的");
     }
 
 
@@ -57,48 +60,6 @@ public class RecordEntityFactory extends AbstractEntityFactory {
             ++index;
         }
         return primaryKeys;
-    }
-
-
-    public Entity getEntityOne(Class<?> type, String tableName) {
-
-        //获取到field和column的对应关系
-        final List<RecordEntityField> entityFields = new ArrayList<RecordEntityField>();
-
-        Map<String,RenameUtils.ColumnRenameConfig> map =  RenameUtils.rename(dao, tableName);
-        RenameUtils.ColumnRenameConfig firstTable = map.values().iterator().next();
-        TableMeta tableMeta = firstTable.tableMeta;
-
-        for (Map.Entry<String,RenameUtils.ColumnRenameConfig> entry : map.entrySet()) {
-            String fieldName = entry.getKey();
-            RenameUtils.ColumnRenameConfig config = entry.getValue();
-            ColumnMeta columnMeta = config.columnMeta;
-            tableMeta = config.tableMeta;
-            String selectColumnName = config.selectColumnName;
-
-            RecordEntityField entityField = new RecordEntityField(
-                    fieldName,
-                    DaoUtils.normalizeType(columnMeta.getDataType())
-            );
-            //单表的情况下无须有as
-            entityField.setSelectColumnName(columnMeta.getName());
-            entityField.setColumn(columnMeta.getName());
-            //只有clob blob 需要适配，
-            entityField.setCaster(getCaster(columnMeta.getDataType()));
-            //
-            entityField.setStatementAdapter(dao.getStatementAdapter(columnMeta.getDataType()));
-            entityField.setOriginalFieldName(columnMeta.getName());
-            entityField.setColumnMeta(columnMeta);
-            entityFields.add(entityField);
-        }
-
-
-        return new RecordEntity(
-                tableName,
-                entityFields.toArray(new EntityField[entityFields.size()]),
-                getPrimaryKeys(tableMeta, entityFields),
-                createAutoEntity(tableMeta, entityFields),
-                null);
     }
 
 
@@ -164,17 +125,16 @@ public class RecordEntityFactory extends AbstractEntityFactory {
 
     private RecordEntityField createEntityFieldFromConfig(String fieldName,RenameUtils.ColumnRenameConfig config){
         ColumnMeta columnMeta = config.columnMeta;
-        TableMeta tableMeta = config.tableMeta;
-        String selectColumnName = config.selectColumnName;
 
         RecordEntityField entityField = new RecordEntityField(fieldName, DaoUtils.normalizeType(columnMeta.getDataType()));
-        entityField.setColumn(tableMeta.getName() + "." + columnMeta.getName());
-        entityField.setSelectColumnName(selectColumnName);
+        entityField.setColumn(config.columnName);
+        entityField.setSelectColumnName(config.selectColumnName);
         //只有clob blob 需要适配，
         entityField.setCaster(getCaster(columnMeta.getDataType()));
         //
-        entityField.setStatementAdapter(dao.getStatementAdapter(columnMeta.getDataType()));
+        entityField.setStatementAdapter(dao.getStatementAdapter(null,columnMeta.getDataType()));
         entityField.setColumnMeta(columnMeta);
+        entityField.setOriginalFieldName(columnMeta.getName());
 
 
         return entityField;
@@ -182,28 +142,33 @@ public class RecordEntityFactory extends AbstractEntityFactory {
 
     @Override
     public Entity getEntity(Class<?> type, String... tables) {
-        if(tables.length==1){
-            return getEntityOne(type,tables[0]);
-        }else{
-            // 得到一个映射关系
-            final List<RecordEntityField> entityFields = new ArrayList<RecordEntityField>();
+        final List<RecordEntityField> entityFields = new ArrayList<RecordEntityField>();
+        Map<String,RenameUtils.ColumnRenameConfig> map;
 
-            Map<String,RenameUtils.ColumnRenameConfig> map = RenameUtils.rename(
-                dao,tables
+        if(tables.length>1){
+            map = RenameUtils.rename(
+                    dao,tables
             );
-
-            for (Map.Entry<String,RenameUtils.ColumnRenameConfig> entry : map.entrySet()) {
-                String fieldName = entry.getKey();
-                RenameUtils.ColumnRenameConfig config = entry.getValue();
-                entityFields.add(createEntityFieldFromConfig(fieldName,config));
-            }
-            return new RecordEntity(
-                    tables[0],
-                    entityFields.toArray(new EntityField[entityFields.size()]),
-                    null,
-                    null,
-                    null);
+        }else{
+            map = RenameUtils.rename(
+                    dao,tables[0]
+            );
         }
+
+        for (Map.Entry<String,RenameUtils.ColumnRenameConfig> entry : map.entrySet()) {
+            String fieldName = entry.getKey();
+            RenameUtils.ColumnRenameConfig config = entry.getValue();
+            entityFields.add(createEntityFieldFromConfig(fieldName,config));
+        }
+        String tableName = tables[0];
+        TableMeta tableMeta = map.values().iterator().next().tableMeta;
+        return new RecordEntity(
+                tableName,
+                entityFields.toArray(new EntityField[entityFields.size()]),
+                getPrimaryKeys(tableMeta, entityFields),
+                createAutoEntity(tableMeta, entityFields),
+                null);
+
     }
 
 

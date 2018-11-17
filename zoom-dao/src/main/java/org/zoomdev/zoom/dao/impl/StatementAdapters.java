@@ -32,6 +32,15 @@ class StatementAdapters {
      * @return
      */
     public static StatementAdapter create(Class<?> fieldType, Class<?> columnType) {
+        if (fieldType == null) {
+            if (columnType == null) {
+                return DEFAULT;
+            }
+            return create(columnType);
+        }
+        if (columnType == null) {
+            return DEFAULT;
+        }
         if (fieldType == columnType || columnType.isAssignableFrom(fieldType)) {
             return DEFAULT;
         }

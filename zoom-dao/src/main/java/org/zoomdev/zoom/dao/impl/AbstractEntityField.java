@@ -1,6 +1,7 @@
 package org.zoomdev.zoom.dao.impl;
 
 import org.zoomdev.zoom.caster.ValueCaster;
+import org.zoomdev.zoom.common.validate.Validator;
 import org.zoomdev.zoom.dao.auto.AutoField;
 import org.zoomdev.zoom.dao.adapters.EntityField;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
@@ -34,6 +35,8 @@ abstract class AbstractEntityField implements EntityField {
     private String column;
 
     private String selectColumnName;
+
+    Validator validator;
 
     AbstractEntityField() {
 
@@ -102,4 +105,12 @@ abstract class AbstractEntityField implements EntityField {
     public void setSelectColumnName(String selectColumnName) {
         this.selectColumnName = selectColumnName;
     }
+
+
+    @Override
+    public Validator getValidator(){
+        return validator;
+    }
+
+
 }

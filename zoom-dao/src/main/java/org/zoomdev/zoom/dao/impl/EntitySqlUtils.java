@@ -15,8 +15,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class EntitySqlUtils {
+
+
+    static final Pattern TABLE_AND_COLUMN_PATTERN = Pattern.compile("[a-zA-Z0-9_]+[\\s]*\\.[\\s]*[a-zA-Z0-9_]+|[a-zA-Z0-9_]+");
+
+
+
+
+
+
     public static <E> E getValue(Connection connection, SimpleSqlBuilder builder,String key, Class<E> typeOfE) throws SQLException {
         builder.selectRaw(key);
         builder.buildSelect();

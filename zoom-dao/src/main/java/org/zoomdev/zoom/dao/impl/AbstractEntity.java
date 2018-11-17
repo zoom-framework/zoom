@@ -16,6 +16,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
+/**
+ *  {@link Entity} 抽象基类
+ */
 public abstract class AbstractEntity implements Entity {
     EntityField[] entityFields;
     EntityField[] primaryKeys;
@@ -181,11 +185,10 @@ public abstract class AbstractEntity implements Entity {
     }
 
 
-    static final Pattern COLUMN_PATTERN = Pattern.compile("[a-zA-Z0-9]+[\\s]*\\.[\\s]*[a-zA-Z0-9]+|[a-zA-Z0-9]+");
 
     private void parseOnForOne(final StringBuilder sb, String part,  final Set<String> joinAllFields) {
 
-        PatternUtils.visit(part, COLUMN_PATTERN, new PatternUtils.PatternVisitor() {
+        PatternUtils.visit(part, EntitySqlUtils.TABLE_AND_COLUMN_PATTERN, new PatternUtils.PatternVisitor() {
             @Override
             public void onGetPattern(Matcher matcher) {
                 String str = matcher.group();

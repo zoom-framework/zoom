@@ -77,6 +77,8 @@ class RenameUtils {
         TableMeta tableMeta;
         ColumnMeta columnMeta;
         String selectColumnName;
+
+        // 可能为 table.column 或者 column
         String columnName;
 
         public ColumnRenameConfig(TableMeta tableMeta, ColumnMeta columnMeta, String selectColumnName,String columnName) {

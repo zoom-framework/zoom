@@ -1,6 +1,7 @@
 package org.zoomdev.zoom.dao.adapters;
 
 import com.sun.istack.internal.Nullable;
+import org.zoomdev.zoom.common.validate.Validator;
 import org.zoomdev.zoom.dao.auto.AutoField;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 
@@ -99,4 +100,11 @@ public interface EntityField extends StatementAdapter {
      * @return
      */
     ColumnMeta getColumnMeta();
+
+
+    /**
+     * 入库数据校验，对于表单提交，需要先使用本校验器校验之后，在使用其他校验器来校验。
+     * @return
+     */
+    Validator getValidator();
 }

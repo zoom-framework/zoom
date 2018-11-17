@@ -396,12 +396,5 @@ public class ZoomDao implements Dao, Destroyable{
         return StatementAdapters.create(fieldType, columnType);
     }
 
-    @Override
-    public StatementAdapter getStatementAdapter(Class<?> columnType) {
-        StatementAdapter adapter = sqlDriver.getStatementAdapter(columnType);
-        if (adapter != null) {
-            return adapter;
-        }
-        return StatementAdapters.create(columnType);
-    }
+
 }

@@ -3,8 +3,14 @@ package org.zoomdev.zoom.dao.impl;
 import org.apache.commons.lang3.StringUtils;
 import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.caster.ValueCaster;
-import org.zoomdev.zoom.common.utils.*;
-import org.zoomdev.zoom.dao.*;
+import org.zoomdev.zoom.common.utils.CachedClasses;
+import org.zoomdev.zoom.common.utils.Classes;
+import org.zoomdev.zoom.common.utils.Converter;
+import org.zoomdev.zoom.common.utils.MapUtils;
+import org.zoomdev.zoom.dao.AutoGenerateValue;
+import org.zoomdev.zoom.dao.Dao;
+import org.zoomdev.zoom.dao.DaoException;
+import org.zoomdev.zoom.dao.Entity;
 import org.zoomdev.zoom.dao.adapters.DataAdapter;
 import org.zoomdev.zoom.dao.adapters.EntityField;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
@@ -21,16 +27,245 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 
 class BeanEntityFactory extends AbstractEntityFactory {
 
+    private List<ContextHandler> handlers;
+
     protected BeanEntityFactory(Dao dao) {
         super(dao);
+        handlers = new ArrayList<ContextHandler>();
+
+        handlers.add(new ValueCasterContextHandler(
+                new ValueCasterCreator1(),
+                new ValueCasterCreator2(),
+                new ValueCasterCreator3(),
+                new ValueCasterCreator4()
+        ));
+
+        handlers.add(new StatementAdapterContextHandler(
+                new StatementAdapterCreator1(),
+                new StatementAdapterCreator2()
+
+        ));
+
+
+        handlers.add(new FillContextHandldr());
+
+
+    }
+
+    interface BeanContextHandler extends ContextHandler<CreateContext>{
+
     }
 
 
+    class FillContextHandldr implements BeanContextHandler {
+
+        @Override
+        public void handle(AbstractEntityField entityField, CreateContext context) {
+            if(context.config!=null){
+                ColumnMeta columnMeta = context.config.columnMeta;
+                entityField.setOriginalFieldName(columnMeta.getName());
+                entityField.setColumn(context.config.columnName);
+                entityField.setSelectColumnName(context.config.selectColumnName);
+                entityField.setColumnMeta(columnMeta);
+            }else{
+                if(context.column!=null && !context.column.value().isEmpty()){
+                    entityField.setColumn(context.column.value());
+                    entityField.setSelectColumnName(context.column.value());
+                }else{
+                    throw new DaoException("绑定实体类出错，找不到字段的配置" + context.field);
+                }
+            }
+        }
+    }
+
+    class ValueCasterContextHandler implements BeanContextHandler {
+
+        public ValueCasterContextHandler(ValueCasterCreator... creators) {
+            this.creators = creators;
+        }
+
+        private ValueCasterCreator[] creators;
+
+        @Override
+        public void handle(AbstractEntityField field, CreateContext context) {
+            for (ValueCasterCreator<CreateContext> creator : creators) {
+                ValueCaster valueCaster = creator.create(context);
+                if (valueCaster != null) {
+                    field.setCaster(valueCaster);
+                    break;
+                }
+            }
+        }
+    }
+
+    class StatementAdapterContextHandler implements BeanContextHandler {
+
+        public StatementAdapterContextHandler(StatementAdapterCreator... creators) {
+            this.creators = creators;
+        }
+
+        private StatementAdapterCreator[] creators;
+
+        @Override
+        public void handle(AbstractEntityField field, CreateContext context) {
+            for (StatementAdapterCreator<CreateContext> creator : creators) {
+                StatementAdapter statementAdapter = creator.create(context);
+                if (statementAdapter != null) {
+                    field.setStatementAdapter(statementAdapter);
+                    break;
+                }
+            }
+        }
+    }
+
+    static RenameUtils.ColumnRenameConfig search(Map<String, RenameUtils.ColumnRenameConfig> map, String column) {
+        for (Map.Entry<String, RenameUtils.ColumnRenameConfig> entry : map.entrySet()) {
+            String key = entry.getKey();
+            if (column.equalsIgnoreCase(key)) {
+                return entry.getValue();
+            }
+
+            RenameUtils.ColumnRenameConfig config = entry.getValue();
+            if (column.equalsIgnoreCase(config.columnMeta.getName())) {
+                return config;
+            }
+
+
+            if (column.equalsIgnoreCase(config.columnName)) {
+                return config;
+            }
+
+        }
+        return null;
+    }
+
+    class CreateContext {
+        Field field;
+        Column column;
+        RenameUtils.ColumnRenameConfig config;
+        DataAdapter dataAdapter;
+        Type[] types;
+
+        public Class<?> getDbType() {
+            return config == null ? null : config.columnMeta.getDataType();
+        }
+
+        CreateContext(Field field, Map<String, RenameUtils.ColumnRenameConfig> map) throws Exception {
+
+            this.field = field;
+            this.column = field.getAnnotation(Column.class);
+            if (this.column != null && this.column.adapter() != DataAdapter.class) {
+                Type[] types = Classes.getAllParameterizedTypes(column.adapter());
+                if (types == null) {
+                    throw new DaoException(column.adapter() + "必须是泛型类型");
+                }
+                if (types.length < 2) {
+                    throw new DaoException(column.adapter() + "必须有至少两个泛型类型");
+                }
+                this.dataAdapter = this.column.adapter().newInstance();
+                this.types = types;
+            }
+
+            if (this.column != null && !this.column.value().isEmpty()) {
+                //映射的字段
+                //看下是否是 aaa_bbbb 或者 table1.aaa_bbb的形式，如果是的话，那么就在map中搜索对应的字段,注意搜索的时候忽略大小写
+                String value = column.value();
+                if (EntitySqlUtils.TABLE_AND_COLUMN_PATTERN.matcher(value).matches()) {
+                    //搜索带点好的
+                    RenameUtils.ColumnRenameConfig config = search(map, value);
+                    this.config = config;
+
+                }
+            } else {
+                this.config = map.get(field.getName());
+            }
+
+        }
+
+    }
+
+
+
+    class StatementAdapterCreator1 implements StatementAdapterCreator<CreateContext> {
+
+        @Override
+        public StatementAdapter create(CreateContext context) {
+            if (context.dataAdapter != null) {
+                return createWrappedStatementAdapter(context.dataAdapter,
+                        dao.getStatementAdapter(Classes.getClass(context.types[1]), context.getDbType()));
+            }
+            return null;
+
+        }
+    }
+
+    class StatementAdapterCreator2 implements StatementAdapterCreator<CreateContext> {
+
+        @Override
+        public StatementAdapter create(CreateContext context) {
+            if (context.dataAdapter == null) {
+                return dao.getStatementAdapter(context.field.getType(), context.getDbType());
+
+            }
+            return null;
+
+        }
+    }
+
+
+    class ValueCasterCreator1 implements ValueCasterCreator<CreateContext> {
+
+        @Override
+        public ValueCaster create(CreateContext context) {
+            if (context.dataAdapter != null && context.config != null) {
+                return createWrappedValueCaster(context.dataAdapter,
+                        Caster.wrapType(context.config.columnMeta.getDataType(),
+                                context.types[1]));
+            }
+            return null;
+        }
+    }
+
+    class ValueCasterCreator2 implements ValueCasterCreator<CreateContext> {
+
+        @Override
+        public ValueCaster create(CreateContext context) {
+            if (context.dataAdapter != null && context.config == null) {
+                return createWrappedValueCaster(context.dataAdapter,
+                        Caster.wrapFirstVisit(context.types[1]));
+            }
+            return null;
+        }
+    }
+
+    class ValueCasterCreator3 implements ValueCasterCreator<CreateContext> {
+
+        @Override
+        public ValueCaster create(CreateContext context) {
+            if (context.dataAdapter == null && context.config == null) {
+                return Caster.wrapFirstVisit(context.field.getGenericType());
+            }
+            return null;
+        }
+    }
+
+    class ValueCasterCreator4 implements ValueCasterCreator<CreateContext> {
+
+        @Override
+        public ValueCaster create(CreateContext context) {
+            if (context.dataAdapter == null && context.config != null) {
+                return Caster.wrapType(context.config.columnMeta.getDataType(), context.field.getGenericType());
+            }
+            return null;
+        }
+    }
 
 
     @Override
@@ -40,43 +275,28 @@ class BeanEntityFactory extends AbstractEntityFactory {
             throw new DaoException("找不到Table标注，不能使用本方法绑定实体");
         }
         String tableName = table.value();
+        assert(!tableName.isEmpty());
         Link link = type.getAnnotation(Link.class);
+        Map<String, RenameUtils.ColumnRenameConfig> map;
+        Join[] joins = null;
         if (link != null) {
-            Join[] joins = link.value();
+            joins = link.value();
             //表
-            List<String> tables = new ArrayList<String>();
-            tables.add(tableName);
+            String[] tables = new String[joins.length+1];
+            tables[0] = tableName;
+            int index = 1;
             for (Join join : joins) {
-                tables.add(join.table());
+                tables[index++]=join.table();
             }
-
-            assert (!StringUtils.isEmpty(table.value()));
-            return getEntityJoins(type, tables.toArray(new String[tables.size()]), joins);
+            map = RenameUtils.rename(dao, tables);
         } else {
-            assert (!StringUtils.isEmpty(table.value()));
-            return getEntityOne(type, tableName);
+            map = RenameUtils.rename(dao, tableName);
         }
 
-
-    }
-
-
-    @Override
-    public Entity getEntity(final Class<?> type, String...tables) {
-        return getEntityOne(type,tables[0]);
-    }
-
-    public Entity getEntityOne(final Class<?> type, final String tableName) {
-
-        TableMeta tableMeta = getTableMeta(tableName);
-
-        final Map<String, RenameUtils.ColumnRenameConfig> map = RenameUtils.rename(dao,tableName);
-
+        RenameUtils.ColumnRenameConfig firstTable = map.values().iterator().next();
+        TableMeta tableMeta = firstTable.tableMeta;
 
         Field[] fields = CachedClasses.getFields(type);
-        assert (tableMeta.getPrimaryKeys() != null && tableMeta.getColumns() != null);
-
-
         List<AbstractEntityField> entityFields = new ArrayList<AbstractEntityField>(fields.length);
 
         for (int index = 0; index < fields.length; ++index) {
@@ -87,42 +307,18 @@ class BeanEntityFactory extends AbstractEntityFactory {
             field.setAccessible(true);
             BeanEntityField entityField = new BeanEntityField(field);
             entityFields.add(entityField);
-            Column column = field.getAnnotation(Column.class);
-            if (column != null && !column.value().isEmpty()) {
-                fillWithColumnAnnotationName(
-                        entityField,
-                        field,
-                        column,
-                        index
-                );
 
-                fillAdapterWithColumnName(
-                        entityField,
-                        field,
-                        column
-                );
+            try {
+                CreateContext context = new CreateContext(field,map);
 
-            } else {
-                RenameUtils.ColumnRenameConfig config = map.get(field.getName());
-                if (config == null) {
-                    throw new DaoException(String.format(
-                            ERROR_FORMAT,
-                            field,
-                            "找不到字段对应的ColumnMeta，当前所有能使用的名称为:" + StringUtils.join(map.keySet(), ",")));
+                for(ContextHandler handler : handlers){
+                    handler.handle(entityField,context);
                 }
-                fillWithoutColumnAnnotationName(
-                        entityField,
-                        field,
-                        tableMeta,
-                        config.columnMeta,
-                        config.columnMeta.getName()
-                );
 
-                fillAdapter(entityField, column, config.columnMeta, dao, field);
+            } catch (Exception e) {
+                throw new DaoException("绑定Entity失败，发生异常:"+type,e);
             }
-
         }
-
 
         return new BeanEntity(
                 tableName,
@@ -131,8 +327,17 @@ class BeanEntityFactory extends AbstractEntityFactory {
                 findAutoGenerateFields(entityFields, tableMeta.getColumns(), fields),
                 type,
                 getNamesMap(map, fields),
-                null);
+                getJoinConfigs(joins));
+
     }
+
+
+    @Override
+    public Entity getEntity(final Class<?> type, String... tables) {
+
+        return getEntity(type);
+    }
+
 
     /**
      * 在 where/groupGy等语句中的映射关系,除了fields以外的
@@ -150,16 +355,14 @@ class BeanEntityFactory extends AbstractEntityFactory {
         return MapUtils.convert(map, new Converter<RenameUtils.ColumnRenameConfig, String>() {
             @Override
             public String convert(RenameUtils.ColumnRenameConfig data) {
-                return data.columnMeta.getName();
+                return data.columnName;
             }
         });
     }
 
-    public Entity getEntityJoins(Class<?> type, String[] tables, Join[] joins) {
-        assert (tables.length > 1);
-        Map<String,RenameUtils.ColumnRenameConfig> map = RenameUtils.rename(dao, tables);
-        RenameUtils.ColumnRenameConfig firstTable = map.values().iterator().next();
-        TableMeta tableMeta = firstTable.tableMeta;
+
+    private JoinMeta[] getJoinConfigs(Join[] joins) {
+        if(joins==null)return null;
         JoinMeta[] joinMetas = new JoinMeta[joins.length];
         for (int i = 0; i < joins.length; ++i) {
             Join join = joins[i];
@@ -171,173 +374,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
 
             joinMetas[i] = joinMeta;
         }
-
-
-        Field[] fields = CachedClasses.getFields(type);
-        List<AbstractEntityField> entityFields = new ArrayList<AbstractEntityField>(fields.length);
-
-        for (int i = 0; i < fields.length; ++i) {
-            Field field = fields[i];
-            if (field.isAnnotationPresent(ColumnIgnore.class)) {
-                continue;
-            }
-            field.setAccessible(true);
-            AbstractEntityField entityField = new BeanEntityField(field);
-            entityFields.add(entityField);
-
-            Column column = field.getAnnotation(Column.class);
-            if (column != null && !column.value().isEmpty()) {
-                fillWithColumnAnnotationName(
-                        entityField,
-                        field,
-                        column,
-                        i
-                );
-
-                fillAdapterWithColumnName(
-                        entityField,
-                        field,
-                        column
-                );
-
-            } else {
-                RenameUtils.ColumnRenameConfig columnRenameConfig = map.get(field.getName());
-                if (columnRenameConfig == null) {
-                    throw new DaoException(String.format(
-                            ERROR_FORMAT,
-                            field,
-                            "找不到字段对应的ColumnMeta，当前所有能使用的名称为:" + StringUtils.join(map.keySet(), ",")));
-                }
-
-                fillWithoutColumnAnnotationName(
-                        entityField,
-                        field,
-                        columnRenameConfig
-                );
-
-                fillAdapter(entityField, column, columnRenameConfig.columnMeta, dao, field);
-            }
-
-        }
-        return new BeanEntity(
-                tables[0],
-                entityFields.toArray(new EntityField[entityFields.size()]),
-                findPrimaryKeys(entityFields, tableMeta.getColumns(), fields),
-                findAutoGenerateFields(entityFields, tableMeta.getColumns(), fields),
-                type,
-                getMultiTableNamesMap(map, fields),
-                joinMetas);
-    }
-
-    /**
-     * 在 where/groupGy等语句中的映射关系,除了fields以外的
-     *
-     * @param map
-     * @param fields
-     * @return
-     */
-    private Map<String, String> getMultiTableNamesMap(Map<String, RenameUtils.ColumnRenameConfig> map, Field[] fields) {
-
-        for (Field field : fields) {
-            map.remove(field.getName());
-        }
-
-        return MapUtils.convert(map, new Converter<RenameUtils.ColumnRenameConfig, String>() {
-            @Override
-            public String convert(RenameUtils.ColumnRenameConfig data) {
-                return data.tableMeta.getName() + "." + data.columnMeta.getName();
-            }
-        });
-    }
-
-
-
-    private void fillAdapter(AbstractEntityField entityField, Column column, Class<?> dbType, Dao dao) {
-        try {
-            ValueCaster caster;
-            StatementAdapter statementAdapter;
-            DataAdapter adapter = column.adapter().newInstance();
-            Type[] types = Classes.getAllParameterizedTypes(column.adapter());
-            if (types == null) {
-                throw new DaoException(column.adapter() + "必须是泛型类型");
-            }
-            if (types.length < 2) {
-                throw new DaoException(column.adapter() + "必须有至少两个泛型类型");
-            }
-            caster = createWrappedValueCaster(adapter, Caster.wrapType(dbType, types[1]));
-            statementAdapter = createWrappedStatementAdapter(adapter, dao.getStatementAdapter(Classes.getClass(types[0]), dbType));
-            entityField.setCaster(caster);
-            entityField.setStatementAdapter(statementAdapter);
-        } catch (Exception e) {
-            throw new DaoException("不能实例化类" + column.adapter());
-        }
-    }
-
-    private void fillAdapter(
-            AbstractEntityField entityField,
-            Column column,
-            ColumnMeta columnMeta,
-            Dao dao, Field field) {
-        ValueCaster caster;
-        StatementAdapter statementAdapter;
-        if (column != null && column.adapter() != DataAdapter.class) {
-            fillAdapter(entityField, column, columnMeta.getDataType(), dao);
-        } else {
-            caster = Caster.wrapType(columnMeta.getDataType(), field.getGenericType());
-            statementAdapter = dao.getStatementAdapter(field.getType(), columnMeta.getDataType());
-            entityField.setCaster(caster);
-            entityField.setStatementAdapter(statementAdapter);
-        }
-
-
-    }
-
-    private void fillWithColumnAnnotationName(
-            AbstractEntityField entityField,
-            Field field,
-            Column column,
-            int index) {
-        entityField.setColumn(column.value());
-        entityField.setSelectColumnName(parseColumn(column.value(), index));
-
-
-    }
-
-    private void fillAdapterWithColumnName(
-            AbstractEntityField entityField,
-            Field field,
-            Column column) {
-        if (column.adapter() != DataAdapter.class) {
-            fillAdapter(entityField, column, null, dao);
-        } else {
-            entityField.setCaster(Caster.wrapFirstVisit(field.getGenericType()));
-            entityField.setStatementAdapter(StatementAdapters.DEFAULT);
-        }
-    }
-
-    private void fillWithoutColumnAnnotationName(
-            AbstractEntityField entityField,
-            Field field,
-            TableMeta tableMeta,
-            ColumnMeta columnMeta,
-            String selectColumnName
-    ) {
-
-        entityField.setOriginalFieldName(columnMeta.getName());
-        entityField.setColumn(tableMeta.getName() + "." + columnMeta.getName());
-        entityField.setSelectColumnName(selectColumnName);
-        entityField.setColumnMeta(columnMeta);
-    }
-
-    private void fillWithoutColumnAnnotationName(
-            AbstractEntityField entityField,
-            Field field,
-            RenameUtils.ColumnRenameConfig columnRenameConfig
-    ) {
-        entityField.setOriginalFieldName(columnRenameConfig.columnMeta.getName());
-        entityField.setColumn(columnRenameConfig.tableMeta.getName() + "." + columnRenameConfig.columnMeta.getName());
-        entityField.setSelectColumnName(columnRenameConfig.selectColumnName);
-        entityField.setColumnMeta(columnRenameConfig.columnMeta);
+        return joinMetas;
     }
 
 
@@ -365,7 +402,6 @@ class BeanEntityFactory extends AbstractEntityFactory {
     }
 
 
-
     private EntityField[] findPrimaryKeys(List<AbstractEntityField> entityFields,
                                           ColumnMeta[] columnMetas,
                                           Field[] fields) {
@@ -381,8 +417,8 @@ class BeanEntityFactory extends AbstractEntityFactory {
             for (int i = 0, c = entityFields.size(); i < c; ++i) {
 
                 AbstractEntityField entityField = entityFields.get(i);
-                if(entityField.getColumnMeta()!=null
-                        && entityField.getColumnMeta().isPrimary()){
+                if (entityField.getColumnMeta() != null
+                        && entityField.getColumnMeta().isPrimary()) {
                     primaryKeys.add(entityField);
                 }
             }
@@ -420,7 +456,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
     private AutoField checkAutoField(Field field, AbstractEntityField entityField) {
         AutoGenerate autoGenerate = field.getAnnotation(AutoGenerate.class);
         if (autoGenerate != null) {
-            if(autoGenerate.factory() != AutoGenerateValue.class){
+            if (autoGenerate.factory() != AutoGenerateValue.class) {
                 //有factory
                 try {
                     return new AutoGenerateValueUsingFactory(
@@ -428,12 +464,12 @@ class BeanEntityFactory extends AbstractEntityFactory {
                             autoGenerate.factory().newInstance()
                     );
                 } catch (Exception e) {
-                    throw new DaoException("不能初始化"+autoGenerate.factory());
+                    throw new DaoException("不能初始化" + autoGenerate.factory());
                 }
             }
 
 
-            if(!autoGenerate.sequence().isEmpty()){
+            if (!autoGenerate.sequence().isEmpty()) {
                 return new SequenceAutoGenerateKey(autoGenerate.sequence());
             }
 
@@ -441,13 +477,8 @@ class BeanEntityFactory extends AbstractEntityFactory {
         }
 
 
-
         return null;
     }
-
-
-
-
 
 
     private ValueCaster createWrappedValueCaster(
