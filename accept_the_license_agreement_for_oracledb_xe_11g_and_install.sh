@@ -51,7 +51,7 @@ sudo usermod -aG dba $USER
 ( echo ; echo ; echo travis ; echo travis ; echo n ) | sudo AWK='/usr/bin/awk' /etc/init.d/oracle-xe configure
 
 "$ORACLE_HOME/bin/sqlplus" -L -S / AS SYSDBA <<SQL
-CREATE USER zoom IDENTIFIED BY zoom;
-GRANT CONNECT, RESOURCE TO zoom;
-GRANT EXECUTE ON SYS.DBMS_LOCK TO zoom;
+CREATE USER root IDENTIFIED BY root;
+GRANT CONNECT, RESOURCE TO root;
+GRANT EXECUTE ON SYS.DBMS_LOCK TO root;
 SQL
