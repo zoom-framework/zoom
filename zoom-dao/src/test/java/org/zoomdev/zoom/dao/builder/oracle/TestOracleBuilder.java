@@ -12,7 +12,7 @@ public class TestOracleBuilder extends TestBuilder{
         DataSourceProvider dataSourceProvider = new DruidDataSourceProvider(
             new OracleConnDescription(
                     "localhost",
-                    11521,
+                    1521,
                     "xe",
                     "root",
                     "root"

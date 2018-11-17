@@ -11,7 +11,7 @@ public class TestMysqlBuilder extends TestBuilder {
         DruidDataSourceProvider dataSourceProvider = new DruidDataSourceProvider(
                 new MysqlConnDescription(
                         "127.0.0.1",
-                        13306,
+                        3306,
                         "zoom",
                         "root",
                         "root"
