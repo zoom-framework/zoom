@@ -14,5 +14,3 @@ COPY ./enter.sh $WORK_PATH/enter.sh
 
 RUN chmod a+x $WORK_PATH/oracle.sh
 RUN chmod a+x $WORK_PATH/enter.sh
-
-RUN sh $WORK_PATH/oracle.sh
