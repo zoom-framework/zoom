@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # working dir
 WORKSPACE=$(cd `dirname $0`; pwd)
