@@ -2,7 +2,6 @@ package org.zoomdev.zoom.dao.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.common.expression.Symbol;
 import org.zoomdev.zoom.common.utils.Page;
 import org.zoomdev.zoom.dao.*;
@@ -10,20 +9,23 @@ import org.zoomdev.zoom.dao.alias.NameAdapter;
 import org.zoomdev.zoom.dao.utils.DaoUtils;
 
 import java.sql.*;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class ActiveRecord extends AbstractRecord implements RawAr, ConnectionHolder, Trans {
+public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Trans, Ar {
 
 
     private static final Log log = LogFactory.getLog(ActiveRecord.class);
 
     private NameAdapter nameAdapter;
 
-    public ActiveRecord(Dao dao) {
+    private NameAdapter defaultNameAdapter;
+
+    public ActiveRecord(Dao dao,NameAdapter nameAdapter) {
         super(dao.getDataSource(), new SimpleSqlBuilder(dao.getDriver()));
+        this.nameAdapter = nameAdapter;
+        this.defaultNameAdapter = nameAdapter;
     }
 
     public List<Record> query() {
@@ -132,11 +134,7 @@ public class ActiveRecord extends AbstractRecord implements RawAr, ConnectionHol
 
     }
 
-    @Override
-    public Ar tables(String[] arr) {
-        builder.tables(arr);
-        return this;
-    }
+
 
     @Override
     public Ar table(String table) {
@@ -178,6 +176,13 @@ public class ActiveRecord extends AbstractRecord implements RawAr, ConnectionHol
     public int insert() {
         builder.buildInsert();
         return _executeUpdate();
+    }
+
+    @Override
+    public int insert(Record data, String... generateKeys) {
+        builder.record.putAll(data);
+        builder.buildInsert();
+        return _executeInsert(data,generateKeys);
     }
 
     @Override
@@ -326,6 +331,8 @@ public class ActiveRecord extends AbstractRecord implements RawAr, ConnectionHol
         return this;
     }
 
+
+
     @Override
     public Ar where(String key, Symbol symbol, Object value) {
         builder.where(key, symbol, value);
@@ -374,6 +381,22 @@ public class ActiveRecord extends AbstractRecord implements RawAr, ConnectionHol
            }
        });
     }
+    public int _executeInsert(final Record data, final String[] generatedKeys) {
+        return execute(new ConnectionExecutor() {
+            @Override
+            public Integer execute(Connection connection) throws SQLException {
+                return BuilderKit.executeInsert(
+                        connection,builder,
+                        generatedKeys,
+                        data
+                );
+            }
+        });
+    }
 
-
+    @Override
+    protected void clear() {
+        super.clear();
+        this.nameAdapter = this.defaultNameAdapter;
+    }
 }

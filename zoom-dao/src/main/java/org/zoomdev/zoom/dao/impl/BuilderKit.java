@@ -15,6 +15,7 @@ import org.zoomdev.zoom.dao.utils.DaoUtils;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -79,6 +80,21 @@ public class BuilderKit {
 
 
 
+    public static PreparedStatement prepareStatement(
+            Connection connection,
+            String sql,
+            List<Object> values,
+            String[] generatedKeys) throws SQLException {
+
+        log.info(String.format(sql.replace("?", "'%s'"),
+                values.toArray(new Object[values.size()])));
+
+        PreparedStatement ps = connection.prepareStatement(sql,generatedKeys);
+        for (int index = 1, c = values.size(); index <= c; ++index) {
+            ps.setObject(index, values.get(index - 1));
+        }
+        return ps;
+    }
 
 
     public static PreparedStatement prepareStatement(
@@ -273,6 +289,31 @@ public class BuilderKit {
             ps = BuilderKit.prepareStatement(connection, builder.sql.toString(), builder.values);
             return ps.executeUpdate();
         } finally {
+            DaoUtils.close(ps);
+        }
+    }
+
+    public static Integer executeInsert(Connection connection,
+                                        SimpleSqlBuilder builder,
+                                        String[] generatedKeys,
+                                        Map<String,Object> record) throws SQLException {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = BuilderKit.prepareStatement(connection, builder.sql.toString(), builder.values,generatedKeys);
+            int ret= ps.executeUpdate();
+            if(ret > 0){
+                rs = ps.getGeneratedKeys();
+                if(rs.next()){
+                    for(int i=0; i< generatedKeys.length; ++i){
+                        Object value = rs.getObject(i+1);
+                        record.put(generatedKeys[i],value);
+                    }
+                }
+            }
+            return ret;
+        } finally {
+            DaoUtils.close(rs);
             DaoUtils.close(ps);
         }
     }

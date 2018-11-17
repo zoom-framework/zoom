@@ -29,7 +29,7 @@ public class PluginService {
 
     boolean showStartupError;
 
-    private void setShowStartupError(boolean show){
+    private void setShowStartupError(boolean show) {
         this.showStartupError = show;
     }
 
@@ -38,14 +38,14 @@ public class PluginService {
         WebUtils.runAfterAsync(new Runnable() {
             @Override
             public void run() {
-                List<Record> plugins = dao.table("sys_plugin").find();
+                List<Record> plugins = dao.ar("sys_plugin").find();
                 for (Record record : plugins) {
                     try {
                         pluginHost.load(new URL(record.getString("uri")));
                     } catch (Exception e) {
-                      if(showStartupError){
-                          log.warn("插件加载失败" + record.getString("id"), e);
-                      }
+                        if (showStartupError) {
+                            log.warn("插件加载失败" + record.getString("id"), e);
+                        }
                     }
                 }
                 try {
@@ -82,7 +82,7 @@ public class PluginService {
     }
 
     public synchronized void install(String id) {
-        Record record = dao.table("sys_plugin").where("id", id).get();
+        Record record = dao.ar("sys_plugin").where("id", id).get();
         if (record == null) {
             throw new StatusException.ApiError("找不到本插件");
         }
@@ -92,7 +92,11 @@ public class PluginService {
         String uri = record.getString("uri");
         PluginHolder pluginHolder = getAndLoadWhenNotExists(id, uri);
         if (pluginHolder.isInstalled()) {
-            dao.table("sys_plugin").where("id", id).set("installed", 1).update();
+            dao.ar("sys_plugin")
+                    .where("id", id)
+                    .update(Record.as(
+                            "installed", 1
+                    ));
             return;
         }
         pluginHolder.install(pluginHost);
@@ -135,7 +139,7 @@ public class PluginService {
     }
 
     public Record getRecord(String id) {
-        return dao.table("sys_plugin").where("id", id).get();
+        return dao.ar("sys_plugin").where("id", id).get();
     }
 
     public synchronized void add(String uri) {
@@ -143,18 +147,25 @@ public class PluginService {
         String id = plugin.getUid();
         Record record = getRecord(id);
         if (record == null) {
-            dao.table("sys_plugin").set("uri", uri).set("id", id).set("title", plugin.getTitle())
-                    .set("description", plugin.getDescription()).set("installed", plugin.isInstalled() ? 1 : 0)
-                    .set("version", plugin.getVersion()).insert();
+            dao.ar("sys_plugin")
+                    .insert(new Record()
+                            .set("uri", uri).set("id", id).set("title", plugin.getTitle())
+                            .set("description", plugin.getDescription())
+                            .set("installed", plugin.isInstalled() ? 1 : 0)
+                            .set("version", plugin.getVersion()));
         } else {
 
             if (compareVersion(plugin.getVersion(), record.getString("version")) <= 0) {
                 throw new StatusException.ApiError("上传插件的版本为" + plugin.getVersion() + "应该高于原来的版本");
             }
 
-            dao.table("sys_plugin").where("id", id).set("uri", uri).set("id", id).set("title", plugin.getTitle())
-                    .set("description", plugin.getDescription()).set("installed", plugin.isInstalled() ? 1 : 0)
-                    .set("version", plugin.getVersion()).update();
+            dao.ar("sys_plugin").where("id", id)
+                    .update(new Record().set("uri", uri)
+                            .set("id", id)
+                            .set("title", plugin.getTitle())
+                            .set("description", plugin.getDescription())
+                            .set("installed", plugin.isInstalled() ? 1 : 0)
+                            .set("version", plugin.getVersion()));
         }
     }
 
@@ -201,7 +212,11 @@ public class PluginService {
 
         try {
             pluginHost.shutdown(plugin, false);
-            dao.table("sys_plugin").where("id", id).set("running", 0).update();
+            dao.ar("sys_plugin").where("id", id).update(
+                    Record.as(
+                            "running", 0
+                    )
+            );
         } catch (PluginException e) {
             throw new StatusException.ApiError("插件加载失败");
         }
@@ -217,7 +232,9 @@ public class PluginService {
         try {
             pluginHost.shutdown(plugin, false);
             pluginHost.uninstall(plugin);
-            dao.table("sys_plugin").where("id", id).set("running", 0).set("installed", 0).update();
+            dao.ar("sys_plugin").where("id", id).update(
+                    new Record().set("running", 0).set("installed", 0)
+            );
         } catch (PluginException e) {
             throw new StatusException.ApiError("插件加载失败");
         }

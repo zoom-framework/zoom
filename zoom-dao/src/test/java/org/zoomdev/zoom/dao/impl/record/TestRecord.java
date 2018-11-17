@@ -1,23 +1,28 @@
-package org.zoomdev.zoom.dao.builder;
+package org.zoomdev.zoom.dao.impl.record;
 
-import org.junit.Test;
 import org.zoomdev.zoom.common.json.JSON;
 import org.zoomdev.zoom.common.utils.Page;
-import org.zoomdev.zoom.dao.*;
+import org.zoomdev.zoom.dao.Dao;
+import org.zoomdev.zoom.dao.DaoException;
+import org.zoomdev.zoom.dao.Record;
+import org.zoomdev.zoom.dao.SqlBuilder;
+import org.zoomdev.zoom.dao.impl.AbstractDaoTest;
 import org.zoomdev.zoom.dao.impl.ZoomDao;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public abstract class TestBuilder extends AbstractDaoTest {
+public class TestRecord extends AbstractDaoTest {
 
-    @Test
-    public void test() throws ExecutionException, InterruptedException {
 
+    protected void process(final Dao dao){
         dao.builder()
                 .dropIfExists("product")
                 .createTable("product")
@@ -77,135 +82,138 @@ public abstract class TestBuilder extends AbstractDaoTest {
         final String test_business = "testBusiness";
 
         Record testRecors = Record.as(
-                "id", test_business,
-                "title", "测试行家",
-                "level", 1,
-                "stars", 4.9,
-                "sales", 100000
+                "shp_id", test_business,
+                "shp_title", "测试行家",
+                "shp_level", 1,
+                "shp_stars", 4.9,
+                "shp_sales", 100000
         );
-        dao.ar("shop").insert(testRecors);
-        dao.ar("shop").delete(testRecors);
+        dao.table("shop").insert(testRecors);
+        dao.table("shop").where("shp_id",test_business).delete();
 
- //       dao.table("shop").insert(testRecors);
- //       dao.table("shop").where("id",test_business).delete();
+        //       dao.table("shop").insert(testRecors);
+        //       dao.table("shop").where("id",test_business).delete();
 
 
         final String FIRST_BUSINESS = "firstBusiness";
 
         Record record = Record.as(
-                "id", FIRST_BUSINESS,
-                "title", "天下第一家",
-                "level", 1,
-                "stars", 4.9,
-                "sales", 100000
+                "shp_id", FIRST_BUSINESS,
+                "shp_title", "天下第一家",
+                "shp_level", 1,
+                "shp_stars", 4.9,
+                "shp_sales", 100000
         );
         //商家注册 (add)
-        dao.ar("shop")
+        dao.table("shop")
                 .insert(record);
 
 
         record = Record.as(
-                "id", "second",
-                "title", "弱弱的第二家",
-                "level", 2,
-                "stars", 2.9,
-                "sales", 100
+                "shp_id", "second",
+                "shp_title", "弱弱的第二家",
+                "shp_level", 2,
+                "shp_stars", 2.9,
+                "shp_sales", 100
         );
         //商家注册 (add)
-        dao.ar("shop")
+        dao.table("shop")
                 .insert(record);
 
         //verify business
-        List<Record> result = dao.ar("shop")
-                .orderBy("id", SqlBuilder.Sort.DESC).find();
+        List<Record> result = dao.table("shop")
+                .orderBy("shp_id", SqlBuilder.Sort.DESC).find();
         assertEquals(JSON.stringify(result.get(0)), JSON.stringify(record));
 
         // 商家编辑信息
 
-        assertEquals(dao.ar("shop").update(
+        assertEquals(dao.table("shop")
+                .where("shp_id", FIRST_BUSINESS)
+                .update(
                 Record.as(
-                        "id", FIRST_BUSINESS,
-                        "title", "牛逼的第一家"
+                        "shp_title", "牛逼的第一家"
                 )
         ), 1);
 
-        assertEquals(dao.ar("shop").update(
+        assertEquals(dao.table("shop")
+                .where("shp_id", "找不到这家").update(
+
                 Record.as(
-                        "id", "找不到这家",
-                        "title", "牛逼的第一家"
+
+                        "shp_title", "牛逼的第一家"
                 )
         ), 0);
 
         // 是不是真的改了?
-        assertEquals(dao.ar("shop").filter("title").get(FIRST_BUSINESS),
-                Record.as("title", "牛逼的第一家"));
+        assertEquals(dao.table("shop").select("shp_title").where("shp_id",FIRST_BUSINESS).get(),
+                Record.as("shp_title", "牛逼的第一家"));
 
 
         Record type = Record.as(
-                "shpId", FIRST_BUSINESS,
-                "title", "好吃到爆的饭"
+                "shp_id", FIRST_BUSINESS,
+                "tp_title", "好吃到爆的饭"
         );
         // 商家编辑分类
-        assertEquals(dao.ar("type")
-                .insert(type), 1);
+        assertEquals(dao.table("type")
+                .insert(type,"tp_id"), 1);
 
         //type中应该有id
-        assertEquals(type.getInt("id"), 1);
+        assertEquals(type.getInt("tp_id"), 1);
 
 
         type = Record.as(
-                "shpId", FIRST_BUSINESS,
-                "title", "高级翅膀"
+                "shp_id", FIRST_BUSINESS,
+                "tp_title", "高级翅膀"
         );
         // 商家编辑分类
-        assertEquals(dao.ar("type")
-                .insert(type), 1);
+        assertEquals(dao.table("type")
+                .insert(type,"tp_id"), 1);
 
         //type中应该有id
-        assertEquals(type.getInt("id"), 2);
+        assertEquals(type.getInt("tp_id"), 2);
 
 
         //商家编辑商品 (add/edit)
 
-        assertEquals(dao.ar("product")
+        assertEquals(dao.table("product")
                 .insert(Record.as(
-                        "name", "牛肉饭",
-                        "tpId", 1,
-                        "shpId", FIRST_BUSINESS,
-                        "price", 50.0,
-                        "img", "image binary".getBytes(),
-                        "info", "very very long text,好长好长啊a"
+                        "pro_name", "牛肉饭",
+                        "tp_id", 1,
+                        "shp_id", FIRST_BUSINESS,
+                        "pro_price", 50.0,
+                        "pro_img", "image binary".getBytes(),
+                        "pro_info", "very very long text,好长好长啊a"
 
                 )), 1);
 
         //买家注册 (add)
-        assertEquals(dao.ar("customer").insert(Record.as(
-                "account", "firstUser"
+        assertEquals(dao.table("customer").insert(Record.as(
+                "cm_account", "firstUser"
         )), 1);
 
         //买家浏览商品 (查询 query)
         Page<Record> page = dao
-                .ar("product", "type", "shop")
-                .join("type", "typeId=tpId")
-                .join("shop", "shpId=shpId")
-                .like("name",SqlBuilder.Like.MATCH_BOTH,"饭")
+                .table("product")
+                .join("type", "type.tp_id=product.tp_id")
+                .join("shop", "shop.shp_id=product.shp_id")
+                .like("pro_name",SqlBuilder.Like.MATCH_BOTH,"饭")
                 .page(1,30);
 
         assertTrue(page.getTotal() > 0 );
 
 
         List<Record> list = dao
-                .ar("product", "type", "shop")
-                .join("type", "typeId=tpId")
-                .join("shop", "shpId=shpId")
-                .whereIn("id",1,2).limit(0,30);
+                .table("product")
+                .join("type", "type.tp_id=product.tp_id")
+                .join("shop", "shop.shp_id=product.shp_id")
+                .whereIn("pro_id",1,2).limit(0,30);
 
-        assertTrue(list.size() == 2 );
+        assertTrue(list.size() == 1 );
 
 
-        Record record1 = dao.ar("product").whereNull("img").get();
+        Record record1 = dao.table("product").whereNull("pro_img").get();
 
-        Record record2 = dao.ar("product").whereNotNull("img").get();
+        Record record2 = dao.table("product").whereNotNull("pro_img").get();
 
 
 
@@ -226,12 +234,12 @@ public abstract class TestBuilder extends AbstractDaoTest {
                             if(dao.ar().executeUpdate(
                                     "update product set pro_count=pro_count-? where pro_id=? and pro_count>?",
                                     count,1,count) > 0){
-                                dao.ar("shp_order")
+                                dao.table("shp_order")
                                         .insert(Record.as(
-                                                "shpId",FIRST_BUSINESS,
-                                                "count",count,
-                                                "proId",1,
-                                                "cmId",1
+                                                "shp_id",FIRST_BUSINESS,
+                                                "ord_count",count,
+                                                "pro_id",1,
+                                                "cm_id",1
                                         ));
                             }else{
                                 throw new DaoException("库存不足");
@@ -263,6 +271,6 @@ public abstract class TestBuilder extends AbstractDaoTest {
 
         // 买家查看今日总卖出量（统计）
 
-
     }
+
 }

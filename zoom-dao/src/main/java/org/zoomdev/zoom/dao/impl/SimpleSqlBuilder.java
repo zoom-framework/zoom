@@ -105,12 +105,6 @@ public class SimpleSqlBuilder implements SqlBuilder {
                 values.toArray(new Object[values.size()]));
     }
 
-    @Override
-    public SqlBuilder tables(String... tables) {
-        assert (tables.length > 0);
-        table = tables[0];
-        return this;
-    }
 
     public void insertOrUpdate(String[] keys) {
         values.clear();

@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.Record;
+import org.zoomdev.zoom.dao.alias.impl.EmptyNameAdapter;
 import org.zoomdev.zoom.dao.driver.AbsDbStruct;
 import org.zoomdev.zoom.dao.driver.DbStructFactory;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
@@ -64,7 +65,9 @@ public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
 
     @Override
     public void fill(TableMeta meta) {
-        List<Record> list = dao.ar().executeQuery(
+        List<Record> list = dao.ar()
+                .nameAdapter(EmptyNameAdapter.DEFAULT)
+                .executeQuery(
                 "SELECT TABLE_COMMENT AS COMMENT,TABLE_NAME as NAME from information_schema.tables where table_schema=? AND TABLE_NAME=?",
                 dbName,
                 meta.getName());
@@ -75,7 +78,8 @@ public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
             meta.setComment("");
         }
 
-        list = dao.ar().executeQuery(
+        list = dao.ar()
+                .nameAdapter(EmptyNameAdapter.DEFAULT).executeQuery(
                 "SELECT TABLE_NAME,COLUMN_NAME,IS_NULLABLE,DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,COLUMN_KEY,EXTRA,COLUMN_COMMENT,COLUMN_DEFAULT FROM information_schema.columns WHERE table_schema=? and TABLE_NAME=?",
                 dbName, meta.getName());
 

@@ -188,7 +188,6 @@ public interface SqlBuilder {
     SqlBuilder join(String table, String on, String type);
 
 
-    SqlBuilder tables(String... tables);
 
 
     SqlBuilder union(SqlBuilder builder);

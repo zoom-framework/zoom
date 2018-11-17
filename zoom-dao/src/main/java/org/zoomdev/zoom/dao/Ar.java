@@ -103,4 +103,32 @@ public interface Ar extends Trans, ConnectionHolder, Sql<Ar> {
     <E> E value(final String key, final Class<E> typeOfE);
 
     Ar selectMax(String field);
+
+
+
+    /**
+     * @param table
+     * @return
+     */
+    Ar table(String table);
+
+
+    /**
+     * dao.ar().table("xxx").set("id",1).set("name","123").insertOrUpdate("id"),当id存在则更新，否则插入
+     *
+     * @param keys
+     * @return
+     */
+    int insertOrUpdate(String... keys);
+
+
+    Ar whereCondition(String key, Object... values);
+
+    /**
+     *
+     * @param type
+     * @param generatedKeys  生成键
+     * @return
+     */
+    int insert(Record type, String...generatedKeys);
 }

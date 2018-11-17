@@ -17,18 +17,11 @@ public interface Dao extends StatementAdapterFactory {
      *
      * @return
      */
-    RawAr ar();
+    Ar ar();
 
-    /**
-     * 获取当前的activerecord，如果不存在返回null
-     *
-     * @return
-     */
-    RawAr getAr();
 
     Ar table(String table);
 
-    Ar tables(String[] tables);
 
 
     /**

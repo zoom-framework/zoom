@@ -6,10 +6,17 @@ export LD_LIBRARY_PATH=$ORACLE_HOME/lib:$LD_LIBRARY_PATH
 export ORACLE_SID=XE
 
 "$ORACLE_HOME/bin/sqlplus" -L -S / AS SYSDBA <<SQL
-create user root identified by root;
+create tablespace zoom datafile '/u01/app/oracle/zoom.ora' size 50m autoextend on next 50M;
+create user root identified by root default tablespace zoom ;
+grant connect,resource,sysdba to root;
 grant all privileges to root;
-GRANT EXECUTE ON SYS.DBMS_LOCK TO root;
 exit;
 SQL
 
+
+sqlplus "/as sysdba"
+create tablespace zoom datafile '/u01/app/oracle/zoom.ora' size 50m autoextend on next 50M;
+create user root identified by root default tablespace zoom ;
+grant connect,resource,sysdba to root;
+grant all privileges to root;
 

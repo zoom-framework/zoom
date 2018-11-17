@@ -43,7 +43,9 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
 
     @Override
     public Collection<String> getTableNames() {
-        List<Record> list = dao.ar().executeQuery("SELECT TABLE_NAME FROM user_tab_comments");
+        List<Record> list = dao.ar()
+                .nameAdapter(EmptyNameAdapter.DEFAULT)
+                .executeQuery("SELECT TABLE_NAME FROM user_tab_comments");
         List<String> result = new ArrayList<String>();
         for (Record record : list) {
             result.add(record.getString("TABLE_NAME"));
@@ -53,6 +55,7 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
 
     protected Map<String, String> getKeyTypes(String table) {
         List<Record> consts = dao.ar()
+                .nameAdapter(EmptyNameAdapter.DEFAULT)
                 .executeQuery("select user_cons_columns.constraint_name,user_cons_columns.table_name, user_cons_columns.column_name,user_constraints.constraint_type from user_cons_columns "
                         + "join user_constraints on user_cons_columns.constraint_name = user_constraints.constraint_name "
                         + "where user_cons_columns.table_name=?", table);
@@ -83,6 +86,7 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
     @Override
     public void fill(TableMeta meta) {
         List<Record> list = dao.ar()
+                .nameAdapter(EmptyNameAdapter.DEFAULT)
                 .executeQuery(
                         "SELECT TABLE_NAME as \"name\",COMMENTS as \"comment\" FROM user_tab_comments WHERE TABLE_NAME=?", meta.getName().toUpperCase());
         if (list.size() > 0) {
@@ -94,6 +98,7 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
         Map<String, String> keyTypes = getKeyTypes(meta.getName().toUpperCase());
 
         List<Record> columns = dao.ar()
+                .nameAdapter(EmptyNameAdapter.DEFAULT)
                 .executeQuery("SELECT cols.table_name,cols.column_name,cols.DATA_PRECISION,cols.NULLABLE,cols.DATA_DEFAULT,cols.DATA_TYPE,cols.DATA_LENGTH,COMMENTS FROM cols "
                 + "join user_tables on user_tables.table_name=cols.table_name "
                 + "left join user_col_comments on cols.COLUMN_NAME=user_col_comments.column_name and cols.TABLE_name=user_col_comments.TABLE_name"

@@ -2,16 +2,16 @@ package org.zoomdev.zoom.dao;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.zoomdev.zoom.dao.builder.h2.TestH2Builder;
-import org.zoomdev.zoom.dao.builder.mysql.TestMysqlBuilder;
-import org.zoomdev.zoom.dao.builder.oracle.TestOracleBuilder;
+import org.zoomdev.zoom.dao.impl.builder.TestBuilder;
+import org.zoomdev.zoom.dao.impl.entity.EntityTestDao;
 import org.zoomdev.zoom.dao.impl.TestSqlBuilder;
+import org.zoomdev.zoom.dao.impl.record.TestRecord;
 import org.zoomdev.zoom.dao.rename.TestRenamePolicy;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({TestH2Builder.class,TestMysqlBuilder.class,
+@Suite.SuiteClasses({
         TestRenamePolicy.class,TestSqlBuilder.class,
-    EntityTestDao.class,TestOracleBuilder.class})
+    EntityTestDao.class,TestBuilder.class,TestRecord.class})
 public class TestAll {
 
 }

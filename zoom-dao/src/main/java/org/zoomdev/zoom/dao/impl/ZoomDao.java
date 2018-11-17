@@ -59,7 +59,7 @@ public class ZoomDao implements Dao, Destroyable{
 
 
 
-    private ThreadLocal<RawAr> arholder = new ThreadLocal<RawAr>();
+    private ThreadLocal<Ar> arholder = new ThreadLocal<Ar>();
 
     private ThreadLocal<EAr<?>> earHolder = new ThreadLocal<EAr<?>>();
 
@@ -80,6 +80,7 @@ public class ZoomDao implements Dao, Destroyable{
         this.lazyLoad = lazyLoad;
         Db.register(this);
         entityFactory = new CachedEntityFactory(new BeanEntityFactory(this),new RecordEntityFactory(this));
+        this.nameAdapter = ToLowerCaseNameAdapter.DEFAULT;
         if (lazyLoad) {
             return;
         }
@@ -207,13 +208,12 @@ public class ZoomDao implements Dao, Destroyable{
     }
 
 
-    public RawAr ar() {
-        RawAr ar = arholder.get();
+    public Ar ar() {
+        Ar ar = arholder.get();
         if (ar == null) {
             ar = createAr();
             arholder.set(ar);
         }
-        ar.nameAdapter(nameAdapter);
         return ar;
     }
 
@@ -257,9 +257,9 @@ public class ZoomDao implements Dao, Destroyable{
         }
     }
 
-    private RawAr createAr() {
+    private Ar createAr() {
         lazyLoad();
-        return new ActiveRecord(this);
+        return new ActiveRecord(this,nameAdapter);
     }
 
 
@@ -268,11 +268,7 @@ public class ZoomDao implements Dao, Destroyable{
         return ar().table(table);
     }
 
-    @Override
-    public Ar tables(String[] tables) {
-        assert (tables != null);
-        return ar().tables(tables);
-    }
+
 
 
 
@@ -295,11 +291,6 @@ public class ZoomDao implements Dao, Destroyable{
     }
 
 
-
-    @Override
-    public RawAr getAr() {
-        return arholder.get();
-    }
 
     private static ThreadLocal<Transactions> threadLocal = new ThreadLocal<Transactions>();
 

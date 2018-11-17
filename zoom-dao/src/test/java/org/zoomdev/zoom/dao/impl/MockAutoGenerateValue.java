@@ -1,4 +1,6 @@
-package org.zoomdev.zoom.dao;
+package org.zoomdev.zoom.dao.impl;
+
+import org.zoomdev.zoom.dao.AutoGenerateValue;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

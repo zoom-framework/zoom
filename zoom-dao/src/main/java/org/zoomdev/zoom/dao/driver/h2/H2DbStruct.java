@@ -34,7 +34,7 @@ public class H2DbStruct extends AbsDbStruct {
 
     @Override
     public Collection<TableNameAndComment> getNameAndComments() {
-        List<Record> list = dao.table("information_schema.tables")
+        List<Record> list = dao.ar().table("information_schema.tables")
                 .select("TABLE_NAME as NAME,REMARKS AS COMMENT")
                 .where("TABLE_SCHEMA", "PUBLIC")
                 .find();

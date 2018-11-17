@@ -1,6 +1,5 @@
-package org.zoomdev.zoom.dao;
+package org.zoomdev.zoom.dao.impl.entity;
 
-import junit.framework.TestCase;
 import org.apache.commons.lang3.ObjectUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -8,6 +7,7 @@ import org.junit.Test;
 import org.zoomdev.zoom.common.json.JSON;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.common.utils.Page;
+import org.zoomdev.zoom.dao.*;
 import org.zoomdev.zoom.dao.driver.mysql.MysqlConnDescription;
 import org.zoomdev.zoom.dao.entities.*;
 import org.zoomdev.zoom.dao.impl.ZoomDao;
@@ -20,12 +20,12 @@ import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class EntityTestDao {
+public class EntityTestDao  {
 
     DataSourceProvider provider = new DruidDataSourceProvider(
             new MysqlConnDescription(
                     "localhost",
-                    13306,
+                    3306,
                     "zoom",
                     "root",
                     "root"
@@ -182,8 +182,5 @@ public class EntityTestDao {
 
     }
 
-    @Test
-    public void testCreateTable(){
 
-    }
 }
