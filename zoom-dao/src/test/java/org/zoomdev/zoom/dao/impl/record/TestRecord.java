@@ -342,19 +342,25 @@ public class TestRecord extends AbstractDaoTest {
         execute(new RunWithDao() {
             @Override
             public void run(Dao dao) {
-                if(mutableInt.getValue()==0){
-                    return;
+                try{
+                    if(mutableInt.getValue()==0){
+                        return;
+                    }
+                    dao.table("customer")
+                            .set("cm_account","123")
+                            .set("cm_pwd","test")
+                            .insertOrUpdate("cm_account");
+
+
+                    dao.table("customer")
+                            .set("cm_account","123")
+                            .set("cm_pwd","test")
+                            .insertOrUpdate("cm_account");
+                }finally {
+                    mutableInt.add(1);
                 }
-                dao.table("customer")
-                        .set("cm_account","123")
-                        .set("cm_pwd","test")
-                        .insertOrUpdate("cm_account");
 
 
-                dao.table("customer")
-                        .set("cm_account","123")
-                        .set("cm_pwd","test")
-                        .insertOrUpdate("cm_account");
 
 
             }
