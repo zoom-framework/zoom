@@ -27,18 +27,18 @@
     </distributionManagement>
 
     <repositories>
-    <repository>
-    <id>nexus</id>
-    <name>Team Nexus Repository</name>
-    <url>http://nexus.zoom-dev.org/repository/maven-public/</url>
-    </repository>
+        <repository>
+            <id>nexus</id>
+            <name>Team Nexus Repository</name>
+            <url>http://nexus.zoom-dev.org/repository/maven-public/</url>
+        </repository>
     </repositories>
     <pluginRepositories>
-    <pluginRepository>
-    <id>nexus</id>
-    <name>Team Nexus Repository</name>
-    <url>http://nexus.zoom-dev.org/repository/maven-public/</url>
-    </pluginRepository>
+        <pluginRepository>
+            <id>nexus</id>
+            <name>Team Nexus Repository</name>
+            <url>http://nexus.zoom-dev.org/repository/maven-public/</url>
+        </pluginRepository>
     </pluginRepositories>
 
     <modules>
@@ -250,7 +250,6 @@
                 <artifactId>zoom-event</artifactId>
                 <version>0.2.3-SNAPSHOT</version>
             </dependency>
-
 
 
         </dependencies>

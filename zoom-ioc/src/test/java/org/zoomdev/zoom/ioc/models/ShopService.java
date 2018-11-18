@@ -3,7 +3,6 @@ package org.zoomdev.zoom.ioc.models;
 import org.zoomdev.zoom.common.Destroyable;
 import org.zoomdev.zoom.common.Initializeable;
 import org.zoomdev.zoom.common.annotations.Inject;
-import org.zoomdev.zoom.ioc.IocMethod;
 import org.zoomdev.zoom.ioc.IocMethodProxy;
 import org.zoomdev.zoom.ioc.IocObject;
 

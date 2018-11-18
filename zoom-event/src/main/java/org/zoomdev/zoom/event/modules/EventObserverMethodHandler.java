@@ -1,12 +1,10 @@
 package org.zoomdev.zoom.event.modules;
 
 import org.zoomdev.zoom.common.exceptions.ZoomException;
-import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.event.Event;
 import org.zoomdev.zoom.event.EventListener;
 import org.zoomdev.zoom.event.EventService;
 import org.zoomdev.zoom.event.annotations.EventObserver;
-import org.zoomdev.zoom.ioc.IocMethod;
 import org.zoomdev.zoom.ioc.IocMethodProxy;
 import org.zoomdev.zoom.ioc.IocObject;
 import org.zoomdev.zoom.ioc.impl.AnnotationMethodHandler;
@@ -56,33 +54,33 @@ class EventObserverMethodHandler extends AnnotationMethodHandler<EventObserver> 
                 Class<?> type = types[0];
                 if (Event.class.isAssignableFrom(type)) {
                     condition = 1;
-                } else if(CharSequence.class.isAssignableFrom(type)) {
+                } else if (CharSequence.class.isAssignableFrom(type)) {
                     condition = 2;
-                }else {
+                } else {
                     throw new ZoomException("EventObserver标注的方法如果参数个数为1个，必须是Event或者String类型");
                 }
-            }else if(types.length == 2){
+            } else if (types.length == 2) {
 
-                if(CharSequence.class.isAssignableFrom(types[0])){
+                if (CharSequence.class.isAssignableFrom(types[0])) {
                     condition = 3;
 
-                }else{
+                } else {
                     throw new ZoomException("EventObserver标注的方法如果参数个数为2个，类型必须分别为String和EventNotifier标注方法的返回类型的超类");
                 }
 
 
-            }else if(types.length==3){
+            } else if (types.length == 3) {
 
-                if(CharSequence.class.isAssignableFrom(types[0])
+                if (CharSequence.class.isAssignableFrom(types[0])
 
-                        && Throwable.class.isAssignableFrom(types[2])){
+                        && Throwable.class.isAssignableFrom(types[2])) {
                     condition = 4;
 
-                }else{
+                } else {
                     throw new ZoomException("EventObserver标注的方法如果参数个数为3个，类型必须分别为String、EventNotifier标注方法的返回类型的超类和Throwable的子类");
                 }
 
-            }else{
+            } else {
                 throw new ZoomException("EventObserver标注的方法如果参数个数最多支持三个");
             }
         }
@@ -102,15 +100,15 @@ class EventObserverMethodHandler extends AnnotationMethodHandler<EventObserver> 
                 } else if (condition == 1) {
                     // 参数一个Event
                     method.invoke(target.get(), event);
-                } else if(condition==2){
+                } else if (condition == 2) {
                     // 参数是name
                     method.invoke(target.get(), event.getName());
-                }else if(condition==3){
+                } else if (condition == 3) {
                     //参数是name + object
-                    method.invoke(target.get(), event.getName(),event.getData());
-                }else if(condition==4){
+                    method.invoke(target.get(), event.getName(), event.getData());
+                } else if (condition == 4) {
                     //参数是name+data+throwable
-                    method.invoke(target.get(), event.getName(),event.getData(),event.getError());
+                    method.invoke(target.get(), event.getName(), event.getData(), event.getError());
                 }
 
             } catch (Exception e) {

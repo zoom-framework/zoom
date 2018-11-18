@@ -8,12 +8,14 @@ public interface IocMethodProxy {
 
     /**
      * 有可能没有
+     *
      * @return
      */
     IocMethod getIocMethod();
 
     /**
      * 原方法
+     *
      * @return
      */
     Method getMethod();
@@ -21,13 +23,13 @@ public interface IocMethodProxy {
 
     /**
      * 唯一id
+     *
      * @return
      */
     String getUid();
 
 
     /**
-     * 
      * @param obj
      * @return
      */

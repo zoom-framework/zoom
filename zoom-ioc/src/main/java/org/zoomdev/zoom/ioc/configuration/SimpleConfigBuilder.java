@@ -1,7 +1,7 @@
 package org.zoomdev.zoom.ioc.configuration;
 
-import org.zoomdev.zoom.common.annotations.Module;
 import org.zoomdev.zoom.common.annotations.ApplicationModule;
+import org.zoomdev.zoom.common.annotations.Module;
 import org.zoomdev.zoom.common.filter.impl.ClassAnnotationFilter;
 import org.zoomdev.zoom.common.filter.pattern.PatternFilterFactory;
 import org.zoomdev.zoom.common.res.ClassResolver;
@@ -84,7 +84,7 @@ public class SimpleConfigBuilder extends ClassResolver {
                 types.add(type);
             } else {
                 log.info("没有找到对应的标注:" + annotationClass + " 模块" + type + "未启用," +
-                        "若要启用本模块，请使用ApplicationModule标注主模块，并使用对应的【"+annotationClass.getName()+"】标注");
+                        "若要启用本模块，请使用ApplicationModule标注主模块，并使用对应的【" + annotationClass.getName() + "】标注");
             }
         }
         if (app != null) {

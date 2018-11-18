@@ -207,7 +207,7 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
     @Override
     public IocMethod getMethod(IocClass iocClass, Method target) {
         IocMethod method = iocClass.getMethod(target);
-        if(method!=null){
+        if (method != null) {
             return method;
         }
         return createIocMethod(
@@ -219,7 +219,7 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
     @Override
     public IocMethodProxy getMethodProxy(IocClass iocClass, Method target) {
         IocMethod method = iocClass.getMethod(target);
-        if(method!=null){
+        if (method != null) {
             return new IocIocMethodPorxy(method);
         }
 

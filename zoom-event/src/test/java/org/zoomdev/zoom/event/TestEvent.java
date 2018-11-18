@@ -2,26 +2,22 @@ package org.zoomdev.zoom.event;
 
 import junit.framework.TestCase;
 import org.apache.commons.lang3.ObjectUtils;
-import org.zoomdev.zoom.aop.AopFactory;
 import org.zoomdev.zoom.aop.modules.AopModule;
 import org.zoomdev.zoom.common.annotations.Inject;
-import org.zoomdev.zoom.common.annotations.IocBean;
 import org.zoomdev.zoom.common.annotations.Module;
 import org.zoomdev.zoom.event.annotations.EventNotifier;
 import org.zoomdev.zoom.event.annotations.EventObserver;
 import org.zoomdev.zoom.event.modules.EventModule;
 import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.ioc.impl.ZoomIocContainer;
-import org.zoomdev.zoom.ioc.impl.ZoomIocKey;
 import org.zoomdev.zoom.ioc.modules.IocModule;
 
-import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TestEvent extends TestCase {
 
     @Module
-    public static class TestEventModule{
+    public static class TestEventModule {
 
 
         public TestEventObserver getObserver() {
@@ -47,57 +43,59 @@ public class TestEvent extends TestCase {
         private TestEventNotifier notifier;
 
 
-
     }
 
     private static final AtomicInteger counter = new AtomicInteger(0);
 
-    public static class TestEventObserver{
+    public static class TestEventObserver {
 
         @EventObserver("onSuccess")
-        public void onEvent(Event event){
+        public void onEvent(Event event) {
             counter.incrementAndGet();
-            assertTrue(ObjectUtils.equals(event.getData(),"success")
-                    || ObjectUtils.equals(event.getData(),null));
+            assertTrue(ObjectUtils.equals(event.getData(), "success")
+                    || ObjectUtils.equals(event.getData(), null));
         }
 
         @EventObserver("onSuccess")
-        public void onEvent1(String name,Object event){
+        public void onEvent1(String name, Object event) {
             counter.incrementAndGet();
-            assertTrue(ObjectUtils.equals(event,"success")
-            || ObjectUtils.equals(event,null));
+            assertTrue(ObjectUtils.equals(event, "success")
+                    || ObjectUtils.equals(event, null));
         }
 
         @EventObserver("onSuccess")
-        public void onEvent2(String name){
+        public void onEvent2(String name) {
             counter.incrementAndGet();
 
         }
 
         @EventObserver("onSuccess")
-        public void onEvent3(String name, Object event, Exception error){
+        public void onEvent3(String name, Object event, Exception error) {
             counter.incrementAndGet();
 
         }
+
         @EventObserver("onSuccess")
-        public void onEvent(){
+        public void onEvent() {
             counter.incrementAndGet();
         }
     }
-    public static class TestEventNotifier{
+
+    public static class TestEventNotifier {
 
 
         @EventNotifier("onSuccess")
-        public Object notifySuccess(Object successData){
+        public Object notifySuccess(Object successData) {
             return successData;
         }
 
         @EventNotifier("onSuccess")
         public Object notifySuccess1(Object successData) throws Exception {
-            throw new Exception ();
+            throw new Exception();
         }
 
     }
+
     public void test() throws Exception {
 
         IocContainer container = new ZoomIocContainer();
@@ -110,9 +108,7 @@ public class TestEvent extends TestCase {
         container.fetch(EventModule.class);
 
 
-
         container.getIocClassLoader().appendModule(TestEventModule.class);
-
 
 
         TestEventModule module = container.fetch(TestEventModule.class);
@@ -120,16 +116,16 @@ public class TestEvent extends TestCase {
         TestEventNotifier notifier = module.getNotifier();
         notifier.notifySuccess("success");
 
-        try{
+        try {
             notifier.notifySuccess1("success");
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
 
 
         Thread.sleep(1000);
 
-        assertEquals(counter.get(),10);
+        assertEquals(counter.get(), 10);
     }
 }

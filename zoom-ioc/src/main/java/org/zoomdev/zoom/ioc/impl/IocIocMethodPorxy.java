@@ -1,12 +1,10 @@
 package org.zoomdev.zoom.ioc.impl;
 
-import org.zoomdev.zoom.ioc.IocException;
 import org.zoomdev.zoom.ioc.IocMethod;
 import org.zoomdev.zoom.ioc.IocMethodProxy;
 import org.zoomdev.zoom.ioc.IocObject;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class IocIocMethodPorxy implements IocMethodProxy {

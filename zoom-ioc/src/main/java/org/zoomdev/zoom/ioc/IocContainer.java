@@ -69,7 +69,7 @@ public interface IocContainer extends Destroyable {
     IocMethod getMethod(IocClass iocClass, Method target);
 
 
-    IocMethodProxy getMethodProxy(IocClass iocClass,Method target);
+    IocMethodProxy getMethodProxy(IocClass iocClass, Method target);
 
     /**
      * 释放指定范围的对象

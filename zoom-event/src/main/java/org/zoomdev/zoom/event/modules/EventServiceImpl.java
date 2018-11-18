@@ -1,6 +1,5 @@
 package org.zoomdev.zoom.event.modules;
 
-import org.apache.commons.lang3.StringUtils;
 import org.zoomdev.zoom.async.impl.Asyncs;
 import org.zoomdev.zoom.common.designpattern.SingletonUtils;
 import org.zoomdev.zoom.common.lock.LockUtils;
@@ -10,7 +9,6 @@ import org.zoomdev.zoom.event.EventService;
 import org.zoomdev.zoom.event.PayloadEvent;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,8 +47,8 @@ class EventServiceImpl implements EventService {
         }
     }
 
-    public void notifyObservers(final String name, final Object data,final Throwable error) {
-        notifyObservers(new PayloadEvent(name,data,error));
+    public void notifyObservers(final String name, final Object data, final Throwable error) {
+        notifyObservers(new PayloadEvent(name, data, error));
     }
 
     public void notifyObservers(final Event event) {

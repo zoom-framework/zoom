@@ -1,7 +1,8 @@
 package org.zoomdev.zoom.ioc.impl;
 
-import org.zoomdev.zoom.ioc.*;
-import sun.jvm.hotspot.utilities.soql.MethodCallable;
+import org.zoomdev.zoom.ioc.IocMethod;
+import org.zoomdev.zoom.ioc.IocMethodProxy;
+import org.zoomdev.zoom.ioc.IocObject;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -13,7 +14,6 @@ public class ReflectIocMethodProxy implements IocMethodProxy {
     }
 
     private Method method;
-
 
 
     @Override
