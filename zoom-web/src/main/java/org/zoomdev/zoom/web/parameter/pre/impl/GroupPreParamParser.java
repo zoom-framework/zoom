@@ -13,7 +13,7 @@ public class GroupPreParamParser implements PreParameterParser {
 
     @Override
     public Object preParse(ActionContext context) throws Exception {
-        String contentType = context.getRequest().getHeader("Content-Type");
+        String contentType = context.getRequest().getContentType();
 
         for (PreParameterParser preParameterParser : parsers) {
             if (preParameterParser.shouldParse(contentType)) {

@@ -216,19 +216,24 @@ public class Action implements ActionHandler, Destroyable {
      * @throws Exception
      */
     private void preParse(ActionContext context) throws Exception {
-        if (actionInterceptors != null) {
-            for (ActionInterceptor actionInterceptor : actionInterceptors) {
-                if (!actionInterceptor.preParse(context)) {
-                    //结束switch
-                    context.setState(ActionContext.STATE_AFTER_RENDER);
-                    return;
+        if (context.getState() == ActionContext.STATE_PRE_PARSE) {
+            if (actionInterceptors != null) {
+                for (ActionInterceptor actionInterceptor : actionInterceptors) {
+                    if (context.getState() == ActionContext.STATE_PRE_PARSE) {
+                        if (!actionInterceptor.preParse(context)) {
+                            //结束switch
+                            context.setState(ActionContext.STATE_AFTER_RENDER);
+                            return;
+                        }
+                    }
+
                 }
             }
-        }
+            if (context.getState() == ActionContext.STATE_PRE_PARSE) {
+                Object data = preParamParser.preParse(context);
+                context.setPreParam(data);
+            }
 
-        if (context.getState() == ActionContext.STATE_PRE_PARSE) {
-            Object data = preParamParser.preParse(context);
-            context.setPreParam(data);
         }
     }
 
@@ -253,17 +258,21 @@ public class Action implements ActionHandler, Destroyable {
      * @throws Exception
      */
     private void parse(ActionContext context) throws Exception {
-        if (actionInterceptors != null) {
-            for (ActionInterceptor actionInterceptor : actionInterceptors) {
-                if (context.getState() == ActionContext.STATE_PARSE) {
-                    actionInterceptor.parse(context);
-                }
-            }
-        }
+
 
         if (context.getState() == ActionContext.STATE_PARSE) {
-            Object[] args = paramParser.parse(context);
-            context.setArgs(args);
+            if (actionInterceptors != null) {
+                for (ActionInterceptor actionInterceptor : actionInterceptors) {
+                    if (context.getState() == ActionContext.STATE_PARSE) {
+                        actionInterceptor.parse(context);
+                    }
+                }
+            }
+            if (context.getState() == ActionContext.STATE_PARSE) {
+                Object[] args = paramParser.parse(context);
+                context.setArgs(args);
+            }
+
         }
     }
 
@@ -274,15 +283,18 @@ public class Action implements ActionHandler, Destroyable {
      * @throws Exception
      */
     private void invoke(ActionContext context) throws Exception {
-        Object result = caller.invoke(context.getTarget(), context.getArgs());
-        context.setResult(result);
-        if (actionInterceptors != null) {
-            for (ActionInterceptor actionInterceptor : actionInterceptors) {
-                if (context.getState() == ActionContext.STATE_BEFORE_RENDER) {
-                    actionInterceptor.whenResult(context);
+        if (context.getState() == ActionContext.STATE_BEFORE_INVOKE) {
+            Object result = caller.invoke(context.getTarget(), context.getArgs());
+            context.setResult(result);
+            if (actionInterceptors != null) {
+                for (ActionInterceptor actionInterceptor : actionInterceptors) {
+                    if (context.getState() == ActionContext.STATE_BEFORE_RENDER) {
+                        actionInterceptor.whenResult(context);
+                    }
                 }
             }
         }
+
     }
 
     /**

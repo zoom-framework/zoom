@@ -1,4 +1,4 @@
-package com.jzoom.common.utils;
+package org.zoomdev.zoom.web;
 
 
 /**

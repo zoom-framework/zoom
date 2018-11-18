@@ -1,4 +1,4 @@
-package com.jzoom.router.test.mock;
+package org.zoomdev.zoom.web;
 
 import javax.servlet.*;
 import javax.servlet.http.*;

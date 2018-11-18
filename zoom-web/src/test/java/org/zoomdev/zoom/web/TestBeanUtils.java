@@ -1,4 +1,4 @@
-package com.jzoom.common.utils;
+package org.zoomdev.zoom.web;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.junit.Test;

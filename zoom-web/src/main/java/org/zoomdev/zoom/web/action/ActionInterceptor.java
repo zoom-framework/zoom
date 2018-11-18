@@ -10,9 +10,7 @@ public interface ActionInterceptor {
      * 2、直接调用context.setResult设置一个值，表示已经处理完成，要求输出
      * {@link org.zoomdev.zoom.web.action.ActionContext#STATE_PRE_PARSE}
      *
-     * @param request
-     * @param response
-     * @param action
+     * @param context
      * @return 返回false将直接终止，所以如果有输出，则必须手动从response输出
      */
     boolean preParse(ActionContext context) throws Exception;
@@ -22,7 +20,7 @@ public interface ActionInterceptor {
      * 参数已经做了预处理
      * {@link org.zoomdev.zoom.web.action.ActionContext#STATE_PARSE}
      *
-     * @param action
+     * @param context
      * @throws Exception
      */
     void parse(ActionContext context) throws Exception;
@@ -38,7 +36,7 @@ public interface ActionInterceptor {
     /**
      * 发生异常
      *
-     * @param throwable
+     * @param context
      * @throws Exception
      */
     boolean whenError(ActionContext context) throws Exception;
