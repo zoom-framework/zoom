@@ -12,7 +12,6 @@ public interface SqlBuilder {
     String RIGHT = "RIGHT";
 
 
-
     enum Sort {
         ASC("ASC"),
         DESC("DESC");
@@ -48,6 +47,7 @@ public interface SqlBuilder {
         INNER("INNER"),
         LEFT("LEFT"),
         RIGHT("RIGHT");
+
         Join(String value) {
             this.value = value;
         }
@@ -102,7 +102,6 @@ public interface SqlBuilder {
      * @return
      */
     SqlBuilder like(String name, Like like, Object value);
-
 
 
     SqlBuilder orLike(String name, Like like, Object value);
@@ -198,8 +197,6 @@ public interface SqlBuilder {
     SqlBuilder join(String table, String on, String type);
 
 
-
-
     SqlBuilder union(SqlBuilder builder);
 
 
@@ -236,16 +233,15 @@ public interface SqlBuilder {
      */
     SqlBuilder select(String fields);
 
-    SqlBuilder selectSum(String field,String alias);
+    SqlBuilder selectSum(String field, String alias);
 
-    SqlBuilder selectMax(String field,String alias);
+    SqlBuilder selectMax(String field, String alias);
 
-    SqlBuilder selectMin(String field,String alias);
+    SqlBuilder selectMin(String field, String alias);
 
     SqlBuilder selectCount(String alias);
 
-    SqlBuilder selectAvg(String field,String alias);
-
+    SqlBuilder selectAvg(String field, String alias);
 
 
     SqlBuilder set(String name, Object value);
@@ -258,10 +254,14 @@ public interface SqlBuilder {
     List<Object> values();
 
     void buildSelect();
+
     void buildDelete();
+
     void buildUpdate();
+
     void buildInsert();
-    void buildLimit(int position,int limit);
+
+    void buildLimit(int position, int limit);
 
     String sql();
 

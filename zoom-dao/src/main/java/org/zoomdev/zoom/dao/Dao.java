@@ -3,7 +3,6 @@ package org.zoomdev.zoom.dao;
 import org.zoomdev.zoom.dao.adapters.StatementAdapterFactory;
 import org.zoomdev.zoom.dao.alias.AliasPolicyFactory;
 import org.zoomdev.zoom.dao.alias.NameAdapter;
-import org.zoomdev.zoom.dao.alias.NameAdapterFactory;
 import org.zoomdev.zoom.dao.driver.DbStructFactory;
 import org.zoomdev.zoom.dao.driver.SqlDriver;
 import org.zoomdev.zoom.dao.migrations.DatabaseBuilder;
@@ -23,7 +22,6 @@ public interface Dao extends StatementAdapterFactory {
     Ar table(String table);
 
 
-
     /**
      * 返回Entity active record
      *
@@ -34,12 +32,11 @@ public interface Dao extends StatementAdapterFactory {
     <T> EAr<T> ar(Class<T> type);
 
 
-
     /**
      * @param tables
      * @return
      */
-    EAr<Record> ar(String...tables);
+    EAr<Record> ar(String... tables);
 
     /**
      * 获取数据库结构
@@ -50,7 +47,8 @@ public interface Dao extends StatementAdapterFactory {
 
 
     Entity getEntity(Class<?> type);
-    Entity getEntity(String...tables);
+
+    Entity getEntity(String... tables);
 
 
     /**
@@ -70,7 +68,6 @@ public interface Dao extends StatementAdapterFactory {
 
 
     <T> T execute(ConnectionExecutor connectionExecutor);
-
 
 
     String getURL();

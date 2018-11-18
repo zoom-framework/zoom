@@ -1,9 +1,9 @@
 package org.zoomdev.zoom.dao.entities;
 
-import org.zoomdev.zoom.dao.impl.DataAdapters;
 import org.zoomdev.zoom.dao.annotations.AutoGenerate;
 import org.zoomdev.zoom.dao.annotations.Column;
 import org.zoomdev.zoom.dao.annotations.Table;
+import org.zoomdev.zoom.dao.impl.DataAdapters;
 
 @Table("product")
 public class SimpleProduct {
@@ -90,7 +90,6 @@ public class SimpleProduct {
     }
 
 
-
     public int getTpId() {
         return tpId;
     }
@@ -98,7 +97,6 @@ public class SimpleProduct {
     public void setTpId(int tpId) {
         this.tpId = tpId;
     }
-
 
 
 }

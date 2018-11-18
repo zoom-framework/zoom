@@ -1,17 +1,22 @@
 package org.zoomdev.zoom.dao.impl.builder;
 
 import org.junit.BeforeClass;
-import org.junit.Test;
 import org.zoomdev.zoom.common.json.JSON;
 import org.zoomdev.zoom.common.utils.Page;
-import org.zoomdev.zoom.dao.*;
+import org.zoomdev.zoom.dao.Dao;
+import org.zoomdev.zoom.dao.DaoException;
+import org.zoomdev.zoom.dao.Record;
+import org.zoomdev.zoom.dao.SqlBuilder;
 import org.zoomdev.zoom.dao.impl.AbstractDaoTest;
 import org.zoomdev.zoom.dao.impl.Utils;
 import org.zoomdev.zoom.dao.impl.ZoomDao;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -19,9 +24,8 @@ import static org.junit.Assert.assertTrue;
 public class TestBuilder extends AbstractDaoTest {
 
 
-
     @BeforeClass
-    public static void setup(){
+    public static void setup() {
 
         execute(new RunWithDao() {
             @Override
@@ -32,7 +36,7 @@ public class TestBuilder extends AbstractDaoTest {
 
     }
 
-    protected void process(final Dao dao){
+    protected void process(final Dao dao) {
 
 
         final String test_business = "testBusiness";
@@ -70,7 +74,7 @@ public class TestBuilder extends AbstractDaoTest {
                 "title", "弱弱的第二家",
                 "level", 2,
                 "stars", 2.9,
-                "address","测试地址",
+                "address", "测试地址",
                 "sales", 100
         );
         //商家注册 (add)
@@ -150,19 +154,19 @@ public class TestBuilder extends AbstractDaoTest {
                 .ar("product", "type", "shop")
                 .join("type", "typeId=tpId")
                 .join("shop", "shpId=shpId")
-                .like("name",SqlBuilder.Like.MATCH_BOTH,"饭")
-                .page(1,30);
+                .like("name", SqlBuilder.Like.MATCH_BOTH, "饭")
+                .page(1, 30);
 
-        assertTrue(page.getTotal() > 0 );
+        assertTrue(page.getTotal() > 0);
 
 
         List<Record> list = dao
                 .ar("product", "type", "shop")
                 .join("type", "typeId=tpId")
                 .join("shop", "shopId=shpId")
-                .whereIn("id",1,2).limit(0,30);
+                .whereIn("id", 1, 2).limit(0, 30);
 
-        assertTrue(list.size() == 1 );
+        assertTrue(list.size() == 1);
 
 
         Record record1 = dao.ar("product").whereNull("img").get();
@@ -170,13 +174,12 @@ public class TestBuilder extends AbstractDaoTest {
         Record record2 = dao.ar("product").whereNotNull("img").get();
 
 
-
         //买家下单商品 (trans:  update/create 减去库存、并创建订单）
 
         Executor executor = Executors.newFixedThreadPool(10);
 
         List<Future> futures = new ArrayList<Future>();
-        for(int i=0; i < 10; ++i){
+        for (int i = 0; i < 10; ++i) {
             Future future = ((ExecutorService) executor).submit(new Runnable() {
                 @Override
                 public void run() {
@@ -185,17 +188,17 @@ public class TestBuilder extends AbstractDaoTest {
                         public void run() {
                             //随机购买几件商品
                             int count = (int) (Math.random() * 10);
-                            if(dao.ar().executeUpdate(
+                            if (dao.ar().executeUpdate(
                                     "update product set pro_count=pro_count-? where pro_id=? and pro_count>?",
-                                    count,1,count) > 0){
+                                    count, 1, count) > 0) {
                                 dao.ar("shp_order")
                                         .insert(Record.as(
-                                                "shpId",FIRST_BUSINESS,
-                                                "count",count,
-                                                "proId",1,
-                                                "cmId",1
+                                                "shpId", FIRST_BUSINESS,
+                                                "count", count,
+                                                "proId", 1,
+                                                "cmId", 1
                                         ));
-                            }else{
+                            } else {
                                 throw new DaoException("库存不足");
                             }
 
@@ -207,16 +210,15 @@ public class TestBuilder extends AbstractDaoTest {
             futures.add(future);
         }
 
-        for(Future future : futures){
-            try{
+        for (Future future : futures) {
+            try {
                 future.get();
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
         }
         ((ExecutorService) executor).shutdown();
-
 
 
         //商家发货 (update)

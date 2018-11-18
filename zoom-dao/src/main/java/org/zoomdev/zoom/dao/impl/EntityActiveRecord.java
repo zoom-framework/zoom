@@ -4,7 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.common.designpattern.SingletonUtils;
 import org.zoomdev.zoom.common.expression.Symbol;
 import org.zoomdev.zoom.common.filter.Filter;
@@ -106,7 +105,6 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
     }
 
 
-
     @Override
     public Page<T> position(final int position, final int size) {
         return execute(new ConnectionExecutor() {
@@ -119,7 +117,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
                 builder.clear(false);
                 remove2(builder.values);
                 //最后两个参数要移除掉
-                int total = EntitySqlUtils.getValue(connection,builder, DaoUtils.SELECT_COUNT, int.class);
+                int total = EntitySqlUtils.getValue(connection, builder, DaoUtils.SELECT_COUNT, int.class);
                 int page = builder.position2page(position, size);
                 return new Page<T>(list, page, size, total);
             }
@@ -133,18 +131,18 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
     }
 
 
-    private void validateRecord(Record record){
+    private void validateRecord(Record record) {
         Set<String> allKeys = new HashSet<String>(record.size());
         allKeys.addAll(record.keySet());
 
-        for(EntityField entityField : entity.getEntityFields()){
+        for (EntityField entityField : entity.getEntityFields()) {
             allKeys.remove(entityField.getFieldName());
         }
 
-        if(allKeys.size() > 0){
-            throw new DaoException("Record中包含多余字段:"+
-            StringUtils.join(allKeys,",")+"所有可能的字段为"+StringUtils.join(
-                    entity.getAvailableFields(),","
+        if (allKeys.size() > 0) {
+            throw new DaoException("Record中包含多余字段:" +
+                    StringUtils.join(allKeys, ",") + "所有可能的字段为" + StringUtils.join(
+                    entity.getAvailableFields(), ","
             ));
         }
 
@@ -166,26 +164,24 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
 
     @Override
     public int delete(final T data) {
-       return execute(new ConnectionExecutor() {
-           @Override
-           public Integer execute(Connection connection) throws SQLException {
-               EntitySqlUtils.entityCondition(builder, entity, data);
-               builder.table(entity.getTable());
-               builder.buildDelete();
-               return EntitySqlUtils.executeUpdate(connection, builder);
-           }
-       });
+        return execute(new ConnectionExecutor() {
+            @Override
+            public Integer execute(Connection connection) throws SQLException {
+                EntitySqlUtils.entityCondition(builder, entity, data);
+                builder.table(entity.getTable());
+                builder.buildDelete();
+                return EntitySqlUtils.executeUpdate(connection, builder);
+            }
+        });
     }
-
-
 
 
     @Override
     public int update(T data) {
-        assert(data!=null);
-        if(data instanceof Record && strict){
+        assert (data != null);
+        if (data instanceof Record && strict) {
             //检测一下
-            validateRecord((Record)data);
+            validateRecord((Record) data);
         }
 
         entity.validate(data);
@@ -265,9 +261,9 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
 
     @Override
     public int insert(final T data) {
-        assert(data!=null);
+        assert (data != null);
 
-        if(data instanceof Record && strict){
+        if (data instanceof Record && strict) {
             validateRecord((Record) data);
         }
 
@@ -292,10 +288,6 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
             }
         });
     }
-
-
-
-
 
 
     @Override
@@ -342,9 +334,9 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
 
     @Override
     public EAr<T> having(String field, Symbol symbol, Object value) {
-        if(EntitySqlUtils.TABLE_AND_COLUMN_PATTERN.matcher(field).matches()){
+        if (EntitySqlUtils.TABLE_AND_COLUMN_PATTERN.matcher(field).matches()) {
             builder.having(entity.getColumnName(field), symbol, value);
-        }else{
+        } else {
             builder.having(field, symbol, value);
         }
 
@@ -364,12 +356,12 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
 
     @Override
     public EAr<T> join(String table, String on) {
-        return join(table,on,SqlBuilder.INNER);
+        return join(table, on, SqlBuilder.INNER);
     }
 
     @Override
     public EAr<T> join(String table, String on, String type) {
-        builder.join(table,entity.parseOn(on), type);
+        builder.join(table, entity.parseOn(on), type);
         return this;
     }
 
@@ -444,7 +436,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
         return execute(new ConnectionExecutor() {
             @Override
             public E execute(Connection connection) throws SQLException {
-                return EntitySqlUtils.getValue(connection,builder, key, typeOfE);
+                return EntitySqlUtils.getValue(connection, builder, key, typeOfE);
             }
         });
     }

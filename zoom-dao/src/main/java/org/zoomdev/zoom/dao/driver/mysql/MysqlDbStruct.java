@@ -2,7 +2,6 @@ package org.zoomdev.zoom.dao.driver.mysql;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.Record;
 import org.zoomdev.zoom.dao.alias.impl.EmptyNameAdapter;
@@ -12,7 +11,6 @@ import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.meta.ColumnMeta.KeyType;
 import org.zoomdev.zoom.dao.meta.TableMeta;
 
-import java.sql.Blob;
 import java.util.*;
 
 public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
@@ -67,9 +65,9 @@ public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
         List<Record> list = dao.ar()
                 .nameAdapter(EmptyNameAdapter.DEFAULT)
                 .executeQuery(
-                "SELECT TABLE_COMMENT AS COMMENT,TABLE_NAME as NAME from information_schema.tables where table_schema=? AND TABLE_NAME=?",
-                dbName,
-                meta.getName());
+                        "SELECT TABLE_COMMENT AS COMMENT,TABLE_NAME as NAME from information_schema.tables where table_schema=? AND TABLE_NAME=?",
+                        dbName,
+                        meta.getName());
         if (list.size() > 0) {
             Record record = list.get(0);
             meta.setComment(record.getString("COMMENT"));
@@ -79,8 +77,8 @@ public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
 
         list = dao.ar()
                 .nameAdapter(EmptyNameAdapter.DEFAULT).executeQuery(
-                "SELECT TABLE_NAME,COLUMN_NAME,IS_NULLABLE,DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,COLUMN_KEY,EXTRA,COLUMN_COMMENT,COLUMN_DEFAULT FROM information_schema.columns WHERE table_schema=? and TABLE_NAME=?",
-                dbName, meta.getName());
+                        "SELECT TABLE_NAME,COLUMN_NAME,IS_NULLABLE,DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,COLUMN_KEY,EXTRA,COLUMN_COMMENT,COLUMN_DEFAULT FROM information_schema.columns WHERE table_schema=? and TABLE_NAME=?",
+                        dbName, meta.getName());
 
         for (Record record : list) {
             String column = record.getString("COLUMN_NAME");

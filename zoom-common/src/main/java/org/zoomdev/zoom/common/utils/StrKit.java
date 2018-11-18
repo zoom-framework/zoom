@@ -4,6 +4,7 @@ public class StrKit {
 
     /**
      * 首字母大写
+     *
      * @param string
      * @return
      */
@@ -43,6 +44,7 @@ public class StrKit {
 
     /**
      * 驼峰式变成下划线
+     *
      * @param str
      * @return
      */

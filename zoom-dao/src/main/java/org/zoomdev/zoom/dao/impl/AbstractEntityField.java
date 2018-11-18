@@ -2,9 +2,9 @@ package org.zoomdev.zoom.dao.impl;
 
 import org.zoomdev.zoom.caster.ValueCaster;
 import org.zoomdev.zoom.common.validate.Validator;
-import org.zoomdev.zoom.dao.auto.AutoField;
 import org.zoomdev.zoom.dao.adapters.EntityField;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
+import org.zoomdev.zoom.dao.auto.AutoField;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 
 import java.sql.PreparedStatement;
@@ -62,12 +62,14 @@ abstract class AbstractEntityField implements EntityField {
     }
 
     @Override
-    public String getOriginalFieldName(){
+    public String getOriginalFieldName() {
         return originalFieldName;
     }
+
     public void setOriginalFieldName(String originalFieldName) {
         this.originalFieldName = originalFieldName;
     }
+
     @Override
     public StatementAdapter getStatementAdapter() {
         return statementAdapter;
@@ -108,7 +110,7 @@ abstract class AbstractEntityField implements EntityField {
 
 
     @Override
-    public Validator getValidator(){
+    public Validator getValidator() {
         return validator;
     }
 

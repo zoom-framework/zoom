@@ -1,6 +1,5 @@
 package org.zoomdev.zoom.dao.migrations;
 
-import org.apache.commons.lang3.StringUtils;
 import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.driver.SqlDriver;
 import org.zoomdev.zoom.dao.impl.ZoomDao;
@@ -11,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ZoomDatabaseBuilder implements DatabaseBuilder {
-
 
 
     private Dao dao;
@@ -27,10 +25,10 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
         abstract void build(List<String> sqls);
     }
 
-    public static class FunctionValue{
+    public static class FunctionValue {
         String value;
 
-        public FunctionValue(String value){
+        public FunctionValue(String value) {
             this.value = value;
         }
 
@@ -50,7 +48,7 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
         @Override
         void build(List<String> sqls) {
 
-            sqls.add( driver.buildDropIfExists(table));
+            sqls.add(driver.buildDropIfExists(table));
 
 
         }
@@ -67,7 +65,7 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
 
         @Override
         void build(List<String> sqls) {
-            driver.buildTable(table,sqls);
+            driver.buildTable(table, sqls);
         }
     }
 
@@ -210,7 +208,7 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
         List<String> list = new ArrayList<String>();
 
 
-        for(BuildInfo buildInfo : buildInfos){
+        for (BuildInfo buildInfo : buildInfos) {
             buildInfo.build(list);
 
         }
@@ -218,8 +216,8 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
 
         StringBuilder sb = new StringBuilder();
 
-        for(String sql: list){
-           sb.append(sql).append(";\n");
+        for (String sql : list) {
+            sb.append(sql).append(";\n");
         }
 
         return sb.toString();
@@ -232,9 +230,9 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
         ZoomDao.executeTrans(new Runnable() {
             @Override
             public void run() {
-                for(BuildInfo buildInfo : buildInfos){
+                for (BuildInfo buildInfo : buildInfos) {
                     buildInfo.build(list);
-                    for(String str : list){
+                    for (String str : list) {
                         dao.ar().execute(str);
                     }
 
@@ -242,7 +240,6 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
                 }
             }
         });
-
 
 
     }
@@ -273,7 +270,6 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
         columnMeta.setDefaultValue(new FunctionValue(value));
         return this;
     }
-
 
 
 }

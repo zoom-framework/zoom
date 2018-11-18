@@ -52,17 +52,17 @@ public abstract class AbsDriver implements SqlDriver {
     }
 
 
-    protected static String buildCommentOnTable(String table,String comment){
-        return String.format("COMMENT ON TABLE %s IS '%s",table,comment);
+    protected static String buildCommentOnTable(String table, String comment) {
+        return String.format("COMMENT ON TABLE %s IS '%s", table, comment);
     }
 
 
-    protected static String buildCommentOnColumn(String table,String column,String comment){
-        return String.format("COMMENT ON %s.%s IS '%s",table,column,comment);
+    protected static String buildCommentOnColumn(String table, String column, String comment) {
+        return String.format("COMMENT ON %s.%s IS '%s", table, column, comment);
     }
 
 
-    protected static void buildUnique(TableBuildInfo table, List<String> sqlList){
+    protected static void buildUnique(TableBuildInfo table, List<String> sqlList) {
         StringBuilder sb = new StringBuilder();
         //index
         for (ColumnMeta columnMeta : table.getColumns()) {
@@ -84,7 +84,7 @@ public abstract class AbsDriver implements SqlDriver {
         }
     }
 
-    protected static void buildIndex(TableBuildInfo table, List<String> sqlList){
+    protected static void buildIndex(TableBuildInfo table, List<String> sqlList) {
         StringBuilder sb = new StringBuilder();
         //index
         for (ColumnMeta columnMeta : table.getColumns()) {

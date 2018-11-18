@@ -1,6 +1,5 @@
 package org.zoomdev.zoom.dao.alias.impl;
 
-import org.zoomdev.zoom.common.utils.StrKit;
 import org.zoomdev.zoom.dao.Entity;
 import org.zoomdev.zoom.dao.adapters.EntityField;
 import org.zoomdev.zoom.dao.alias.NameAdapter;
@@ -18,16 +17,16 @@ public class MapNameAdapter implements NameAdapter {
     Map<String, String> column2fieldMap;
 
 
-    public static NameAdapter fromEntity(Entity entity){
+    public static NameAdapter fromEntity(Entity entity) {
         Map<String, String> field2columnMap = new HashMap<String, String>();
         Map<String, String> column2fieldMap = new HashMap<String, String>();
-        for(EntityField field : entity.getEntityFields()){
-            field2columnMap.put(field.getFieldName(),field.getColumnName());
-            column2fieldMap.put(field.getColumnName(),field.getFieldName());
+        for (EntityField field : entity.getEntityFields()) {
+            field2columnMap.put(field.getFieldName(), field.getColumnName());
+            column2fieldMap.put(field.getColumnName(), field.getFieldName());
         }
 
 
-        return new MapNameAdapter(field2columnMap,column2fieldMap);
+        return new MapNameAdapter(field2columnMap, column2fieldMap);
 
     }
 

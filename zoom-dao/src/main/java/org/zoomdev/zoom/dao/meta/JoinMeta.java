@@ -3,15 +3,15 @@ package org.zoomdev.zoom.dao.meta;
 import org.zoomdev.zoom.dao.SqlBuilder;
 
 public class JoinMeta {
-    public static JoinMeta create(String table, String on,String type){
-        return new JoinMeta(table,on,type);
+    public static JoinMeta create(String table, String on, String type) {
+        return new JoinMeta(table, on, type);
     }
 
-    public static JoinMeta create(String table, String on){
-        return new JoinMeta(table,on,SqlBuilder.INNER);
+    public static JoinMeta create(String table, String on) {
+        return new JoinMeta(table, on, SqlBuilder.INNER);
     }
 
-    public JoinMeta(){
+    public JoinMeta() {
 
     }
 
@@ -33,8 +33,6 @@ public class JoinMeta {
     public void setTable(String table) {
         this.table = table;
     }
-
-
 
 
     public String getOn() {

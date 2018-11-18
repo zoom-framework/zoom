@@ -20,33 +20,33 @@ class StatementAdapters {
     static String2Clob STRING2CLOB = new String2Clob();
     static ByteArray2Blob BYTEARRAY2BLOB = new ByteArray2Blob();
 
-    static Map<String,StatementAdapter> pool = new ConcurrentHashMap<String, StatementAdapter>();
+    static Map<String, StatementAdapter> pool = new ConcurrentHashMap<String, StatementAdapter>();
 
-    static String getKey(Class<?> fieldType, Class<?> columnType){
+    static String getKey(Class<?> fieldType, Class<?> columnType) {
         return fieldType.getName() + ":" + columnType.getName();
     }
+
     static StatementAdapter DEFAULT = new StatementAdapter() {
         @Override
         public void adapt(PreparedStatement statement, int index, Object value) throws SQLException {
             statement.setObject(index, value);
         }
     };
-    static void add(Class<?> fieldType, Class<?> columnType){
-        pool.put(getKey(fieldType,columnType),new CasterProxyStatementAdapter(
-                Caster.wrap(fieldType,columnType),
+
+    static void add(Class<?> fieldType, Class<?> columnType) {
+        pool.put(getKey(fieldType, columnType), new CasterProxyStatementAdapter(
+                Caster.wrap(fieldType, columnType),
                 DEFAULT
         ));
     }
 
     static {
 
-        add(Map.class,String.class);
-        add(Collection.class,String.class);
+        add(Map.class, String.class);
+        add(Collection.class, String.class);
 
 
     }
-
-
 
 
     /**
@@ -83,8 +83,8 @@ class StatementAdapters {
             return new CasterProxyStatementAdapter(Caster.wrap(fieldType, byte[].class), BYTEARRAY2BLOB);
         }
 
-        StatementAdapter adapter = pool.get(getKey(fieldType,columnType));
-        if(adapter!=null){
+        StatementAdapter adapter = pool.get(getKey(fieldType, columnType));
+        if (adapter != null) {
             return adapter;
         }
 

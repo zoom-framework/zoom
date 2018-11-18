@@ -11,6 +11,7 @@ public interface Sql<T extends Sql> {
 
     /**
      * dao.ar("table").where("id",1).find()=>select * from table where id=?
+     *
      * @param key
      * @param value
      * @return
@@ -19,6 +20,7 @@ public interface Sql<T extends Sql> {
 
     /**
      * dao.ar("table").where("id",Symbol.GT,1).find()=>select * from table where id>?
+     *
      * @param key
      * @param symbol
      * @param value
@@ -28,17 +30,17 @@ public interface Sql<T extends Sql> {
 
     /**
      * .where("id",2).where(new Condition(){
-     *      public void where(SqlBuilder where){
-     *          where.where("id",1).orWhere("name","张三")
-     *      }
-     *     })=>  id=? and (id = ? or name=?)
+     * public void where(SqlBuilder where){
+     * where.where("id",1).orWhere("name","张三")
+     * }
+     * })=>  id=? and (id = ? or name=?)
+     *
      * @param condition
      * @return
      */
     T where(SqlBuilder.Condition condition);
 
     /**
-     *
      * where("id",1,2,3)=> where id in (?,?,?)
      *
      * @param key
@@ -50,6 +52,7 @@ public interface Sql<T extends Sql> {
 
     /**
      * whereNotNull("name")=> where name is not null
+     *
      * @param key
      * @return
      */
@@ -57,6 +60,7 @@ public interface Sql<T extends Sql> {
 
     /**
      * whereNull("name")=> where name is null
+     *
      * @param key
      * @return
      */
@@ -64,6 +68,7 @@ public interface Sql<T extends Sql> {
 
     /**
      * like("name",Like.MATCH_LEFT,"张")=> name like ? => '张%'
+     *
      * @param key
      * @param like
      * @param value
@@ -72,11 +77,10 @@ public interface Sql<T extends Sql> {
     T like(String key, SqlBuilder.Like like, Object value);
 
     /**
-     *
      * .where("id",2).orWhere(new Condition(){
-     *  public void where(SqlBuilder where){
-     *      where.where("id",1).orWhere("name","张三")
-     *  }
+     * public void where(SqlBuilder where){
+     * where.where("id",1).orWhere("name","张三")
+     * }
      * })=>  id=? or (id = ? or name=?)
      *
      * @param condition
@@ -85,8 +89,8 @@ public interface Sql<T extends Sql> {
     T orWhere(SqlBuilder.Condition condition);
 
     /**
-     *
      * where("id",1).orWhere("id",2)=> id=? or id=?
+     *
      * @param key
      * @param value
      * @return
@@ -97,6 +101,7 @@ public interface Sql<T extends Sql> {
     /**
      * orderBy("id",Sort.DESC)=> order by id desc
      * orderBy("id",Sort.DESC).orderBy("name",Sort.ASC)=> order by id desc,name asc
+     *
      * @param key
      * @param sort
      * @return
@@ -106,6 +111,7 @@ public interface Sql<T extends Sql> {
     /**
      * groupBy("id")=> group by id
      * groupBy("id,name")=> group by id,name
+     *
      * @param key
      * @return
      */
@@ -113,6 +119,7 @@ public interface Sql<T extends Sql> {
 
     /**
      * having("AVG(score)",Symbol.GT,60)=> having AVG(score) > 60
+     *
      * @param key
      * @param symbol
      * @param value
@@ -121,9 +128,8 @@ public interface Sql<T extends Sql> {
     T having(String key, Symbol symbol, Object value);
 
     /**
-     *
      * dao.ar("table").where("id",1).union(
-     *  dao.builder().table("table").where("name","张三")
+     * dao.builder().table("table").where("name","张三")
      * ).find()=>  (select * from table where id=?) union (select * from table where name=?)
      *
      * @param sqlBuilder
@@ -133,8 +139,9 @@ public interface Sql<T extends Sql> {
 
     /**
      * dao.ar("table").where("id",1).union(
-     *  dao.builder().table("table").where("name","张三")
+     * dao.builder().table("table").where("name","张三")
      * ).find()=>  (select * from table where id=?) union all (select * from table where name=?)
+     *
      * @param sqlBuilder
      * @return
      */
@@ -143,6 +150,7 @@ public interface Sql<T extends Sql> {
 
     /**
      * join("order","order.id=product.id")=> inner join order on order.id=product.id
+     *
      * @param table
      * @param on
      * @return
@@ -151,6 +159,7 @@ public interface Sql<T extends Sql> {
 
     /**
      * join("order","order.id=product.id","left")=> left join order on order.id=product.id
+     *
      * @param table
      * @param on
      * @param type
@@ -161,6 +170,7 @@ public interface Sql<T extends Sql> {
 
     /**
      * select("id,name")=> select id,name
+     *
      * @param select
      * @return
      */
@@ -168,6 +178,7 @@ public interface Sql<T extends Sql> {
 
     /**
      * select(Array.asList("id","name"))=> select id,name
+     *
      * @param select
      * @return
      */

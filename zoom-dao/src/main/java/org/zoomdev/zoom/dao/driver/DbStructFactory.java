@@ -67,12 +67,14 @@ public interface DbStructFactory {
 
     /**
      * 所有trigger名称
+     *
      * @return
      */
-    Map<String,Collection<String>> getTriggers();
+    Map<String, Collection<String>> getTriggers();
 
     /**
      * 所有sequence名称
+     *
      * @return
      */
     Collection<String> getSequences();
@@ -83,7 +85,6 @@ public interface DbStructFactory {
      * 清除缓存
      */
     void clearCache();
-
 
 
 }

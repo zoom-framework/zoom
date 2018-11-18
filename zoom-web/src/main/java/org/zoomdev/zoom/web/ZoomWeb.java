@@ -124,7 +124,7 @@ public class ZoomWeb {
         try {
             ResScanner.me().scan(ZoomWeb.class.getClassLoader(), jarFilter);
         } catch (IOException e) {
-            throw new RuntimeException("扫描解析文件出错",e);
+            throw new RuntimeException("扫描解析文件出错", e);
         }
 
     }

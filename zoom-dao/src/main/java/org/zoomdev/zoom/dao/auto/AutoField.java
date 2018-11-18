@@ -16,7 +16,7 @@ public interface AutoField {
 
     /**
      * 是否是数据库自动生成
-     *  用于 prepareStatement(sql,  new String[]{ keys })
+     * 用于 prepareStatement(sql,  new String[]{ keys })
      *
      * @return
      */

@@ -47,7 +47,6 @@ public interface SqlDriver extends StatementAdapterFactory {
     void insertOrUpdate(StringBuilder sb, List<Object> values, String tableName, Map<String, Object> data, String... unikeys);
 
 
-
     String buildDropIfExists(String table);
 
     void buildTable(TableBuildInfo buildInfo, List<String> sqlList);
@@ -56,6 +55,7 @@ public interface SqlDriver extends StatementAdapterFactory {
 
     /**
      * 解析连接信息，获取表目录（数据库名称）
+     *
      * @param url
      * @return
      */

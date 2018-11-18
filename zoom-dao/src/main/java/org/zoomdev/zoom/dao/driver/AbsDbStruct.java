@@ -61,9 +61,9 @@ public abstract class AbsDbStruct implements DbStructFactory {
 
         });
 
-        if(tableMeta.getComment()==null){
+        if (tableMeta.getComment() == null) {
             fill(tableMeta);
-            if(tableMeta.getComment() == null){
+            if (tableMeta.getComment() == null) {
                 tableMeta.setComment("");
             }
         }
@@ -73,6 +73,7 @@ public abstract class AbsDbStruct implements DbStructFactory {
     }
 
     public abstract void fill(TableMeta meta);
+
     /**
      * 清除缓存
      */

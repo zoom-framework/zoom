@@ -1,14 +1,10 @@
 package org.zoomdev.zoom.dao.driver.oracle;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.dao.Dao;
-import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.Record;
 import org.zoomdev.zoom.dao.alias.impl.EmptyNameAdapter;
-import org.zoomdev.zoom.dao.alias.impl.ToLowerCaseNameAdapter;
 import org.zoomdev.zoom.dao.driver.AbsDbStruct;
 import org.zoomdev.zoom.dao.driver.DbStructFactory;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
@@ -25,7 +21,6 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
     public OracleDbStruct(Dao dao, String user) {
         super(dao);
     }
-
 
 
     private static final Log log = LogFactory.getLog(OracleDbStruct.class);
@@ -89,9 +84,9 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
         List<Record> columns = dao.ar()
                 .nameAdapter(EmptyNameAdapter.DEFAULT)
                 .executeQuery("SELECT cols.table_name,cols.column_name,cols.DATA_PRECISION,cols.NULLABLE,cols.DATA_DEFAULT,cols.DATA_TYPE,cols.DATA_LENGTH,COMMENTS FROM cols "
-                + "join user_tables on user_tables.table_name=cols.table_name "
-                + "left join user_col_comments on cols.COLUMN_NAME=user_col_comments.column_name and cols.TABLE_name=user_col_comments.TABLE_name"
-                + " where cols.table_name=?", meta.getName().toUpperCase());
+                        + "join user_tables on user_tables.table_name=cols.table_name "
+                        + "left join user_col_comments on cols.COLUMN_NAME=user_col_comments.column_name and cols.TABLE_name=user_col_comments.TABLE_name"
+                        + " where cols.table_name=?", meta.getName().toUpperCase());
         for (Record record : columns) {
             String column = record.getString("COLUMN_NAME");
             ColumnMeta columnMeta = meta.getColumn(column);
@@ -127,7 +122,6 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
         }
 
 
-
     }
 
     @Override
@@ -150,22 +144,22 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
 
     @Override
     public Map<String, Collection<String>> getTriggers() {
-       List<Record> triggers = dao.ar()
-               .table("all_triggers")
-               .nameAdapter(EmptyNameAdapter.DEFAULT)
-               .join("user_users","all_triggers.owner=user_users.username")
+        List<Record> triggers = dao.ar()
+                .table("all_triggers")
+                .nameAdapter(EmptyNameAdapter.DEFAULT)
+                .join("user_users", "all_triggers.owner=user_users.username")
                 .select("table_name,trigger_name")
                 //.where("owner", user.toUpperCase())
-               .find();
+                .find();
         Map<String, Collection<String>> triggerMap = new HashMap<String, Collection<String>>();
         for (Record record : triggers) {
             String tableName = record.getString("TABLE_NAME");
             Collection<String> list = triggerMap.get(tableName);
-            if(list==null){
+            if (list == null) {
                 list = new ArrayList<String>();
-                triggerMap.put(tableName,list);
+                triggerMap.put(tableName, list);
             }
-            list.add( record.getString("TRIGGER_NAME"));
+            list.add(record.getString("TRIGGER_NAME"));
         }
         return triggerMap;
     }
@@ -176,9 +170,9 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
         List<Record> allSequnce = dao.ar()
                 .table("all_sequences")
                 .nameAdapter(EmptyNameAdapter.DEFAULT)
-                .join("user_users","all_sequences.SEQUENCE_OWNER=user_users.username")
+                .join("user_users", "all_sequences.SEQUENCE_OWNER=user_users.username")
                 .select("SEQUENCE_NAME")
-               // .where("SEQUENCE_OWNER", user.toUpperCase())
+                // .where("SEQUENCE_OWNER", user.toUpperCase())
                 .find();
 
         Set<String> sequences = new HashSet<String>();

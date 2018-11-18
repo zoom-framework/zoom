@@ -21,8 +21,6 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.*;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -469,8 +467,8 @@ public class ResScanner implements Destroyable {
         if (log.isInfoEnabled()) {
             log.info("正在解析jar文件:" + file.getAbsolutePath());
         }
-        if(!file.exists()){
-            log.error("文件不存在:"+file.getAbsolutePath());
+        if (!file.exists()) {
+            log.error("文件不存在:" + file.getAbsolutePath());
             return;
         }
 
@@ -483,10 +481,10 @@ public class ResScanner implements Destroyable {
                 String name = entry.getName();
                 if (name.endsWith(".class")) {
                     addJarClass(
-                            name.substring(0,name.length()-".class".length())
-                            .replace("/", "."), classLoader, file);
-                }else {
-                    if(entry.isDirectory()){
+                            name.substring(0, name.length() - ".class".length())
+                                    .replace("/", "."), classLoader, file);
+                } else {
+                    if (entry.isDirectory()) {
                         continue;
                     }
                     addJarFile(name, classLoader, file);

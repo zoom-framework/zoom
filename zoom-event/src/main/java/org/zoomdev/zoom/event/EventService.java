@@ -6,7 +6,7 @@ public interface EventService {
 
     void removeListener(String name, EventListener listener);
 
-    void notifyObservers(String name, Object data,Throwable error);
+    void notifyObservers(String name, Object data, Throwable error);
 
     void notifyObservers(Event event);
 }

@@ -17,11 +17,11 @@ public class OracleDriver extends AbsDriver implements AutoGenerateProvider {
 
     private AutoGenerateProvider autoGenerateProvider;
 
-    public OracleDriver(){
+    public OracleDriver() {
         this(new SimpleOracleAutoIncreaseProvider());
     }
 
-    public OracleDriver(AutoGenerateProvider autoIncreaseProvider){
+    public OracleDriver(AutoGenerateProvider autoIncreaseProvider) {
         this.autoGenerateProvider = autoIncreaseProvider;
     }
 
@@ -38,6 +38,7 @@ public class OracleDriver extends AbsDriver implements AutoGenerateProvider {
                 "SELECT * FROM (SELECT A.*, ROWNUM R FROM (")
                 .append(") A WHERE ROWNUM <= ?) B WHERE R > ?");
     }
+
     public void setAutoGenerateProvider(AutoGenerateProvider autoGenerateProvider) {
         this.autoGenerateProvider = autoGenerateProvider;
     }
@@ -191,9 +192,9 @@ public class OracleDriver extends AbsDriver implements AutoGenerateProvider {
     @Override
     public String buildDropIfExists(String table) {
         String str = "declare num number; begin " +
-                "select count(1) into num from user_tables where table_name = upper('"+table+"') ;" +
+                "select count(1) into num from user_tables where table_name = upper('" + table + "') ;" +
                 "if num > 0 then " +
-                "execute immediate 'drop table "+table+"' ;" +
+                "execute immediate 'drop table " + table + "' ;" +
                 "end if;" +
                 "end;";
         return str;
@@ -294,20 +295,19 @@ public class OracleDriver extends AbsDriver implements AutoGenerateProvider {
         sqlList.add(sb.toString());
 
 
-        buildIndex(table,sqlList);
+        buildIndex(table, sqlList);
 
-        if(autoIncreaseColumn!=null){
-            if(autoGenerateProvider !=null){
+        if (autoIncreaseColumn != null) {
+            if (autoGenerateProvider != null) {
                 autoGenerateProvider.buildAutoIncrease(
-                        table,autoIncreaseColumn,sqlList
+                        table, autoIncreaseColumn, sqlList
                 );
             }
         }
 
-        buildUnique(table,sqlList);
+        buildUnique(table, sqlList);
 
     }
-
 
 
     @Override
@@ -325,15 +325,15 @@ public class OracleDriver extends AbsDriver implements AutoGenerateProvider {
 
     @Override
     public void buildAutoIncrease(TableBuildInfo table, ColumnMeta autoColumn, List<String> sqlList) {
-        if(autoGenerateProvider !=null){
-            autoGenerateProvider.buildAutoIncrease(table,autoColumn,sqlList);
+        if (autoGenerateProvider != null) {
+            autoGenerateProvider.buildAutoIncrease(table, autoColumn, sqlList);
         }
     }
 
     @Override
     public AutoField createAutoField(Dao dao, TableMeta tableMeta, ColumnMeta columnMeta) {
-        if(autoGenerateProvider !=null){
-            return autoGenerateProvider.createAutoField(dao,tableMeta,columnMeta);
+        if (autoGenerateProvider != null) {
+            return autoGenerateProvider.createAutoField(dao, tableMeta, columnMeta);
         }
         return null;
     }

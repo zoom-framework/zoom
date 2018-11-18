@@ -5,14 +5,12 @@ import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.common.Destroyable;
 import org.zoomdev.zoom.common.io.Io;
 import org.zoomdev.zoom.common.utils.Classes;
-import org.zoomdev.zoom.common.utils.StrKit;
 import org.zoomdev.zoom.dao.*;
-import org.zoomdev.zoom.dao.alias.NameAdapter;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
-import org.zoomdev.zoom.dao.alias.AliasPolicy;
 import org.zoomdev.zoom.dao.alias.AliasPolicyFactory;
-import org.zoomdev.zoom.dao.alias.NameAdapterFactory;
-import org.zoomdev.zoom.dao.alias.impl.*;
+import org.zoomdev.zoom.dao.alias.NameAdapter;
+import org.zoomdev.zoom.dao.alias.impl.DetectPrefixAliasPolicyFactory;
+import org.zoomdev.zoom.dao.alias.impl.ToLowerCaseNameAdapter;
 import org.zoomdev.zoom.dao.driver.DbStructFactory;
 import org.zoomdev.zoom.dao.driver.SqlDriver;
 import org.zoomdev.zoom.dao.driver.h2.H2DbStruct;
@@ -32,17 +30,15 @@ import org.zoomdev.zoom.dao.utils.DaoUtils;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.Collection;
 
 /**
  * dao
  *
  * @author jzoom
  */
-public class ZoomDao implements Dao, Destroyable{
+public class ZoomDao implements Dao, Destroyable {
 
     private static final Log log = LogFactory.getLog(Dao.class);
 
@@ -56,7 +52,6 @@ public class ZoomDao implements Dao, Destroyable{
 
     private NameAdapter nameAdapter;
     private Collection<String> names;
-
 
 
     private ThreadLocal<Ar> arholder = new ThreadLocal<Ar>();
@@ -79,7 +74,7 @@ public class ZoomDao implements Dao, Destroyable{
         this.dataSource = dataSource;
         this.lazyLoad = lazyLoad;
         Db.register(this);
-        entityFactory = new CachedEntityFactory(new BeanEntityFactory(this),new RecordEntityFactory(this));
+        entityFactory = new CachedEntityFactory(new BeanEntityFactory(this), new RecordEntityFactory(this));
         this.nameAdapter = ToLowerCaseNameAdapter.DEFAULT;
         if (lazyLoad) {
             return;
@@ -87,7 +82,7 @@ public class ZoomDao implements Dao, Destroyable{
         load();
     }
 
-    public void release(){
+    public void release() {
         arholder.remove();
         earHolder.remove();
     }
@@ -109,8 +104,8 @@ public class ZoomDao implements Dao, Destroyable{
             ZoomDao.commitTrans();
         } catch (Throwable e) {
             ZoomDao.rollbackTrans();
-            if(e instanceof DaoException){
-                throw (DaoException)e;
+            if (e instanceof DaoException) {
+                throw (DaoException) e;
             }
             throw new DaoException(e);
         }
@@ -164,7 +159,7 @@ public class ZoomDao implements Dao, Destroyable{
             String tableCat = sqlDriver.getTableCatFromUrl(url);
             this.dbStructFactory =
                     new CachedDbStructFactory(createDbStructFactory(
-                            metaData.getDatabaseProductName(),tableCat));
+                            metaData.getDatabaseProductName(), tableCat));
 
         } catch (SQLException e) {
             throw new DaoException("创建Dao失败,连接数据库错误", e);
@@ -174,8 +169,7 @@ public class ZoomDao implements Dao, Destroyable{
     }
 
 
-
-    private DbStructFactory createDbStructFactory(String productName,String tableCat) {
+    private DbStructFactory createDbStructFactory(String productName, String tableCat) {
         if (Databases.MYSQL.equals(productName)) {
             return new MysqlDbStruct(this, tableCat);
         }
@@ -246,7 +240,6 @@ public class ZoomDao implements Dao, Destroyable{
     }
 
 
-
     private void lazyLoad() {
         if (sqlDriver == null) {
             synchronized (this) {
@@ -259,7 +252,7 @@ public class ZoomDao implements Dao, Destroyable{
 
     private Ar createAr() {
         lazyLoad();
-        return new ActiveRecord(this,nameAdapter);
+        return new ActiveRecord(this, nameAdapter);
     }
 
 
@@ -267,10 +260,6 @@ public class ZoomDao implements Dao, Destroyable{
     public Ar table(String table) {
         return ar().table(table);
     }
-
-
-
-
 
 
     public Collection<String> getTableNames() {
@@ -289,7 +278,6 @@ public class ZoomDao implements Dao, Destroyable{
         }
         return names;
     }
-
 
 
     private static ThreadLocal<Transactions> threadLocal = new ThreadLocal<Transactions>();
@@ -338,7 +326,7 @@ public class ZoomDao implements Dao, Destroyable{
     public static void commitTrans() {
         Transactions transactions = getTransaction();
         if (transactions != null) {
-            if(0==transactions.subRefCount()){
+            if (0 == transactions.subRefCount()) {
                 try {
                     transactions.commit();
                 } finally {
@@ -351,7 +339,7 @@ public class ZoomDao implements Dao, Destroyable{
     public static void rollbackTrans() {
         Transactions transactions = getTransaction();
         if (transactions != null) {
-            if(0 == transactions.subRefCount()){
+            if (0 == transactions.subRefCount()) {
                 try {
                     transactions.rollback();
                 } finally {

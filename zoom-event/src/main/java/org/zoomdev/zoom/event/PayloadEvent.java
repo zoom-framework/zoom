@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class PayloadEvent implements Event {
 
-    public PayloadEvent(String name, Object payload,Throwable error) {
+    public PayloadEvent(String name, Object payload, Throwable error) {
         this.name = name;
         this.payload = payload;
         this.error = error;

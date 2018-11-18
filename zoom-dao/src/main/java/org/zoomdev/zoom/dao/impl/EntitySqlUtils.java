@@ -2,7 +2,8 @@ package org.zoomdev.zoom.dao.impl;
 
 import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.common.filter.Filter;
-import org.zoomdev.zoom.dao.*;
+import org.zoomdev.zoom.dao.DaoException;
+import org.zoomdev.zoom.dao.Entity;
 import org.zoomdev.zoom.dao.adapters.EntityField;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 import org.zoomdev.zoom.dao.auto.AutoField;
@@ -23,11 +24,7 @@ public class EntitySqlUtils {
     static final Pattern TABLE_AND_COLUMN_PATTERN = Pattern.compile("[a-zA-Z0-9_]+[\\s]*\\.[\\s]*[a-zA-Z0-9_]+|[a-zA-Z0-9_]+");
 
 
-
-
-
-
-    public static <E> E getValue(Connection connection, SimpleSqlBuilder builder,String key, Class<E> typeOfE) throws SQLException {
+    public static <E> E getValue(Connection connection, SimpleSqlBuilder builder, String key, Class<E> typeOfE) throws SQLException {
         builder.selectRaw(key);
         builder.buildSelect();
         return Caster.to(EntitySqlUtils.executeGetValue(connection, builder), typeOfE);
@@ -182,9 +179,9 @@ public class EntitySqlUtils {
         if (index == 0) {
             throw new DaoException("至少更新一个字段");
         }
-        if(where.length()>0){
+        if (where.length() > 0) {
             sql.append(" where ").append(where);
-        }else{
+        } else {
             throw new DaoException("至少需要一个where条件");
         }
 
@@ -194,7 +191,7 @@ public class EntitySqlUtils {
         // 主键
         for (EntityField adapter : entity.getPrimaryKeys()) {
             Object value = adapter.get(data);
-            if(value != null){
+            if (value != null) {
                 builder.where(adapter.getColumnName(), value);
                 builder.adapters.add(adapter);
             }
@@ -262,11 +259,11 @@ public class EntitySqlUtils {
 
         PreparedStatement ps = connection.prepareStatement(sql);
         for (int index = 0, c = values.size(), m = adapters.size(); index < c; ++index) {
-            if(index >= m){
+            if (index >= m) {
 
-                ps.setObject(index+1,values.get(index));
+                ps.setObject(index + 1, values.get(index));
 
-            }else{
+            } else {
                 StatementAdapter adapter = adapters.get(index);
                 adapter.adapt(ps, index + 1, values.get(index));
             }

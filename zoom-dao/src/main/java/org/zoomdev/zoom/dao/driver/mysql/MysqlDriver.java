@@ -6,8 +6,6 @@ import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.migrations.TableBuildInfo;
 import org.zoomdev.zoom.dao.migrations.ZoomDatabaseBuilder;
 
-import java.net.URI;
-import java.net.URL;
 import java.sql.Types;
 import java.util.*;
 import java.util.Map.Entry;
@@ -20,9 +18,9 @@ public class MysqlDriver extends AbsDriver {
         if ((n = name.indexOf(".")) > 0) {
             String table = name.substring(0, n);
             String column = name.substring(n + 1);
-            return protectName(sb,table).append(".").append(column);
+            return protectName(sb, table).append(".").append(column);
         }
-        return protectName(sb,name);
+        return protectName(sb, name);
     }
 
     @Override
@@ -32,7 +30,7 @@ public class MysqlDriver extends AbsDriver {
             String table = name.substring(0, n);
             String column = name.substring(n + 1);
 
-            return protectName(new StringBuilder(),table)
+            return protectName(new StringBuilder(), table)
                     .append(".").append(column).toString();
         }
         return protectName(name);
@@ -48,11 +46,11 @@ public class MysqlDriver extends AbsDriver {
     public String getTableCatFromUrl(String url) {
         //jdbc:mysql://SERVER:PORT/DBNAME?useUnicode=true&characterEncoding=UTF-8
         int n = url.lastIndexOf("?");
-        if(n > 0){
-            url = url.substring(0,n);
+        if (n > 0) {
+            url = url.substring(0, n);
         }
 
-        return url.substring(url.lastIndexOf("/")+1);
+        return url.substring(url.lastIndexOf("/") + 1);
     }
 
     protected String protectName(String name) {
@@ -127,17 +125,17 @@ public class MysqlDriver extends AbsDriver {
     public String buildDropIfExists(String table) {
         StringBuilder sb = new StringBuilder();
         sb.append("DROP TABLE IF EXISTS ");
-        protectTable(sb,table);
+        protectTable(sb, table);
         return sb.toString();
     }
 
 
-    protected String buildCreateTable(TableBuildInfo table){
+    protected String buildCreateTable(TableBuildInfo table) {
         List<String> primaryKeys = new ArrayList<String>(3);
         StringBuilder sb = new StringBuilder();
 
         for (ColumnMeta columnMeta : table.getColumns()) {
-            if(columnMeta.isPrimary()){
+            if (columnMeta.isPrimary()) {
                 primaryKeys.add(columnMeta.getName());
             }
         }
@@ -154,37 +152,36 @@ public class MysqlDriver extends AbsDriver {
             sb.append("\t");
             protectColumn(sb, columnMeta.getName());
             sb.append(' ');
-            try{
+            try {
                 sb.append(formatColumnType(columnMeta));
-            }catch (Exception e){
-                throw new RuntimeException("不支持的类型"+columnMeta.getName());
+            } catch (Exception e) {
+                throw new RuntimeException("不支持的类型" + columnMeta.getName());
             }
-
 
 
             if (columnMeta.getDefaultValue() != null) {
                 if (columnMeta.getDefaultValue() instanceof String) {
                     sb.append(" DEFAULT '").append(columnMeta.getDefaultValue()).append("'");
                 } else {
-                    if(columnMeta.getDefaultValue() instanceof ZoomDatabaseBuilder.FunctionValue){
-                        sb.append(" DEFAULT ").append(((ZoomDatabaseBuilder.FunctionValue)columnMeta.getDefaultValue()).getValue());
-                    }else{
+                    if (columnMeta.getDefaultValue() instanceof ZoomDatabaseBuilder.FunctionValue) {
+                        sb.append(" DEFAULT ").append(((ZoomDatabaseBuilder.FunctionValue) columnMeta.getDefaultValue()).getValue());
+                    } else {
                         sb.append(" DEFAULT ").append(columnMeta.getDefaultValue());
                     }
 
                 }
-            }else{
-                if(columnMeta.isPrimary()){
-                    if(columnMeta.isAuto()){
+            } else {
+                if (columnMeta.isPrimary()) {
+                    if (columnMeta.isAuto()) {
                         sb.append(" PRIMARY KEY");
                         sb.append(" auto_increment".toUpperCase());
-                    }else{
+                    } else {
                         //single primary key
-                        if(primaryKeys.size() == 1){
+                        if (primaryKeys.size() == 1) {
                             sb.append(" PRIMARY KEY");
                         }
                     }
-                }else{
+                } else {
                     sb.append(columnMeta.isNullable()
                             ? " NULL"
                             : " NOT NULL");
@@ -192,32 +189,32 @@ public class MysqlDriver extends AbsDriver {
             }
             //sb.append(" COMMENT '").append(columnMeta.getComment()==null ? "":columnMeta.getComment()).append("'");
 
-            if( index < table.getColumns().size() - 1){
+            if (index < table.getColumns().size() - 1) {
                 sb.append(",");
             }
 
-            if(index == table.getColumns().size()-1){
+            if (index == table.getColumns().size() - 1) {
                 break;
             }
             sb.append("\n");
             ++index;
         }
 
-        if(primaryKeys.size() > 1){
+        if (primaryKeys.size() > 1) {
             first = true;
 
             sb.append(",\n\tPRIMARY KEY (");
-            for(String key : primaryKeys){
-                if(first){
+            for (String key : primaryKeys) {
+                if (first) {
                     first = false;
-                }else{
+                } else {
                     sb.append(",");
                 }
                 sb.append(key);
             }
             sb.append(")\n");
 
-        }else{
+        } else {
             sb.append("\n");
         }
 
@@ -232,9 +229,9 @@ public class MysqlDriver extends AbsDriver {
         sqlList.add(buildCreateTable(table));
 
         //index
-        buildIndex(table,sqlList);
+        buildIndex(table, sqlList);
 
-        buildUnique(table,sqlList);
+        buildUnique(table, sqlList);
     }
 
     @Override
@@ -285,10 +282,8 @@ public class MysqlDriver extends AbsDriver {
 
     @Override
     public StringBuilder protectTable(StringBuilder sb, String name) {
-        return protectColumn(sb,name);
+        return protectColumn(sb, name);
     }
-
-
 
 
 }

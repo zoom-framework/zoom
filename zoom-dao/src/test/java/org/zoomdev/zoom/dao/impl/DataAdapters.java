@@ -7,7 +7,7 @@ public class DataAdapters {
     /**
      * 这里最主要要实现格式的转化
      */
-    public static class TimeStamp2String implements DataAdapter<String,String>{
+    public static class TimeStamp2String implements DataAdapter<String, String> {
 
         @Override
         public String toDbValue(String o) {

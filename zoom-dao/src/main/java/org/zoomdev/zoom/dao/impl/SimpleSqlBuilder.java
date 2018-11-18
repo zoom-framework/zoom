@@ -131,8 +131,7 @@ public class SimpleSqlBuilder implements SqlBuilder {
     }
 
 
-
-    private void whereRelation(StringBuilder where,String relation) {
+    private void whereRelation(StringBuilder where, String relation) {
         if (condition) {
             condition = false;
         } else {
@@ -155,7 +154,7 @@ public class SimpleSqlBuilder implements SqlBuilder {
         assert (name != null);
 
         checkValue(value);
-        whereRelation(where,relation);
+        whereRelation(where, relation);
 
         where.append(name);
         if (not) {
@@ -187,7 +186,7 @@ public class SimpleSqlBuilder implements SqlBuilder {
 
     protected SqlBuilder whereImpl(StringBuilder where, String name, Symbol symbol, Object value, String relation) {
         checkValue(value);
-        whereRelation(where,relation);
+        whereRelation(where, relation);
         where.append(name).append(symbol.value()).append("?");
         addValue(name, value);
         return this;
@@ -218,7 +217,7 @@ public class SimpleSqlBuilder implements SqlBuilder {
     private SqlBuilder whereNull(String name, String relation, boolean not) {
 
         StringBuilder where = this.where;
-        whereRelation(where,relation);
+        whereRelation(where, relation);
         where.append(name);
         where.append(" IS ");
         if (not) where.append("NOT ");
@@ -243,7 +242,7 @@ public class SimpleSqlBuilder implements SqlBuilder {
 
     protected SqlBuilder whereIn(String name, String relation, boolean not, Object... values) {
         StringBuilder where = this.where;
-        whereRelation(where,relation);
+        whereRelation(where, relation);
         where.append(name);
         if (not) {
             where.append(" NOT");
@@ -323,13 +322,13 @@ public class SimpleSqlBuilder implements SqlBuilder {
 
     @Override
     public SqlBuilder selectCount(String alias) {
-        selectFunc("*",alias,"COUNT");
+        selectFunc("*", alias, "COUNT");
         return this;
     }
 
 
     public SqlBuilder selectRaw(String fields) {
-        if(select.length()>0){
+        if (select.length() > 0) {
             select.append(",");
         }
         select.append(fields);
@@ -462,9 +461,9 @@ public class SimpleSqlBuilder implements SqlBuilder {
         // a not like '%xx%'
         // a in/exists (select xx from b) is not allowed!
 
-        if(StringUtils.countMatches(name,'?')
-            != values.length){
-            throw new DaoException("?的数量与参数数量不符:"+name);
+        if (StringUtils.countMatches(name, '?')
+                != values.length) {
+            throw new DaoException("?的数量与参数数量不符:" + name);
         }
 
         parseCondition(where, name);
@@ -485,14 +484,14 @@ public class SimpleSqlBuilder implements SqlBuilder {
 
     @Override
     public SqlBuilder where(Condition condition) {
-        whereRelation(where,AND);
+        whereRelation(where, AND);
         conditionWhere(condition);
         return this;
     }
 
     @Override
     public SqlBuilder orWhere(Condition condition) {
-        whereRelation(where,OR);
+        whereRelation(where, OR);
         conditionWhere(condition);
         return this;
 

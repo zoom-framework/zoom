@@ -1,9 +1,8 @@
 package org.zoomdev.zoom.dao.entities;
 
-import org.zoomdev.zoom.dao.impl.MockAutoGenerateValue;
 import org.zoomdev.zoom.dao.annotations.AutoGenerate;
-import org.zoomdev.zoom.dao.annotations.Column;
 import org.zoomdev.zoom.dao.annotations.Table;
+import org.zoomdev.zoom.dao.impl.MockAutoGenerateValue;
 
 @Table("shop")
 public class SimpleShop {
@@ -40,8 +39,6 @@ public class SimpleShop {
     }
 
     private String address;
-
-
 
 
 }

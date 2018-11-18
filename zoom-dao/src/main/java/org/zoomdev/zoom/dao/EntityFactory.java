@@ -26,7 +26,7 @@ public interface EntityFactory {
      * @param tables
      * @return
      */
-    Entity getEntity( String...tables);
+    Entity getEntity(String... tables);
 
 
     void clearCache();

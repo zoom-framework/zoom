@@ -6,7 +6,6 @@ import org.zoomdev.zoom.dao.impl.AbstractDaoTest;
 public class TestDbStruct extends AbstractDaoTest {
 
 
-
     @Override
     protected void process(Dao dao) {
         dao.getDbStructFactory().getTriggers();

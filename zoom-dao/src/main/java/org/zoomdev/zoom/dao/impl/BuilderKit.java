@@ -5,9 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.caster.ValueCaster;
 import org.zoomdev.zoom.dao.DaoException;
-import org.zoomdev.zoom.dao.Entity;
 import org.zoomdev.zoom.dao.Record;
-import org.zoomdev.zoom.dao.adapters.EntityField;
 import org.zoomdev.zoom.dao.alias.NameAdapter;
 import org.zoomdev.zoom.dao.driver.SqlDriver;
 import org.zoomdev.zoom.dao.utils.DaoUtils;
@@ -17,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
@@ -78,8 +75,6 @@ public class BuilderKit {
     private static final Log log = LogFactory.getLog(BuilderKit.class);
 
 
-
-
     public static PreparedStatement prepareStatement(
             Connection connection,
             String sql,
@@ -89,7 +84,7 @@ public class BuilderKit {
         log.info(String.format(sql.replace("?", "'%s'"),
                 values.toArray(new Object[values.size()])));
 
-        PreparedStatement ps = connection.prepareStatement(sql,generatedKeys);
+        PreparedStatement ps = connection.prepareStatement(sql, generatedKeys);
         for (int index = 1, c = values.size(); index <= c; ++index) {
             ps.setObject(index, values.get(index - 1));
         }
@@ -113,7 +108,6 @@ public class BuilderKit {
     }
 
 
-
     private static ValueCaster blobCaster;
     private static ValueCaster clobCaster;
 
@@ -123,7 +117,6 @@ public class BuilderKit {
         clobCaster = Caster.wrap(Clob.class, String.class);
 
     }
-
 
 
     public static final Record buildOne(ResultSet rs, NameAdapter policy) throws SQLException {
@@ -161,10 +154,9 @@ public class BuilderKit {
     }
 
 
-
-    public static List<Record> executeQuery( Connection connection,
-                                             SimpleSqlBuilder builder,
-                                             NameAdapter nameAdapter) throws SQLException {
+    public static List<Record> executeQuery(Connection connection,
+                                            SimpleSqlBuilder builder,
+                                            NameAdapter nameAdapter) throws SQLException {
 
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -193,15 +185,12 @@ public class BuilderKit {
     }
 
 
-
     private static final void buildLabelNamesAndTypes(ResultSetMetaData rsmd, String[] labelNames, int[] types, NameAdapter policy) throws SQLException {
         for (int i = 1; i < labelNames.length; i++) {
             labelNames[i] = policy.getFieldName(rsmd.getColumnLabel(i));
             types[i] = rsmd.getColumnType(i);
         }
     }
-
-
 
 
     public static void buildUpdate(
@@ -227,7 +216,7 @@ public class BuilderKit {
             driver.protectColumn(sql, entry.getKey()).append("=?");
         }
 
-        if(where.length()>0){
+        if (where.length() > 0) {
             sql.append(" WHERE ").append(where);
         }
 
@@ -245,7 +234,7 @@ public class BuilderKit {
             throw new DaoException("Whole table delete is not valid!");
         }
         sql.append("DELETE FROM ").append(table);
-        if(where.length()>0){
+        if (where.length() > 0) {
             sql.append(" WHERE ").append(where);
         }
     }
@@ -267,18 +256,18 @@ public class BuilderKit {
     public static Integer executeInsert(Connection connection,
                                         SimpleSqlBuilder builder,
                                         String[] generatedKeys,
-                                        Map<String,Object> record) throws SQLException {
+                                        Map<String, Object> record) throws SQLException {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = BuilderKit.prepareStatement(connection, builder.sql.toString(), builder.values,generatedKeys);
-            int ret= ps.executeUpdate();
-            if(ret > 0){
+            ps = BuilderKit.prepareStatement(connection, builder.sql.toString(), builder.values, generatedKeys);
+            int ret = ps.executeUpdate();
+            if (ret > 0) {
                 rs = ps.getGeneratedKeys();
-                if(rs.next()){
-                    for(int i=0; i< generatedKeys.length; ++i){
-                        Object value = rs.getObject(i+1);
-                        record.put(generatedKeys[i],value);
+                if (rs.next()) {
+                    for (int i = 0; i < generatedKeys.length; ++i) {
+                        Object value = rs.getObject(i + 1);
+                        record.put(generatedKeys[i], value);
                     }
                 }
             }

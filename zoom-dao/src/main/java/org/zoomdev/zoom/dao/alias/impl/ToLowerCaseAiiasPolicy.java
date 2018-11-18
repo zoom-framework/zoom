@@ -6,7 +6,7 @@ public class ToLowerCaseAiiasPolicy implements AliasPolicy {
 
     public static final AliasPolicy DEFAULT = new ToLowerCaseAiiasPolicy();
 
-    private ToLowerCaseAiiasPolicy(){
+    private ToLowerCaseAiiasPolicy() {
 
     }
 

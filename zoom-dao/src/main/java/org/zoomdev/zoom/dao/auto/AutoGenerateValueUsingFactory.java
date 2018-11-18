@@ -17,7 +17,7 @@ public class AutoGenerateValueUsingFactory extends DatabaseAutoGenerateKey {
     public Object generateValue(Object entity, EntityField entityField) {
         //当调用的时候，直接设置值
         Object value = factory.nextVal();
-        entityField.set(entity, Caster.toType(value,entityField.getFieldType()));
+        entityField.set(entity, Caster.toType(value, entityField.getFieldType()));
         return value;
     }
 

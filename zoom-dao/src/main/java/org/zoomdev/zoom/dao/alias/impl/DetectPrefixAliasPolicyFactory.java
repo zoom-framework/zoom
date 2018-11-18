@@ -13,7 +13,7 @@ import java.util.Map.Entry;
  * 策略是：
  * 所谓前缀：是第一个下划线前面的部分加上下划线，比如TP_ID,前缀为TP_
  * 以第一个字段出现的前缀作为全部字段的前缀，还有个前提是这个前缀出现的次数最多
- *
+ * <p>
  * 当第一个前缀
  *
  * @author jzoom
@@ -66,7 +66,7 @@ public class DetectPrefixAliasPolicyFactory implements AliasPolicyFactory {
             }
         }
 
-        if(aliasPolicy!=null){
+        if (aliasPolicy != null) {
 
             return aliasPolicy;
         }

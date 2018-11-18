@@ -1,7 +1,5 @@
 package org.zoomdev.zoom.common.validate;
 
-import org.apache.commons.lang3.ObjectUtils;
-
 /**
  * 数据校验接口
  */

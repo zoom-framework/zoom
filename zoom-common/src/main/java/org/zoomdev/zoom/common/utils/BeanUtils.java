@@ -18,11 +18,11 @@ public class BeanUtils {
      * @param <T>
      * @return
      */
-    public static  <T> T merge(T dest, T data){
+    public static <T> T merge(T dest, T data) {
         assert (dest != null && data != null);
         Field[] fields = CachedClasses.getFields(dest.getClass());
 
-        try{
+        try {
             for (Field field : fields) {
                 Object value = field.get(data);
                 if (value == null) {
@@ -30,7 +30,7 @@ public class BeanUtils {
                 }
                 field.set(dest, value);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
@@ -51,7 +51,7 @@ public class BeanUtils {
             List<T> dest,
             List<T> data,
             String... keys
-    )  {
+    ) {
 
         Map<String, T> destMap = CollectionUtils.toMap(
                 dest, keys
@@ -67,9 +67,9 @@ public class BeanUtils {
         while (iterator.hasNext()) {
             Map.Entry<String, T> entry = iterator.next();
             T d = destMap.get(entry.getKey());
-            if(d!=null){
+            if (d != null) {
                 //merge
-                merge(d,entry.getValue());
+                merge(d, entry.getValue());
                 iterator.remove();
             }
         }

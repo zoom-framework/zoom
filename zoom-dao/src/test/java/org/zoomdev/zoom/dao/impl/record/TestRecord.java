@@ -28,9 +28,8 @@ import static org.junit.Assert.assertTrue;
 public class TestRecord extends AbstractDaoTest {
 
 
-
     @BeforeClass
-    public static void setup(){
+    public static void setup() {
 
         execute(new RunWithDao() {
             @Override
@@ -41,9 +40,7 @@ public class TestRecord extends AbstractDaoTest {
 
     }
 
-    protected void process(final Dao dao){
-
-
+    protected void process(final Dao dao) {
 
 
         final String test_business = "testBusiness";
@@ -56,7 +53,7 @@ public class TestRecord extends AbstractDaoTest {
                 "shp_sales", 100000
         );
         dao.table("shop").insert(testRecors);
-        dao.table("shop").where("shp_id",test_business).delete();
+        dao.table("shop").where("shp_id", test_business).delete();
 
         //       dao.table("shop").insert(testRecors);
         //       dao.table("shop").where("id",test_business).delete();
@@ -81,7 +78,7 @@ public class TestRecord extends AbstractDaoTest {
                 "shp_title", "弱弱的第二家",
                 "shp_level", 2,
                 "shp_stars", 2.9,
-                "shp_address","测试地址",
+                "shp_address", "测试地址",
                 "shp_sales", 100
 
         );
@@ -99,10 +96,10 @@ public class TestRecord extends AbstractDaoTest {
         assertEquals(dao.table("shop")
                 .where("shp_id", FIRST_BUSINESS)
                 .update(
-                Record.as(
-                        "shp_title", "牛逼的第一家"
-                )
-        ), 1);
+                        Record.as(
+                                "shp_title", "牛逼的第一家"
+                        )
+                ), 1);
 
         assertEquals(dao.table("shop")
                 .where("shp_id", "找不到这家")
@@ -111,10 +108,10 @@ public class TestRecord extends AbstractDaoTest {
                 )).update(
 
 
-        ), 0);
+                ), 0);
 
         // 是不是真的改了?
-        assertEquals(dao.table("shop").select("shp_title").where("shp_id",FIRST_BUSINESS).get(),
+        assertEquals(dao.table("shop").select("shp_title").where("shp_id", FIRST_BUSINESS).get(),
                 Record.as("shp_title", "牛逼的第一家"));
 
 
@@ -124,7 +121,7 @@ public class TestRecord extends AbstractDaoTest {
         );
         // 商家编辑分类
         assertEquals(dao.table("type")
-                .insert(type,"tp_id"), 1);
+                .insert(type, "tp_id"), 1);
 
         //type中应该有id
         assertEquals(type.getInt("tp_id"), 1);
@@ -136,7 +133,7 @@ public class TestRecord extends AbstractDaoTest {
         );
         // 商家编辑分类
         assertEquals(dao.table("type")
-                .insert(type,"tp_id"), 1);
+                .insert(type, "tp_id"), 1);
 
         //type中应该有id
         assertEquals(type.getInt("tp_id"), 2);
@@ -145,7 +142,7 @@ public class TestRecord extends AbstractDaoTest {
         //商家编辑商品 (add/edit)
 
         assertEquals(dao.table("product")
-                .set("tp_id",1)
+                .set("tp_id", 1)
                 .insert(Record.as(
                         "pro_name", "牛肉饭",
                         "shp_id", FIRST_BUSINESS,
@@ -153,11 +150,11 @@ public class TestRecord extends AbstractDaoTest {
                         "pro_img", "image binary".getBytes(),
                         "pro_info", "very very long text,好长好长啊a"
 
-                ),"pro_id"), 1);
+                ), "pro_id"), 1);
 
 
-        Record product = dao.table("product").where("pro_id",1).get();
-        assertEquals(product.get("pro_img").getClass(),byte[].class);
+        Record product = dao.table("product").where("pro_id", 1).get();
+        assertEquals(product.get("pro_img").getClass(), byte[].class);
 
 
         //买家注册 (add)
@@ -170,19 +167,19 @@ public class TestRecord extends AbstractDaoTest {
                 .table("product")
                 .join("type", "type.tp_id=product.tp_id")
                 .join("shop", "shop.shp_id=product.shp_id")
-                .like("pro_name",SqlBuilder.Like.MATCH_BOTH,"饭")
-                .page(1,30);
+                .like("pro_name", SqlBuilder.Like.MATCH_BOTH, "饭")
+                .page(1, 30);
 
-        assertTrue(page.getTotal() > 0 );
+        assertTrue(page.getTotal() > 0);
 
 
         List<Record> list = dao
                 .table("product")
                 .join("type", "type.tp_id=product.tp_id")
                 .join("shop", "shop.shp_id=product.shp_id")
-                .whereIn("pro_id",1,2).limit(0,30);
+                .whereIn("pro_id", 1, 2).limit(0, 30);
 
-        assertTrue(list.size() == 1 );
+        assertTrue(list.size() == 1);
 
 
         Record record1 = dao.table("product").whereNull("pro_img").get();
@@ -190,13 +187,12 @@ public class TestRecord extends AbstractDaoTest {
         Record record2 = dao.table("product").whereNotNull("pro_img").get();
 
 
-
         //买家下单商品 (trans:  update/create 减去库存、并创建订单）
 
         Executor executor = Executors.newFixedThreadPool(10);
 
         List<Future> futures = new ArrayList<Future>();
-        for(int i=0; i < 10; ++i){
+        for (int i = 0; i < 10; ++i) {
             Future future = ((ExecutorService) executor).submit(new Runnable() {
                 @Override
                 public void run() {
@@ -205,17 +201,17 @@ public class TestRecord extends AbstractDaoTest {
                         public void run() {
                             //随机购买几件商品
                             int count = (int) (Math.random() * 10);
-                            if(dao.ar().executeUpdate(
+                            if (dao.ar().executeUpdate(
                                     "update product set pro_count=pro_count-? where pro_id=? and pro_count>?",
-                                    count,1,count) > 0){
+                                    count, 1, count) > 0) {
                                 dao.table("shp_order")
                                         .insert(Record.as(
-                                                "shp_id",FIRST_BUSINESS,
-                                                "ord_count",count,
-                                                "pro_id",1,
-                                                "cm_id",1
+                                                "shp_id", FIRST_BUSINESS,
+                                                "ord_count", count,
+                                                "pro_id", 1,
+                                                "cm_id", 1
                                         ));
-                            }else{
+                            } else {
                                 throw new DaoException("库存不足");
                             }
 
@@ -227,10 +223,10 @@ public class TestRecord extends AbstractDaoTest {
             futures.add(future);
         }
 
-        for(Future future : futures){
-            try{
+        for (Future future : futures) {
+            try {
                 future.get();
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -243,46 +239,44 @@ public class TestRecord extends AbstractDaoTest {
                 .where(new SqlBuilder.Condition() {
                     @Override
                     public void where(SqlBuilder where) {
-                        where.where("ord_status",0)
-                                .orWhere("ord_status",1);
+                        where.where("ord_status", 0)
+                                .orWhere("ord_status", 1);
                     }
                 }).find();
 
         orders = dao.table("shp_order")
-                .whereCondition("ord_status=?",0)
-                .orWhere("ord_status",1).find();
-
+                .whereCondition("ord_status=?", 0)
+                .orWhere("ord_status", 1).find();
 
 
         //买家收货（完成一次交易) (update)
-
 
 
         // 买家查看今日总卖出量（统计）
 
         List<Record> view = dao.table("shp_order").selectSum("ord_count")
                 .groupBy("shp_id")
-                .having("sum(ord_count)",Symbol.GT,100).find();
+                .having("sum(ord_count)", Symbol.GT, 100).find();
 
 
         dao.table("shp_order")
                 .select(Arrays.asList(
 
-                        "shp_id","sum(ord_count)"
+                        "shp_id", "sum(ord_count)"
                 )).groupBy("shp_id")
-                .having("sum(ord_count)",Symbol.GT,100).find();
+                .having("sum(ord_count)", Symbol.GT, 100).find();
 
         dao.table("shp_order")
-                .select( "shp_id,sum(ord_count)").groupBy("shp_id")
-                .having("sum(ord_count)",Symbol.GT,100).find();
+                .select("shp_id,sum(ord_count)").groupBy("shp_id")
+                .having("sum(ord_count)", Symbol.GT, 100).find();
 
         dao.table("shp_order")
-                .whereCondition("ord_status=?",0)
+                .whereCondition("ord_status=?", 0)
                 .orWhere(new SqlBuilder.Condition() {
                     @Override
                     public void where(SqlBuilder where) {
-                        where.where("ord_status",1)
-                                .where("ord_count",Symbol.GT,100);
+                        where.where("ord_status", 1)
+                                .where("ord_count", Symbol.GT, 100);
                     }
                 }).find();
 
@@ -290,17 +284,17 @@ public class TestRecord extends AbstractDaoTest {
 
 
     @Test(expected = DaoException.class)
-    public void testError1(){
+    public void testError1() {
         execute(new RunWithDao() {
             @Override
             public void run(Dao dao) {
                 dao.table("shp_order")
-                        .whereCondition("ord_status",0)
+                        .whereCondition("ord_status", 0)
                         .orWhere(new SqlBuilder.Condition() {
                             @Override
                             public void where(SqlBuilder where) {
-                                where.where("ord_status",1)
-                                        .where("ord_count",Symbol.GT,100);
+                                where.where("ord_status", 1)
+                                        .where("ord_count", Symbol.GT, 100);
                             }
                         }).find();
             }
@@ -310,22 +304,22 @@ public class TestRecord extends AbstractDaoTest {
 
 
     @Test(expected = DaoException.class)
-    public void testUni(){
+    public void testUni() {
 
         execute(new RunWithDao() {
             @Override
             public void run(Dao dao) {
-                try{
+                try {
                     dao.table("customer")
-                            .set("cm_account","123")
+                            .set("cm_account", "123")
                             .insert();
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                     throw new RuntimeException(e);
                 }
 
                 dao.table("customer")
-                        .set("cm_account","123")
+                        .set("cm_account", "123")
                         .insert();
 
 
@@ -336,31 +330,29 @@ public class TestRecord extends AbstractDaoTest {
 
 
     @Test
-    public void testInsertOrUpdte(){
+    public void testInsertOrUpdte() {
         final MutableInt mutableInt = new MutableInt(0);
 
         execute(new RunWithDao() {
             @Override
             public void run(Dao dao) {
-                try{
-                    if(mutableInt.getValue()==0){
+                try {
+                    if (mutableInt.getValue() == 0) {
                         return;
                     }
                     dao.table("customer")
-                            .set("cm_account","123")
-                            .set("cm_pwd","test")
+                            .set("cm_account", "123")
+                            .set("cm_pwd", "test")
                             .insertOrUpdate("cm_account");
 
 
                     dao.table("customer")
-                            .set("cm_account","123")
-                            .set("cm_pwd","test")
+                            .set("cm_account", "123")
+                            .set("cm_pwd", "test")
                             .insertOrUpdate("cm_account");
-                }finally {
+                } finally {
                     mutableInt.add(1);
                 }
-
-
 
 
             }

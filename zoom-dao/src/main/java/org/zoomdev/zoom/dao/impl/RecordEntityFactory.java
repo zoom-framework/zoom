@@ -2,12 +2,10 @@ package org.zoomdev.zoom.dao.impl;
 
 import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.caster.ValueCaster;
-import org.zoomdev.zoom.dao.DaoException;
-import org.zoomdev.zoom.dao.EntityFactory;
-import org.zoomdev.zoom.dao.auto.AutoField;
 import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.Entity;
 import org.zoomdev.zoom.dao.adapters.EntityField;
+import org.zoomdev.zoom.dao.auto.AutoField;
 import org.zoomdev.zoom.dao.auto.DatabaseAutoGenerateKey;
 import org.zoomdev.zoom.dao.driver.AutoGenerateProvider;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
@@ -71,10 +69,10 @@ public class RecordEntityFactory extends AbstractEntityFactory {
             if (columnMeta.isAuto()) {
                 autoField = new DatabaseAutoGenerateKey();
             }
-            if(columnMeta.isPrimary()){
+            if (columnMeta.isPrimary()) {
                 primaryKeys.add(entityFields.get(index));
             }
-            if(autoField!=null){
+            if (autoField != null) {
                 AbstractEntityField entityField = entityFields.get(index);
                 entityField.setAutoField(autoField);
                 if (autoField.isDatabaseGeneratedKey()) {
@@ -91,16 +89,16 @@ public class RecordEntityFactory extends AbstractEntityFactory {
                     generatedKeys.toArray(new String[generatedKeys.size()]),
                     generatedEntityFields.toArray(new EntityField[generatedEntityFields.size()])
             );
-        }else{
+        } else {
 
-            if( primaryKeys.size() == 1 ){
+            if (primaryKeys.size() == 1) {
                 AbstractEntityField pk = primaryKeys.get(0);
                 index = entityFields.indexOf(pk);
 
-                if(dao.getDriver() instanceof AutoGenerateProvider){
-                    AutoField autoField = ((AutoGenerateProvider)dao.getDriver())
-                            .createAutoField( dao, tableMeta,tableMeta.getColumns()[index]);
-                    if(autoField!=null){
+                if (dao.getDriver() instanceof AutoGenerateProvider) {
+                    AutoField autoField = ((AutoGenerateProvider) dao.getDriver())
+                            .createAutoField(dao, tableMeta, tableMeta.getColumns()[index]);
+                    if (autoField != null) {
                         pk.setAutoField(autoField);
                     }
                     return new ZoomAutoEntity(
@@ -118,7 +116,7 @@ public class RecordEntityFactory extends AbstractEntityFactory {
     }
 
 
-    private RecordEntityField createEntityFieldFromConfig(String fieldName,RenameUtils.ColumnRenameConfig config){
+    private RecordEntityField createEntityFieldFromConfig(String fieldName, RenameUtils.ColumnRenameConfig config) {
         ColumnMeta columnMeta = config.columnMeta;
 
         RecordEntityField entityField = new RecordEntityField(fieldName, DaoUtils.normalizeType(columnMeta.getDataType()));
@@ -127,7 +125,7 @@ public class RecordEntityFactory extends AbstractEntityFactory {
         //只有clob blob 需要适配，
         entityField.setCaster(getCaster(columnMeta.getDataType()));
         //
-        entityField.setStatementAdapter(dao.getStatementAdapter(null,columnMeta.getDataType()));
+        entityField.setStatementAdapter(dao.getStatementAdapter(null, columnMeta.getDataType()));
         entityField.setColumnMeta(columnMeta);
         entityField.setOriginalFieldName(config.orginalName);
 
@@ -137,22 +135,22 @@ public class RecordEntityFactory extends AbstractEntityFactory {
 
     public Entity getEntity(String... tables) {
         final List<RecordEntityField> entityFields = new ArrayList<RecordEntityField>();
-        Map<String,RenameUtils.ColumnRenameConfig> map;
+        Map<String, RenameUtils.ColumnRenameConfig> map;
 
-        if(tables.length>1){
+        if (tables.length > 1) {
             map = RenameUtils.rename(
-                    dao,tables
+                    dao, tables
             );
-        }else{
+        } else {
             map = RenameUtils.rename(
-                    dao,tables[0]
+                    dao, tables[0]
             );
         }
 
-        for (Map.Entry<String,RenameUtils.ColumnRenameConfig> entry : map.entrySet()) {
+        for (Map.Entry<String, RenameUtils.ColumnRenameConfig> entry : map.entrySet()) {
             String fieldName = entry.getKey();
             RenameUtils.ColumnRenameConfig config = entry.getValue();
-            entityFields.add(createEntityFieldFromConfig(fieldName,config));
+            entityFields.add(createEntityFieldFromConfig(fieldName, config));
         }
         String tableName = tables[0];
         TableMeta tableMeta = map.values().iterator().next().tableMeta;

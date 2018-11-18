@@ -1,6 +1,5 @@
 package org.zoomdev.zoom.common.utils;
 
-import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.common.Destroyable;
 
 import java.io.File;
@@ -46,7 +45,6 @@ public class Classes {
         }
         return new RuntimeException(e);
     }
-
 
 
     public abstract static class ClassReference<T> {
@@ -580,7 +578,7 @@ public class Classes {
     }
 
 
-    public static String[] getClassPathes(){
+    public static String[] getClassPathes() {
         String str = System.getProperty("java.class.path");
         String[] parts = str.split(System.getProperty("path.separator"));
         return parts;

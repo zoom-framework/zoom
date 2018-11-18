@@ -12,8 +12,8 @@ public interface Rendering {
 
     /**
      * @param context {@link ActionContext}
-     * @throws Exception
      * @return 如果已经渲染，返回true,否则返回false
+     * @throws Exception
      */
     boolean render(ActionContext context) throws Exception;
 

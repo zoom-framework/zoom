@@ -1,6 +1,5 @@
 package org.zoomdev.zoom.web.modules;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.caster.ValueCaster;
 import org.zoomdev.zoom.common.annotations.Inject;
@@ -41,7 +40,6 @@ public class WebModules {
                 return null;
 
 
-
             return new Request2Bean(toType);
         }
 
@@ -50,6 +48,7 @@ public class WebModules {
     static class Request2Bean implements ValueCaster {
 
         private Class<?> toType;
+
         public Request2Bean(Class<?> toType) {
             this.toType = toType;
         }
@@ -57,10 +56,11 @@ public class WebModules {
         @Override
         public Object to(Object src) {
             HttpServletRequest request = (HttpServletRequest) src;
-            return Caster.to(RequestUtils.getParameters(request),toType);
+            return Caster.to(RequestUtils.getParameters(request), toType);
         }
 
     }
+
     static class Request2Map implements ValueCaster {
 
         @Override

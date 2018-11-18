@@ -4,7 +4,6 @@ import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.caster.ValueCaster;
 
 import java.sql.Clob;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -60,7 +59,7 @@ public class DataObject extends LinkedHashMap<String, Object> {
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public static DataObject wrap(Map<String,Object> data) {
+    public static DataObject wrap(Map<String, Object> data) {
         DataObject dataObject = new DataObject();
         dataObject.putAll(data);
         return dataObject;

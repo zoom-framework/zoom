@@ -278,7 +278,7 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Ar
 
     @Override
     public Ar join(String table, String on) {
-        this.join(table,on,SqlBuilder.INNER);
+        this.join(table, on, SqlBuilder.INNER);
         return this;
     }
 
@@ -340,7 +340,7 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Ar
 
     @Override
     public Ar selectSum(String field) {
-        builder.selectSum(field,field);
+        builder.selectSum(field, field);
         return this;
     }
 

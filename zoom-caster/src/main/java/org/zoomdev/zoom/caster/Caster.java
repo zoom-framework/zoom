@@ -1,6 +1,5 @@
 package org.zoomdev.zoom.caster;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
@@ -367,10 +366,7 @@ public class Caster {
         );
 
 
-
-
     }
-
 
 
     private static void registerParameterizedType(ParameterizedTypeCasterfactory... factory) {
@@ -1337,7 +1333,6 @@ public class Caster {
     private static ValueCaster getWithObject(Object src, ParameterizedType targetType) {
 
 
-
         String key = new StringBuilder().append(src.getClass().getName())
                 .append("2")
                 .append(targetType.toString())
@@ -1345,11 +1340,11 @@ public class Caster {
 
         ValueCaster caster = map.get(key);
         if (caster == null) {
-            if(src instanceof Iterable){
-                caster = getWithIterable((Iterable)src,targetType);
-            }else if(src instanceof Map){
-                caster = getWithMap((Map)src,targetType);
-            }else{
+            if (src instanceof Iterable) {
+                caster = getWithIterable((Iterable) src, targetType);
+            } else if (src instanceof Map) {
+                caster = getWithMap((Map) src, targetType);
+            } else {
                 for (ParameterizedTypeCasterfactory type : typeCanbeConvertToParameterizedType) {
                     if (type.is(src, targetType)) {
                         caster = type.create(targetType);
@@ -1357,7 +1352,7 @@ public class Caster {
                     }
                 }
             }
-            if(caster!=null){
+            if (caster != null) {
                 map.put(key, caster);
             }
 
@@ -1367,46 +1362,46 @@ public class Caster {
 
     private static ValueCaster getWithMap(Map src, ParameterizedType targetType) {
         Type rowType = targetType.getRawType();
-        if(rowType instanceof Class){
-            if(!Map.class.isAssignableFrom( (Class)rowType )){
-                throw new CasterException("Cannot cast "+src+" to type:"+targetType+" targetType must be Map");
+        if (rowType instanceof Class) {
+            if (!Map.class.isAssignableFrom((Class) rowType)) {
+                throw new CasterException("Cannot cast " + src + " to type:" + targetType + " targetType must be Map");
             }
-            return new MapValueCaster( targetType );
-        }else{
-            throw new CasterException("Cannot cast "+src+" to type:"+targetType+" targetType must be Map");
+            return new MapValueCaster(targetType);
+        } else {
+            throw new CasterException("Cannot cast " + src + " to type:" + targetType + " targetType must be Map");
         }
 
     }
 
     private static ValueCaster getWithIterable(Iterable src, ParameterizedType targetType) {
         Type[] types = targetType.getActualTypeArguments();
-        if(types.length > 1){
-            throw new CasterException("Cannot cast src:"+src+" to type:"+targetType);
+        if (types.length > 1) {
+            throw new CasterException("Cannot cast src:" + src + " to type:" + targetType);
         }
 
         Type collectionType = targetType.getRawType();
         //如果还是一个泛型?
-        if(collectionType instanceof ParameterizedType){
-            throw new CasterException("Cannot cast src:"+src+" to type:"+targetType+" targetType must be some kind of Iterable");
+        if (collectionType instanceof ParameterizedType) {
+            throw new CasterException("Cannot cast src:" + src + " to type:" + targetType + " targetType must be some kind of Iterable");
         }
 
-        Class<?> collectionClass = (Class<?>)collectionType;
-        if(!Collection.class.isAssignableFrom(collectionClass)){
-            throw new CasterException("Cannot cast src:"+src+" to type:"+targetType+" targetType must be some kind of Iterable");
+        Class<?> collectionClass = (Class<?>) collectionType;
+        if (!Collection.class.isAssignableFrom(collectionClass)) {
+            throw new CasterException("Cannot cast src:" + src + " to type:" + targetType + " targetType must be some kind of Iterable");
         }
 
-        return new IterableValueCaster((Class<? extends Collection>) collectionClass,types[0]);
+        return new IterableValueCaster((Class<? extends Collection>) collectionClass, types[0]);
     }
 
-    private static Collection newInstanceOfCollection(Class<? extends Collection> type)  {
-        if(!type.isInterface()){
+    private static Collection newInstanceOfCollection(Class<? extends Collection> type) {
+        if (!type.isInterface()) {
             try {
                 return type.newInstance();
             } catch (Exception e) {
-                throw new CasterException("Cannot initialize type "+ type);
+                throw new CasterException("Cannot initialize type " + type);
             }
         }
-        if(Set.class.isAssignableFrom(type)){
+        if (Set.class.isAssignableFrom(type)) {
             return new LinkedHashSet();
         }
 
@@ -1419,17 +1414,17 @@ public class Caster {
         private Type objectType;
 
 
-        public IterableValueCaster(Class<? extends Collection> collectionClass,Type objectType) {
+        public IterableValueCaster(Class<? extends Collection> collectionClass, Type objectType) {
             this.collectionClass = collectionClass;
             this.objectType = objectType;
         }
 
         @Override
         public Object to(Object src) {
-            Iterable it = (Iterable)src;
+            Iterable it = (Iterable) src;
             Collection result = newInstanceOfCollection(collectionClass);
-            for(Object data : it){
-                result.add(Caster.toType(data,objectType));
+            for (Object data : it) {
+                result.add(Caster.toType(data, objectType));
             }
             return result;
         }
@@ -1445,13 +1440,13 @@ public class Caster {
 
         @Override
         public Object to(Object src) {
-            Map map = (Map)src;
+            Map map = (Map) src;
             Map dest = new LinkedHashMap();
-            Iterator<Map.Entry> iterator =map.entrySet().iterator();
-            while(iterator.hasNext()){
+            Iterator<Map.Entry> iterator = map.entrySet().iterator();
+            while (iterator.hasNext()) {
                 Map.Entry entry = iterator.next();
-                dest.put( Caster.toType(entry.getKey(),types[0]),
-                        Caster.toType(entry.getValue(),types[1]));
+                dest.put(Caster.toType(entry.getKey(), types[0]),
+                        Caster.toType(entry.getValue(), types[1]));
             }
 
             return dest;

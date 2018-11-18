@@ -1,10 +1,7 @@
 package org.zoomdev.zoom.web.parameter.adapter.impl.map;
 
-import javassist.expr.Cast;
-import org.apache.commons.beanutils.BeanUtils;
 import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.common.utils.CachedClasses;
-import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.web.action.ActionContext;
 import org.zoomdev.zoom.web.parameter.adapter.ParameterAdapter;
 
@@ -25,21 +22,21 @@ public class RequestBodyMapAdapter implements ParameterAdapter<Map<String, Objec
         try {
             Object bean = type.newInstance();
             Field[] fields = CachedClasses.getFields(type);
-            for(Field field : fields){
+            for (Field field : fields) {
                 Object value = data.get(field.getName());
-                if(value==null){
+                if (value == null) {
                     continue;
                 }
 
                 //如果是泛型参数?
-                value = Caster.toType(value,field.getGenericType());
-                field.set(bean,value);
+                value = Caster.toType(value, field.getGenericType());
+                field.set(bean, value);
             }
 
 
             return bean;
         } catch (Exception e) {
-            throw new RuntimeException(String.format("初始化Bean失败,class:%s 参数:%s", type, data),e);
+            throw new RuntimeException(String.format("初始化Bean失败,class:%s 参数:%s", type, data), e);
         }
 
     }

@@ -1,11 +1,6 @@
 package org.zoomdev.zoom.dao.utils;
 
-import org.zoomdev.zoom.dao.Record;
-
 import java.sql.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class DaoUtils {
     public static final String SELECT_COUNT = "COUNT(*) AS COUNT_";
@@ -16,6 +11,7 @@ public class DaoUtils {
         } catch (Exception e) {
         }
     }
+
     public static void close(Statement ps) {
 
         if (ps != null) try {
@@ -23,6 +19,7 @@ public class DaoUtils {
         } catch (Exception e) {
         }
     }
+
     public static void close(PreparedStatement ps) {
 
         if (ps != null) try {
@@ -39,7 +36,6 @@ public class DaoUtils {
     }
 
 
-
     /**
      * 判断一个数据库中的字段类型是否是Stream类型，Clob/Blob
      *
@@ -52,14 +48,15 @@ public class DaoUtils {
 
     /**
      * 如果是Stream，获取对应的类型
+     *
      * @param dataType
      * @return
      */
     public static Class<?> normalizeType(Class<?> dataType) {
-        if(Clob.class.isAssignableFrom(dataType)){
+        if (Clob.class.isAssignableFrom(dataType)) {
             return String.class;
         }
-        if(Blob.class.isAssignableFrom(dataType)){
+        if (Blob.class.isAssignableFrom(dataType)) {
             return byte[].class;
         }
         return dataType;

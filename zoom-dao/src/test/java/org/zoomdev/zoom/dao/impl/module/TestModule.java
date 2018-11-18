@@ -8,20 +8,20 @@ import org.zoomdev.zoom.dao.impl.ZoomDao;
 import org.zoomdev.zoom.dao.modules.DaoModule;
 import org.zoomdev.zoom.dao.transaction.Trans;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class TestModule {
 
-    public static  class TransTest{
+    public static class TransTest {
 
         @Trans
-        public void testTrans(){
+        public void testTrans() {
             System.out.println("trans");
 
-            assertTrue(ZoomDao.getTransaction()!=null);
+            assertTrue(ZoomDao.getTransaction() != null);
         }
     }
+
     @Test
     public void test() throws IllegalAccessException, InstantiationException {
 
@@ -30,7 +30,7 @@ public class TestModule {
         DaoModule module = new DaoModule();
         module.config(factory);
 
-        TransTest test= (TransTest) factory.enhance(TransTest.class).newInstance();
+        TransTest test = (TransTest) factory.enhance(TransTest.class).newInstance();
 
         test.testTrans();
 

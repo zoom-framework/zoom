@@ -23,12 +23,11 @@ public class CollectionUtils {
     }
 
 
-
     public static <T> List<T> filter(T[] array, Filter<T> filter) {
-        assert(array!=null);
+        assert (array != null);
         List<T> result = new ArrayList<T>(array.length);
-        for(T data : array){
-            if(filter.accept(data)){
+        for (T data : array) {
+            if (filter.accept(data)) {
                 result.add(data);
             }
         }
@@ -37,7 +36,7 @@ public class CollectionUtils {
 
     public static <T> void visit(Iterable<T> list, Visitor<T> visitor) {
 
-        for(T data : list){
+        for (T data : list) {
             visitor.visit(data);
         }
 
@@ -127,9 +126,9 @@ public class CollectionUtils {
         }
     }
 
-    public static <T> Map<String, T> toMap( List<T> list, final String... keys) {
+    public static <T> Map<String, T> toMap(List<T> list, final String... keys) {
 
-        if(list.size() == 0){
+        if (list.size() == 0) {
             return Collections.emptyMap();
         }
 
@@ -140,7 +139,7 @@ public class CollectionUtils {
                 new SingletonUtils.SingletonInit<KeyValue>() {
                     @Override
                     public KeyValue create() {
-                        return new KeyValueImpl(classOfT,keys);
+                        return new KeyValueImpl(classOfT, keys);
                     }
                 }
         );

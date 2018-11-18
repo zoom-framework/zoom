@@ -19,6 +19,7 @@ public class CachedClasses {
     static {
         Caster.registerCastProvider(new Map2BeanProvider());
     }
+
     static class Map2BeanProvider implements Caster.CasterProvider {
 
         @Override
@@ -39,6 +40,7 @@ public class CachedClasses {
         }
 
     }
+
     private static class Map2Bean implements ValueCaster {
         private Class<?> toType;
 
@@ -61,6 +63,7 @@ public class CachedClasses {
         }
 
     }
+
     private static class ClassHolder {
         Field[] fields;
         Method[] publicMethods;

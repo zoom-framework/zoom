@@ -27,8 +27,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.*;
-import java.util.regex.Matcher;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 class BeanEntityFactory extends AbstractEntityFactory {
 
@@ -57,7 +59,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
 
     }
 
-    interface BeanContextHandler extends ContextHandler<CreateContext>{
+    interface BeanContextHandler extends ContextHandler<CreateContext> {
 
     }
 
@@ -66,20 +68,20 @@ class BeanEntityFactory extends AbstractEntityFactory {
 
         @Override
         public void handle(AbstractEntityField entityField, CreateContext context) {
-            if(context.config!=null){
+            if (context.config != null) {
                 ColumnMeta columnMeta = context.config.columnMeta;
                 entityField.setOriginalFieldName(context.config.orginalName);
                 entityField.setColumn(context.config.columnName);
                 entityField.setSelectColumnName(context.config.selectColumnName);
                 entityField.setColumnMeta(columnMeta);
-            }else{
-                if(context.column!=null && !context.column.value().isEmpty()){
+            } else {
+                if (context.column != null && !context.column.value().isEmpty()) {
                     entityField.setColumn(context.column.value());
                     entityField.setSelectColumnName(context.column.value());
-                }else{
+                } else {
                     // 最短距离算法算出哪个字段最接近
-                    throw new DaoException("绑定实体类出错，找不到字段的配置" + context.field+"当前所有可用字段为"
-                            + StringUtils.join(context.getAvliableFields(),","));
+                    throw new DaoException("绑定实体类出错，找不到字段的配置" + context.field + "当前所有可用字段为"
+                            + StringUtils.join(context.getAvliableFields(), ","));
                 }
             }
         }
@@ -125,26 +127,26 @@ class BeanEntityFactory extends AbstractEntityFactory {
         }
     }
 
-    static RenameUtils.ColumnRenameConfig search(Map<String, RenameUtils.ColumnRenameConfig> map, Field field,String annotationValue) {
+    static RenameUtils.ColumnRenameConfig search(Map<String, RenameUtils.ColumnRenameConfig> map, Field field, String annotationValue) {
         List<RenameUtils.ColumnRenameConfig> set = new ArrayList<RenameUtils.ColumnRenameConfig>();
 
-        for(Map.Entry<String,RenameUtils.ColumnRenameConfig> entry : map.entrySet()){
+        for (Map.Entry<String, RenameUtils.ColumnRenameConfig> entry : map.entrySet()) {
 
-            if(annotationValue.equalsIgnoreCase(entry.getKey())){
+            if (annotationValue.equalsIgnoreCase(entry.getKey())) {
                 set.add(entry.getValue());
                 continue;
             }
 
-            if(entry.getValue().is(annotationValue)){
+            if (entry.getValue().is(annotationValue)) {
                 set.add(entry.getValue());
                 continue;
             }
         }
 
-        if(set.size() > 1){
-            throw new DaoException("标注的字段"+field+"("+annotationValue+")可以找到多个配置"+set);
-        }else if(set.size()==0){
-            throw new DaoException("标注的字段"+field+"("+annotationValue+")找不到对应的配置");
+        if (set.size() > 1) {
+            throw new DaoException("标注的字段" + field + "(" + annotationValue + ")可以找到多个配置" + set);
+        } else if (set.size() == 0) {
+            throw new DaoException("标注的字段" + field + "(" + annotationValue + ")找不到对应的配置");
         }
 
         return set.get(0);
@@ -156,14 +158,14 @@ class BeanEntityFactory extends AbstractEntityFactory {
         RenameUtils.ColumnRenameConfig config;
         DataAdapter dataAdapter;
         Type[] types;
-        Map<String,RenameUtils.ColumnRenameConfig> map;
+        Map<String, RenameUtils.ColumnRenameConfig> map;
 
         public Class<?> getDbType() {
             return config == null ? null : config.columnMeta.getDataType();
         }
 
 
-        public Set<String> getAvliableFields(){
+        public Set<String> getAvliableFields() {
             return map.keySet();
         }
 
@@ -189,7 +191,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
                 String value = column.value();
                 if (EntitySqlUtils.TABLE_AND_COLUMN_PATTERN.matcher(value).matches()) {
                     //搜索带点好的
-                    RenameUtils.ColumnRenameConfig config = search(map,field, value);
+                    RenameUtils.ColumnRenameConfig config = search(map, field, value);
                     this.config = config;
 
                 }
@@ -201,23 +203,21 @@ class BeanEntityFactory extends AbstractEntityFactory {
 
         /**
          * field可能的情况:
-         *
+         * <p>
          * 1、 直接的数据库字段名称
          * 2、 table.字段
          * 3、 avg(table.字段)
          * 4、 各种表达式 ：  字段1+字段2等
-         *
+         * <p>
          * 对于1、2是可以搜索出来的，总是有上限的。
-         *
          *
          * @param field
          */
-        public RenameUtils.ColumnRenameConfig findColumn(Field field,String annotationValue) {
+        public RenameUtils.ColumnRenameConfig findColumn(Field field, String annotationValue) {
 
-           return search(map,field,annotationValue);
+            return search(map, field, annotationValue);
         }
     }
-
 
 
     class StatementAdapterCreator1 implements StatementAdapterCreator<CreateContext> {
@@ -301,18 +301,18 @@ class BeanEntityFactory extends AbstractEntityFactory {
             throw new DaoException("找不到Table标注，不能使用本方法绑定实体");
         }
         String tableName = table.value();
-        assert(!tableName.isEmpty());
+        assert (!tableName.isEmpty());
         Link link = type.getAnnotation(Link.class);
         Map<String, RenameUtils.ColumnRenameConfig> map;
         Join[] joins = null;
         if (link != null) {
             joins = link.value();
             //表
-            String[] tables = new String[joins.length+1];
+            String[] tables = new String[joins.length + 1];
             tables[0] = tableName;
             int index = 1;
             for (Join join : joins) {
-                tables[index++]=join.table();
+                tables[index++] = join.table();
             }
             map = RenameUtils.rename(dao, tables);
         } else {
@@ -334,17 +334,17 @@ class BeanEntityFactory extends AbstractEntityFactory {
             entityFields.add(entityField);
 
             try {
-                CreateContext context = new CreateContext(field,map);
+                CreateContext context = new CreateContext(field, map);
 
-                for(ContextHandler handler : handlers){
-                    handler.handle(entityField,context);
+                for (ContextHandler handler : handlers) {
+                    handler.handle(entityField, context);
                 }
 
             } catch (Exception e) {
-                if(e instanceof DaoException){
-                    throw (DaoException)e;
+                if (e instanceof DaoException) {
+                    throw (DaoException) e;
                 }
-                throw new DaoException("绑定Entity失败，发生异常:"+type,e);
+                throw new DaoException("绑定Entity失败，发生异常:" + type, e);
             }
         }
 
@@ -358,7 +358,6 @@ class BeanEntityFactory extends AbstractEntityFactory {
                 getJoinConfigs(joins));
 
     }
-
 
 
     /**
@@ -384,7 +383,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
 
 
     private JoinMeta[] getJoinConfigs(Join[] joins) {
-        if(joins==null)return null;
+        if (joins == null) return null;
         JoinMeta[] joinMetas = new JoinMeta[joins.length];
         for (int i = 0; i < joins.length; ++i) {
             Join join = joins[i];
@@ -398,8 +397,6 @@ class BeanEntityFactory extends AbstractEntityFactory {
         }
         return joinMetas;
     }
-
-
 
 
     private AutoEntity findAutoGenerateFields(

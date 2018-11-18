@@ -33,13 +33,12 @@ class BeanEntity extends AbstractEntity {
         this.joins = joins;
         this.type = type;
 
-        if(joins!=null){
+        if (joins != null) {
             for (JoinMeta join : joins) {
 
                 join.setOn(parseOn(join.getOn()));
             }
         }
-
 
 
     }

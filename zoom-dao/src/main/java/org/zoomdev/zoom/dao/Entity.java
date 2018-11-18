@@ -1,8 +1,6 @@
 package org.zoomdev.zoom.dao;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.zoomdev.zoom.dao.adapters.EntityField;
-import org.zoomdev.zoom.dao.meta.JoinMeta;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -40,6 +38,7 @@ public interface Entity {
 
     /**
      * 获取field
+     *
      * @param name
      * @return
      */
@@ -110,12 +109,14 @@ public interface Entity {
 
     /**
      * 对数据进行校验,如果出错，那么直接跑出ValidateException异常
+     *
      * @param data
      */
     void validate(Object data);
 
     /**
      * 解析join
+     *
      * @param on
      * @return
      */

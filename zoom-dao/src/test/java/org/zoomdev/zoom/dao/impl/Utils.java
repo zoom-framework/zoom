@@ -70,8 +70,7 @@ public class Utils {
     }
 
 
-
-    public static  void createTestMapNameAdapter(Dao dao){
+    public static void createTestMapNameAdapter(Dao dao) {
         dao.builder()
                 .dropIfExists("test_map")
                 .createTable("test_map")

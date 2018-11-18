@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 
 
 /**
- *  {@link Entity} 抽象基类
+ * {@link Entity} 抽象基类
  */
 public abstract class AbstractEntity implements Entity {
     EntityField[] entityFields;
@@ -96,7 +96,7 @@ public abstract class AbstractEntity implements Entity {
     }
 
 
-    private String getColumnNameByFieldName(String field){
+    private String getColumnNameByFieldName(String field) {
         String column = file2column.get(field);
         if (column == null) {
             EntityField entityField = getFieldByName(field);
@@ -127,7 +127,7 @@ public abstract class AbstractEntity implements Entity {
             throw new NullPointerException("字段名称为空");
         }
 
-        return  getColumnNameByFieldName(field);
+        return getColumnNameByFieldName(field);
     }
 
 
@@ -140,11 +140,10 @@ public abstract class AbstractEntity implements Entity {
         }
 
         // 对于Record来说，是没有这个字段的
-        if(namesMap!=null){
+        if (namesMap != null) {
             list.addAll(namesMap.keySet());
 
         }
-
 
 
         return list;
@@ -156,8 +155,6 @@ public abstract class AbstractEntity implements Entity {
             field.validate(field.get(data));
         }
     }
-
-
 
 
     private static final Pattern AND_OR_PATTERN = Pattern.compile("[\\s]+(and)[\\s]+|[\\s]+(or)[\\s]+", Pattern.CASE_INSENSITIVE);
@@ -185,8 +182,7 @@ public abstract class AbstractEntity implements Entity {
     }
 
 
-
-    private void parseOnForOne(final StringBuilder sb, String part,  final Set<String> joinAllFields) {
+    private void parseOnForOne(final StringBuilder sb, String part, final Set<String> joinAllFields) {
 
         PatternUtils.visit(part, EntitySqlUtils.TABLE_AND_COLUMN_PATTERN, new PatternUtils.PatternVisitor() {
             @Override
@@ -202,7 +198,7 @@ public abstract class AbstractEntity implements Entity {
                     sb.append(str);
                 } else {
                     String column = getColumnNameByFieldName(str);
-                    sb.append( column);
+                    sb.append(column);
                 }
             }
 

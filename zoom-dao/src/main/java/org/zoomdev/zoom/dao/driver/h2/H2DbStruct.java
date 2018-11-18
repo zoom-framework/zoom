@@ -3,16 +3,13 @@ package org.zoomdev.zoom.dao.driver.h2;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.common.utils.CollectionUtils;
 import org.zoomdev.zoom.common.utils.Converter;
 import org.zoomdev.zoom.common.utils.MapUtils;
 import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.Record;
-import org.zoomdev.zoom.dao.SqlBuilder;
 import org.zoomdev.zoom.dao.alias.impl.ToLowerCaseNameAdapter;
 import org.zoomdev.zoom.dao.driver.AbsDbStruct;
-import org.zoomdev.zoom.dao.impl.SimpleSqlBuilder;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.meta.ColumnMeta.KeyType;
 import org.zoomdev.zoom.dao.meta.TableMeta;
@@ -77,7 +74,6 @@ public class H2DbStruct extends AbsDbStruct {
     }
 
 
-
     @Override
     public void fill(TableMeta meta) {
 
@@ -85,8 +81,7 @@ public class H2DbStruct extends AbsDbStruct {
                 .ar()
                 .nameAdapter(ToLowerCaseNameAdapter.DEFAULT)
                 .executeQuery("select TABLE_NAME,COLUMN_NAME,IS_NULLABLE,DATA_TYPE,SEQUENCE_NAME,CHARACTER_MAXIMUM_LENGTH,REMARKS,COLUMN_DEFAULT from " +
-                        "information_schema.columns where TABLE_SCHEMA=? and TABLE_NAME=?","PUBLIC",meta.getName().toUpperCase());
-
+                        "information_schema.columns where TABLE_SCHEMA=? and TABLE_NAME=?", "PUBLIC", meta.getName().toUpperCase());
 
 
         //index
@@ -127,7 +122,6 @@ public class H2DbStruct extends AbsDbStruct {
         }
 
     }
-
 
 
 }

@@ -33,7 +33,7 @@ public class Transactions {
         this.refCount = 1;
     }
 
-    public void addRefCount(){
+    public void addRefCount() {
         ++refCount;
     }
 

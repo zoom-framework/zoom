@@ -1,8 +1,5 @@
 package org.zoomdev.zoom.dao.migrations;
 
-import org.apache.commons.lang3.ObjectUtils;
-import org.zoomdev.zoom.common.utils.DatetimeUtils;
-
 /**
  * dao.newBuilder()
  * .create("user)
@@ -43,10 +40,13 @@ public interface DatabaseBuilder {
     DatabaseBuilder integer();
 
     DatabaseBuilder bigInt();
+
     DatabaseBuilder clob();
+
     DatabaseBuilder number();
 
     DatabaseBuilder notNull();
+
     /// for mysql
     DatabaseBuilder autoIncement();
 
@@ -72,6 +72,7 @@ public interface DatabaseBuilder {
 
     /**
      * default value
+     *
      * @param value
      */
     DatabaseBuilder defaultValue(Object value);
@@ -81,6 +82,7 @@ public interface DatabaseBuilder {
 
     /**
      * 默认值是调用系统函数
+     *
      * @param value
      * @return
      */

@@ -3,7 +3,6 @@ package org.zoomdev.zoom.dao.impl;
 import org.zoomdev.zoom.dao.ConnectionExecutor;
 import org.zoomdev.zoom.dao.ConnectionHolder;
 import org.zoomdev.zoom.dao.DaoException;
-import org.zoomdev.zoom.dao.Trans;
 import org.zoomdev.zoom.dao.utils.DaoUtils;
 
 import javax.sql.DataSource;
@@ -28,14 +27,16 @@ public abstract class AbstractRecord implements ConnectionHolder {
         final Connection connection = this.connection;
         return connection == null ? (this.connection = ZoomDao.getConnection(dataSource)) : connection;
     }
-    protected void remove2(List<Object> values){
-        if(values.size()==2){
+
+    protected void remove2(List<Object> values) {
+        if (values.size() == 2) {
             values.clear();
             return;
         }
-        values.remove(values.size()-1);
-        values.remove(values.size()-1);
+        values.remove(values.size() - 1);
+        values.remove(values.size() - 1);
     }
+
     @Override
     public <T> T execute(ConnectionExecutor executor) {
         try {
@@ -65,8 +66,6 @@ public abstract class AbstractRecord implements ConnectionHolder {
             }
         }
     }
-
-
 
 
     public int count() {

@@ -127,7 +127,7 @@ public class TestTrans extends AbstractDaoTest {
 
                         }
                     });
-                }  finally {
+                } finally {
 
                     assertEquals(productCount, getProductCount(dao));
                 }

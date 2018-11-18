@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class CachedDbStructFactory implements DbStructFactory,Destroyable {
+public class CachedDbStructFactory implements DbStructFactory, Destroyable {
 
     private DbStructFactory factory;
 
@@ -47,7 +47,7 @@ public class CachedDbStructFactory implements DbStructFactory,Destroyable {
 
     @Override
     public TableMeta getTableMeta(final String tableName) {
-        TableMeta tableMeta= (TableMeta) SingletonUtils.liteDoubleLockMap(pool, tableName, new SingletonUtils.SingletonInit<Object>() {
+        TableMeta tableMeta = (TableMeta) SingletonUtils.liteDoubleLockMap(pool, tableName, new SingletonUtils.SingletonInit<Object>() {
             @Override
             public Object create() {
                 return factory.getTableMeta(tableName);
@@ -69,7 +69,7 @@ public class CachedDbStructFactory implements DbStructFactory,Destroyable {
     }
 
     @Override
-    public Map<String,Collection<String>> getTriggers() {
+    public Map<String, Collection<String>> getTriggers() {
         return (Map<String, Collection<String>>) SingletonUtils.liteDoubleLockMap(pool, ALL_TRIGGERS, new SingletonUtils.SingletonInit<Object>() {
             @Override
             public Object create() {

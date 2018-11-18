@@ -1,6 +1,5 @@
 package org.zoomdev.zoom.dao.rename;
 
-import junit.framework.TestCase;
 import org.junit.Test;
 import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.alias.AliasPolicy;
@@ -35,10 +34,10 @@ public class TestRenamePolicy extends AbstractDaoTest {
         assertEquals(policy.getAlias("_TP_NULL"), "_tp_null");
 
 
-
     }
+
     @Test
-    public void testAliasPolicyFactory(){
+    public void testAliasPolicyFactory() {
 
         AliasPolicyFactory factory = DetectPrefixAliasPolicyFactory.DEFAULT;
         AliasPolicy aliasPolicy = factory.getAliasPolicy(new String[]{
@@ -59,7 +58,6 @@ public class TestRenamePolicy extends AbstractDaoTest {
                 aliasPolicy.getAlias("RN_ID"),
                 "rnId"
         );
-
 
 
         aliasPolicy = factory.getAliasPolicy(new String[]{
@@ -125,23 +123,20 @@ public class TestRenamePolicy extends AbstractDaoTest {
                 "CC_TEST"
         });
 
-        assertEquals(aliasPolicy.getAlias("TP_ID"),"tpId");
+        assertEquals(aliasPolicy.getAlias("TP_ID"), "tpId");
 
 
+        assertEquals(EmptyNameAdapter.DEFAULT.getColumnName("TEST_COLUMN"), "TEST_COLUMN");
+        assertEquals(EmptyNameAdapter.DEFAULT.getFieldName("TEST_COLUMN"), "TEST_COLUMN");
 
-        assertEquals(EmptyNameAdapter.DEFAULT.getColumnName("TEST_COLUMN"),"TEST_COLUMN");
-        assertEquals(EmptyNameAdapter.DEFAULT.getFieldName("TEST_COLUMN"),"TEST_COLUMN");
+        assertEquals(ToLowerCaseNameAdapter.DEFAULT.getColumnName("test_column"), "TEST_COLUMN");
+        assertEquals(ToLowerCaseNameAdapter.DEFAULT.getFieldName("TEST_COLUMN"), "test_column");
 
-        assertEquals(ToLowerCaseNameAdapter.DEFAULT.getColumnName("test_column"),"TEST_COLUMN");
-        assertEquals(ToLowerCaseNameAdapter.DEFAULT.getFieldName("TEST_COLUMN"),"test_column");
-
-        assertEquals(CamelNameAdapter.DEFAULT.getColumnName("testColumn"),"TEST_COLUMN");
-        assertEquals(CamelNameAdapter.DEFAULT.getFieldName("TEST_COLUMN"),"testColumn");
-
+        assertEquals(CamelNameAdapter.DEFAULT.getColumnName("testColumn"), "TEST_COLUMN");
+        assertEquals(CamelNameAdapter.DEFAULT.getFieldName("TEST_COLUMN"), "testColumn");
 
 
         //map Name adapter
-
 
 
     }
@@ -151,15 +146,15 @@ public class TestRenamePolicy extends AbstractDaoTest {
 
         Utils.createTestMapNameAdapter(dao);
 
-        NameAdapter adapter = MapNameAdapter.fromEntity( dao.getEntity("test_map"));
+        NameAdapter adapter = MapNameAdapter.fromEntity(dao.getEntity("test_map"));
 
-        assertEquals(adapter.getFieldName("MP_ID"),"mpId");
+        assertEquals(adapter.getFieldName("MP_ID"), "mpId");
 
-        assertEquals(adapter.getColumnName("jpName"),"JP_NAME");
+        assertEquals(adapter.getColumnName("jpName"), "JP_NAME");
 
-        assertEquals(adapter.getFieldName("NOT EXISTS"),"NOT EXISTS");
+        assertEquals(adapter.getFieldName("NOT EXISTS"), "NOT EXISTS");
 
-        assertEquals(adapter.getColumnName("NOT EXISTS"),"NOT EXISTS");
+        assertEquals(adapter.getColumnName("NOT EXISTS"), "NOT EXISTS");
 
 
     }

@@ -1,6 +1,5 @@
 package org.zoomdev.zoom.dao;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.zoomdev.zoom.common.utils.Page;
 
 import java.util.List;
@@ -54,7 +53,6 @@ public interface EAr<T> extends Sql<EAr<T>> {
     int update(T data);
 
 
-
     T get();
 
     /**
@@ -73,7 +71,6 @@ public interface EAr<T> extends Sql<EAr<T>> {
      * @return
      */
     int insert(T data);
-
 
 
     /**
@@ -109,7 +106,7 @@ public interface EAr<T> extends Sql<EAr<T>> {
      * 是否是严格模式，
      * 在严格模式下，update和insert每一个字段都会被检查，如果不存在则会报错
      * 而在非严格模式下，如果字段不存在，则会被过滤掉
-     *
+     * <p>
      * 默认情况下是严格模式
      *
      * @param strict

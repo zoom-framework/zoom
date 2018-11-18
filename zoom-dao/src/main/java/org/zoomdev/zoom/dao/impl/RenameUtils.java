@@ -50,11 +50,11 @@ class RenameUtils {
 
         AliasPolicyFactory maker = dao.getAliasPolicyMaker();
         AliasPolicy aliasPolicy = maker.getAliasPolicy(getColumnNames(tableMeta));
-        Map<String,ColumnRenameConfig> config = new LinkedHashMap<String, ColumnRenameConfig>();
+        Map<String, ColumnRenameConfig> config = new LinkedHashMap<String, ColumnRenameConfig>();
         for (ColumnMeta columnMeta : tableMeta.getColumns()) {
             String fieldName = aliasPolicy.getAlias(columnMeta.getName());
 
-            config.put(fieldName,new ColumnRenameConfig(
+            config.put(fieldName, new ColumnRenameConfig(
                     tableMeta,
                     columnMeta,
                     columnMeta.getName(),
@@ -74,6 +74,7 @@ class RenameUtils {
         return rename(dao, tableMeta);
 
     }
+
     static class ColumnRenameConfig {
         TableMeta tableMeta;
         ColumnMeta columnMeta;
@@ -83,7 +84,7 @@ class RenameUtils {
         // 可能为 table.column 或者 column
         String columnName;
 
-        public ColumnRenameConfig(TableMeta tableMeta, ColumnMeta columnMeta, String selectColumnName,String columnName,String orginalName) {
+        public ColumnRenameConfig(TableMeta tableMeta, ColumnMeta columnMeta, String selectColumnName, String columnName, String orginalName) {
             this.tableMeta = tableMeta;
             this.columnMeta = columnMeta;
             this.selectColumnName = selectColumnName;
@@ -92,18 +93,18 @@ class RenameUtils {
         }
 
         public boolean is(String field) {
-            if(field.equalsIgnoreCase(tableMeta.getName())){
+            if (field.equalsIgnoreCase(tableMeta.getName())) {
                 return true;
             }
-            if(field.equalsIgnoreCase(columnName)){
+            if (field.equalsIgnoreCase(columnName)) {
                 return true;
             }
-            if(field.equalsIgnoreCase(selectColumnName)){
+            if (field.equalsIgnoreCase(selectColumnName)) {
                 return true;
             }
 
 
-            if(field.equalsIgnoreCase(tableMeta.getName()+"."+columnMeta.getName())){
+            if (field.equalsIgnoreCase(tableMeta.getName() + "." + columnMeta.getName())) {
                 return true;
             }
             return false;
@@ -111,13 +112,14 @@ class RenameUtils {
 
         @Override
         public String toString() {
-            return tableMeta.getName()+"."+columnMeta.getName();
+            return tableMeta.getName() + "." + columnMeta.getName();
         }
     }
-    public static Map<String,ColumnRenameConfig>  rename(Dao dao, String[] tables) {
+
+    public static Map<String, ColumnRenameConfig> rename(Dao dao, String[] tables) {
         AliasPolicyFactory maker = dao.getAliasPolicyMaker();
         AliasPolicy tableAliasPolicy = getAliasPolicyForNames(maker, tables);
-        Map<String,ColumnRenameConfig> config = new LinkedHashMap<String, ColumnRenameConfig>();
+        Map<String, ColumnRenameConfig> config = new LinkedHashMap<String, ColumnRenameConfig>();
         boolean first = true;
         for (String table : tables) {
             TableMeta tableMeta = dao.getDbStructFactory().getTableMeta(table);
@@ -134,9 +136,9 @@ class RenameUtils {
                         dao.getDriver().protectColumn(StrKit.toUnderLine(fieldName) + "_")
                 );
 
-                String columnName =  String.format("%s.%s", tableMeta.getName(), columnMeta.getName());
+                String columnName = String.format("%s.%s", tableMeta.getName(), columnMeta.getName());
 
-                config.put(fieldName,new ColumnRenameConfig(
+                config.put(fieldName, new ColumnRenameConfig(
                         tableMeta,
                         columnMeta,
                         selectColumnName,

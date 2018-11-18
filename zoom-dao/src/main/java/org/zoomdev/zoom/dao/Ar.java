@@ -18,7 +18,7 @@ import java.util.Map;
  *
  * @author jzoom
  */
-public interface Ar extends  ConnectionHolder, Sql<Ar> {
+public interface Ar extends ConnectionHolder, Sql<Ar> {
 
 
     Ar nameAdapter(NameAdapter nameAdapter);
@@ -96,6 +96,7 @@ public interface Ar extends  ConnectionHolder, Sql<Ar> {
 
 
     int execute(String sql);
+
     <E> E value(final String key, final Class<E> typeOfE);
 
     Ar selectMax(String field);
@@ -122,10 +123,9 @@ public interface Ar extends  ConnectionHolder, Sql<Ar> {
     Ar whereCondition(String key, Object... values);
 
     /**
-     *
      * @param type
-     * @param generatedKeys  生成键
+     * @param generatedKeys 生成键
      * @return
      */
-    int insert(Record type, String...generatedKeys);
+    int insert(Record type, String... generatedKeys);
 }

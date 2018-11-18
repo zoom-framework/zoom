@@ -19,7 +19,7 @@ public class Record extends DataObject {
         return data;
     }
 
-    public static Record wrap(Map<String,Object> data){
+    public static Record wrap(Map<String, Object> data) {
         return new Record(data);
     }
 
