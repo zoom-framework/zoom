@@ -2,6 +2,8 @@ package org.zoomdev.zoom.common.validate;
 
 import org.zoomdev.zoom.common.expression.Symbol;
 
+import java.util.Map;
+
 /**
  * 这个涉及两个字段比较，需要从数据中取出对应的值
  *
@@ -11,6 +13,18 @@ public abstract class CompareRule<T> extends AbstractRule<T> {
 
     //比较目标的key
     private String target;
+
+
+
+    public CompareRule() {
+
+    }
+
+    public CompareRule(String message, String target, Symbol symbol) {
+        super(message, "compare");
+        this.target = target;
+        this.symbol = symbol;
+    }
 
 
     // 比较运算符
@@ -32,16 +46,6 @@ public abstract class CompareRule<T> extends AbstractRule<T> {
         this.symbol = symbol;
     }
 
-    public CompareRule() {
-
-    }
-
-
-    public CompareRule(String message, String target, Symbol symbol) {
-        super(message, "compare");
-        this.target = target;
-        this.symbol = symbol;
-    }
 
     @Override
     public String validate(T data, Object value) {

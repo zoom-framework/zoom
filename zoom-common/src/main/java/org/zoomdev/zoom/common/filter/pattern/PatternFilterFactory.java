@@ -6,7 +6,7 @@ import org.zoomdev.zoom.common.filter.AndFilter;
 import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.common.filter.OrFilter;
 import org.zoomdev.zoom.common.utils.Classes;
-import org.zoomdev.zoom.common.utils.Strings;
+import org.zoomdev.zoom.common.utils.StrKit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -158,7 +158,7 @@ public class PatternFilterFactory {
     }
 
     private static Filter<String> create(String pattern) {
-        if (Strings.isAll(pattern, '*')) {
+        if (StrKit.isAll(pattern, '*')) {
             return new AlwaysAcceptFilter<String>();
         }
 

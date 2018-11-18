@@ -8,10 +8,13 @@ import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.common.ConfigurationConstants;
 import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.common.filter.pattern.PatternFilterFactory;
+import org.zoomdev.zoom.common.io.Io;
+import org.zoomdev.zoom.common.json.JSON;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -105,17 +108,18 @@ public class ConfigReader implements ConfigKeyParser {
         }
         if (name.endsWith(".json")) {
 
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(org.codehaus.jackson.JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            mapper.configure(org.codehaus.jackson.JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
 
+            InputStream is = null;
             try {
-                Map<String, Object> data = mapper.readValue(file, Map.class);
+                is = new FileInputStream(file);
+                Map<String, Object> data = JSON.parse(is,Map.class);
                 for (Entry<String, Object> entry : data.entrySet()) {
                     this.data.put(entry.getKey(), entry.getValue());
                 }
             } catch (Exception e) {
                 throw new RuntimeException(String.format("配置文件%s加载失败", file));
+            }finally {
+                Io.close(is);
             }
 
         } else if (name.endsWith(".properties")) {

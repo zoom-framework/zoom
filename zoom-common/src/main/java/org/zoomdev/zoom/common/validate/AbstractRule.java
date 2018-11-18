@@ -1,13 +1,11 @@
 package org.zoomdev.zoom.common.validate;
 
-public abstract class AbstractRule<T> implements Validator<T> {
-    public String getMessage() {
-        return message;
-    }
+import org.zoomdev.zoom.common.json.JSON;
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+import java.io.Serializable;
+import java.util.Map;
+
+public abstract class AbstractRule<T> implements Validator<T>,Serializable {
 
     protected String message;
     protected String type;
@@ -20,6 +18,14 @@ public abstract class AbstractRule<T> implements Validator<T> {
         this.type = type;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     public AbstractRule(String message, String type) {
         this.message = message;
         this.type = type;
@@ -28,4 +34,6 @@ public abstract class AbstractRule<T> implements Validator<T> {
     public AbstractRule() {
 
     }
+
+
 }

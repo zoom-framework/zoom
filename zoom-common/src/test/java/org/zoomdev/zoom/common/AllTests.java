@@ -17,6 +17,7 @@ import org.zoomdev.zoom.common.res.TestRes;
 import org.zoomdev.zoom.common.utils.OrderedListTest;
 import org.zoomdev.zoom.common.utils.ProcessUtilTest;
 import org.zoomdev.zoom.common.utils.ValidateUtilTest;
+import org.zoomdev.zoom.common.validate.ValidatorTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({TestRes.class,
@@ -32,7 +33,8 @@ import org.zoomdev.zoom.common.utils.ValidateUtilTest;
         TestBcd.class,
         TestHex.class,
         TestHash.class,
-        TestConfigReader.class})
+        TestConfigReader.class,
+        ValidatorTest.class})
 public class AllTests {
 
 }

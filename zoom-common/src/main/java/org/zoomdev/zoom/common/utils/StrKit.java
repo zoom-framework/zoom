@@ -3,6 +3,24 @@ package org.zoomdev.zoom.common.utils;
 public class StrKit {
 
     /**
+     * 是否整个字符串都是一个字符
+     *
+     * @param src
+     * @param ch
+     * @return
+     */
+    public static boolean isAll(String src, char ch) {
+
+        for (int i = 0, c = src.length(); i < c; ++i) {
+            if (src.charAt(i) != ch) {
+                return false;
+            }
+        }
+        return true;
+
+    }
+
+    /**
      * 首字母大写
      *
      * @param string

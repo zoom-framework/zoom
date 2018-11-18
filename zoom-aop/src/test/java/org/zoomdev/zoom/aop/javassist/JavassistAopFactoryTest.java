@@ -6,10 +6,9 @@ import org.zoomdev.zoom.aop.AopFactory;
 import org.zoomdev.zoom.aop.MethodInterceptor;
 import org.zoomdev.zoom.aop.MethodInvoker;
 import org.zoomdev.zoom.aop.annotations.Aop;
-import org.zoomdev.zoom.aop.annotations.Log;
+import org.zoomdev.zoom.aop.annotations.Logger;
 import org.zoomdev.zoom.aop.factory.AnnotationMethodInterceptorFactory;
 import org.zoomdev.zoom.aop.factory.AopMethodInterceptorFactory;
-import org.zoomdev.zoom.aop.factory.LogMethodInterceptorFactory;
 import org.zoomdev.zoom.aop.interceptors.LogMethodCallback;
 
 import java.lang.annotation.ElementType;
@@ -46,13 +45,13 @@ public class JavassistAopFactoryTest {
             System.out.println("testVoid");
         }
 
-        @Log
+        @Logger
         @TestAnnonation
         public int add(int a, int b) {
             return a + b;
         }
 
-        @Log
+        @Logger
         public void testException() throws Exception {
             throw new TestException("This is a Exception");
         }
@@ -138,7 +137,7 @@ public class JavassistAopFactoryTest {
 
         new TestReplaceArg();
         new TestReplaceReturn();
-        AopFactory factory = new JavassistAopFactory(new TestAopMaker(), new LogMethodInterceptorFactory(), new AopMethodInterceptorFactory());
+        AopFactory factory = new JavassistAopFactory(new TestAopMaker(), new AopMethodInterceptorFactory());
 
         Class<?> modelClass = factory.enhance(TestModel.class);
         TestModel model = (TestModel) modelClass.newInstance();
@@ -159,7 +158,7 @@ public class JavassistAopFactoryTest {
 
     @Test(expected = InvalidParameterException.class)
     public void testArgs() throws InstantiationException, IllegalAccessException {
-        AopFactory factory = new JavassistAopFactory(new TestAopMaker(), new LogMethodInterceptorFactory(), new AopMethodInterceptorFactory());
+        AopFactory factory = new JavassistAopFactory(new TestAopMaker(),new AopMethodInterceptorFactory());
 
         Class<?> modelClass = factory.enhance(TestModel.class);
         TestModel model = (TestModel) modelClass.newInstance();

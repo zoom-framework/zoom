@@ -1,13 +1,13 @@
 package org.zoomdev.zoom.aop.javassist;
 
 import javassist.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.aop.MethodInterceptor;
 import org.zoomdev.zoom.aop.MethodInterceptorFactory;
 import org.zoomdev.zoom.aop.impl.AstractMethodInterceptorFactory;
 import org.zoomdev.zoom.aop.impl.ReflectMethodCaller;
 import org.zoomdev.zoom.aop.utils.JavassistUtils;
-import org.zoomdev.zoom.common.logger.Logger;
-import org.zoomdev.zoom.common.logger.Loggers;
 import org.zoomdev.zoom.common.utils.Classes;
 
 import java.lang.reflect.Method;
@@ -21,7 +21,9 @@ import java.lang.reflect.Method;
 public class JavassistAopFactory extends AstractMethodInterceptorFactory {
 
 
-    private static final Logger logger = Loggers.getLogger();
+    private static final Log logger = LogFactory.getLog(
+            JavassistAopFactory.class
+    );
 
     private ClassPool classPool;
 
@@ -64,8 +66,8 @@ public class JavassistAopFactory extends AstractMethodInterceptorFactory {
 
         int index = 0;
         for (AopConfig aopConfig : configs) {
-
-            logger.debug("为%s增强功能", aopConfig.getMethod());
+            if(logger.isDebugEnabled())
+                logger.debug(String.format("为%s增强功能", aopConfig.getMethod()));
 
             subClass.addMethod(toPublic(createRenameMethod(aopConfig.getMethod(), subClass)));
             subClass.addMethod(toPublic(createMethod(aopConfig.getMethod(), aopConfig.getInterceptors(), subClass, index++)));
@@ -102,7 +104,8 @@ public class JavassistAopFactory extends AstractMethodInterceptorFactory {
         sb.append(getCallSuper(method));
         sb.append("}");
 
-        logger.debug("body is %s", sb.toString());
+        if(logger.isDebugEnabled())
+            logger.debug(String.format("body is %s", sb.toString()));
 
 
         return CtMethod.make(sb.toString(), declaring);
@@ -136,7 +139,8 @@ public class JavassistAopFactory extends AstractMethodInterceptorFactory {
         sb.append(getBody(method, index, subClass.getName()));
         sb.append("}");
 
-        logger.debug("body is %s", sb.toString());
+        if(logger.isDebugEnabled())
+            logger.debug(String.format("body is %s", sb.toString()));
 
         return CtMethod.make(sb.toString(), subClass);
     }
