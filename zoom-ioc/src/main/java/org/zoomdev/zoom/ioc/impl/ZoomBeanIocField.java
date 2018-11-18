@@ -16,7 +16,7 @@ public class ZoomBeanIocField extends ZoomIocField implements IocField {
     @Override
     public void set(IocObject obj) {
         try {
-            field.set(obj.get(), ioc.get(key).get());
+            field.set(obj.get(), ioc.fetch(key).get());
         } catch (Exception e) {
             throw new IocException("设置字段值失败", e);
         }

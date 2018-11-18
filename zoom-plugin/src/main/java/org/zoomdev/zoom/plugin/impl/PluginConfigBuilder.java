@@ -37,7 +37,7 @@ public class PluginConfigBuilder extends SimpleConfigBuilder {
         }
 
         for (Class<?> type : types) {
-            ioc.get(type);
+            ioc.fetch(type);
         }
 
         list.clear();

@@ -63,10 +63,10 @@ public class ZoomIocMethod extends IocBase implements IocMethod {
         try {
             IocObject[] values = new IocObject[parameterKeys.length];
             for (int i = 0, c = parameterKeys.length; i < c; ++i) {
-                values[i] = ioc.get(parameterKeys[i]);
+                values[i] = ioc.fetch(parameterKeys[i]);
             }
 
-            return method.invoke(obj.get(), SimpleIocContainer.getValues(values));
+            return method.invoke(obj.get(), ZoomIocContainer.getValues(values));
         } catch (Exception e) {
             throw new IocException("调用ioc注入函数失败" + method, e);
         }

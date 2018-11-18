@@ -24,8 +24,8 @@ public class ZoomBeanIocClass extends ZoomIocClass {
 
     private void createInjector(IocContainer ioc, IocScope scope, Object instance) {
         injectorCreated = true;
-        methods = SimpleIocContainer.parseMethods(ioc, this, instance.getClass(), classLoader);
-        fields = SimpleIocContainer.parseFields(ioc, instance.getClass(), classLoader);
+        methods = ZoomIocContainer.parseMethods(ioc, this, instance.getClass(), classLoader);
+        fields = ZoomIocContainer.parseFields(ioc, instance.getClass(), classLoader);
 
 //        if(fields!=null) {
 //            for (IocField field : fields) {

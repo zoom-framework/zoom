@@ -8,7 +8,7 @@ import org.zoomdev.zoom.common.res.ResScanner;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.ioc.configuration.SimpleConfigBuilder;
-import org.zoomdev.zoom.ioc.impl.SimpleIocContainer;
+import org.zoomdev.zoom.ioc.impl.ZoomIocContainer;
 import org.zoomdev.zoom.ioc.modules.IocModule;
 import org.zoomdev.zoom.timer.impl.modules.TestModule;
 
@@ -25,9 +25,9 @@ public class TestTimerModule extends TestCase {
         log.info("=====================timer =================");
         log.info("=====================timer =================");
 
-        IocContainer ioc = new SimpleIocContainer();
+        IocContainer ioc = new ZoomIocContainer();
         ioc.getIocClassLoader().appendModule(IocModule.class);
-        ioc.get(IocModule.class);
+        ioc.fetch(IocModule.class);
 
         ClassResolvers classResolvers = new ClassResolvers(
                 new SimpleConfigBuilder(ioc)
@@ -38,9 +38,9 @@ public class TestTimerModule extends TestCase {
         //这里如果是maven的测试，可能会扫描不到目录
 
 
-        assertEquals(ioc.get(IocModule.class).getClass(), IocModule.class);
+        assertEquals(ioc.fetch(IocModule.class).getClass(), IocModule.class);
 
-        TestModule.TestService testModule = ioc.get(TestModule.TestService.class);
+        TestModule.TestService testModule = ioc.fetch(TestModule.TestService.class);
 
 
         Classes.destroy(ioc);

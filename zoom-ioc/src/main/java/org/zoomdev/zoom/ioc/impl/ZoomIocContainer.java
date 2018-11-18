@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SimpleIocContainer implements IocContainer, IocEventListener {
+public class ZoomIocContainer implements IocContainer, IocEventListener {
 
     private GlobalScope globalScope;
 
@@ -22,7 +22,7 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
             Collections.synchronizedList(new ArrayList<IocEventListener>());
 
 
-    public SimpleIocContainer() {
+    public ZoomIocContainer() {
         globalScope = new GlobalScope(this, this);
         this.iocClassLoader = new ZoomIocClassLoader(this);
         this.iocClassLoader.setClassEnhancer(new NoneEnhancer());
@@ -30,7 +30,7 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
         getIocClassLoader().append(IocContainer.class, this, true);
     }
 
-    public SimpleIocContainer(IocScope parentScope, IocClassLoader parentClassLoader, List<IocEventListener> eventListeners) {
+    public ZoomIocContainer(IocScope parentScope, IocClassLoader parentClassLoader, List<IocEventListener> eventListeners) {
         globalScope = new GroupScope(this, this, parentScope);
         this.iocClassLoader = new GroupClassLoader(this, parentClassLoader);
         this.iocClassLoader.setClassEnhancer(new NoneEnhancer());
@@ -55,13 +55,13 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
     }
 
     @Override
-    public IocObject get(IocKey key) {
-        return get(globalScope, key);
+    public IocObject fetch(IocKey key) {
+        return fetch(globalScope, key);
     }
 
     @Override
-    public <T> T get(Class<?> type) {
-        return (T) get(new ZoomIocKey(type)).get();
+    public <T> T fetch(Class<?> type) {
+        return (T) fetch(new ZoomIocKey(type)).get();
     }
 
     private void initObject(ZoomIocObject obj, IocScope scope) {
@@ -100,7 +100,7 @@ public class SimpleIocContainer implements IocContainer, IocEventListener {
         }
     }
 
-    public synchronized IocObject get(IocScope scope, IocKey key) {
+    public synchronized IocObject fetch(IocScope scope, IocKey key) {
         try {
             ZoomIocObject obj = (ZoomIocObject) scope.get(key);
             IocClass iocClass = null;

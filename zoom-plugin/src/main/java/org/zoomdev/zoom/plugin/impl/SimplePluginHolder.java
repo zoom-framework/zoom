@@ -5,8 +5,7 @@ import org.zoomdev.zoom.common.res.ClassResolvers;
 import org.zoomdev.zoom.common.res.ResScanner;
 import org.zoomdev.zoom.common.res.ResScanner.ClassRes;
 import org.zoomdev.zoom.ioc.IocContainer;
-import org.zoomdev.zoom.ioc.configuration.SimpleConfigBuilder;
-import org.zoomdev.zoom.ioc.impl.SimpleIocContainer;
+import org.zoomdev.zoom.ioc.impl.ZoomIocContainer;
 import org.zoomdev.zoom.plugin.Plugin;
 import org.zoomdev.zoom.plugin.PluginException;
 import org.zoomdev.zoom.plugin.PluginHolder;
@@ -86,7 +85,7 @@ public class SimplePluginHolder implements PluginHolder {
         assert (plugin != null);
         try {
             IocContainer mainIoc = host.getIoc();
-            ioc = new SimpleIocContainer(mainIoc.getScope(), mainIoc.getIocClassLoader(), mainIoc.getEventListeners());
+            ioc = new ZoomIocContainer(mainIoc.getScope(), mainIoc.getIocClassLoader(), mainIoc.getEventListeners());
             tokens = new ArrayList<Router.RemoveToken>();
             ClassResolvers classResolvers = new ClassResolvers(
                     new PluginConfigBuilder(ioc),

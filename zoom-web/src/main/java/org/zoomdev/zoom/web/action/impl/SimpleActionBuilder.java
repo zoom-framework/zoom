@@ -54,7 +54,7 @@ public class SimpleActionBuilder extends ClassResolver {
         this.ioc = ioc;
         this.router = router;
         ioc.getIocClassLoader().append(ActionInterceptorFactory.class, new SimpleActionInterceptorFactory(), true);
-        factory = ioc.get(ActionInterceptorFactory.class);
+        factory = ioc.fetch(ActionInterceptorFactory.class);
         this.removeTokenList = removeTokenList;
     }
 
@@ -70,7 +70,7 @@ public class SimpleActionBuilder extends ClassResolver {
     @Override
     public void visitClass(Class<?> clazz) {
         this.clazz = clazz;
-        target = ioc.get(clazz);
+        target = ioc.fetch(clazz);
         controller = clazz.getAnnotation(Controller.class);
         key = controller.key();
     }
@@ -101,7 +101,7 @@ public class SimpleActionBuilder extends ClassResolver {
     @Override
     public void visitMethod(Method method) {
         Class<? extends ActionFactory> actionFactoryClass = defaultActionFactoryClass;
-        ActionFactory factory = ioc.get(actionFactoryClass);
+        ActionFactory factory = ioc.fetch(actionFactoryClass);
         Action action = factory.createAction(target, clazz, method, this.factory);
         Mapping mapping = method.getAnnotation(Mapping.class);
         String key = getKey(this.key, method, mapping);

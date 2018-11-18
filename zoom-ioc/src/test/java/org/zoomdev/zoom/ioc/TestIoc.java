@@ -6,7 +6,7 @@ import org.zoomdev.zoom.common.res.ClassResolvers;
 import org.zoomdev.zoom.common.res.ResScanner;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.ioc.configuration.SimpleConfigBuilder;
-import org.zoomdev.zoom.ioc.impl.SimpleIocContainer;
+import org.zoomdev.zoom.ioc.impl.ZoomIocContainer;
 import org.zoomdev.zoom.ioc.models.PushService;
 import org.zoomdev.zoom.ioc.models.ShopService;
 
@@ -16,7 +16,7 @@ public class TestIoc extends TestCase {
 
 
     public void test() throws IOException {
-        IocContainer ioc = new SimpleIocContainer(
+        IocContainer ioc = new ZoomIocContainer(
         );
 
 
@@ -33,9 +33,9 @@ public class TestIoc extends TestCase {
         resolvers.visit(scanner);
 
 
-        ShopService shopService = ioc.get(ShopService.class);
+        ShopService shopService = ioc.fetch(ShopService.class);
 
-        PushService pushService = ioc.get(PushService.class);
+        PushService pushService = ioc.fetch(PushService.class);
 
         assertEquals(pushService.getName(), shopService.getName());
 
@@ -47,7 +47,7 @@ public class TestIoc extends TestCase {
         assertEquals(shopService.showProduct(), "test");
 
 
-        IocContainer subIoc = new SimpleIocContainer(
+        IocContainer subIoc = new ZoomIocContainer(
                 ioc.getScope(),
                 ioc.getIocClassLoader(),
                 ioc.getEventListeners()

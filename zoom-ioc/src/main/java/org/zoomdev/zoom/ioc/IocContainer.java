@@ -21,21 +21,23 @@ public interface IocContainer extends Destroyable {
 
     /**
      * 通过name、class找到一个Ioc容器对象
+     * 如果找不到会报错 {@link IocException}
      *
      * @param key
      * @return
      */
-    IocObject get(IocKey key);
+    IocObject fetch(IocKey key);
 
 
     /**
      * 直接通过class找到ioc容器对象
+     * 如果找不到会报错 {@link IocException}
      *
      * @param type
      * @param <T>
      * @return
      */
-    <T> T get(Class<?> type);
+    <T> T fetch(Class<?> type);
 
 
     /**

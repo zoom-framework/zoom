@@ -14,7 +14,7 @@ import org.zoomdev.zoom.common.res.ResScanner;
 import org.zoomdev.zoom.common.utils.CachedClasses;
 import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.ioc.configuration.SimpleConfigBuilder;
-import org.zoomdev.zoom.ioc.impl.SimpleIocContainer;
+import org.zoomdev.zoom.ioc.impl.ZoomIocContainer;
 import org.zoomdev.zoom.web.action.ActionHandler;
 import org.zoomdev.zoom.web.action.impl.SimpleActionBuilder;
 import org.zoomdev.zoom.web.router.Router;
@@ -42,7 +42,7 @@ public class ZoomWeb {
 
         printLogo();
         // 初始化ioc容器
-        ioc = new SimpleIocContainer();
+        ioc = new ZoomIocContainer();
 
         WebUtils.setIoc(ioc);
 
@@ -73,7 +73,7 @@ public class ZoomWeb {
 
     private void createRouter() {
         ioc.getIocClassLoader().append(Router.class, new SimpleRouter(new BracesRouterParamRule()), true);
-        router = ioc.get(Router.class);
+        router = ioc.fetch(Router.class);
     }
 
 
