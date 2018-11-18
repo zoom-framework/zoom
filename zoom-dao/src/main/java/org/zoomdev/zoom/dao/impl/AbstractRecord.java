@@ -11,7 +11,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-public abstract class AbstractRecord implements ConnectionHolder, Trans {
+public abstract class AbstractRecord implements ConnectionHolder {
     protected DataSource dataSource;
     protected Connection connection;
     protected SimpleSqlBuilder builder;
@@ -23,27 +23,13 @@ public abstract class AbstractRecord implements ConnectionHolder, Trans {
         this.builder = builder;
     }
 
-    @Override
-    public void beginTransaction(int level) {
-        ZoomDao.beginTrans(level);
-    }
-
-    @Override
-    public void commit() {
-        ZoomDao.commitTrans();
-    }
-
-    @Override
-    public void rollback() {
-        ZoomDao.rollbackTrans();
-    }
 
     public Connection getConnection() {
         final Connection connection = this.connection;
         return connection == null ? (this.connection = ZoomDao.getConnection(dataSource)) : connection;
     }
     protected void remove2(List<Object> values){
-        if(values.size()==0){
+        if(values.size()==2){
             values.clear();
             return;
         }
@@ -87,13 +73,6 @@ public abstract class AbstractRecord implements ConnectionHolder, Trans {
         return value(DaoUtils.SELECT_COUNT, int.class);
     }
 
-    public <E> E value(final String key, final Class<E> typeOfE) {
-        return execute(new ConnectionExecutor() {
-            @Override
-            public E execute(Connection connection) throws SQLException {
-                return EntitySqlUtils.getValue(connection,builder, key, typeOfE);
-            }
-        });
-    }
+    public abstract <E> E value(final String key, final Class<E> typeOfE);
 
 }

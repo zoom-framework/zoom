@@ -61,6 +61,29 @@ public abstract class AbsDriver implements SqlDriver {
         return String.format("COMMENT ON %s.%s IS '%s",table,column,comment);
     }
 
+
+    protected static void buildUnique(TableBuildInfo table, List<String> sqlList){
+        StringBuilder sb = new StringBuilder();
+        //index
+        for (ColumnMeta columnMeta : table.getColumns()) {
+
+            if (columnMeta.isUnique()) {
+                sb.setLength(0);
+                sb.append("ALTER TABLE ")
+                        .append(table.getName())
+                        .append(" ADD CONSTRAINT UNI_")
+                        .append(table.getName().toUpperCase())
+                        .append("_")
+                        .append(columnMeta.getName().toUpperCase())
+                        .append(" UNIQUE ")
+                        .append("(")
+                        .append(columnMeta.getName())
+                        .append(")");
+                sqlList.add(sb.toString());
+            }
+        }
+    }
+
     protected static void buildIndex(TableBuildInfo table, List<String> sqlList){
         StringBuilder sb = new StringBuilder();
         //index

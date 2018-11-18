@@ -342,18 +342,17 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
 
     @Override
     public EAr<T> having(String field, Symbol symbol, Object value) {
-        builder.having(entity.getColumnName(field), symbol, value);
+        if(EntitySqlUtils.TABLE_AND_COLUMN_PATTERN.matcher(field).matches()){
+            builder.having(entity.getColumnName(field), symbol, value);
+        }else{
+            builder.having(field, symbol, value);
+        }
+
         return this;
     }
 
     @Override
     public EAr<T> union(SqlBuilder sqlBuilder) {
-
-        SimpleSqlBuilder simpleSqlBuilder = (SimpleSqlBuilder) sqlBuilder;
-
-        builder.sql.append(simpleSqlBuilder.sql);
-        builder.values.add(simpleSqlBuilder.values);
-
 
         return this;
     }
@@ -417,15 +416,16 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
         return this;
     }
 
-//    @Override
-//    public EAr<T> whereCondition(String field, Object... values) {
-//        builder.whereCondition(entity.getColumnName(field), values);
-//        return this;
-//    }
 
     @Override
     public EAr<T> where(String field, Symbol symbol, Object value) {
         builder.where(entity.getColumnName(field), symbol, value);
+        return this;
+    }
+
+    @Override
+    public EAr<T> where(SqlBuilder.Condition condition) {
+        builder.where(condition);
         return this;
     }
 

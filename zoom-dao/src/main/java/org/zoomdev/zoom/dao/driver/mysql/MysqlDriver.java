@@ -131,9 +131,8 @@ public class MysqlDriver extends AbsDriver {
         return sb.toString();
     }
 
-    @Override
-    public void buildTable(TableBuildInfo table, List<String> sqlList) {
 
+    protected String buildCreateTable(TableBuildInfo table){
         List<String> primaryKeys = new ArrayList<String>(3);
         StringBuilder sb = new StringBuilder();
 
@@ -222,12 +221,20 @@ public class MysqlDriver extends AbsDriver {
             sb.append("\n");
         }
 
-        sb.append(")charset=utf8;\n");
+        sb.append(")charset=utf8");
 
-        sqlList.add(sb.toString());
+        return sb.toString();
+    }
+
+    @Override
+    public void buildTable(TableBuildInfo table, List<String> sqlList) {
+
+        sqlList.add(buildCreateTable(table));
 
         //index
         buildIndex(table,sqlList);
+
+        buildUnique(table,sqlList);
     }
 
     @Override

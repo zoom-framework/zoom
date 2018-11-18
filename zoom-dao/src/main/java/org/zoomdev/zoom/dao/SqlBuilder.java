@@ -45,9 +45,19 @@ public interface SqlBuilder {
     }
 
     public enum Join {
-        INNER,
-        LEFT,
-        RIGHT
+        INNER("INNER"),
+        LEFT("LEFT"),
+        RIGHT("RIGHT");
+        Join(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        private String value;
+
     }
 
 

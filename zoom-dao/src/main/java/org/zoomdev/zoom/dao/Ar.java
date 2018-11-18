@@ -18,15 +18,11 @@ import java.util.Map;
  *
  * @author jzoom
  */
-public interface Ar extends Trans, ConnectionHolder, Sql<Ar> {
+public interface Ar extends  ConnectionHolder, Sql<Ar> {
 
 
     Ar nameAdapter(NameAdapter nameAdapter);
-    /**
-     * 凡是符合条件的都返回，需要确定返回的数据数量是少量的，否则引起程序运行慢
-     *
-     * @return
-     */
+
     List<Record> find();
 
 
@@ -104,6 +100,7 @@ public interface Ar extends Trans, ConnectionHolder, Sql<Ar> {
 
     Ar selectMax(String field);
 
+    Ar selectSum(String field);
 
 
     /**

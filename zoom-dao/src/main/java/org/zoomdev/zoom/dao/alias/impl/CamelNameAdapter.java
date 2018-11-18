@@ -10,7 +10,7 @@ import org.zoomdev.zoom.dao.alias.NameAdapter;
  */
 public class CamelNameAdapter implements NameAdapter {
 
-    public static final NameAdapter ADAPTER = new CamelNameAdapter();
+    public static final NameAdapter DEFAULT = new CamelNameAdapter();
 
 
     public CamelNameAdapter() {

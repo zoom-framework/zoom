@@ -5,7 +5,7 @@ import org.zoomdev.zoom.dao.annotations.AutoGenerate;
 import org.zoomdev.zoom.dao.annotations.Column;
 import org.zoomdev.zoom.dao.annotations.Table;
 
-@Table("shp_shop")
+@Table("shop")
 public class SimpleShop {
 
     public String getId() {
@@ -28,7 +28,6 @@ public class SimpleShop {
     @AutoGenerate(factory = MockAutoGenerateValue.class)
     private String id;
 
-    @Column("shp_shop.shp_name")
     private String title;
 
 
@@ -43,15 +42,6 @@ public class SimpleShop {
     private String address;
 
 
-    public int getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(int ownerId) {
-        this.ownerId = ownerId;
-    }
-
-    private int ownerId;
 
 
 }

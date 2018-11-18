@@ -1,5 +1,6 @@
 package org.zoomdev.zoom.dao.migrations;
 
+import org.apache.commons.lang3.StringUtils;
 import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.driver.SqlDriver;
 import org.zoomdev.zoom.dao.impl.ZoomDao;
@@ -206,13 +207,23 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
 
     @Override
     public String buildSql() {
-        StringBuilder sb = new StringBuilder();
         List<String> list = new ArrayList<String>();
+
+
         for(BuildInfo buildInfo : buildInfos){
             buildInfo.build(list);
+
+        }
+
+
+        StringBuilder sb = new StringBuilder();
+
+        for(String sql: list){
+           sb.append(sql).append(";\n");
         }
 
         return sb.toString();
+
     }
 
     @Override

@@ -1,10 +1,12 @@
 package org.zoomdev.zoom.dao.impl.builder;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.zoomdev.zoom.common.json.JSON;
 import org.zoomdev.zoom.common.utils.Page;
 import org.zoomdev.zoom.dao.*;
 import org.zoomdev.zoom.dao.impl.AbstractDaoTest;
+import org.zoomdev.zoom.dao.impl.Utils;
 import org.zoomdev.zoom.dao.impl.ZoomDao;
 
 import java.util.ArrayList;
@@ -16,61 +18,21 @@ import static org.junit.Assert.assertTrue;
 
 public class TestBuilder extends AbstractDaoTest {
 
+
+
+    @BeforeClass
+    public static void setup(){
+
+        execute(new RunWithDao() {
+            @Override
+            public void run(Dao dao) {
+                Utils.createTables(dao);
+            }
+        });
+
+    }
+
     protected void process(final Dao dao){
-        dao.builder()
-                .dropIfExists("product")
-                .createTable("product")
-                .add("pro_id").integer().keyPrimary().autoIncement()
-                .add("pro_name").string(100).keyIndex().notNull()
-                .add("pro_price").number().keyIndex().notNull()
-                .add("pro_info").text()
-                .add("pro_img").blob()
-                .add("pro_count").integer().defaultValue(100)
-                .add("tp_id").integer().keyIndex()
-                .add("shp_id").string(30).keyIndex()
-
-
-                .dropIfExists("type")
-                .createTable("type")
-                .add("tp_id").integer().keyPrimary().autoIncement()
-                .add("tp_title").string(100).keyIndex().notNull()
-                .add("shp_id").string(30).keyIndex().notNull().keyIndex()
-
-
-                .dropIfExists("customer")
-                .createTable("customer")
-                .add("cm_id").integer().keyPrimary().autoIncement()
-                .add("cm_account").string(100).keyIndex().notNull()
-                .add("create_at").timestamp().defaultFunction("CURRENT_TIMESTAMP")
-
-
-                .dropIfExists("collection")
-                .createTable("collection")
-                .add("pro_id").integer().keyPrimary()
-                .add("usr_id").integer().keyPrimary()
-                .add("c_order").integer()
-
-                .dropIfExists("shop")
-                .createTable("shop")
-                .add("shp_id").string(30).keyPrimary()
-                .add("shp_title").string(100)
-                .add("shp_level").integer()
-                .add("shp_stars").number()
-                .add("shp_sales").integer()
-
-                //订单 , 关键字???
-                .dropIfExists("shp_order")
-                .createTable("shp_order")
-                .add("ord_id").integer().keyPrimary().autoIncement()
-                .add("shp_id").string(30).notNull()
-                .add("pro_id").integer().notNull()
-                .add("ord_count").number().notNull()
-                .add("ord_status").integer().defaultValue(0).notNull()
-                .add("cm_id").integer().notNull()
-
-
-                .build();
-
 
 
         final String test_business = "testBusiness";
@@ -108,6 +70,7 @@ public class TestBuilder extends AbstractDaoTest {
                 "title", "弱弱的第二家",
                 "level", 2,
                 "stars", 2.9,
+                "address","测试地址",
                 "sales", 100
         );
         //商家注册 (add)

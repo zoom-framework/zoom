@@ -7,12 +7,12 @@ import org.zoomdev.zoom.dao.migrations.ZoomDatabaseBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class H2Driver extends MysqlDriver {
 
-
     @Override
-    public String getTableCatFromUrl(String url) {
-        return url.substring(url.lastIndexOf("/")+1).toUpperCase();
+    public void insertOrUpdate(StringBuilder sb, List<Object> values, String tableName, Map<String, Object> data, String... unikeys) {
+        throw new UnsupportedOperationException("insertOrUpdate is not supported in h2");
     }
 }

@@ -27,10 +27,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 
 class BeanEntityFactory extends AbstractEntityFactory {
@@ -80,8 +77,9 @@ class BeanEntityFactory extends AbstractEntityFactory {
                     entityField.setColumn(context.column.value());
                     entityField.setSelectColumnName(context.column.value());
                 }else{
-                    throw new DaoException("绑定实体类出错，找不到字段的配置" + context.field+"当前所有可用字段为" +
-                    StringUtils.join(context.getAvliableFields(),","));
+                    // 最短距离算法算出哪个字段最接近
+                    throw new DaoException("绑定实体类出错，找不到字段的配置" + context.field+"当前所有可用字段为"
+                            + StringUtils.join(context.getAvliableFields(),","));
                 }
             }
         }
@@ -127,25 +125,29 @@ class BeanEntityFactory extends AbstractEntityFactory {
         }
     }
 
-    static RenameUtils.ColumnRenameConfig search(Map<String, RenameUtils.ColumnRenameConfig> map, String column) {
-        for (Map.Entry<String, RenameUtils.ColumnRenameConfig> entry : map.entrySet()) {
-            String key = entry.getKey();
-            if (column.equalsIgnoreCase(key)) {
-                return entry.getValue();
+    static RenameUtils.ColumnRenameConfig search(Map<String, RenameUtils.ColumnRenameConfig> map, Field field,String annotationValue) {
+        List<RenameUtils.ColumnRenameConfig> set = new ArrayList<RenameUtils.ColumnRenameConfig>();
+
+        for(Map.Entry<String,RenameUtils.ColumnRenameConfig> entry : map.entrySet()){
+
+            if(annotationValue.equalsIgnoreCase(entry.getKey())){
+                set.add(entry.getValue());
+                continue;
             }
 
-            RenameUtils.ColumnRenameConfig config = entry.getValue();
-            if (column.equalsIgnoreCase(config.columnMeta.getName())) {
-                return config;
+            if(entry.getValue().is(annotationValue)){
+                set.add(entry.getValue());
+                continue;
             }
-
-
-            if (column.equalsIgnoreCase(config.columnName)) {
-                return config;
-            }
-
         }
-        return null;
+
+        if(set.size() > 1){
+            throw new DaoException("标注的字段"+field+"("+annotationValue+")可以找到多个配置"+set);
+        }else if(set.size()==0){
+            throw new DaoException("标注的字段"+field+"("+annotationValue+")找不到对应的配置");
+        }
+
+        return set.get(0);
     }
 
     class CreateContext {
@@ -187,7 +189,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
                 String value = column.value();
                 if (EntitySqlUtils.TABLE_AND_COLUMN_PATTERN.matcher(value).matches()) {
                     //搜索带点好的
-                    RenameUtils.ColumnRenameConfig config = search(map, value);
+                    RenameUtils.ColumnRenameConfig config = search(map,field, value);
                     this.config = config;
 
                 }
@@ -197,6 +199,23 @@ class BeanEntityFactory extends AbstractEntityFactory {
 
         }
 
+        /**
+         * field可能的情况:
+         *
+         * 1、 直接的数据库字段名称
+         * 2、 table.字段
+         * 3、 avg(table.字段)
+         * 4、 各种表达式 ：  字段1+字段2等
+         *
+         * 对于1、2是可以搜索出来的，总是有上限的。
+         *
+         *
+         * @param field
+         */
+        public RenameUtils.ColumnRenameConfig findColumn(Field field,String annotationValue) {
+
+           return search(map,field,annotationValue);
+        }
     }
 
 
@@ -512,15 +531,4 @@ class BeanEntityFactory extends AbstractEntityFactory {
 
     private static final String ERROR_FORMAT = "解析实体类出错[%s]:[%s]";
 
-    private String parseColumn(String column, int index) {
-
-        Matcher matcher;
-        if ((matcher = BuilderKit.AS_PATTERN.matcher(column)).matches()) {
-            //直接用原始的
-            return column;
-        } else {
-            //用自动命名,不管是什么都是用AS
-            return String.format("%s AS F%d_", column, index);
-        }
-    }
 }

@@ -197,7 +197,7 @@ public class CollectionUtils {
         return list;
     }
 
-    public static <T, E> List<E> map(List<T> it, Converter<T, E> converter) {
+    public static <T, E> List<E> map(Collection<T> it, Converter<T, E> converter) {
         List<E> list = new ArrayList<E>(it.size());
         for (T t : it) {
             E result = converter.convert(t);

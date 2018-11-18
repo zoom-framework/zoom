@@ -6,7 +6,7 @@ import org.zoomdev.zoom.dao.annotations.Table;
 /**
  * 统计商品的平均价格（按商店)
  */
-@Table("shp_product")
+@Table("product")
 public class GroupByEntity {
 
 
@@ -22,6 +22,15 @@ public class GroupByEntity {
     private double price;
 
 
+    public String getShpId() {
+        return shpId;
+    }
+
+    public void setShpId(String shpId) {
+        this.shpId = shpId;
+    }
+
+    private String shpId;
 
 
 }

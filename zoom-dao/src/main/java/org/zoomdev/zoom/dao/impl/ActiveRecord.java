@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Trans, Ar {
+public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Ar {
 
 
     private static final Log log = LogFactory.getLog(ActiveRecord.class);
@@ -22,7 +22,7 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Tr
 
     private NameAdapter defaultNameAdapter;
 
-    public ActiveRecord(Dao dao,NameAdapter nameAdapter) {
+    public ActiveRecord(Dao dao, NameAdapter nameAdapter) {
         super(dao.getDataSource(), new SimpleSqlBuilder(dao.getDriver()));
         this.nameAdapter = nameAdapter;
         this.defaultNameAdapter = nameAdapter;
@@ -33,34 +33,32 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Tr
         return execute(new ConnectionExecutor() {
             @Override
             public List<Record> execute(Connection connection) throws SQLException {
-                return BuilderKit.executeQuery(connection,builder,nameAdapter);
+                return BuilderKit.executeQuery(connection, builder, nameAdapter);
             }
         });
     }
 
     public Record get(final String sql, final List<Object> values,
                       final NameAdapter nameAdapter) {
-       return execute(new ConnectionExecutor() {
-           @Override
-           public Record execute(Connection connection) throws SQLException {
-               PreparedStatement ps = null;
-               ResultSet rs = null;
-               try {
-                   ps = BuilderKit.prepareStatement(connection, sql, values);
-                   rs = ps.executeQuery();
-                   if (rs.next()) {
-                       return BuilderKit.buildOne(rs, nameAdapter);
-                   }
-                   return null;
-               } finally {
-                   DaoUtils.close(rs);
-                   DaoUtils.close(ps);
-               }
-           }
-       });
+        return execute(new ConnectionExecutor() {
+            @Override
+            public Record execute(Connection connection) throws SQLException {
+                PreparedStatement ps = null;
+                ResultSet rs = null;
+                try {
+                    ps = BuilderKit.prepareStatement(connection, sql, values);
+                    rs = ps.executeQuery();
+                    if (rs.next()) {
+                        return BuilderKit.buildOne(rs, nameAdapter);
+                    }
+                    return null;
+                } finally {
+                    DaoUtils.close(rs);
+                    DaoUtils.close(ps);
+                }
+            }
+        });
     }
-
-
 
 
     public ResultSet execute(final String sql,
@@ -101,8 +99,6 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Tr
     }
 
 
-
-
     @Override
     public List<Record> limit(int position, int size) {
         builder.buildLimit(position, size);
@@ -123,17 +119,16 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Tr
             @Override
             public Page<Record> execute(Connection connection) throws SQLException {
                 builder.buildLimit(position, size);
-                List<Record> list = BuilderKit.executeQuery(connection,builder,nameAdapter);
+                List<Record> list = BuilderKit.executeQuery(connection, builder, nameAdapter);
                 builder.clear(false);
                 remove2(builder.values);
-                int total = EntitySqlUtils.getValue(connection,builder,DaoUtils.SELECT_COUNT,int.class);
+                int total = EntitySqlUtils.getValue(connection, builder, DaoUtils.SELECT_COUNT, int.class);
                 int page = builder.position2page(position, size);
                 return new Page<Record>(list, page, size, total);
             }
         });
 
     }
-
 
 
     @Override
@@ -144,6 +139,7 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Tr
 
     /**
      * 直接指定
+     *
      * @param nameAdapter
      * @return
      */
@@ -157,11 +153,8 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Tr
     @Override
     public int insertOrUpdate(String... keys) {
         builder.insertOrUpdate(keys);
-        return executeUpdate(builder.sql.toString(), builder.values);
+        return _executeUpdate();
     }
-
-
-
 
 
     @SuppressWarnings("unchecked")
@@ -182,7 +175,7 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Tr
     public int insert(Record data, String... generateKeys) {
         builder.record.putAll(data);
         builder.buildInsert();
-        return _executeInsert(data,generateKeys);
+        return _executeInsert(data, generateKeys);
     }
 
     @Override
@@ -243,7 +236,7 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Tr
     @Override
     public Ar having(String field, Symbol symbol, Object value) {
 
-        builder.having(field,symbol,value);
+        builder.having(field, symbol, value);
         return this;
     }
 
@@ -275,21 +268,17 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Tr
         return this;
     }
 
-    public Ar selectRaw(String select) {
-        builder.selectRaw(select);
-        return this;
-    }
 
     @Override
     public List<Record> executeQuery(String sql, Object... args) {
         builder.sql.append(sql);
-        Collections.addAll(builder.values,args);
+        Collections.addAll(builder.values, args);
         return query();
     }
 
     @Override
     public Ar join(String table, String on) {
-        builder.join(table, on, "INNER");
+        this.join(table,on,SqlBuilder.INNER);
         return this;
     }
 
@@ -312,7 +301,6 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Tr
     }
 
 
-
     @Override
     public <E> Ar whereIn(String key, E... values) {
         builder.whereIn(key, values);
@@ -332,7 +320,6 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Tr
     }
 
 
-
     @Override
     public Ar where(String key, Symbol symbol, Object value) {
         builder.where(key, symbol, value);
@@ -340,15 +327,27 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Tr
     }
 
     @Override
+    public Ar where(SqlBuilder.Condition condition) {
+        builder.where(condition);
+        return this;
+    }
+
+    @Override
     public Ar selectMax(String field) {
-        builder.selectMax(field,field);
+        builder.selectMax(field, field);
+        return this;
+    }
+
+    @Override
+    public Ar selectSum(String field) {
+        builder.selectSum(field,field);
         return this;
     }
 
     @Override
     public int executeUpdate(String sql, Object... args) {
         builder.sql.append(sql);
-        Collections.addAll(builder.values,args);
+        Collections.addAll(builder.values, args);
         return _executeUpdate();
     }
 
@@ -358,13 +357,11 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Tr
             @Override
             public Integer execute(Connection connection) throws SQLException {
                 Statement statement = null;
-                try{
+                try {
                     statement = connection.createStatement();
                     builder.sql.append(sql);
                     return statement.executeUpdate(sql);
-                }catch (SQLException e){
-                    throw e;
-                }finally {
+                } finally {
                     DaoUtils.close(statement);
                 }
             }
@@ -372,21 +369,22 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Tr
     }
 
     public int _executeUpdate() {
-       return execute(new ConnectionExecutor() {
-           @Override
-           public Integer execute(Connection connection) throws SQLException {
-               return BuilderKit.executeUpdate(
-                       connection,builder
-               );
-           }
-       });
+        return execute(new ConnectionExecutor() {
+            @Override
+            public Integer execute(Connection connection) throws SQLException {
+                return BuilderKit.executeUpdate(
+                        connection, builder
+                );
+            }
+        });
     }
+
     public int _executeInsert(final Record data, final String[] generatedKeys) {
         return execute(new ConnectionExecutor() {
             @Override
             public Integer execute(Connection connection) throws SQLException {
                 return BuilderKit.executeInsert(
-                        connection,builder,
+                        connection, builder,
                         generatedKeys,
                         data
                 );
@@ -398,5 +396,15 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Tr
     protected void clear() {
         super.clear();
         this.nameAdapter = this.defaultNameAdapter;
+    }
+
+    @Override
+    public <E> E value(final String key, final Class<E> typeOfE) {
+        return execute(new ConnectionExecutor() {
+            @Override
+            public E execute(Connection connection) throws SQLException {
+                return EntitySqlUtils.getValue(connection, builder, key, typeOfE);
+            }
+        });
     }
 }

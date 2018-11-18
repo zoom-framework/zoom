@@ -304,7 +304,7 @@ public class OracleDriver extends AbsDriver implements AutoGenerateProvider {
             }
         }
 
-
+        buildUnique(table,sqlList);
 
     }
 

@@ -91,6 +91,28 @@ class RenameUtils {
             this.orginalName = orginalName;
         }
 
+        public boolean is(String field) {
+            if(field.equalsIgnoreCase(tableMeta.getName())){
+                return true;
+            }
+            if(field.equalsIgnoreCase(columnName)){
+                return true;
+            }
+            if(field.equalsIgnoreCase(selectColumnName)){
+                return true;
+            }
+
+
+            if(field.equalsIgnoreCase(tableMeta.getName()+"."+columnMeta.getName())){
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public String toString() {
+            return tableMeta.getName()+"."+columnMeta.getName();
+        }
     }
     public static Map<String,ColumnRenameConfig>  rename(Dao dao, String[] tables) {
         AliasPolicyFactory maker = dao.getAliasPolicyMaker();

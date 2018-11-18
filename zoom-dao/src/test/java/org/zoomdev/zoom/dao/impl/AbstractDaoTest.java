@@ -1,16 +1,14 @@
 package org.zoomdev.zoom.dao.impl;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.zoomdev.zoom.common.annotations.Inject;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.common.utils.PathUtils;
 import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.DataSourceProvider;
+import org.zoomdev.zoom.dao.driver.mysql.MysqlConnDescription;
 import org.zoomdev.zoom.dao.driver.oracle.OracleConnDescription;
-import org.zoomdev.zoom.dao.impl.ZoomDao;
 import org.zoomdev.zoom.dao.provider.DruidDataSourceProvider;
 
 import java.io.File;
@@ -23,11 +21,11 @@ public abstract class AbstractDaoTest {
     private static final int H2 = 0;
     private static final int MYSQL = 1;
     private static final int ORACLE = 2;
-
+    private static final int MAX = 3;
     @Inject(config = "zoom.h2")
-    private String dbFile;
+    private static String dbFile;
 
-    private String getWebInf() {
+    private static String getWebInf() {
         File file = PathUtils.getWebInfPath("data");
 
         if (new File(file, "admin.h2.db").exists()) {
@@ -38,8 +36,7 @@ public abstract class AbstractDaoTest {
 
     }
 
-    private String getDbFile() {
-        String dbFile = this.dbFile;
+    private static String getDbFile() {
         if (dbFile == null) {
             dbFile = getWebInf();
         } else {
@@ -56,11 +53,9 @@ public abstract class AbstractDaoTest {
     }
 
 
-
-    protected DataSourceProvider getDataSoueceProvoider(int index) {
-        switch (index){
-            case H2:
-            {
+    protected static DataSourceProvider getDataSoueceProvoider(int index) {
+        switch (index) {
+            case H2: {
                 DruidDataSourceProvider dataSourceProvider = new DruidDataSourceProvider();
                 dataSourceProvider.setUrl("jdbc:h2:file:" + getDbFile());
                 dataSourceProvider.setPassword("sa");
@@ -70,21 +65,19 @@ public abstract class AbstractDaoTest {
                 dataSourceProvider.setMaxActive(10);
                 return dataSourceProvider;
             }
-            case MYSQL:
-            {
+            case MYSQL: {
                 DataSourceProvider dataSourceProvider = new DruidDataSourceProvider(
-                        new OracleConnDescription(
+                        new MysqlConnDescription(
                                 "localhost",
-                                1521,
-                                "xe",
+                                3306,
+                                "zoom",
                                 "root",
                                 "root"
                         )
                 );
                 return dataSourceProvider;
             }
-            case ORACLE:
-            {
+            case ORACLE: {
                 DataSourceProvider dataSourceProvider = new DruidDataSourceProvider(
                         new OracleConnDescription(
                                 "localhost",
@@ -102,22 +95,34 @@ public abstract class AbstractDaoTest {
 
 
     @Test
-    public void testProgress(){
+    public void testProgress() {
+        execute(new RunWithDao() {
+            @Override
+            public void run(Dao dao) {
+                process(dao);
+            }
+        });
+    }
 
-        for(int i=0; i< 3; ++i){
+
+    protected static interface RunWithDao {
+        void run(Dao dao);
+    }
+
+
+    protected static void execute(RunWithDao runWithDao) {
+        for (int i = 0; i < MAX; ++i) {
             Dao dao = new ZoomDao(getDataSoueceProvoider(i).getDataSource());
 
-            process(dao);
+            runWithDao.run(dao);
 
             Classes.destroy(dao);
             //connection count ==0;
-            if(dao!=null){
+            if (dao != null) {
                 DruidDataSource dataSource = (DruidDataSource) dao.getDataSource();
-                assertEquals (dataSource.getActiveCount(),0);
+                assertEquals(dataSource.getActiveCount(), 0);
             }
         }
-
-
     }
 
     protected abstract void process(Dao dao);

@@ -13,10 +13,7 @@ import org.zoomdev.zoom.dao.meta.ColumnMeta.KeyType;
 import org.zoomdev.zoom.dao.meta.TableMeta;
 
 import java.sql.Blob;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
 
@@ -44,7 +41,9 @@ public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
 
         List<TableNameAndComment> result = new ArrayList<TableNameAndComment>(list.size());
         for (Record record : list) {
-            TableNameAndComment data = Caster.to(record, TableNameAndComment.class);
+            TableNameAndComment data = new TableNameAndComment();
+            data.setName(record.getString("name"));
+            data.setComment(record.getString("comment"));
             result.add(data);
         }
 
@@ -53,13 +52,13 @@ public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
 
     @Override
     public Map<String, Collection<String>> getTriggers() {
-        return null;
+        return Collections.emptyMap();
     }
 
 
     @Override
     public Collection<String> getSequences() {
-        return null;
+        return Collections.emptyList();
     }
 
 
@@ -109,9 +108,7 @@ public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
             columnMeta.setRawType(record.getString("DATA_TYPE"));
         }
 
-        if(meta.getComment()==null){
-            meta.setComment("");
-        }
+
     }
 
 }

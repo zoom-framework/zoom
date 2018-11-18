@@ -119,7 +119,7 @@ public class BuilderKit {
 
     static {
 
-        blobCaster = Caster.wrap(Blob.class, String.class);
+        blobCaster = Caster.wrap(Blob.class, byte[].class);
         clobCaster = Caster.wrap(Clob.class, String.class);
 
     }
@@ -160,25 +160,7 @@ public class BuilderKit {
         return map;
     }
 
-    public static final Record build(int columnCount, ResultSet rs, String[] labelNames) throws SQLException {
-        Record map = new Record();
-        for (int i = 1; i <= columnCount; i++) {
-            map.put(labelNames[i], rs.getObject(i));
-        }
-        return map;
-    }
 
-    public static final List<Record> build(ResultSet rs, String[] labelNames) throws SQLException {
-        List<Record> result = new ArrayList<Record>();
-        ResultSetMetaData rsmd = rs.getMetaData();
-        int columnCount = rsmd.getColumnCount();
-        int[] types = new int[columnCount + 1];
-        buildTypes(rsmd, types);
-        while (rs.next()) {
-            result.add(build(columnCount, rs, types, labelNames));
-        }
-        return result;
-    }
 
     public static List<Record> executeQuery( Connection connection,
                                              SimpleSqlBuilder builder,
@@ -210,23 +192,12 @@ public class BuilderKit {
         return result;
     }
 
-    private static final void buildTypes(ResultSetMetaData rsmd, int[] types) throws SQLException {
-        for (int i = 1; i < types.length; i++) {
-            types[i] = rsmd.getColumnType(i);
-        }
-    }
+
 
     private static final void buildLabelNamesAndTypes(ResultSetMetaData rsmd, String[] labelNames, int[] types, NameAdapter policy) throws SQLException {
-        if (policy != null) {
-            for (int i = 1; i < labelNames.length; i++) {
-                labelNames[i] = policy.getFieldName(rsmd.getColumnLabel(i));
-                types[i] = rsmd.getColumnType(i);
-            }
-        } else {
-            for (int i = 1; i < labelNames.length; i++) {
-                labelNames[i] = rsmd.getColumnLabel(i);
-                types[i] = rsmd.getColumnType(i);
-            }
+        for (int i = 1; i < labelNames.length; i++) {
+            labelNames[i] = policy.getFieldName(rsmd.getColumnLabel(i));
+            types[i] = rsmd.getColumnType(i);
         }
     }
 

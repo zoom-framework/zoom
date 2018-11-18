@@ -5,7 +5,7 @@ import org.zoomdev.zoom.dao.annotations.AutoGenerate;
 import org.zoomdev.zoom.dao.annotations.Column;
 import org.zoomdev.zoom.dao.annotations.Table;
 
-@Table("shp_product")
+@Table("product")
 public class SimpleProduct {
 
 
@@ -14,11 +14,21 @@ public class SimpleProduct {
     private String name;
     private double price;
     @Column(adapter = DataAdapters.TimeStamp2String.class)
-    private String createdAt;
+    private String createAt;
     private int tpId;
     private String info;
     private byte[] img;
     private String thumb;
+
+    public String getShpId() {
+        return shpId;
+    }
+
+    public void setShpId(String shpId) {
+        this.shpId = shpId;
+    }
+
+    private String shpId;
 
 
     public int getId() {
@@ -71,12 +81,12 @@ public class SimpleProduct {
     }
 
 
-    public String getCreatedAt() {
-        return createdAt;
+    public String getCreateAt() {
+        return createAt;
     }
 
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
+    public void setCreateAt(String createAt) {
+        this.createAt = createAt;
     }
 
 

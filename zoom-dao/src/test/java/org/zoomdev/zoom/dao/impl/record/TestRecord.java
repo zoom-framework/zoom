@@ -1,5 +1,9 @@
 package org.zoomdev.zoom.dao.impl.record;
 
+import org.apache.commons.lang3.mutable.MutableInt;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.zoomdev.zoom.common.expression.Symbol;
 import org.zoomdev.zoom.common.json.JSON;
 import org.zoomdev.zoom.common.utils.Page;
 import org.zoomdev.zoom.dao.Dao;
@@ -7,9 +11,11 @@ import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.Record;
 import org.zoomdev.zoom.dao.SqlBuilder;
 import org.zoomdev.zoom.dao.impl.AbstractDaoTest;
+import org.zoomdev.zoom.dao.impl.Utils;
 import org.zoomdev.zoom.dao.impl.ZoomDao;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -22,60 +28,21 @@ import static org.junit.Assert.assertTrue;
 public class TestRecord extends AbstractDaoTest {
 
 
+
+    @BeforeClass
+    public static void setup(){
+
+        execute(new RunWithDao() {
+            @Override
+            public void run(Dao dao) {
+                Utils.createTables(dao);
+            }
+        });
+
+    }
+
     protected void process(final Dao dao){
-        dao.builder()
-                .dropIfExists("product")
-                .createTable("product")
-                .add("pro_id").integer().keyPrimary().autoIncement()
-                .add("pro_name").string(100).keyIndex().notNull()
-                .add("pro_price").number().keyIndex().notNull()
-                .add("pro_info").text()
-                .add("pro_img").blob()
-                .add("pro_count").integer().defaultValue(100)
-                .add("tp_id").integer().keyIndex()
-                .add("shp_id").string(30).keyIndex()
 
-
-                .dropIfExists("type")
-                .createTable("type")
-                .add("tp_id").integer().keyPrimary().autoIncement()
-                .add("tp_title").string(100).keyIndex().notNull()
-                .add("shp_id").string(30).keyIndex().notNull().keyIndex()
-
-
-                .dropIfExists("customer")
-                .createTable("customer")
-                .add("cm_id").integer().keyPrimary().autoIncement()
-                .add("cm_account").string(100).keyIndex().notNull()
-                .add("create_at").timestamp().defaultFunction("CURRENT_TIMESTAMP")
-
-
-                .dropIfExists("collection")
-                .createTable("collection")
-                .add("pro_id").integer().keyPrimary()
-                .add("usr_id").integer().keyPrimary()
-                .add("c_order").integer()
-
-                .dropIfExists("shop")
-                .createTable("shop")
-                .add("shp_id").string(30).keyPrimary()
-                .add("shp_title").string(100)
-                .add("shp_level").integer()
-                .add("shp_stars").number()
-                .add("shp_sales").integer()
-
-                //订单 , 关键字???
-                .dropIfExists("shp_order")
-                .createTable("shp_order")
-                .add("ord_id").integer().keyPrimary().autoIncement()
-                .add("shp_id").string(30).notNull()
-                .add("pro_id").integer().notNull()
-                .add("ord_count").number().notNull()
-                .add("ord_status").integer().defaultValue(0).notNull()
-                .add("cm_id").integer().notNull()
-
-
-                .build();
 
 
 
@@ -114,7 +81,9 @@ public class TestRecord extends AbstractDaoTest {
                 "shp_title", "弱弱的第二家",
                 "shp_level", 2,
                 "shp_stars", 2.9,
+                "shp_address","测试地址",
                 "shp_sales", 100
+
         );
         //商家注册 (add)
         dao.table("shop")
@@ -136,12 +105,12 @@ public class TestRecord extends AbstractDaoTest {
         ), 1);
 
         assertEquals(dao.table("shop")
-                .where("shp_id", "找不到这家").update(
-
-                Record.as(
-
+                .where("shp_id", "找不到这家")
+                .setAll(Record.as(
                         "shp_title", "牛逼的第一家"
-                )
+                )).update(
+
+
         ), 0);
 
         // 是不是真的改了?
@@ -176,15 +145,20 @@ public class TestRecord extends AbstractDaoTest {
         //商家编辑商品 (add/edit)
 
         assertEquals(dao.table("product")
+                .set("tp_id",1)
                 .insert(Record.as(
                         "pro_name", "牛肉饭",
-                        "tp_id", 1,
                         "shp_id", FIRST_BUSINESS,
                         "pro_price", 50.0,
                         "pro_img", "image binary".getBytes(),
                         "pro_info", "very very long text,好长好长啊a"
 
-                )), 1);
+                ),"pro_id"), 1);
+
+
+        Record product = dao.table("product").where("pro_id",1).get();
+        assertEquals(product.get("pro_img").getClass(),byte[].class);
+
 
         //买家注册 (add)
         assertEquals(dao.table("customer").insert(Record.as(
@@ -263,14 +237,127 @@ public class TestRecord extends AbstractDaoTest {
         }
         ((ExecutorService) executor).shutdown();
 
-
-
         //商家发货 (update)
+
+        List<Record> orders = dao.table("shp_order")
+                .where(new SqlBuilder.Condition() {
+                    @Override
+                    public void where(SqlBuilder where) {
+                        where.where("ord_status",0)
+                                .orWhere("ord_status",1);
+                    }
+                }).find();
+
+        orders = dao.table("shp_order")
+                .whereCondition("ord_status=?",0)
+                .orWhere("ord_status",1).find();
+
+
 
         //买家收货（完成一次交易) (update)
 
+
+
         // 买家查看今日总卖出量（统计）
+
+        List<Record> view = dao.table("shp_order").selectSum("ord_count")
+                .groupBy("shp_id")
+                .having("sum(ord_count)",Symbol.GT,100).find();
+
+
+        dao.table("shp_order")
+                .select(Arrays.asList(
+
+                        "shp_id","sum(ord_count)"
+                )).groupBy("shp_id")
+                .having("sum(ord_count)",Symbol.GT,100).find();
+
+        dao.table("shp_order")
+                .select( "shp_id,sum(ord_count)").groupBy("shp_id")
+                .having("sum(ord_count)",Symbol.GT,100).find();
+
+        dao.table("shp_order")
+                .whereCondition("ord_status=?",0)
+                .orWhere(new SqlBuilder.Condition() {
+                    @Override
+                    public void where(SqlBuilder where) {
+                        where.where("ord_status",1)
+                                .where("ord_count",Symbol.GT,100);
+                    }
+                }).find();
 
     }
 
+
+    @Test(expected = DaoException.class)
+    public void testError1(){
+        execute(new RunWithDao() {
+            @Override
+            public void run(Dao dao) {
+                dao.table("shp_order")
+                        .whereCondition("ord_status",0)
+                        .orWhere(new SqlBuilder.Condition() {
+                            @Override
+                            public void where(SqlBuilder where) {
+                                where.where("ord_status",1)
+                                        .where("ord_count",Symbol.GT,100);
+                            }
+                        }).find();
+            }
+        });
+
+    }
+
+
+    @Test(expected = DaoException.class)
+    public void testUni(){
+
+        execute(new RunWithDao() {
+            @Override
+            public void run(Dao dao) {
+                try{
+                    dao.table("customer")
+                            .set("cm_account","123")
+                            .insert();
+                }catch (Exception e){
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
+
+                dao.table("customer")
+                        .set("cm_account","123")
+                        .insert();
+
+
+            }
+        });
+
+    }
+
+
+    @Test
+    public void testInsertOrUpdte(){
+        final MutableInt mutableInt = new MutableInt(0);
+
+        execute(new RunWithDao() {
+            @Override
+            public void run(Dao dao) {
+                if(mutableInt.getValue()==0){
+                    return;
+                }
+                dao.table("customer")
+                        .set("cm_account","123")
+                        .set("cm_pwd","test")
+                        .insertOrUpdate("cm_account");
+
+
+                dao.table("customer")
+                        .set("cm_account","123")
+                        .set("cm_pwd","test")
+                        .insertOrUpdate("cm_account");
+
+
+            }
+        });
+    }
 }

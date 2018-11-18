@@ -1,6 +1,7 @@
 package org.zoomdev.zoom.dao.impl;
 
 import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.common.expression.Symbol;
@@ -460,6 +461,12 @@ public class SimpleSqlBuilder implements SqlBuilder {
         // a like '%xx%'
         // a not like '%xx%'
         // a in/exists (select xx from b) is not allowed!
+
+        if(StringUtils.countMatches(name,'?')
+            != values.length){
+            throw new DaoException("?的数量与参数数量不符:"+name);
+        }
+
         parseCondition(where, name);
         Collections.addAll(this.values, values);
         return this;

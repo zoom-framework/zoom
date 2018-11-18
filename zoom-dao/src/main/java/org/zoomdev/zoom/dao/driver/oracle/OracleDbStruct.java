@@ -24,17 +24,6 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
 
     public OracleDbStruct(Dao dao, String user) {
         super(dao);
-//        try{
-//            List<Record> list = dao.ar().executeQuery("select USERNAME from user_users");
-//            if(list.size() > 0){
-//                Record record = list.get(0);
-//                user = record.getString("USERNAME");
-//            }
-//        }catch (Exception e){
-//            throw new DaoException("查询用户信息表user_users失败，请确认本账户是否可以查看用户信息",e);
-//        }
-
-        //System.out.println(list);
     }
 
 
@@ -150,8 +139,9 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
 
         List<TableNameAndComment> result = new ArrayList<TableNameAndComment>(list.size());
         for (Record record : list) {
-            TableNameAndComment data = Caster.to(record, TableNameAndComment.class);
-            data.setName(StringUtils.lowerCase(data.getName()));
+            TableNameAndComment data = new TableNameAndComment();
+            data.setName(record.getString("name").toLowerCase());
+            data.setComment(record.getString("comment"));
             result.add(data);
         }
 

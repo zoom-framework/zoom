@@ -1,5 +1,6 @@
 package org.zoomdev.zoom.caster;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
@@ -365,7 +366,12 @@ public class Caster {
                 }
         );
 
+
+
+
     }
+
+
 
     private static void registerParameterizedType(ParameterizedTypeCasterfactory... factory) {
         Collections.addAll(typeCanbeConvertToParameterizedType, factory);
@@ -1362,7 +1368,6 @@ public class Caster {
     private static ValueCaster getWithMap(Map src, ParameterizedType targetType) {
         Type rowType = targetType.getRawType();
         if(rowType instanceof Class){
-
             if(!Map.class.isAssignableFrom( (Class)rowType )){
                 throw new CasterException("Cannot cast "+src+" to type:"+targetType+" targetType must be Map");
             }
