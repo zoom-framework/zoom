@@ -1,5 +1,6 @@
 package org.zoomdev.zoom.common;
 
+import junit.framework.TestCase;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -11,13 +12,12 @@ import org.zoomdev.zoom.common.config.PropertiesConfigReaderTest;
 import org.zoomdev.zoom.common.config.TestConfigReader;
 import org.zoomdev.zoom.common.decrypt.TestDecrypt;
 import org.zoomdev.zoom.common.filtter.PatternFilterFactoryTest;
+import org.zoomdev.zoom.common.io.TestIo;
 import org.zoomdev.zoom.common.json.JSONTest;
 import org.zoomdev.zoom.common.pattern.TestPatternUtils;
 import org.zoomdev.zoom.common.record.TestRecord;
 import org.zoomdev.zoom.common.res.TestRes;
-import org.zoomdev.zoom.common.utils.OrderedListTest;
-import org.zoomdev.zoom.common.utils.ProcessUtilTest;
-import org.zoomdev.zoom.common.utils.ValidateUtilTest;
+import org.zoomdev.zoom.common.utils.*;
 import org.zoomdev.zoom.common.validate.ValidatorTest;
 
 @RunWith(Suite.class)
@@ -30,13 +30,15 @@ import org.zoomdev.zoom.common.validate.ValidatorTest;
         OrderedListTest.class,
         ValidateUtilTest.class,
         ProcessUtilTest.class,
+        CollectionUtilsTest.class,
         TestRecord.class,
         TestBcd.class,
         TestHex.class,
         TestHash.class,
         TestConfigReader.class,
         ValidatorTest.class,
-        TestPatternUtils.class})
+        TestPatternUtils.class,
+        TestIo.class})
 public class AllTests {
 
 }

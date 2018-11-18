@@ -1,8 +1,10 @@
 package org.zoomdev.zoom.common.utils;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.caster.ValueCaster;
 
+import javax.xml.crypto.Data;
 import java.sql.Clob;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -66,9 +68,25 @@ public class DataObject extends LinkedHashMap<String, Object> {
     }
 
 
+    public DataObject set(String key,Object value){
+        put(key,value);
+        return this;
+    }
+
     @SuppressWarnings("rawtypes")
     public DataObject getMap(String key) {
-        return DataObject.wrap((Map) get(key));
+        Object data = get(key);
+        if(data==null){
+            return null;
+        }
+        if(data instanceof DataObject){
+            return (DataObject)data;
+        }
+        if(data instanceof Map){
+            return DataObject.wrap((Map) get(key));
+        }
+
+        throw new Caster.CasterException("Cannot cast data into DataObject");
     }
 
     public String getString(String key) {

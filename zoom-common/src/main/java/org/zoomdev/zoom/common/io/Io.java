@@ -26,9 +26,15 @@ public class Io {
         try {
             StringBuilder sb = new StringBuilder();
             String line = null;
+            boolean first = true;
             while ((line = reader.readLine()) != null) {
+                if(first){
+                    first = false;
+                }else{
+                    sb.append("\n");
+                }
                 sb.append(line);
-                sb.append("\n");
+
             }
             return sb.toString();
         } finally {
@@ -45,7 +51,7 @@ public class Io {
         }
     }
 
-    public static int read(FileInputStream inputStream, byte[] buffer) throws IOException {
+    public static int read(InputStream inputStream, byte[] buffer) throws IOException {
         return read(inputStream, buffer, 0, buffer.length);
     }
 
@@ -70,16 +76,7 @@ public class Io {
     public static final int EOF = -1;
 
 
-    public static void writeAndClose(OutputStream outputStream, byte[] bytes) throws IOException {
-        try {
-            outputStream.write(bytes);
-            ;
-            outputStream.flush();
-        } finally {
-            Io.close(outputStream);
-        }
 
-    }
 
     /**
      * 判断是否是可关闭的

@@ -4,51 +4,71 @@ import junit.framework.TestCase;
 
 public class BeanUtilsTest extends TestCase {
 
+    public static class A {
 
-    static class A {
-        private String a;
-        private int b;
-        private float c;
-        private boolean d;
+        private String id;
+        private String name;
+        private Double price;
 
-        public String getA() {
-            return a;
+
+        public String getId() {
+            return id;
         }
 
-        public void setA(String a) {
-            this.a = a;
+        public void setId(String id) {
+            this.id = id;
         }
 
-        public int getB() {
-            return b;
+        public String getName() {
+            return name;
         }
 
-        public void setB(int b) {
-            this.b = b;
+        public void setName(String name) {
+            this.name = name;
         }
 
-        public float getC() {
-            return c;
+        public Double getPrice() {
+            return price;
         }
 
-        public void setC(float c) {
-            this.c = c;
+        public void setPrice(Double price) {
+            this.price = price;
         }
+    }
 
-        public boolean isD() {
-            return d;
-        }
-
-        public void setD(boolean d) {
-            this.d = d;
-        }
-
+    public static class B {
 
     }
 
-
     public void testSimpleClass() {
 
+        A a = new A();
+        a.setId("1");
+        a.setName("a");
+        a.setPrice(100D);
+
+        A b = new A();
+        b.setId("2");
+        b.setName("b");
+
+        A merged = BeanUtils.merge(a, b);
+
+        assertTrue(merged == a);
+
+        assertEquals(
+                merged.getId(), "2"
+
+        );
+
+        assertEquals(merged.getName(), "b");
+
+        assertEquals(merged.getPrice(), 100D);
+
+    }
+
+    public void testList(){
+
+        
 
     }
 }

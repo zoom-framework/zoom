@@ -22,5 +22,8 @@ public class OrderedListTest {
         assertEquals(objects[1], 1);
         assertEquals(objects[2], 3);
 
+
+        list.clear();
+
     }
 }

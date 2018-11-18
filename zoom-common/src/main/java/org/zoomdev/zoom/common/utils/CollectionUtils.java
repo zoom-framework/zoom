@@ -34,6 +34,16 @@ public class CollectionUtils {
         return result;
     }
 
+    public static <T> List<T> filter(Collection<T> array, Filter<T> filter) {
+        assert (array != null);
+        List<T> result = new ArrayList<T>(array.size());
+        for (T data : array) {
+            if (filter.accept(data)) {
+                result.add(data);
+            }
+        }
+        return result;
+    }
     public static <T> void visit(Iterable<T> list, Visitor<T> visitor) {
 
         for (T data : list) {
@@ -42,6 +52,13 @@ public class CollectionUtils {
 
     }
 
+    public static <T> void visit(T[] list, Visitor<T> visitor) {
+
+        for (T data : list) {
+            visitor.visit(data);
+        }
+
+    }
 
     static interface KeyValue {
         String getKeyValue(Object data, String... keys);
@@ -212,9 +229,9 @@ public class CollectionUtils {
         E convert(T data);
     }
 
-    public static <T, E> Set<E> newSet(Iterable<T> iterable, Convert<T, E> convert) {
+    public static <T, E> Set<E> newSet(Collection<T> iterable, Convert<T, E> convert) {
 
-        Set<E> set = new LinkedHashSet<E>();
+        Set<E> set = new LinkedHashSet<E>(iterable.size());
 
         for (T data : iterable) {
             set.add(convert.convert(data));
