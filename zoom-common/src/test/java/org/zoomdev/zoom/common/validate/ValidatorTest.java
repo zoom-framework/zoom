@@ -5,11 +5,7 @@ import junit.framework.TestCase;
 public class ValidatorTest extends TestCase {
 
 
-    public void test(){
-
-
-
-
+    public void test() {
 
 
     }

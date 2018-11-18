@@ -14,14 +14,14 @@ public class Ruies {
     private static List<Validator.Biilder> builders = new ArrayList<Validator.Biilder>();
 
 
-    public static void register(Validator.Biilder builder){
+    public static void register(Validator.Biilder builder) {
         builders.add(builder);
     }
 
-    public static Validator fromJson(Map<String,Object> data){
-        for(Validator.Biilder builder : builders){
+    public static Validator fromJson(Map<String, Object> data) {
+        for (Validator.Biilder builder : builders) {
             Validator validator = builder.fromJson(data);
-            if(validator!=null){
+            if (validator != null) {
                 return validator;
             }
         }
@@ -30,8 +30,8 @@ public class Ruies {
 
     public static List<Validator> createFromJson(
             String content
-    ){
-        List<Map<String,Object>> data = JSON.parse(content,List.class);
+    ) {
+        List<Map<String, Object>> data = JSON.parse(content, List.class);
 
         return CollectionUtils.map(
                 data,

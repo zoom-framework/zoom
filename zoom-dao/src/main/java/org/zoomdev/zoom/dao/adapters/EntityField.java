@@ -1,9 +1,9 @@
 package org.zoomdev.zoom.dao.adapters;
 
 import com.sun.istack.internal.Nullable;
-import org.zoomdev.zoom.common.validate.Validator;
 import org.zoomdev.zoom.dao.auto.AutoField;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
+import org.zoomdev.zoom.dao.validator.Validator;
 
 import java.lang.reflect.Type;
 
@@ -89,13 +89,6 @@ public interface EntityField extends StatementAdapter {
     Type getFieldType();
 
     /**
-     * 对数据进行校验
-     *
-     * @param data
-     */
-    void validate(Object data);
-
-    /**
      * 数据库字段描述,并不是所有EntityField都有这个字段的，只有真实对应数据库中某个字段才有。
      *
      * @return
@@ -108,5 +101,5 @@ public interface EntityField extends StatementAdapter {
      *
      * @return
      */
-    Validator getValidator();
+    Validator[] getValidators();
 }

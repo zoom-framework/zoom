@@ -184,7 +184,6 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
             validateRecord((Record) data);
         }
 
-        entity.validate(data);
         EntitySqlUtils.entityCondition(builder, entity, data);
 
         EntitySqlUtils.buildUpdate(
@@ -267,8 +266,6 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
             validateRecord((Record) data);
         }
 
-
-        entity.validate(data);
         return execute(new ConnectionExecutor() {
             @Override
             public Integer execute(Connection connection) throws SQLException {

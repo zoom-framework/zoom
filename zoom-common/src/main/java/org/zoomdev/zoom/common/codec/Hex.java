@@ -18,9 +18,8 @@ public class Hex {
      * @return 十六进制char[]
      */
     public static char[] encodeHex(byte[] data) {
-        return encodeHex(data, data.length, DIGITS_LOWER );
+        return encodeHex(data, data.length, DIGITS_LOWER);
     }
-
 
 
     /**
@@ -63,7 +62,6 @@ public class Hex {
     public static String encodeHexStr(byte[] data, int start, int len) {
         return new String(encodeHex(data, start, len, DIGITS_LOWER));
     }
-
 
 
     public static String encodeHexStr(byte[] data, int len) {
@@ -111,6 +109,7 @@ public class Hex {
 
     /**
      * 将data解码到out上 pos开始，out的长度必须满足要求
+     *
      * @param data
      * @param out
      * @param pos

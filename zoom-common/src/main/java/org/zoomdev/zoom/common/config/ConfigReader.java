@@ -3,7 +3,6 @@ package org.zoomdev.zoom.common.config;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.zoomdev.zoom.caster.Caster;
 import org.zoomdev.zoom.common.ConfigurationConstants;
 import org.zoomdev.zoom.common.filter.Filter;
@@ -112,13 +111,13 @@ public class ConfigReader implements ConfigKeyParser {
             InputStream is = null;
             try {
                 is = new FileInputStream(file);
-                Map<String, Object> data = JSON.parse(is,Map.class);
+                Map<String, Object> data = JSON.parse(is, Map.class);
                 for (Entry<String, Object> entry : data.entrySet()) {
                     this.data.put(entry.getKey(), entry.getValue());
                 }
             } catch (Exception e) {
                 throw new RuntimeException(String.format("配置文件%s加载失败", file));
-            }finally {
+            } finally {
                 Io.close(is);
             }
 

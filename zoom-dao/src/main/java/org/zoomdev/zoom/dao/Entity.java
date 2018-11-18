@@ -108,13 +108,6 @@ public interface Entity {
     void setQuerySource(SqlBuilder builder);
 
     /**
-     * 对数据进行校验,如果出错，那么直接跑出ValidateException异常
-     *
-     * @param data
-     */
-    void validate(Object data);
-
-    /**
      * 解析join
      *
      * @param on

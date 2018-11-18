@@ -32,7 +32,7 @@ public class Db {
     }
 
 
-    public static synchronized void unregister(Dao dao) {
+    public static void unregister(Dao dao) {
         synchronized (lock) {
             for (int i = 0; i < count; ++i) {
                 if (daos[i] == dao) {

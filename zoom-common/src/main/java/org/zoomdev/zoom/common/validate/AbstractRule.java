@@ -1,11 +1,8 @@
 package org.zoomdev.zoom.common.validate;
 
-import org.zoomdev.zoom.common.json.JSON;
-
 import java.io.Serializable;
-import java.util.Map;
 
-public abstract class AbstractRule<T> implements Validator<T>,Serializable {
+public abstract class AbstractRule<T> implements Validator<T>, Serializable {
 
     protected String message;
     protected String type;

@@ -1,14 +1,15 @@
 package org.zoomdev.zoom.dao.impl;
 
 import org.zoomdev.zoom.caster.ValueCaster;
-import org.zoomdev.zoom.common.validate.Validator;
 import org.zoomdev.zoom.dao.adapters.EntityField;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 import org.zoomdev.zoom.dao.auto.AutoField;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
+import org.zoomdev.zoom.dao.validator.Validator;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 
 abstract class AbstractEntityField implements EntityField {
     /// 数据从数据库取出来之后转化成实体类的字段类型
@@ -95,11 +96,6 @@ abstract class AbstractEntityField implements EntityField {
         return selectColumnName;
     }
 
-    @Override
-    public void validate(Object value) {
-
-    }
-
     public void setColumn(String column) {
         this.column = column;
     }
@@ -109,10 +105,14 @@ abstract class AbstractEntityField implements EntityField {
     }
 
 
+    private Validator[] validators;
+
     @Override
-    public Validator getValidator() {
-        return validator;
+    public Validator[] getValidators() {
+        return validators;
     }
 
-
+    public void setValidators(List<org.zoomdev.zoom.dao.validator.Validator> validators) {
+        this.validators = validators.toArray(new Validator[validators.size()]);
+    }
 }

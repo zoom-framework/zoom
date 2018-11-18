@@ -47,6 +47,7 @@ public class Classes {
     }
 
 
+
     public abstract static class ClassReference<T> {
         private Type type;
 

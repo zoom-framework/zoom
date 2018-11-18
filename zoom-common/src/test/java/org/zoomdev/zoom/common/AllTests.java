@@ -12,6 +12,7 @@ import org.zoomdev.zoom.common.config.TestConfigReader;
 import org.zoomdev.zoom.common.decrypt.TestDecrypt;
 import org.zoomdev.zoom.common.filtter.PatternFilterFactoryTest;
 import org.zoomdev.zoom.common.json.JSONTest;
+import org.zoomdev.zoom.common.pattern.TestPatternUtils;
 import org.zoomdev.zoom.common.record.TestRecord;
 import org.zoomdev.zoom.common.res.TestRes;
 import org.zoomdev.zoom.common.utils.OrderedListTest;
@@ -34,7 +35,8 @@ import org.zoomdev.zoom.common.validate.ValidatorTest;
         TestHex.class,
         TestHash.class,
         TestConfigReader.class,
-        ValidatorTest.class})
+        ValidatorTest.class,
+        TestPatternUtils.class})
 public class AllTests {
 
 }

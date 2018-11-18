@@ -141,6 +141,10 @@ public class EntitySqlUtils {
         }
         sql.append(')');
 
+        //在insert的时候，需要判断一下null值是否可以入库
+        
+
+
     }
 
     public static void buildUpdate(

@@ -8,13 +8,14 @@ import java.util.Map;
 public interface Validator<T> {
 
 
-    interface Biilder{
+    interface Biilder {
         /**
          * 需要等持久到Map中(可读性较好)
+         *
          * @param data
          * @return
          */
-        Validator fromJson(Map<String,Object> data);
+        Validator fromJson(Map<String, Object> data);
     }
 
     /**
