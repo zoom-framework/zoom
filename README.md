@@ -1,5 +1,10 @@
 
-<a href="https://travis-ci.org/zoom-framework/zoom"><img src="https://travis-ci.org/zoom-framework/zoom.svg?branch=master" /></a>
+<a href="https://travis-ci.org/zoom-framework/zoom">
+    <img src="https://travis-ci.org/zoom-framework/zoom.svg?branch=master" />
+</a>
+<a href="https://coveralls.io/github/zoom-framework/zoom?branch=master">
+    <img src="https://coveralls.io/repos/github/zoom-framework/zoom/badge.svg?branch=master" alt="Coverage Status" />
+</a>
 
 # zoom
 
