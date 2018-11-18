@@ -1,24 +1,37 @@
 package org.zoomdev.zoom.ioc.impl;
 
-import org.zoomdev.zoom.ioc.IocMethod;
-import org.zoomdev.zoom.ioc.IocMethodProxy;
-import org.zoomdev.zoom.ioc.IocObject;
+import org.zoomdev.zoom.ioc.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 public class ReflectIocMethodProxy implements IocMethodProxy {
 
-    public ReflectIocMethodProxy(Method method) {
+    private IocContainer iocContainer;
+    private IocClass iocClass;
+
+    public ReflectIocMethodProxy(
+            IocContainer iocContainer,
+            IocClass iocClass,
+            Method method) {
         this.method = method;
+        this.iocContainer = iocContainer;
+        this.iocClass = iocClass;
     }
 
     private Method method;
+    private IocMethod iocMethod;
 
 
     @Override
     public IocMethod getIocMethod() {
-        return null;
+        if(iocMethod==null){
+            iocMethod = iocContainer.getMethod(
+                    iocClass,
+                    method
+            );
+        }
+        return iocMethod;
     }
 
     @Override
@@ -33,8 +46,7 @@ public class ReflectIocMethodProxy implements IocMethodProxy {
 
     @Override
     public Object invoke(IocObject obj) {
-
-        return null;
+        return getIocMethod().invoke(obj);
     }
 
     @Override

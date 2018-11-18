@@ -6,6 +6,7 @@ import org.zoomdev.zoom.common.annotations.Inject;
 import org.zoomdev.zoom.common.annotations.IocBean;
 import org.zoomdev.zoom.common.annotations.Module;
 import org.zoomdev.zoom.common.el.ElParser;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.ioc.IocMethodHandler;
 import org.zoomdev.zoom.ioc.IocMethodProxy;
 import org.zoomdev.zoom.ioc.IocMethodVisitor;
@@ -54,8 +55,9 @@ public class TimerModule implements Destroyable {
             public void create(IocObject target, IocMethodProxy method) {
                 Timer timer = method.getAnnotation(Timer.class);
                 String cron = ElParser.parseConfigValue(getCron(timer));
-                if (StringUtils.isEmpty(cron))
-                    return;
+                if (StringUtils.isEmpty(cron)){
+                    throw new ZoomException("cron is empty!");
+                }
                 timerService.startTimer(method.getUid(), IocTimerJob.class, new TimerData(
                         target,
                         method

@@ -223,7 +223,8 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
             return new IocIocMethodPorxy(method);
         }
 
-        return new ReflectIocMethodProxy(target);
+        return new ReflectIocMethodProxy(
+                this,iocClass,target);
     }
 
     @Override

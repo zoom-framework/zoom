@@ -3,48 +3,94 @@ package org.zoomdev.zoom.timer.impl;
 import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.zoomdev.zoom.common.res.ClassResolvers;
-import org.zoomdev.zoom.common.res.ResScanner;
+import org.zoomdev.zoom.aop.modules.AopModule;
+import org.zoomdev.zoom.common.annotations.Inject;
+import org.zoomdev.zoom.common.annotations.IocBean;
+import org.zoomdev.zoom.common.annotations.Module;
 import org.zoomdev.zoom.common.utils.Classes;
+import org.zoomdev.zoom.ioc.IocClass;
 import org.zoomdev.zoom.ioc.IocContainer;
-import org.zoomdev.zoom.ioc.configuration.SimpleConfigBuilder;
 import org.zoomdev.zoom.ioc.impl.ZoomIocContainer;
 import org.zoomdev.zoom.ioc.modules.IocModule;
-import org.zoomdev.zoom.timer.impl.modules.TestModule;
+import org.zoomdev.zoom.timer.annotation.Timer;
+import org.zoomdev.zoom.timer.modules.TimerModule;
 
 import java.io.IOException;
 
+
 public class TestTimerModule extends TestCase {
+    public static class TestService {
+
+        @Timer(every = Timer.Every.SECOND, everyValue = 1)
+        public void test(IocContainer container) {
+
+            System.out.println("timer");
+        }
+
+        @Timer(every = Timer.Every.HOUR, everyValue = 1)
+        public void test1(IocContainer container) {
+
+            System.out.println("timer");
+        }
+
+        @Timer(every = Timer.Every.MINUTE, everyValue = 1)
+        public void test2(IocContainer container) {
+
+            System.out.println("timer");
+        }
+    }
+
+    @Module
+    public static class TestModule {
+
+        @Inject
+        public void inject(TestService service){
+
+        }
+
+        @IocBean
+        public TestService getTestService() {
+            return new TestService();
+        }
+
+    }
 
     private static final Log log = LogFactory.getLog(TestTimerModule.class);
 
-    public void test() throws IOException {
-        log.info("=====================timer =================");
-        log.info("=====================timer =================");
-        log.info("=====================timer =================");
-        log.info("=====================timer =================");
-        log.info("=====================timer =================");
+    public void test() throws IOException, InterruptedException {
+        IocContainer container = new ZoomIocContainer();
 
-        IocContainer ioc = new ZoomIocContainer();
-        ioc.getIocClassLoader().appendModule(IocModule.class);
-        ioc.fetch(IocModule.class);
+        container.getIocClassLoader().appendModule(IocModule.class);
+        container.getIocClassLoader().appendModule(AopModule.class);
+        container.getIocClassLoader().appendModule(TimerModule.class);
 
-        ClassResolvers classResolvers = new ClassResolvers(
-                new SimpleConfigBuilder(ioc)
+
+
+        container.fetch(IocModule.class);
+        container.fetch(AopModule.class);
+        container.fetch(TimerModule.class);
+
+
+        IocContainer subContainer = new ZoomIocContainer(
+                container.getScope(),
+                container.getIocClassLoader(),
+                container.getEventListeners()
         );
-        ResScanner scanner = ResScanner.me();
-        scanner.scan();
-        classResolvers.visit(scanner);
-        //这里如果是maven的测试，可能会扫描不到目录
 
 
-        assertEquals(ioc.fetch(IocModule.class).getClass(), IocModule.class);
+        subContainer.getIocClassLoader().appendModule(TestModule.class);
+        subContainer.fetch(TestModule.class);
 
-        TestModule.TestService testModule = ioc.fetch(TestModule.TestService.class);
+
+        Thread.sleep(2000);
 
 
-        Classes.destroy(ioc);
+        Classes.destroy(subContainer);
 
+
+        Thread.sleep(2000);
+
+        Classes.destroy(container);
 
     }
 }
