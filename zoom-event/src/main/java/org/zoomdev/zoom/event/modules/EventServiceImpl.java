@@ -7,6 +7,7 @@ import org.zoomdev.zoom.common.lock.LockUtils;
 import org.zoomdev.zoom.event.Event;
 import org.zoomdev.zoom.event.EventListener;
 import org.zoomdev.zoom.event.EventService;
+import org.zoomdev.zoom.event.PayloadEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +35,9 @@ class EventServiceImpl implements EventService {
 
                     @Override
                     public List<EventListener> create() {
-                        return Arrays.asList(listener);
+                        List<EventListener> listeners = new ArrayList<EventListener>();
+                        listeners.add(listener);
+                        return listeners;
                     }
                 });
     }
@@ -46,23 +49,8 @@ class EventServiceImpl implements EventService {
         }
     }
 
-    public void notifyObservers(final String name, final Object data) {
-        notifyObservers(new Event() {
-            @Override
-            public String getName() {
-                return name;
-            }
-
-            @Override
-            public <T> T getData() {
-                return (T) data;
-            }
-
-            @Override
-            public boolean is(String _name) {
-                return StringUtils.equals(name, _name);
-            }
-        });
+    public void notifyObservers(final String name, final Object data,final Throwable error) {
+        notifyObservers(new PayloadEvent(name,data,error));
     }
 
     public void notifyObservers(final Event event) {

@@ -4,6 +4,7 @@ package org.zoomdev.zoom.ioc.impl;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.ioc.IocMethod;
 import org.zoomdev.zoom.ioc.IocMethodHandler;
+import org.zoomdev.zoom.ioc.IocMethodProxy;
 import org.zoomdev.zoom.ioc.IocObject;
 
 import java.lang.annotation.Annotation;
@@ -20,17 +21,17 @@ public abstract class AnnotationMethodHandler<T extends Annotation> implements I
     }
 
     @Override
-    public void destroy(IocObject target, IocMethod method) {
+    public void destroy(IocObject target, IocMethodProxy method) {
         T annotation = method.getAnnotation(annotationClass);
         destroy(target, annotation, method);
     }
 
-    protected void destroy(IocObject target, T annotation, IocMethod method) {
+    protected void destroy(IocObject target, T annotation, IocMethodProxy method) {
 
     }
 
     @Override
-    public void create(IocObject target, IocMethod proxy) {
+    public void create(IocObject target, IocMethodProxy proxy) {
         Method method = proxy.getMethod();
         T annotation = method.getAnnotation(annotationClass);
         visit(target, annotation, proxy);
@@ -41,5 +42,5 @@ public abstract class AnnotationMethodHandler<T extends Annotation> implements I
         return method.isAnnotationPresent(annotationClass);
     }
 
-    protected abstract void visit(IocObject target, T annotation, IocMethod method);
+    protected abstract void visit(IocObject target, T annotation, IocMethodProxy method);
 }

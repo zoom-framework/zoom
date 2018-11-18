@@ -4,6 +4,7 @@ import org.zoomdev.zoom.common.Destroyable;
 import org.zoomdev.zoom.common.Initializeable;
 import org.zoomdev.zoom.common.annotations.Inject;
 import org.zoomdev.zoom.ioc.IocMethod;
+import org.zoomdev.zoom.ioc.IocMethodProxy;
 import org.zoomdev.zoom.ioc.IocObject;
 
 import java.util.concurrent.CountDownLatch;
@@ -63,9 +64,9 @@ public class ShopService implements Initializeable, Destroyable {
     }
 
     private IocObject target;
-    private IocMethod method;
+    private IocMethodProxy method;
 
-    public void setListener(IocObject target, IocMethod method) {
+    public void setListener(IocObject target, IocMethodProxy method) {
 
         this.target = target;
         this.method = method;

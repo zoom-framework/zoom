@@ -4,6 +4,7 @@ import org.zoomdev.zoom.common.annotations.Inject;
 import org.zoomdev.zoom.common.annotations.IocBean;
 import org.zoomdev.zoom.common.annotations.Module;
 import org.zoomdev.zoom.ioc.IocMethod;
+import org.zoomdev.zoom.ioc.IocMethodProxy;
 import org.zoomdev.zoom.ioc.IocMethodVisitor;
 import org.zoomdev.zoom.ioc.IocObject;
 import org.zoomdev.zoom.ioc.annotations.TestListener;
@@ -28,7 +29,7 @@ public class ShopModule {
     public void inject(IocMethodVisitor methodVisitor, final ShopService shopService) {
         methodVisitor.add(new AnnotationMethodHandler<TestListener>() {
             @Override
-            protected void visit(IocObject target, TestListener annotation, IocMethod method) {
+            protected void visit(IocObject target, TestListener annotation, IocMethodProxy method) {
 
                 shopService.setListener(
                         target,

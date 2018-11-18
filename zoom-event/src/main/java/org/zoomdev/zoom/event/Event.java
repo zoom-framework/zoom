@@ -8,4 +8,6 @@ public interface Event {
 
     boolean is(String name);
 
+    Throwable getError();
+
 }

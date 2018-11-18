@@ -34,9 +34,15 @@ class EventResultMethodInterceptorFactory extends AnnotationMethodInterceptorFac
 
         @Override
         public void intercept(MethodInvoker invoker) throws Throwable {
-            invoker.invoke();
-            Object result = invoker.getReturnObject();
-            eventService.notifyObservers(name, result);
+
+            try{
+                invoker.invoke();
+                Object result = invoker.getReturnObject();
+                eventService.notifyObservers(name, result,null);
+            }catch (Throwable e){
+                eventService.notifyObservers(name, null,e);
+            }
+
         }
     }
 }
