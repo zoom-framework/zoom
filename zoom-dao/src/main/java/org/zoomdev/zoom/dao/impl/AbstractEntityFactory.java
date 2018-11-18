@@ -92,7 +92,7 @@ public abstract class AbstractEntityFactory {
     protected List<Validator> createValidators(ColumnMeta columnMeta) {
         List<Validator> list = new ArrayList<Validator>();
         if (!columnMeta.isNullable()) {
-            if(columnMeta.getDefaultValue()==null){
+            if (columnMeta.getDefaultValue() == null) {
                 list.add(new NotNullValidator());
             }
         }

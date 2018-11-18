@@ -129,6 +129,7 @@ public class RecordEntityFactory extends AbstractEntityFactory {
         entityField.setColumnMeta(columnMeta);
         entityField.setOriginalFieldName(config.orginalName);
 
+        entityField.setValidators(createValidators(columnMeta));
 
         return entityField;
     }

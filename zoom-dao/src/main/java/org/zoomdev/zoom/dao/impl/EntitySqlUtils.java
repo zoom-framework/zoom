@@ -9,6 +9,8 @@ import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 import org.zoomdev.zoom.dao.auto.AutoField;
 import org.zoomdev.zoom.dao.driver.SqlDriver;
 import org.zoomdev.zoom.dao.utils.DaoUtils;
+import org.zoomdev.zoom.dao.validator.Validator;
+import org.zoomdev.zoom.dao.validator.ValidatorException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -142,7 +144,6 @@ public class EntitySqlUtils {
         sql.append(')');
 
         //在insert的时候，需要判断一下null值是否可以入库
-        
 
 
     }
@@ -174,8 +175,7 @@ public class EntitySqlUtils {
                 } else {
                     sql.append(COMMA);
                 }
-                values.add(index, value);
-                adapters.add(index, field.getStatementAdapter());
+                appendValue(values, adapters, field, index, value);
                 ++index;
                 driver.protectColumn(sql, field.getColumnName()).append("=?");
             }
@@ -188,6 +188,44 @@ public class EntitySqlUtils {
         } else {
             throw new DaoException("至少需要一个where条件");
         }
+
+    }
+
+
+    protected static void validateValue(EntityField field, Object value) {
+        try {
+            for (Validator validator : field.getValidators()) {
+                validator.validate(value);
+            }
+        } catch (ValidatorException e) {
+            switch (e.getType()) {
+                case ValidatorException.CAST:
+                    throw new DaoException(
+                            String.format("数据格式错误,数据%s不能转化成类型:%s", value, field.getColumnMeta().getDataType()), e
+                    );
+                case ValidatorException.LENGTH:
+                    throw new DaoException(
+                            String.format("数据%s长度过长", value), e
+                    );
+                case ValidatorException.NULL:
+                    throw new DaoException(
+                            String.format("%s不能为空", field.getColumnMeta().getComment()), e
+                    );
+            }
+        }
+
+    }
+
+    protected static void appendValue(
+            List<Object> values,
+            List<StatementAdapter> adapters,
+            EntityField field,
+            int index,
+            Object value) {
+        validateValue(field, value);
+        values.add(index, value);
+        adapters.add(index, field.getStatementAdapter());
+
 
     }
 
@@ -205,6 +243,7 @@ public class EntitySqlUtils {
     private static void appendValue(List<Object> values, Object value,
                                     List<StatementAdapter> insertFields,
                                     EntityField entityField, StringBuilder sql, String[] specialValues, int index, SqlDriver driver) {
+        validateValue(entityField, value);
         values.add(value);
         insertFields.add(entityField.getStatementAdapter());
         driver.protectColumn(sql, entityField.getColumnName());

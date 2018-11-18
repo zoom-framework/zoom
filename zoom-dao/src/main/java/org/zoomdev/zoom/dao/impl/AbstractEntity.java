@@ -5,7 +5,6 @@ import org.zoomdev.zoom.common.utils.PatternUtils;
 import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.Entity;
 import org.zoomdev.zoom.dao.adapters.EntityField;
-import org.zoomdev.zoom.dao.validator.Validator;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -149,7 +148,6 @@ public abstract class AbstractEntity implements Entity {
 
         return list;
     }
-
 
 
     private static final Pattern AND_OR_PATTERN = Pattern.compile("[\\s]+(and)[\\s]+|[\\s]+(or)[\\s]+", Pattern.CASE_INSENSITIVE);

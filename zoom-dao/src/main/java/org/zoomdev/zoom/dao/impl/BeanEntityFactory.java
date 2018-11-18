@@ -340,8 +340,11 @@ class BeanEntityFactory extends AbstractEntityFactory {
                     handler.handle(entityField, context);
                 }
 
-                //validator
-                entityField.setValidators(createValidators(context.config.columnMeta));
+                if(context.config!=null && context.config.columnMeta!=null){
+                    //validator
+                    entityField.setValidators(createValidators(context.config.columnMeta));
+
+                }
 
             } catch (Exception e) {
                 if (e instanceof DaoException) {
