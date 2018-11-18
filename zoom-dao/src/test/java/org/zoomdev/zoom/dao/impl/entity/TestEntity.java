@@ -5,9 +5,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.zoomdev.zoom.common.expression.Symbol;
 import org.zoomdev.zoom.common.json.JSON;
+import org.zoomdev.zoom.common.utils.CollectionUtils;
+import org.zoomdev.zoom.common.utils.Converter;
 import org.zoomdev.zoom.common.utils.Page;
 import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.DaoException;
+import org.zoomdev.zoom.dao.Entity;
 import org.zoomdev.zoom.dao.SqlBuilder;
 import org.zoomdev.zoom.dao.entities.*;
 import org.zoomdev.zoom.dao.impl.AbstractDaoTest;
@@ -224,6 +227,138 @@ public class TestEntity extends AbstractDaoTest {
 
     @Override
     protected void process(Dao dao) {
+        SimpleShop shop = new SimpleShop();
+        shop.setTitle("测试商家");
+        shop.setAddress("测试地址");
+        shop.setId("testBusiness1");
+        dao.ar(SimpleShop.class).insert(shop);
+
+        dao.ar(SimpleShop.class).where("id", "testBusiness1").delete();
+
+    }
+
+    @Test
+    public void testFilter(){
+      execute(new RunWithDao() {
+          @Override
+          public void run(Dao dao) {
+              Shop shop = new Shop();
+              shop.setTitle("测试商家");
+              shop.setAddress("测试地址");
+              shop.setId("business2");
+              dao.ar(Shop.class).insert(shop);
+
+
+              shop.setTitle("测试商家500");
+              shop.setAddress("测试地址500");
+              dao.ar(Shop.class).filter("title")
+                      .update(shop);
+              Shop shop2 =  dao.ar(Shop.class).get("business2");
+
+              assertEquals(shop.getId(),shop2.getId());
+              assertEquals(shop2.getTitle(),"测试商家500");
+              assertEquals(shop2.getAddress(),"测试地址");
+
+          }
+      });
+
+    }
+
+
+    @Test
+    public void testList() {
+
+
+        execute(new RunWithDao() {
+            @Override
+            public void run(final Dao dao) {
+                Shop shop = new Shop();
+                shop.setTitle("测试商家");
+                shop.setAddress("测试地址");
+                shop.setId("testBusiness1");
+
+                Shop shop1 = new Shop();
+                shop1.setTitle("测试商家3");
+                shop1.setAddress("测试地址3");
+                shop1.setId("testBusiness2");
+
+                Shop shop2 = new Shop();
+                shop2.setTitle("测试商家2");
+                shop2.setAddress("测试地址2");
+                shop2.setId("testBusiness100");
+
+
+                List<Shop> list = Arrays.asList(
+                        shop, shop1, shop2
+                );
+
+                assertEquals(dao.ar(Shop.class).insert(list), 3);
+
+
+                List<Shop> list1 = dao.ar(Shop.class).find();
+
+                for (Shop shop3 : list1) {
+                    System.out.println(shop3.getTitle());
+                }
+
+                assertEquals(
+                        dao.ar(Shop.class).where("id", "testBusiness100")
+                                .value("title", String.class),
+                        "测试商家2"
+                );
+                dao.ar(Shop.class).filter("title").update(
+                        CollectionUtils.map(list, new Converter<Shop, Shop>() {
+                            @Override
+                            public Shop convert(Shop data) {
+                                data.setTitle(data.getTitle() + ".back");
+                                return data;
+                            }
+                        })
+                );
+
+                List<Shop> list2 = dao.ar(Shop.class).find();
+
+                for (Shop shop3 : list2) {
+                    System.out.println(shop3.getTitle());
+                }
+
+
+                dao.ar(Shop.class).delete(list);
+            }
+        });
+    }
+
+    @Test(expected = DaoException.class)
+    public void testError2() {
+
+        execute(new RunWithDao() {
+            @Override
+            public void run(Dao dao) {
+                Entity entity = dao.ar(SimpleShop.class).getEntity();
+
+                assertNotNull(entity);
+
+                dao.ar(SimpleShop.class)
+                        .strict(false)
+                        .orWhere(new SqlBuilder.Condition() {
+                            @Override
+                            public void where(SqlBuilder where) {
+                                where.where("title", "测试");
+                            }
+                        })
+                        .orWhere("title", "测试2")
+                        .where("id", Symbol.EQ, "testBusiness")
+                        .where(new SqlBuilder.Condition() {
+                            @Override
+                            public void where(SqlBuilder where) {
+                                where.like("title", SqlBuilder.Like.MATCH_BOTH, "测试");
+                            }
+                        })
+                        .select("id,title")
+                        .get("id", "title");
+
+            }
+        });
 
     }
 }

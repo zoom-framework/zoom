@@ -433,7 +433,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
         return execute(new ConnectionExecutor() {
             @Override
             public E execute(Connection connection) throws SQLException {
-                return EntitySqlUtils.getValue(connection, builder, key, typeOfE);
+                return EntitySqlUtils.getValue(connection, builder, entity.getColumnName(key), typeOfE);
             }
         });
     }
