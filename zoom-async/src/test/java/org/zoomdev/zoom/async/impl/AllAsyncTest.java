@@ -1,3 +1,5 @@
+package org.zoomdev.zoom.async.impl;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.zoomdev.zoom.async.impl.AsyncModuleTest;
