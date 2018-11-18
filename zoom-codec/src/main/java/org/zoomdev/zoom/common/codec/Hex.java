@@ -9,7 +9,11 @@ public class Hex {
      */
     private static final char[] DIGITS_LOWER = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd',
             'e', 'f'};
-
+    /**
+     * 用于建立十六进制字符的输出的大写字符数组
+     */
+    private static final char[] DIGITS_UPPER = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D',
+            'E', 'F'};
 
     /**
      * 将字节数组转换为十六进制字符数组
@@ -18,10 +22,19 @@ public class Hex {
      * @return 十六进制char[]
      */
     public static char[] encodeHex(byte[] data) {
-        return encodeHex(data, data.length, DIGITS_LOWER );
+        return encodeHex(data, true);
     }
 
-
+    /**
+     * 将字节数组转换为十六进制字符数组
+     *
+     * @param data        byte[]
+     * @param toLowerCase <code>true</code> 传换成小写格式 ， <code>false</code> 传换成大写格式
+     * @return 十六进制char[]
+     */
+    public static char[] encodeHex(byte[] data, boolean toLowerCase) {
+        return encodeHex(data, data.length, toLowerCase ? DIGITS_LOWER : DIGITS_UPPER);
+    }
 
     /**
      * 将字节数组转换为十六进制字符数组
@@ -30,7 +43,7 @@ public class Hex {
      * @param toDigits 用于控制输出的char[]
      * @return 十六进制char[]
      */
-    private static char[] encodeHex(byte[] data, int l, char[] toDigits) {
+    protected static char[] encodeHex(byte[] data, int l, char[] toDigits) {
         char[] out = new char[l << 1];
         // two characters form the hex value.
         for (int i = 0, j = 0; i < l; i++) {
@@ -40,7 +53,7 @@ public class Hex {
         return out;
     }
 
-    private static char[] encodeHex(byte[] data, int start, int l, char[] toDigits) {
+    protected static char[] encodeHex(byte[] data, int start, int l, char[] toDigits) {
         char[] out = new char[l << 1];
         // two characters form the hex value.
         for (int i = 0, j = 0; i < l; i++) {
@@ -57,17 +70,30 @@ public class Hex {
      * @return 十六进制String
      */
     public static String encodeHexStr(byte[] data) {
-        return encodeHexStr(data, data.length);
+        return encodeHexStr(data, true);
     }
 
     public static String encodeHexStr(byte[] data, int start, int len) {
         return new String(encodeHex(data, start, len, DIGITS_LOWER));
     }
 
-
-
     public static String encodeHexStr(byte[] data, int len) {
-        return encodeHexStr(data, len, DIGITS_LOWER);
+        return encodeHexStr(data, len, true);
+    }
+
+    /**
+     * 将字节数组转换为十六进制字符串
+     *
+     * @param data        byte[]
+     * @param toLowerCase <code>true</code> 传换成小写格式 ， <code>false</code> 传换成大写格式
+     * @return 十六进制String
+     */
+    public static String encodeHexStr(byte[] data, boolean toLowerCase) {
+        return encodeHexStr(data, data.length, toLowerCase ? DIGITS_LOWER : DIGITS_UPPER);
+    }
+
+    public static String encodeHexStr(byte[] data, int len, boolean toLowerCase) {
+        return encodeHexStr(data, len, toLowerCase ? DIGITS_LOWER : DIGITS_UPPER);
     }
 
     /**
@@ -77,7 +103,7 @@ public class Hex {
      * @param toDigits 用于控制输出的char[]
      * @return 十六进制String
      */
-    private static String encodeHexStr(byte[] data, int len, char[] toDigits) {
+    protected static String encodeHexStr(byte[] data, int len, char[] toDigits) {
         return new String(encodeHex(data, len, toDigits));
     }
 
@@ -109,13 +135,6 @@ public class Hex {
         return out;
     }
 
-    /**
-     * 将data解码到out上 pos开始，out的长度必须满足要求
-     * @param data
-     * @param out
-     * @param pos
-     * @return
-     */
     public static int decodeHex(char[] data, byte[] out, int pos) {
         int len = data.length;
         if ((len & 0x01) != 0) {
@@ -134,7 +153,9 @@ public class Hex {
 
     public static int decodeHex(String value, byte[] bytes, int pos) {
         char[] chars = value.toCharArray();
+
         return decodeHex(chars, bytes, pos);
+
     }
 
     /**

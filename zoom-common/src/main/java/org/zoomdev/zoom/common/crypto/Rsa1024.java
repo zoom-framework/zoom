@@ -11,8 +11,10 @@ public class Rsa1024 implements Rsa {
 
     public static final String SIGN_ALGORITHMS = "SHA1WithRSA";
 
-    public Rsa1024() {
+    private String algorithms;
 
+    public Rsa1024(String algorithms) {
+        this.algorithms = algorithms;
     }
 
     @Override
@@ -20,9 +22,7 @@ public class Rsa1024 implements Rsa {
         try {
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             PublicKey pubKey = keyFactory.generatePublic(new X509EncodedKeySpec(publicKey));
-
-            java.security.Signature signature = java.security.Signature.getInstance(SIGN_ALGORITHMS);
-
+            java.security.Signature signature = java.security.Signature.getInstance(algorithms);
             signature.initVerify(pubKey);
             signature.update(content);
             return signature.verify(content);
@@ -40,7 +40,7 @@ public class Rsa1024 implements Rsa {
             KeyFactory keyf = KeyFactory.getInstance("RSA");
             PrivateKey priKey = keyf.generatePrivate(priPKCS8);
 
-            java.security.Signature signature = java.security.Signature.getInstance(SIGN_ALGORITHMS);
+            java.security.Signature signature = java.security.Signature.getInstance(algorithms);
 
             signature.initSign(priKey);
             signature.update(content);

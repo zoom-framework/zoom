@@ -17,8 +17,6 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 /**
@@ -26,7 +24,7 @@ import java.util.regex.Pattern;
  *
  * @author jzoom
  */
-public class ConfigReader implements ConfigValueParser {
+public class ConfigReader implements ConfigKeyParser {
 
     private static final Log logger = LogFactory.getLog(ConfigReader.class);
 
@@ -92,7 +90,6 @@ public class ConfigReader implements ConfigValueParser {
     /**
      * 加载配置
      *
-     * @param is
      * @throws IOException
      */
     @SuppressWarnings({"unchecked"})
@@ -115,7 +112,7 @@ public class ConfigReader implements ConfigValueParser {
             try {
                 Map<String, Object> data = mapper.readValue(file, Map.class);
                 for (Entry<String, Object> entry : data.entrySet()) {
-                    this.data.put(entry.getKey(), parse(entry.getValue()));
+                    this.data.put(entry.getKey(), entry.getValue());
                 }
             } catch (Exception e) {
                 throw new RuntimeException(String.format("配置文件%s加载失败", file));
@@ -131,33 +128,6 @@ public class ConfigReader implements ConfigValueParser {
             throw new RuntimeException("不支持的配置类型" + file);
         }
 
-
-    }
-
-
-    public Object parse(String value) {
-        return decodeStringValue(value);
-    }
-
-    private static Pattern PARAM_PATTERN = Pattern.compile("\\$\\{([a-zA-Z0-9_]+)\\:([a-zA-Z0-9_]+)\\}");
-
-    private static Object decodeStringValue(String value) {
-        Matcher matcher = PARAM_PATTERN.matcher(value);
-        if (matcher.matches()) {
-            String prefix = matcher.group(1);
-            String key = matcher.group(2);
-            if ("env".equals(prefix)) {
-                return System.getenv(key);
-            } else if ("".equals(prefix)) {
-
-            }
-        }
-
-        if (value.contains("{") || value.contains("}") || value.contains("$")) {
-            logger.warn(String.format("值%s含有特殊字符{},如果是一个变量则格式为${},如果确认没有写错，那么请忽略", value));
-        }
-
-        return value;
     }
 
 
@@ -178,11 +148,4 @@ public class ConfigReader implements ConfigValueParser {
         return keys;
     }
 
-    @Override
-    public Object parse(Object value) {
-        if (value instanceof String) {
-            return decodeStringValue((String) value);
-        }
-        return value;
-    }
 }

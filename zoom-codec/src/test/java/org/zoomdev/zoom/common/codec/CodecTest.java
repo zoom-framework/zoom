@@ -34,11 +34,4 @@ public class CodecTest extends TestCase {
     }
 
 
-
-
-    private String randomStr(){
-
-        return "";
-    }
-
 }

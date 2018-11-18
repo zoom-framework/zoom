@@ -50,27 +50,43 @@ public class Bcd {
 
     }
 
+    /**
+     * 后面补位F
+     */
     public static final Padding BCD_PAD_F_AFTER = new PadAfter('F');
 
+    /**
+     * 前面补位0
+     */
     public static final Padding BCD_PAD_0_BEFORE = new PadBefore('0');
 
-
+    /**
+     * string转bcd码,默认后面补F
+     * @param asc          ASCII编码的字符串
+     * @return
+     */
     public static byte[] str2bcd(String asc) {
         return str2bcd(asc, BCD_PAD_F_AFTER);
     }
 
+    /**
+     * 使用指定的填充方式string转bcd码
+     * @param asc           ASCII编码的字符串
+     * @param pad           补位方式
+     * @return
+     */
     public static byte[] str2bcd(String asc, Padding pad) {
         asc = pad.pad(asc);
-        byte[] result = new byte[asc.length() % 2];
+        byte[] result = new byte[asc.length() / 2];
         return str2bcd(result, 0, asc);
     }
 
 
     /**
-     * 将ascii字符串转成bcd码
+     * 将ascii字符串转成bcd码，写入dest对应的位置
      *
-     * @param dest
-     * @param pos
+     * @param dest      写入目标
+     * @param pos       写入开始位置
      * @param ascii
      * @return
      */
@@ -86,6 +102,7 @@ public class Bcd {
         }
         return dest;
     }
+
 
     private static byte asc2bcd(byte asc) {
         byte bcd;

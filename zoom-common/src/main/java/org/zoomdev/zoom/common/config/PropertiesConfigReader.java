@@ -55,7 +55,7 @@ class PropertiesConfigReader implements ConfigLoader {
 
 
     @Override
-    public Map<String, Object> load(InputStream in, ConfigValueParser parser) throws IOException {
+    public Map<String, Object> load(InputStream in, ConfigKeyParser parser) throws IOException {
         try {
             Properties p = new Properties();
             p.load(in);
@@ -65,9 +65,9 @@ class PropertiesConfigReader implements ConfigLoader {
                 String key = (String) keys.nextElement();
                 String value = p.getProperty(key);
                 if (key.contains("[") || key.contains("{")) {
-                    parseKey(key, parser.parse(value), map);
+                    parseKey(key, value, map);
                 } else {
-                    map.put(key, parser.parse(value));
+                    map.put(key, value);
                 }
             }
             return map;
