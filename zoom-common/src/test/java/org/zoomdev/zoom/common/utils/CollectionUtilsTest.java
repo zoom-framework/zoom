@@ -98,6 +98,9 @@ public class CollectionUtilsTest extends TestCase {
 
         Map<String,File> map  = CollectionUtils.toMap(files,"path");
 
+        for(String str : map.keySet()){
+            assertTrue(!str.isEmpty());
+        }
 
         CollectionUtils.toMap(files,"status");
 

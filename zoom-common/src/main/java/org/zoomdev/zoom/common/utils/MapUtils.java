@@ -35,7 +35,7 @@ public class MapUtils {
      * @param id
      * @return
      */
-    public static Map<?, ?> toMap(List<? extends Map<String, ?>> list, Object id) {
+    public static Map<String, Map<?, ?>> toMap(List<? extends Map<String, ?>> list, Object id) {
         Map<String, Map<?, ?>> result = new HashMap<String, Map<?, ?>>(list.size());
         for (Map<String, ?> map : list) {
             result.put((String) map.get(id), map);

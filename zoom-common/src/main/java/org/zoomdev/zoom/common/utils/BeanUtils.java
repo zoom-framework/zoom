@@ -47,11 +47,13 @@ public class BeanUtils {
      * @param <T>
      * @return
      */
-    public static <T> List<T> merge(
+    public static <T> List<T> mergeList(
             List<T> dest,
             List<T> data,
             String... keys
     ) {
+
+        assert(keys.length>0);
 
         Map<String, T> destMap = CollectionUtils.toMap(
                 dest, keys
