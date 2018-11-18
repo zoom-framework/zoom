@@ -595,7 +595,7 @@ public class Base64 {
      * @param src
      * @return
      */
-    public String decodeBase64(String src) {
+    public static String decodeBase64(String src) {
         try {
             return new String(decodeFast(src.toCharArray()), "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -609,7 +609,7 @@ public class Base64 {
      * @param src
      * @return
      */
-    public String encodeBase64(String src) {
+    public static String encodeBase64(String src) {
         try {
             return encodeToString(src.getBytes("UTF-8"), false);
         } catch (UnsupportedEncodingException e) {
