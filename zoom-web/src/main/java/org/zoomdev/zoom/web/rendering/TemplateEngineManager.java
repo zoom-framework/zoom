@@ -9,8 +9,7 @@ import org.zoomdev.zoom.web.rendering.impl.TemplateRendering;
  */
 public interface TemplateEngineManager {
     /**
-     * 根据名称能获取模板引擎
-     *
+     * 根据文件后缀能获取模板引擎
      * @param name
      * @return
      */
@@ -19,8 +18,18 @@ public interface TemplateEngineManager {
     /**
      * 注册模板引擎
      *
-     * @param name      引擎名称
+     * @param name      引擎针对的后缀名称
      * @param rendering 渲染器
      */
     void register(String name, TemplateRendering rendering);
+
+
+    /**
+     * 注册了几个模板引擎
+     * @return
+     */
+    int getEngineCont();
+
+
+    
 }

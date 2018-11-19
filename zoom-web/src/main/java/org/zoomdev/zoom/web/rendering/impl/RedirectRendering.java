@@ -16,6 +16,8 @@ public class RedirectRendering implements Rendering {
                 return true;
             } else if (result.startsWith(FORWARD)) {
                 throw new RuntimeException("目前这个版本还不支持forward");
+//                context.getRequest().getRequestDispatcher("")
+//                        .forward(request,response);
             }
         }
 

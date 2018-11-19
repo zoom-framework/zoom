@@ -22,7 +22,8 @@ public class SimpleErrorRenderingFactory implements RenderingFactory {
     }
 
     public Rendering createRendering2(Class<?> targetClass, Method method) {
-        if (targetClass.isAnnotationPresent(JsonResponse.class) || method.isAnnotationPresent(JsonResponse.class)) {
+        if (targetClass.isAnnotationPresent(JsonResponse.class)
+                || method.isAnnotationPresent(JsonResponse.class)) {
             return jsonErrorRendering;
         }
         return templateRendering;

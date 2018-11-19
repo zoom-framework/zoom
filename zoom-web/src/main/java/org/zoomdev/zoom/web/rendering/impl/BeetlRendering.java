@@ -1,9 +1,7 @@
 package org.zoomdev.zoom.web.rendering.impl;
 
-import org.beetl.core.Configuration;
-import org.beetl.core.GroupTemplate;
-import org.beetl.core.ResourceLoader;
-import org.beetl.core.Template;
+import org.beetl.core.*;
+import org.beetl.core.exception.BeetlException;
 import org.beetl.core.resource.ClasspathResourceLoader;
 import org.beetl.core.resource.StringTemplateResourceLoader;
 import org.beetl.core.resource.WebAppResourceLoader;
@@ -14,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Map;
 
 public class BeetlRendering extends TemplateRendering {
@@ -65,7 +64,14 @@ public class BeetlRendering extends TemplateRendering {
 
     public BeetlRendering(ResourceLoader loader, Configuration cfg) {
         group = new GroupTemplate(loader, cfg);
-        group.setErrorHandler(null);
+        group.setErrorHandler(new ErrorHandler(){
+
+            @Override
+            public void processExcption(BeetlException beeExceptionos, Writer writer) {
+                beeExceptionos.printStackTrace();
+                throw beeExceptionos;
+            }
+        });
     }
 
     @Override

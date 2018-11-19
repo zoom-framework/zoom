@@ -25,15 +25,14 @@ public abstract class TemplateRendering implements Rendering {
     private String ext;
 
     /**
-     * 获取默认模板位置
+     * 获取默认模板位置(WEB-INF/templates)
      *
      * @return
      */
     public static File getDefaultPath() {
-        return PathUtils.getWebInfPath("").getParentFile();
+        return new File(PathUtils.getWebInfPath(""),"templates");
     }
 
-    static final Pattern pattern = Pattern.compile("([a-z]+)\\:([a-zA-Z0-9\\:\\/]+)");
 
     public String getExt() {
 
@@ -82,16 +81,12 @@ public abstract class TemplateRendering implements Rendering {
 
 
     private Map<String, Object> merge(Map<String, Object> data, ActionContext context) {
-
-        if (context.getData() != null) {
-            if (data == null) {
-                data = new HashMap<String, Object>();
-            }
-            data.putAll(context.getData());
-        }
-
         if (data == null) {
             data = new HashMap<String, Object>();
+        }
+
+        if (context.getData() != null) {
+            data.putAll(context.getData());
         }
 
         RequestUtils.merge(data, context.getRequest());

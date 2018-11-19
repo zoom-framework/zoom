@@ -25,7 +25,8 @@ public class SimpleRenderingFactory implements RenderingFactory {
 
 
     public Rendering createRendering2(Class<?> targetClass, Method method) {
-        if (targetClass.isAnnotationPresent(JsonResponse.class) || method.isAnnotationPresent(JsonResponse.class)) {
+        if (targetClass.isAnnotationPresent(JsonResponse.class)
+                || method.isAnnotationPresent(JsonResponse.class)) {
             return jsonRendering;
         }
         return templateRendering;
