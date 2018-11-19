@@ -1,6 +1,5 @@
 package org.zoomdev.zoom.web;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;
@@ -16,14 +15,6 @@ public class TestBeanUtils {
         ExamInfo examInfo = new ExamInfo();
 
 
-        for (int i = 0; i < 1000000; ++i) {
-
-            BeanUtils.describe(examInfo);
-
-        }
-
-        System.out.print("BeanUtils:");
-        System.out.println(System.currentTimeMillis() - time);
 
 
     }
@@ -34,7 +25,7 @@ public class TestBeanUtils {
 
         ExamInfo examInfo = new ExamInfo();
 
-        for (int i = 0; i < 1000000; ++i) {
+        for (int i = 0; i < 1; ++i) {
             Map<String, Object> data = new HashMap<String, Object>();
             data.put("idCard", examInfo.idCard);
             data.put("areaCode", examInfo.areaCode);

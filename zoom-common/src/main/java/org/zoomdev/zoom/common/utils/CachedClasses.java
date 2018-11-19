@@ -1,6 +1,5 @@
 package org.zoomdev.zoom.common.utils;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.common.caster.ValueCaster;
 import org.zoomdev.zoom.common.designpattern.SingletonUtils;
@@ -54,8 +53,7 @@ public class CachedClasses {
             Map data = (Map) src;
             try {
                 Object result = toType.newInstance();
-                BeanUtils.populate(result, data);
-                return result;
+                return BeanUtils.mergeMap(result,data);
             } catch (Exception e) {
                 throw new Caster.CasterException(e);
             }

@@ -1,9 +1,11 @@
 package org.zoomdev.zoom.common.caster;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 public class MockBlob implements Blob {
 
@@ -11,22 +13,22 @@ public class MockBlob implements Blob {
     private byte[] bytes;
 
     public MockBlob(byte[] bytes) {
-
+        this.bytes = bytes;
     }
 
     @Override
     public long length() throws SQLException {
-        return 0;
+        return bytes.length;
     }
 
     @Override
     public byte[] getBytes(long pos, int length) throws SQLException {
-        return new byte[0];
+        return Arrays.copyOfRange(bytes,(int)pos,length);
     }
 
     @Override
     public InputStream getBinaryStream() throws SQLException {
-        return null;
+        return new ByteArrayInputStream(bytes);
     }
 
     @Override
