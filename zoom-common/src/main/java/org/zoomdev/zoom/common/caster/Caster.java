@@ -3,6 +3,8 @@ package org.zoomdev.zoom.common.caster;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
+import org.zoomdev.zoom.common.utils.BeanUtils;
+import org.zoomdev.zoom.common.utils.Classes;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -364,9 +366,52 @@ public class Caster {
                 }
         );
 
+        Caster.registerCastProvider(new Map2BeanProvider());
+    }
+
+
+    static class Map2BeanProvider implements Caster.CasterProvider {
+
+        @Override
+        public ValueCaster getCaster(Class<?> srcType, Class<?> toType) {
+            if (Map.class.isAssignableFrom(srcType)) {
+                if (Classes.isSimple(toType)) {
+                    //转化简单类型应该是不行的
+                    return null;
+                }
+                //java开头的一律略过
+                if (toType.getName().startsWith("java")) return null;
+
+                return new Map2Bean(toType);
+            }
+
+            return null;
+
+        }
 
     }
 
+    private static class Map2Bean implements ValueCaster {
+        private Class<?> toType;
+
+        public Map2Bean(Class<?> toType) {
+            this.toType = toType;
+        }
+
+        @SuppressWarnings({"unchecked", "rawtypes"})
+        @Override
+        public Object to(Object src) {
+            Map data = (Map) src;
+            try {
+                Object result = toType.newInstance();
+                return BeanUtils.mergeMap(result,data);
+            } catch (Exception e) {
+                throw new Caster.CasterException(e);
+            }
+
+        }
+
+    }
 
     private static void registerParameterizedType(ParameterizedTypeCasterfactory... factory) {
         Collections.addAll(typeCanbeConvertToParameterizedType, factory);
