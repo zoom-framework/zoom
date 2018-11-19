@@ -1,11 +1,13 @@
 package org.zoomdev.zoom.common.filter.pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.filter.AlwaysAcceptFilter;
 import org.zoomdev.zoom.common.filter.AndFilter;
 import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.common.filter.OrFilter;
 import org.zoomdev.zoom.common.utils.Classes;
+import org.zoomdev.zoom.common.utils.CollectionUtils;
 import org.zoomdev.zoom.common.utils.StrKit;
 
 import java.util.ArrayList;
@@ -22,6 +24,14 @@ import java.util.regex.Pattern;
  * @author jzoom
  */
 public class PatternFilterFactory {
+
+    public static class PatternException extends ZoomException{
+
+        public PatternException(String message){
+            super(message);
+        }
+
+    }
 
     private static Map<String, Filter<String>> filterMap = new ConcurrentHashMap<String, Filter<String>>();
 
@@ -57,12 +67,16 @@ public class PatternFilterFactory {
     private static Filter<String> createGroup(String pattern) {
         char[] chars = pattern.toCharArray();
         StrReader reader = new StrReader(chars);
-        return read(reader, false);
+        return read(reader, new ReadContext(),false);
     }
 
     private static class StrReader {
         char[] chars;
         int index = 0;
+
+        public String left(){
+            return new String(chars,index,chars.length-index);
+        }
 
         public StrReader(char[] chars) {
             this.chars = chars;
@@ -92,10 +106,41 @@ public class PatternFilterFactory {
             return str;
 
         }
+
+        public String formatError(int index) {
+            if(index>0){
+                return new String(chars,0,index-1)
+                        +">>>"+chars[index-1]+"<<<"
+                        +new String(chars,index,chars.length-index);
+            }
+
+
+            return new String(chars,0,index)+":"+new String(chars,index,chars.length-index);
+
+        }
+    }
+
+
+    static class ReadContext{
+        //左括号位置
+        List<Integer> brackets = new ArrayList<Integer>();
+        //brackets
+
+        public void addLeftBrackets(int index){
+            brackets.add(index);
+        }
+
+        public void removeRightBrackets(int index,StrReader reader){
+            if(brackets.size() ==0 ){
+                throw new PatternException("非法的右括号"+reader.formatError(index));
+            }
+            brackets.remove(brackets.size()-1);
+        }
+
     }
 
     @SuppressWarnings("unchecked")
-    private static Filter<String> read(StrReader chars, boolean quick) {
+    private static Filter<String> read(StrReader chars,ReadContext context, boolean quick) {
         List<Filter<String>> list = new ArrayList<Filter<String>>();
         Filter<String> filter;
 
@@ -107,28 +152,30 @@ public class PatternFilterFactory {
             }
             switch (c) {
                 case '(': {
-                    filter = read(chars, false);
+                    context.addLeftBrackets(chars.index);
+                    filter = read(chars, context,false);
                     break;
                 }
 
                 case ')':
                     //back
+                    context.removeRightBrackets(chars.index,chars);
                     break WHILE;
                 case '!': {
-                    filter = new NotFilter<String>(read(chars, true));
+                    filter = new NotFilter<String>(read(chars, context,true));
                     break;
                 }
                 case '&': {
                     if (list.size() == 0) {
-                        return read(chars, true);
+                        return read(chars, context,true);
                     }
                     Filter<String> left = list.remove(list.size() - 1);
-                    filter = new AndFilter<String>(left, read(chars, true));
+                    filter = new AndFilter<String>(left, read(chars, context,true));
                     break;
                 }
 
                 case '|': {
-                    filter = read(chars, false);
+                    filter = read(chars, context,false);
                     break;
                 }
                 default: {
@@ -146,7 +193,14 @@ public class PatternFilterFactory {
 
 
         if (list.size() == 0) {
-            throw new RuntimeException();
+            /// not possible
+            //throw new RuntimeException();
+
+
+            if(context.brackets.size() > 0){
+
+                throw new PatternException("非法的左括号"+chars.formatError(CollectionUtils.last(context.brackets)));
+            }
         }
 
         if (list.size() == 1) {

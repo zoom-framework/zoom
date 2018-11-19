@@ -1,6 +1,7 @@
 package org.zoomdev.zoom.common.filter.impl;
 
 import org.zoomdev.zoom.common.Destroyable;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.filter.ClassAndMethodFilter;
 import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.common.filter.pattern.PatternFilter;
@@ -33,6 +34,9 @@ public class PatternClassAndMethodFilter implements ClassAndMethodFilter, Destro
             classNameFilter = PatternFilterFactory.createFilter(pattern);
         } else {
             String[] parts = pattern.split("#");
+            if(parts.length>2){
+                throw new ZoomException("不正确的pattern，最多包含一个#");
+            }
             methodNameFilter = PatternFilterFactory.createFilter(parts[1]);
             classNameFilter = PatternFilterFactory.createFilter(parts[0]);
         }

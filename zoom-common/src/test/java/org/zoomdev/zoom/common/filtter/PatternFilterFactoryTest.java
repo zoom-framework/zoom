@@ -2,6 +2,7 @@ package org.zoomdev.zoom.common.filtter;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.filter.AlwaysAcceptFilter;
 import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.common.filter.pattern.*;
@@ -259,5 +260,37 @@ public class PatternFilterFactoryTest {
 
         System.out.println(test.test());
     }
+
+
+
+
+    @Test
+    public void test6(){
+
+        Filter<String> filter = PatternFilterFactory.createFilter("*.Test*");
+        assertTrue(filter.accept("com.TestController"));
+        assertFalse(filter.accept("comTestController"));
+
+
+    }
+
+    @Test(expected = PatternFilterFactory.PatternException.class)
+    public void test7(){
+
+        // ok
+        PatternFilterFactory.createFilter("(a");
+
+        //not ok
+        PatternFilterFactory.createFilter("(a)(");
+
+    }
+
+
+    @Test(expected = PatternFilterFactory.PatternException.class)
+    public void test8(){
+        // not ok
+        PatternFilterFactory.createFilter("(bbb*)|bbbaaaa)");
+    }
+
 
 }

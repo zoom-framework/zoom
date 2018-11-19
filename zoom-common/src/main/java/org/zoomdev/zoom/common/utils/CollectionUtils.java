@@ -60,6 +60,16 @@ public class CollectionUtils {
 
     }
 
+    public static <T> T last(List<T> collection) {
+        if(collection==null){
+            return null;
+        }
+        if(collection.size() ==0){
+            return null;
+        }
+        return collection.get(collection.size()-1);
+    }
+
     static interface KeyValue {
         String getKeyValue(Object data, String... keys);
     }

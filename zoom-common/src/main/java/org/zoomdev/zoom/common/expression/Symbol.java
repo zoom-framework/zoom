@@ -8,9 +8,9 @@ package org.zoomdev.zoom.common.expression;
 public enum Symbol implements Compare.CompareValue {
     GT(">", Compare.GT),                //>
     LT("<", Compare.LT),                //<
-    GTE(">=", Compare.GTE),                //>=
-    LTE("<=", Compare.LTE),                //<=
-    NEQ("<>", Compare.NEQ),                //<>
+    GTE(">=", Compare.GTE),             //>=
+    LTE("<=", Compare.LTE),             //<=
+    NEQ("<>", Compare.NEQ),             //<>
     EQ("=", Compare.EQ);                //=
 
     private String value;
@@ -18,6 +18,7 @@ public enum Symbol implements Compare.CompareValue {
 
     Symbol(String value, Compare.CompareValue compareValue) {
         this.value = value;
+        this.compareValue = compareValue;
     }
 
     public String value() {
@@ -34,6 +35,8 @@ public enum Symbol implements Compare.CompareValue {
     public boolean compare(Comparable value1, Comparable value2) {
         return compareValue.compare(value1, value2);
     }
+
+
 
     public static Symbol parse(String value) {
         if (">".equals(value)) {
