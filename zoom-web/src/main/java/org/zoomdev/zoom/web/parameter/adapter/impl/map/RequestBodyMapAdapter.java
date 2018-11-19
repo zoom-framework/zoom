@@ -1,11 +1,9 @@
 package org.zoomdev.zoom.web.parameter.adapter.impl.map;
 
-import org.zoomdev.zoom.caster.Caster;
-import org.zoomdev.zoom.common.utils.CachedClasses;
+import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.web.action.ActionContext;
 import org.zoomdev.zoom.web.parameter.adapter.ParameterAdapter;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.Map;
 

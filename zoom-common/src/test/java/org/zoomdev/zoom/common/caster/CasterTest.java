@@ -1,10 +1,9 @@
-package org.zoomdev.zoom.caster;
+package org.zoomdev.zoom.common.caster;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.zoomdev.zoom.caster.codec.Base64;
 
-import java.io.ByteArrayInputStream;
 import java.lang.reflect.Field;
 import java.sql.Blob;
 import java.sql.Clob;
@@ -13,8 +12,6 @@ import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 //Let's import Mockito statically so that the code looks clearer
 
@@ -27,7 +24,7 @@ public class CasterTest {
     @Test
     public void testInteger() {
 
-        assertEquals(1.0, Caster.to(1, double.class));
+        Assert.assertEquals(1.0, Caster.to(1, double.class));
         assertEquals("1", Caster.to(1, String.class));
         assertEquals(1.0f, Caster.to(1, float.class));
         assertEquals(true, Caster.to(1, boolean.class));
@@ -207,11 +204,7 @@ public class CasterTest {
 
         assertEquals(Caster.to(new MockClob("hello"), String.class), "hello");
         //mock creation
-        Blob mockBlob = mock(Blob.class);
-        when(mockBlob.getBinaryStream())
-                .thenReturn(new ByteArrayInputStream("hello".getBytes()));
-        when(mockBlob.length())
-                .thenReturn((long) "hello".getBytes().length);
+        Blob mockBlob = new MockBlob("hello".getBytes());
 
         assertEquals(Caster.to(mockBlob, String.class),
                 Base64.encodeToString("hello".getBytes(), false));

@@ -1,4 +1,4 @@
-package org.zoomdev.zoom.caster;
+package org.zoomdev.zoom.common.caster;
 
 import java.io.*;
 import java.sql.Clob;

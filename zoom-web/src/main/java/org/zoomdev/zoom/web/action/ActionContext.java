@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.web.action;
 
-import org.zoomdev.zoom.caster.Caster;
+import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.common.Destroyable;
 import org.zoomdev.zoom.common.utils.Classes;
 

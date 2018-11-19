@@ -1,8 +1,8 @@
 package org.zoomdev.zoom.common.utils;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.zoomdev.zoom.caster.Caster;
-import org.zoomdev.zoom.caster.ValueCaster;
+import org.zoomdev.zoom.common.caster.Caster;
+import org.zoomdev.zoom.common.caster.ValueCaster;
 import org.zoomdev.zoom.common.designpattern.SingletonUtils;
 import org.zoomdev.zoom.common.designpattern.SingletonUtils.SingletonInit;
 import org.zoomdev.zoom.common.filter.MethodFilter;

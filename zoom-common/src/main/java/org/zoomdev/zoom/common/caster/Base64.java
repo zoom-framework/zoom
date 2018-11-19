@@ -1,4 +1,4 @@
-package org.zoomdev.zoom.caster.codec;
+package org.zoomdev.zoom.common.caster;
 
 
 import java.io.UnsupportedEncodingException;

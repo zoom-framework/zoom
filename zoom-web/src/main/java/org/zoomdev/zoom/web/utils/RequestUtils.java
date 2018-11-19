@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.web.utils;
 
-import org.zoomdev.zoom.caster.Caster;
+import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.common.utils.CachedClasses;
 
 import javax.servlet.http.HttpServletRequest;

@@ -1,7 +1,7 @@
 package org.zoomdev.zoom.web.modules;
 
-import org.zoomdev.zoom.caster.Caster;
-import org.zoomdev.zoom.caster.ValueCaster;
+import org.zoomdev.zoom.common.caster.Caster;
+import org.zoomdev.zoom.common.caster.ValueCaster;
 import org.zoomdev.zoom.common.annotations.Inject;
 import org.zoomdev.zoom.common.annotations.Module;
 import org.zoomdev.zoom.common.utils.Classes;

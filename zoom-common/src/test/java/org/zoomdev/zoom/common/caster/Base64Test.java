@@ -1,7 +1,6 @@
-package org.zoomdev.zoom.caster;
+package org.zoomdev.zoom.common.caster;
 
 import junit.framework.TestCase;
-import org.zoomdev.zoom.caster.codec.Base64;
 
 public class Base64Test extends TestCase {
 

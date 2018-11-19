@@ -1,9 +1,8 @@
-package org.zoomdev.zoom.caster;
+package org.zoomdev.zoom.common.caster;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
-import org.zoomdev.zoom.caster.codec.Base64;
 
 import java.io.Closeable;
 import java.io.IOException;

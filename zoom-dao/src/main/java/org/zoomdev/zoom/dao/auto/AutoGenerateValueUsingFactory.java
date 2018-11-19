@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.dao.auto;
 
-import org.zoomdev.zoom.caster.Caster;
+import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.dao.AutoGenerateValue;
 import org.zoomdev.zoom.dao.adapters.EntityField;
 

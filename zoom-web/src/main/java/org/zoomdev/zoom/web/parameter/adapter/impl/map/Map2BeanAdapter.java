@@ -1,7 +1,6 @@
 package org.zoomdev.zoom.web.parameter.adapter.impl.map;
 
-import org.apache.commons.beanutils.BeanUtils;
-import org.zoomdev.zoom.caster.Caster;
+import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.web.action.ActionContext;
 import org.zoomdev.zoom.web.parameter.adapter.ParameterAdapter;
 

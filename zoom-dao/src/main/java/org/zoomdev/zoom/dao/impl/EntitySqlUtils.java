@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.dao.impl;
 
-import org.zoomdev.zoom.caster.Caster;
+import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.Entity;

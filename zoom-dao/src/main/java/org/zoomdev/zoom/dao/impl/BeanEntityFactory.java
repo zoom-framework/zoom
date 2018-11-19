@@ -1,8 +1,8 @@
 package org.zoomdev.zoom.dao.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import org.zoomdev.zoom.caster.Caster;
-import org.zoomdev.zoom.caster.ValueCaster;
+import org.zoomdev.zoom.common.caster.Caster;
+import org.zoomdev.zoom.common.caster.ValueCaster;
 import org.zoomdev.zoom.common.utils.CachedClasses;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.common.utils.Converter;

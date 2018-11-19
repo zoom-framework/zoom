@@ -1,7 +1,7 @@
 package org.zoomdev.zoom.common.record;
 
 import junit.framework.TestCase;
-import org.zoomdev.zoom.caster.Caster;
+import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.common.utils.DataObject;
 
 public class TestRecord extends TestCase {

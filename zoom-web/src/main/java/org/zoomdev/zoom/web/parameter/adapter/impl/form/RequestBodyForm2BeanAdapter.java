@@ -1,9 +1,8 @@
 package org.zoomdev.zoom.web.parameter.adapter.impl.form;
 
-import org.zoomdev.zoom.caster.Caster;
+import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.web.action.ActionContext;
 import org.zoomdev.zoom.web.parameter.adapter.ParameterAdapter;
-import org.zoomdev.zoom.web.utils.RequestUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Type;

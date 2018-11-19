@@ -1,9 +1,7 @@
 package org.zoomdev.zoom.common.utils;
 
-import junit.framework.TestCase;
-import org.junit.Assert;
 import org.junit.Test;
-import org.zoomdev.zoom.caster.Caster;
+import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.common.exceptions.ZoomException;
 
 import java.util.ArrayList;
