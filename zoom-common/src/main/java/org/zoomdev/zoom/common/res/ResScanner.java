@@ -494,31 +494,6 @@ public class ResScanner implements Destroyable {
         } finally {
             Io.close(inputStream);
         }
-//        JarFile jarFile = null;
-//        try {
-//            jarFile = new JarFile(file);
-//            Enumeration<JarEntry> entries = jarFile.entries();
-//            while (entries.hasMoreElements()) {
-//                JarEntry entry = entries.nextElement();
-//                String name = entry.getName();
-//                // 如果是一个.class文件 而且不是目录
-//                if (name.endsWith(".class") && !entry.isDirectory()) {
-//                    // 去掉后面的".class" 获取真正的类名
-//                    String className = name.substring(0, name.length() - 6).replace("/", ".");
-//                    // 假设同一个className，则应该以文件中的为准
-//                    addJarClass(className, classLoader, file);
-//                } else {
-//                    addJarFile(name, classLoader, file);
-//                }
-//            }
-//        } finally {
-//            if (jarFile != null)
-//                try {
-//                    jarFile.close();
-//                } catch (Exception e) {
-//                }
-//        }
-
     }
 
     /**
@@ -528,7 +503,7 @@ public class ResScanner implements Destroyable {
      * @param file
      */
     private void addJarFile(String name, ClassLoader classLoader, File file) {
-
+        files.add(new JarFileRes(name,classLoader,file));
     }
 
     /**
@@ -612,4 +587,32 @@ public class ResScanner implements Destroyable {
     }
 
 
+    private class JarFileRes implements Res {
+
+        private File file;
+        private ClassLoader classLoader;
+        private String name;
+
+        public JarFileRes(String name, ClassLoader classLoader, File file) {
+            this.name = name;
+            this.classLoader = classLoader;
+            this.file = file;
+        }
+
+        @Override
+        public File getFile() {
+            return file;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        /// jar中的classinputstream
+        @Override
+        public InputStream getInputStream() throws IOException {
+            return null;
+        }
+    }
 }

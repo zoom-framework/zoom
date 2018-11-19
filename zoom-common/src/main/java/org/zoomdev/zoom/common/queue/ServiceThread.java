@@ -1,6 +1,9 @@
 package org.zoomdev.zoom.common.queue;
 
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * 服务线程
  *
@@ -8,10 +11,13 @@ package org.zoomdev.zoom.common.queue;
  */
 public abstract class ServiceThread implements Runnable {
 
+
+    private static final Log log = LogFactory.getLog(ServiceThread.class);
+
     /**
      * 是否正在运行
      */
-    protected volatile boolean isRunning;
+    protected volatile boolean running;
 
     /**
      * 线程
@@ -28,15 +34,15 @@ public abstract class ServiceThread implements Runnable {
     }
 
     public boolean isRunning() {
-        return isRunning;
+        return running;
     }
 
     /**
      * 启动
      */
     public synchronized void start() {
-        if (isRunning) return;
-        isRunning = true;
+        if (running) return;
+        running = true;
         thread.start();
     }
 
@@ -45,8 +51,8 @@ public abstract class ServiceThread implements Runnable {
      * 停止
      */
     public synchronized void stop() {
-        if (!isRunning) return;
-        isRunning = false;
+        if (!running) return;
+        running = false;
         thread.interrupt();
         while (thread.isAlive()) {
             try {
@@ -61,14 +67,11 @@ public abstract class ServiceThread implements Runnable {
 
     @Override
     public void run() {
-        while (isRunning) {
+        while (running) {
             try {
                 if (!repetitionRun()) break;
-            } catch (Exception e) {
-                //当调用线程的thread.interrupt();方法时候
-                e.printStackTrace();
-            } catch (Throwable e) {
-                e.printStackTrace();
+            }catch (Throwable e) {
+                log.warn("Service exception:",e);
             }
         }
     }

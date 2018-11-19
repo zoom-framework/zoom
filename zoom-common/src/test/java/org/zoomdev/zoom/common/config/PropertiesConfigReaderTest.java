@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import static org.junit.Assert.*;
 
@@ -182,16 +183,15 @@ public class PropertiesConfigReaderTest {
         }
 
         File file = res.getFile();
-        PropertiesConfigReader configReader = new PropertiesConfigReader();
         ConfigReader reader = new ConfigReader();
-        Map<String, Object> data = configReader.load(new FileInputStream(file));
+        reader.load(file);
 
-
-        System.out.print(data);
 
         Set<String> keys = reader.keys("*");
 
-        assertNotNull(keys);
+        assertNotNull(keys );
+
+        assertTrue(keys.size() > 0 );
 
 
     }

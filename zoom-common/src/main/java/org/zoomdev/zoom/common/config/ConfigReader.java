@@ -19,6 +19,8 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -29,6 +31,9 @@ import java.util.Set;
 public class ConfigReader  {
 
     private static final Log logger = LogFactory.getLog(ConfigReader.class);
+
+    private static Pattern EL_PATTERN = Pattern.compile("\\$\\{([a-zA-Z0-9_\\.-]+)\\}");
+
 
 
     private static ConfigReader applicationReader = new ConfigReader() {
@@ -138,6 +143,21 @@ public class ConfigReader  {
             }
         }
         return keys;
+    }
+
+    /**
+     * 解析配置
+     *
+     * @param value 解析 ${config} 形式的字符串，并解析出变量名称
+     * @return
+     */
+    public static Object parseValue(String value) {
+        Matcher matcher = EL_PATTERN.matcher(value);
+        if (matcher.matches()) {
+            value = matcher.group(1);
+            return ConfigReader.getDefault().get(value);
+        }
+        return value;
     }
 
 }

@@ -61,7 +61,7 @@ public class StrKit {
     }
 
     /**
-     * 驼峰式变成下划线
+     * 驼峰式变成下划线(大写）
      *
      * @param str
      * @return

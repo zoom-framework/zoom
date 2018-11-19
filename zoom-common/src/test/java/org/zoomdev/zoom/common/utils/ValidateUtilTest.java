@@ -44,6 +44,8 @@ public class ValidateUtilTest {
 
         assertFalse(ValidateUtils.isJavaClassName(""));
         assertFalse(ValidateUtils.isJavaClassName(null));
+
+        assertFalse(ValidateUtils.isJavaClassName("abc..abc"));
     }
 
 }

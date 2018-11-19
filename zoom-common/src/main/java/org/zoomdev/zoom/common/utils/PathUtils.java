@@ -43,6 +43,10 @@ public class PathUtils {
 
     /**
      * 解析路径
+     * 两种情况：
+     * 1、WEB-INF为根目录计算
+     * 2、web root为根目录计算。
+     *
      *
      * @param key
      * @return
