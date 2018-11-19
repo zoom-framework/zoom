@@ -42,7 +42,6 @@
     </pluginRepositories>
 
     <modules>
-        <module>zoom-caster</module>
         <module>zoom-ioc</module>
         <module>zoom-aop</module>
         <module>zoom-async</module>
@@ -192,11 +191,6 @@
     <!-- maven依赖 -->
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.zoomdev.zoom</groupId>
-                <artifactId>zoom-caster</artifactId>
-                <version>0.2.3-SNAPSHOT</version>
-            </dependency>
             <dependency>
                 <groupId>org.zoomdev.zoom</groupId>
                 <artifactId>zoom-async</artifactId>
