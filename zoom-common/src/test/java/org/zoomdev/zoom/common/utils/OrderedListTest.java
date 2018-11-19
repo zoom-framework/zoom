@@ -22,6 +22,20 @@ public class OrderedListTest {
         assertEquals(objects[1], 1);
         assertEquals(objects[2], 3);
 
+        list.addAll(
+                4,5,6
+        );
+
+        objects = list.toArray(new Object[list.size()]);
+
+        assertEquals(objects[0], 2);
+        assertEquals(objects[1], 1);
+        assertEquals(objects[2], 3);
+        assertEquals(objects[3], 4);
+        assertEquals(objects[4], 5);
+        assertEquals(objects[5], 6);
+
+
 
         list.clear();
 

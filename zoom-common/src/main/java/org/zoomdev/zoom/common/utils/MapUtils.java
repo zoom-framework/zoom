@@ -1,5 +1,7 @@
 package org.zoomdev.zoom.common.utils;
 
+import org.zoomdev.zoom.common.exceptions.ZoomException;
+
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -17,7 +19,7 @@ public class MapUtils {
     public static Map<String, Object> asMap(Object... values) {
 
         if (values.length % 2 != 0) {
-            throw new RuntimeException("参数个数必须为2的倍数");
+            throw new ZoomException("asMap的参数个数必须为2的倍数");
         }
         Map<String, Object> data = new LinkedHashMap<String, Object>();
         for (int i = 0, c = values.length; i < c; i += 2) {
@@ -48,33 +50,32 @@ public class MapUtils {
     public static Map<String, String> toKeyAndLabel(List<? extends Map<String, ?>> list, Object id, Object label) {
         Map<String, String> result = new HashMap<String, String>(list.size());
         for (Map<String, ?> map : list) {
-            result.put((String) map.get(id), (String) map.get(label));
+            result.put(String.valueOf(map.get(id)), (String) map.get(label));
         }
 
         return result;
     }
 
-    public static <T, V> Map<String, V> convert(Map<String, T> src, Converter<T, V> converter) {
+    /**
+     * 转化Map为其他类型
+     * @param src
+     * @param converter
+     * @param <VT>
+     * @param <VV>
+     * @return
+     */
+    public static <VT, VV> Map<String, VV> convert(Map<String, VT> src, Converter<VT, VV> converter) {
         assert (src != null);
-        Map<String, V> dest = null;
+        Map<String, VV> dest = null;
         try {
             dest = src.getClass().newInstance();
         } catch (Exception e) {
             throw new RuntimeException("不能初始化要求转化的Map类型" + src.getClass(), e);
         }
-        for (Map.Entry<String, T> entry : src.entrySet()) {
+        for (Map.Entry<String, VT> entry : src.entrySet()) {
             dest.put(entry.getKey(), converter.convert(entry.getValue()));
         }
         return dest;
     }
-
-
-//    public static <V> V createIfAbsent(Map<String, V> map,String key, Callable<V> callable) {
-//		if(!map.containsKey(key)){
-//
-//        }
-//
-//    }
-
 
 }

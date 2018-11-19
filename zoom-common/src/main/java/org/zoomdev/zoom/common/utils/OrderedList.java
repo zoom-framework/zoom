@@ -41,7 +41,7 @@ public class OrderedList<E> {
         return max;
     }
 
-    public void addAll(E[] elements) {
+    public void addAll(E... elements) {
         int max = getMaxOrder();
         for (E e : elements) {
             list.add(new OrderInfo(e, ++max));

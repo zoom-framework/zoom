@@ -6,9 +6,28 @@ import java.io.IOException;
 
 public class TestRes extends TestCase {
 
+    /**
+     * 测试扫描本地
+     * @throws IOException
+     */
     public void test() throws IOException {
-        ResScanner scanner = ResScanner.me();
 
-        scanner.scan(getClass().getClassLoader());
+        ResScanner scanner = new ResScanner();
+        scanner.scan();
+
+
+
+    }
+
+
+
+    public void testSanJar(){
+
+    }
+
+
+    public void testScanInputStream(){
+
+
     }
 }
