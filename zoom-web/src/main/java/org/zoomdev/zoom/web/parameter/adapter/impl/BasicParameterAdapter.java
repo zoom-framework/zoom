@@ -1,6 +1,5 @@
 package org.zoomdev.zoom.web.parameter.adapter.impl;
 
-import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.web.action.ActionContext;
 import org.zoomdev.zoom.web.parameter.adapter.ParameterAdapter;
 
@@ -17,8 +16,8 @@ public class BasicParameterAdapter {
     static final ParameterAdapter<Object> ACTION_CONTEXT = new ActionContextAdapter();
 
     public static ParameterAdapter<?> getAdapter(Type type) {
-        if(type instanceof Class){
-            Class<?> classOfParameter = (Class<?>)type;
+        if (type instanceof Class) {
+            Class<?> classOfParameter = (Class<?>) type;
             if (HttpServletRequest.class.isAssignableFrom(classOfParameter)) {
                 return REQUEST;
             }

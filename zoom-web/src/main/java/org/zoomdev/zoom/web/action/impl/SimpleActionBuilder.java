@@ -23,11 +23,10 @@ public class SimpleActionBuilder extends ClassResolver {
 
     private IocContainer ioc;
 
-    private ActionInterceptorFactory factory;
 
     private Router router;
 
-    private Class<? extends ActionFactory> defaultActionFactoryClass = SimpleActionFactory.class;
+    private ActionFactory actionFactory;
 
 
     private Class<?> clazz;
@@ -47,14 +46,15 @@ public class SimpleActionBuilder extends ClassResolver {
 
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public SimpleActionBuilder(IocContainer ioc, Router router, List<Router.RemoveToken> removeTokenList) {
+    public SimpleActionBuilder(
+            IocContainer ioc,
+            Router router,
+            List<Router.RemoveToken> removeTokenList) {
         setClassFilter(new ClassAnnotationFilter(Controller.class));
         setClassNameFilter(PatternFilterFactory.createFilter("*.controllers.*"));
 
         this.ioc = ioc;
         this.router = router;
-        ioc.getIocClassLoader().append(ActionInterceptorFactory.class, new SimpleActionInterceptorFactory(), true);
-        factory = ioc.fetch(ActionInterceptorFactory.class);
         this.removeTokenList = removeTokenList;
     }
 
@@ -100,9 +100,11 @@ public class SimpleActionBuilder extends ClassResolver {
 
     @Override
     public void visitMethod(Method method) {
-        Class<? extends ActionFactory> actionFactoryClass = defaultActionFactoryClass;
-        ActionFactory factory = ioc.fetch(actionFactoryClass);
-        Action action = factory.createAction(target, clazz, method, this.factory);
+        ActionFactory actionFactory = ioc.fetch(SimpleActionFactory.class);
+        ActionInterceptorFactory actionInterceptorFactory = ioc.fetch(ActionInterceptorFactory.class);
+
+        Action action = actionFactory
+                .createAction(target, clazz, method, actionInterceptorFactory);
         Mapping mapping = method.getAnnotation(Mapping.class);
         String key = getKey(this.key, method, mapping);
         action.setUrl(key);

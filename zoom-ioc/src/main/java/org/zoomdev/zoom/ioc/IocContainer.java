@@ -37,7 +37,7 @@ public interface IocContainer extends Destroyable {
      * @param <T>
      * @return
      */
-    <T> T fetch(Class<?> type);
+    <T> T fetch(Class<T> type);
 
 
     /**

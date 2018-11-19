@@ -60,7 +60,7 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
     }
 
     @Override
-    public <T> T fetch(Class<?> type) {
+    public <T> T fetch(Class<T> type) {
         return (T) fetch(new ZoomIocKey(type)).get();
     }
 

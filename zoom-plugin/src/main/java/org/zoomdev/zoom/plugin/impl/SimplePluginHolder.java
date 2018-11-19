@@ -10,6 +10,8 @@ import org.zoomdev.zoom.plugin.Plugin;
 import org.zoomdev.zoom.plugin.PluginException;
 import org.zoomdev.zoom.plugin.PluginHolder;
 import org.zoomdev.zoom.plugin.PluginHost;
+import org.zoomdev.zoom.web.action.ActionFactory;
+import org.zoomdev.zoom.web.action.ActionInterceptorFactory;
 import org.zoomdev.zoom.web.action.impl.SimpleActionBuilder;
 import org.zoomdev.zoom.web.router.Router;
 
@@ -86,10 +88,11 @@ public class SimplePluginHolder implements PluginHolder {
         try {
             IocContainer mainIoc = host.getIoc();
             ioc = new ZoomIocContainer(mainIoc.getScope(), mainIoc.getIocClassLoader(), mainIoc.getEventListeners());
-            tokens = new ArrayList<Router.RemoveToken>();
+            tokens = new ArrayList<Router.RemoveToken>();;
+
             ClassResolvers classResolvers = new ClassResolvers(
                     new PluginConfigBuilder(ioc),
-                    new SimpleActionBuilder(ioc, host.getRouter(), tokens)
+                    new SimpleActionBuilder(ioc, host.getRouter(),tokens)
             );
             classResolvers.visit(scanner);
             plugin.startup(host);

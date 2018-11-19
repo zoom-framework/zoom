@@ -10,7 +10,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-class SimpleActionInterceptorFactory implements ActionInterceptorFactory {
+public class SimpleActionInterceptorFactory implements ActionInterceptorFactory {
 
     private OrderedList<InterceptorInfo> list;
     private InterceptorInfo[] interceptors;

@@ -22,7 +22,7 @@ public interface IocClassLoader {
      * @param initialized
      * @return
      */
-    IocClass append(Class<?> baseType, Object instance, boolean initialized);
+    <T> IocClass append(Class<T> baseType, T instance, boolean initialized);
 
     /**
      * 注册增加一个实例,这个方法可以为ioc容器直接注册一个对象
@@ -31,7 +31,7 @@ public interface IocClassLoader {
      * @param instance
      * @return
      */
-    IocClass append(Class<?> baseType, Object instance);
+    <T> IocClass append(Class<T> baseType, T instance);
 
     /**
      * 直接增加一个实际类

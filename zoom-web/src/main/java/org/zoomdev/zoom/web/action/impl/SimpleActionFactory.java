@@ -7,16 +7,16 @@ import org.zoomdev.zoom.common.ConfigurationConstants;
 import org.zoomdev.zoom.common.annotations.Inject;
 import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.web.action.Action;
+import org.zoomdev.zoom.web.action.ActionContext;
 import org.zoomdev.zoom.web.action.ActionFactory;
 import org.zoomdev.zoom.web.action.ActionInterceptorFactory;
 import org.zoomdev.zoom.web.annotations.Param;
-import org.zoomdev.zoom.web.parameter.ParameterParser;
-import org.zoomdev.zoom.web.parameter.ParameterParserFactory;
-import org.zoomdev.zoom.web.parameter.PreParameterParser;
-import org.zoomdev.zoom.web.parameter.PreParameterParserFactory;
+import org.zoomdev.zoom.web.parameter.*;
 import org.zoomdev.zoom.web.parameter.parser.impl.AbsParameterParserFactory;
 import org.zoomdev.zoom.web.parameter.parser.impl.SimpleParameterParserFactory;
-import org.zoomdev.zoom.web.parameter.pre.impl.SimplePreParameterParserFactory;
+import org.zoomdev.zoom.web.parameter.pre.impl.FormPreParamParser;
+import org.zoomdev.zoom.web.parameter.pre.impl.JsonPreParamParser;
+import org.zoomdev.zoom.web.parameter.pre.impl.UploadPreParamParser;
 import org.zoomdev.zoom.web.rendering.Rendering;
 import org.zoomdev.zoom.web.rendering.RenderingFactory;
 import org.zoomdev.zoom.web.rendering.impl.BeetlRendering;
@@ -26,8 +26,12 @@ import org.zoomdev.zoom.web.rendering.impl.TemplateRendering;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
-public class SimpleActionFactory implements ActionFactory {
+public class SimpleActionFactory implements ActionFactory,PreParameterParserManager {
 
     @Inject
     protected IocContainer ioc;
@@ -38,13 +42,25 @@ public class SimpleActionFactory implements ActionFactory {
     @Inject(config = ConfigurationConstants.SERVER_ENCODING)
     protected String encoding;
 
+
+
     private ParameterParserFactory parameterParserFactory;
     private RenderingFactory renderingFactory;
     private RenderingFactory errorRenderingFactory;
-    private PreParameterParserFactory preParameterParserFactory;
+
+
 
     public SimpleActionFactory() {
+        parsers = new PreParameterParser[]{
+          new JsonPreParamParser(),
+          new UploadPreParamParser(),
+          new FormPreParamParser()
+        };
+    }
 
+    @Inject
+    public void config(){
+        ioc.getIocClassLoader().append(PreParameterParserManager.class,this,true);
     }
 
     protected Rendering createRendering(Class<?> targetClass, Method method) {
@@ -55,9 +71,6 @@ public class SimpleActionFactory implements ActionFactory {
         return getParameterParserFactory().createParamParser(controllerClass, method, names);
     }
 
-    protected PreParameterParser createPreParameterParser(Class<?> controllerClass, Method method) {
-        return getPreParameterParserFactory().createPreParameterParser(controllerClass, method);
-    }
 
     protected Rendering createErrorRendering(Class<?> controllerClass, Method method) {
         return getErrorRenderingFactory().createRendering(controllerClass, method);
@@ -120,7 +133,7 @@ public class SimpleActionFactory implements ActionFactory {
         action.setTarget(target);
 
         action.setActionInterceptors(actionInterceptorFactory.create(controllerClass, method));
-        action.setPreParamParser(createPreParameterParser(controllerClass, method));
+        action.setPreParamParser(this);
         action.setParamParser(createParameterParser(controllerClass, method, names));
         action.setRendering(createRendering(controllerClass, method));
         action.setErrorRendering(createErrorRendering(controllerClass, method));
@@ -168,14 +181,36 @@ public class SimpleActionFactory implements ActionFactory {
         this.errorRenderingFactory = errorRenderingFactory;
     }
 
-    public PreParameterParserFactory getPreParameterParserFactory() {
-        if (preParameterParserFactory == null)
-            preParameterParserFactory = new SimplePreParameterParserFactory();
-        return preParameterParserFactory;
+
+    private PreParameterParser[] parsers;
+
+    @Override
+    public List<PreParameterParser> getParsers() {
+        return Arrays.asList(parsers);
     }
 
-    public void setPreParameterParserFactory(PreParameterParserFactory preParameterParserFactory) {
-        this.preParameterParserFactory = preParameterParserFactory;
+    @Override
+    public void addParser(PreParameterParser parser) {
+
+        List<PreParameterParser> list = new ArrayList<PreParameterParser>();
+        Collections.addAll(list,parser);
+
+        list.add(parser);
+
+        this.parsers = list.toArray(new PreParameterParser[list.size()]);
+
     }
 
+    @Override
+    public Object preParse(ActionContext context) throws Exception {
+        String contentType = context.getRequest().getContentType();
+
+        for (PreParameterParser preParameterParser : parsers) {
+            if (preParameterParser.shouldParse(contentType)) {
+                return preParameterParser.preParse(context);
+            }
+        }
+
+        throw new RuntimeException("找不到参数解析器");
+    }
 }

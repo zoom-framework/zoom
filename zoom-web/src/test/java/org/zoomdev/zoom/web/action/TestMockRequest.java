@@ -1,8 +1,6 @@
 package org.zoomdev.zoom.web.action;
 
-import com.sun.prism.impl.Disposer;
 import junit.framework.TestCase;
-import org.apache.commons.lang3.ObjectUtils;
 import org.zoomdev.zoom.common.io.Io;
 import org.zoomdev.zoom.common.json.JSON;
 import org.zoomdev.zoom.common.utils.DataObject;
@@ -19,9 +17,9 @@ public class TestMockRequest extends TestCase {
     public void test() throws IOException {
 
         HttpServletRequest request = mockJsonRequest(new DataObject()
-        .set("id","1").set("name","123"));
+                .set("id", "1").set("name", "123"));
 
-        String str = Io.readString(request.getInputStream(),"utf-8");
+        String str = Io.readString(request.getInputStream(), "utf-8");
         System.out.println(str);
 
     }
@@ -39,8 +37,6 @@ public class TestMockRequest extends TestCase {
         when(request.getMethod()).thenReturn("POST");
         when(request.getHeader("Content-Type")).thenReturn("application/json");
         when(request.getInputStream()).thenReturn(inputStream);
-
-
 
 
         return request;

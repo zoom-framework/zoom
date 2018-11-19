@@ -15,8 +15,13 @@ import org.zoomdev.zoom.common.utils.CachedClasses;
 import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.ioc.configuration.SimpleConfigBuilder;
 import org.zoomdev.zoom.ioc.impl.ZoomIocContainer;
+import org.zoomdev.zoom.web.action.ActionFactory;
 import org.zoomdev.zoom.web.action.ActionHandler;
+import org.zoomdev.zoom.web.action.ActionInterceptor;
+import org.zoomdev.zoom.web.action.ActionInterceptorFactory;
 import org.zoomdev.zoom.web.action.impl.SimpleActionBuilder;
+import org.zoomdev.zoom.web.action.impl.SimpleActionFactory;
+import org.zoomdev.zoom.web.action.impl.SimpleActionInterceptorFactory;
 import org.zoomdev.zoom.web.router.Router;
 import org.zoomdev.zoom.web.router.impl.BracesRouterParamRule;
 import org.zoomdev.zoom.web.router.impl.SimpleRouter;
@@ -33,6 +38,8 @@ public class ZoomWeb {
     private Router router;
 
     private IocContainer ioc;
+
+    private ActionFactory actionFactory;
 
 
     private static Log log = LogFactory.getLog(ZoomWeb.class);
@@ -64,7 +71,14 @@ public class ZoomWeb {
 
     private void resolveClasses() {
         // 初始化classInfo
-        ClassResolvers classResolvers = new ClassResolvers(new SimpleConfigBuilder(ioc), new SimpleActionBuilder(ioc, router));
+        ActionInterceptorFactory actionInterceptorFactory = new SimpleActionInterceptorFactory();
+        ioc.getIocClassLoader().append(ActionInterceptorFactory.class,actionInterceptorFactory,true);
+        ioc.getIocClassLoader().append(SimpleActionFactory.class);
+
+     //   ioc.getIocClassLoader().append(ActionFactory.class,ioc.fetch(SimpleActionFactory.class),true);
+
+        ClassResolvers classResolvers = new ClassResolvers(new SimpleConfigBuilder(ioc),
+                new SimpleActionBuilder(ioc, router));
 
         ioc.getIocClassLoader().append(ClassResolvers.class, classResolvers, true);
 

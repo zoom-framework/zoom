@@ -18,7 +18,7 @@ public class RequestBodyMapAdapter implements ParameterAdapter<Map<String, Objec
 
     @Override
     public Object get(ActionContext context, Map<String, Object> data, String name, Type type) {
-        return Caster.toType(data,type);
+        return Caster.toType(data, type);
     }
 
 }

@@ -1,10 +1,16 @@
 package org.zoomdev.zoom.web.modules;
 
+import org.zoomdev.zoom.common.ConfigurationConstants;
+import org.zoomdev.zoom.common.annotations.Inject;
+import org.zoomdev.zoom.common.annotations.IocBean;
+import org.zoomdev.zoom.common.annotations.Module;
 import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.common.caster.ValueCaster;
-import org.zoomdev.zoom.common.annotations.Inject;
-import org.zoomdev.zoom.common.annotations.Module;
 import org.zoomdev.zoom.common.utils.Classes;
+import org.zoomdev.zoom.web.action.ActionFactory;
+import org.zoomdev.zoom.web.action.ActionInterceptorFactory;
+import org.zoomdev.zoom.web.action.impl.SimpleActionFactory;
+import org.zoomdev.zoom.web.action.impl.SimpleActionInterceptorFactory;
 import org.zoomdev.zoom.web.utils.RequestUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +19,8 @@ import java.util.Map;
 @Module
 public class WebModules {
 
+    @Inject(config = ConfigurationConstants.SERVER_ENCODING)
+    private String encoding;
 
     /**
      * 对caster进行配置，增加参数解析的部分
@@ -23,6 +31,8 @@ public class WebModules {
         Caster.registerCastProvider(new Request2BeanProvider());
 
     }
+
+
 
     static class Request2BeanProvider implements Caster.CasterProvider {
 

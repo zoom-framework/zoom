@@ -158,7 +158,7 @@ public class JavassistAopFactoryTest {
 
     @Test(expected = InvalidParameterException.class)
     public void testArgs() throws InstantiationException, IllegalAccessException {
-        AopFactory factory = new JavassistAopFactory(new TestAopMaker(),new AopMethodInterceptorFactory());
+        AopFactory factory = new JavassistAopFactory(new TestAopMaker(), new AopMethodInterceptorFactory());
 
         Class<?> modelClass = factory.enhance(TestModel.class);
         TestModel model = (TestModel) modelClass.newInstance();

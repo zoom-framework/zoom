@@ -16,7 +16,7 @@ public interface ActionInterceptorFactory {
 
     /**
      * @param interceptor
-     * @param pattern
+     * @param filter
      * @param order
      */
     void add(ActionInterceptor interceptor, ClassAndMethodFilter filter, int order);

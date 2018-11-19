@@ -210,14 +210,18 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
 
         for (BuildInfo buildInfo : buildInfos) {
             buildInfo.build(list);
-
         }
+
 
 
         StringBuilder sb = new StringBuilder();
 
         for (String sql : list) {
-            sb.append(sql).append(";\n");
+            sb.append(sql);
+            if(!sql.endsWith(";")){
+                sb.append(";");
+            }
+            sb.append("\n");
         }
 
         return sb.toString();

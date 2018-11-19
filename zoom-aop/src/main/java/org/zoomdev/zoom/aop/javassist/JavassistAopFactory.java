@@ -66,7 +66,7 @@ public class JavassistAopFactory extends AstractMethodInterceptorFactory {
 
         int index = 0;
         for (AopConfig aopConfig : configs) {
-            if(logger.isDebugEnabled())
+            if (logger.isDebugEnabled())
                 logger.debug(String.format("为%s增强功能", aopConfig.getMethod()));
 
             subClass.addMethod(toPublic(createRenameMethod(aopConfig.getMethod(), subClass)));
@@ -104,7 +104,7 @@ public class JavassistAopFactory extends AstractMethodInterceptorFactory {
         sb.append(getCallSuper(method));
         sb.append("}");
 
-        if(logger.isDebugEnabled())
+        if (logger.isDebugEnabled())
             logger.debug(String.format("body is %s", sb.toString()));
 
 
@@ -139,7 +139,7 @@ public class JavassistAopFactory extends AstractMethodInterceptorFactory {
         sb.append(getBody(method, index, subClass.getName()));
         sb.append("}");
 
-        if(logger.isDebugEnabled())
+        if (logger.isDebugEnabled())
             logger.debug(String.format("body is %s", sb.toString()));
 
         return CtMethod.make(sb.toString(), subClass);

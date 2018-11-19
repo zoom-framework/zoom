@@ -13,7 +13,7 @@ public class NamedFormParameterAdapter implements ParameterAdapter<HttpServletRe
 
     @Override
     public Object get(ActionContext context, HttpServletRequest data, String name, Type type) {
-        return Caster.toType(data.getParameter(name),type);
+        return Caster.toType(data.getParameter(name), type);
     }
 
 }

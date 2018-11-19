@@ -15,8 +15,6 @@ public class TestBeanUtils {
         ExamInfo examInfo = new ExamInfo();
 
 
-
-
     }
 
     @Test

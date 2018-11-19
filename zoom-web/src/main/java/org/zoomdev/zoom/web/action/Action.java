@@ -8,6 +8,7 @@ import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.web.parameter.ParameterParser;
 import org.zoomdev.zoom.web.parameter.PreParameterParser;
+import org.zoomdev.zoom.web.parameter.PreParameterParserManager;
 import org.zoomdev.zoom.web.rendering.Rendering;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +32,7 @@ public class Action implements ActionHandler, Destroyable {
     /**
      * 对参数进行预处理,如将整个request读取一个json
      */
-    private PreParameterParser preParamParser;
+    private PreParameterParserManager preParamParser;
 
     /**
      * 将预处理的参数解析成可调用方法的参数列表
@@ -326,11 +327,8 @@ public class Action implements ActionHandler, Destroyable {
 
     }
 
-    public PreParameterParser getPreParamParser() {
-        return preParamParser;
-    }
 
-    public void setPreParamParser(PreParameterParser preParamParser) {
+    public void setPreParamParser(PreParameterParserManager preParamParser) {
         this.preParamParser = preParamParser;
     }
 

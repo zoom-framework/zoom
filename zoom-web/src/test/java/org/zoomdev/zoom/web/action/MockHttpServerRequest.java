@@ -1,6 +1,5 @@
 package org.zoomdev.zoom.web.action;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.zoomdev.zoom.common.json.JSON;
 
 import javax.servlet.*;
@@ -14,9 +13,9 @@ import java.util.*;
 public class MockHttpServerRequest implements HttpServletRequest {
 
 
-    private Map<String,String> headers;
+    private Map<String, String> headers;
 
-    private Map<String,String[]> parameters;
+    private Map<String, String[]> parameters;
 
     private String serverPath;
 
@@ -24,21 +23,23 @@ public class MockHttpServerRequest implements HttpServletRequest {
 
     private ServletInputStream inputStream;
     private String contentType;
+
     public static MockHttpServerRequest json(
             String serverPath,
             String method,
             Object data
-    ){
-        return json(serverPath,method,data,new HashMap<String, String>());
+    ) {
+        return json(serverPath, method, data, new HashMap<String, String>());
     }
+
     public static MockHttpServerRequest json(
             String serverPath,
             String method,
             Object data,
-            Map<String,String> headers
-    ){
+            Map<String, String> headers
+    ) {
         return new MockHttpServerRequest(
-                serverPath,method,"application/json;charset=utf-8",
+                serverPath, method, "application/json;charset=utf-8",
                 JSON.stringify(data).getBytes(),
                 headers,
                 new HashMap<String, String[]>()
@@ -51,8 +52,8 @@ public class MockHttpServerRequest implements HttpServletRequest {
             String contentType,
             //stream 读取的内容
             byte[] content,
-            Map<String,String> headers,
-            Map<String,String[]> parameters){
+            Map<String, String> headers,
+            Map<String, String[]> parameters) {
         this.headers = headers;
         this.parameters = parameters;
         this.serverPath = serverPath;

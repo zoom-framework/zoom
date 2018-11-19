@@ -65,7 +65,7 @@ public class ZoomIocClassLoader extends IocBase implements IocClassLoader, Destr
     private static final Log log = LogFactory.getLog(ZoomIocClassLoader.class);
 
     @Override
-    public void appendModule(Class<?> moduleClass) {
+    public void appendModule(Class moduleClass) {
         try {
             log.info(String.format("初始化Module [%s]", moduleClass));
             Object module = Classes.newInstance(moduleClass);
@@ -84,7 +84,7 @@ public class ZoomIocClassLoader extends IocBase implements IocClassLoader, Destr
     }
 
     @Override
-    public IocClass append(final Class<?> baseType, final Object instance, final boolean initialized) {
+    public <T> IocClass append(final Class<T> baseType, final T instance, final boolean initialized) {
         IocKey key = new ZoomIocKey(baseType);
         return SingletonUtils.liteDoubleLockMap(pool, key, new SingletonUtils.SingletonInit<IocClass>() {
             @Override
@@ -102,7 +102,7 @@ public class ZoomIocClassLoader extends IocBase implements IocClassLoader, Destr
     }
 
     @Override
-    public IocClass append(Class<?> baseType, Object instance) {
+    public <T> IocClass append(Class<T> baseType, T instance) {
         return append(baseType, instance, false);
     }
 

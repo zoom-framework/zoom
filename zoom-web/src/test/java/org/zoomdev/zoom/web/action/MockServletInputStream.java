@@ -7,7 +7,7 @@ import java.io.IOException;
 public class MockServletInputStream extends ServletInputStream {
     ByteArrayInputStream is;
 
-    public MockServletInputStream(byte[] bytes){
+    public MockServletInputStream(byte[] bytes) {
         is = new ByteArrayInputStream(bytes);
     }
 

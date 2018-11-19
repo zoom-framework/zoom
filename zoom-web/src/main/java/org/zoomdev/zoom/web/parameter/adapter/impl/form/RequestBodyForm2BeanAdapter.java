@@ -13,7 +13,7 @@ public class RequestBodyForm2BeanAdapter implements ParameterAdapter<HttpServlet
 
     @Override
     public Object get(ActionContext context, HttpServletRequest data, String name, Type type) {
-        return Caster.toType(data,type);
+        return Caster.toType(data, type);
 
 //        try {
 //            Object target = type.newInstance();

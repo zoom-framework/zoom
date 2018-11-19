@@ -18,7 +18,7 @@ public class NamedMapParameterAdapter implements ParameterAdapter<Map<String, Ob
 
     @Override
     public Object get(ActionContext context, Map<String, Object> data, String name, Type type) {
-        return Caster.toType(data.get(name),type);
+        return Caster.toType(data.get(name), type);
     }
 
 }
