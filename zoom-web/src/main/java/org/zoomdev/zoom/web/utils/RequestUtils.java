@@ -1,14 +1,9 @@
 package org.zoomdev.zoom.web.utils;
 
-import org.zoomdev.zoom.common.caster.Caster;
-import org.zoomdev.zoom.common.utils.CachedClasses;
-
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Field;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 public class RequestUtils {
 
@@ -39,10 +34,6 @@ public class RequestUtils {
             data.put(key, request.getAttribute(key));
         }
     }
-
-
-
-
 
 
 }

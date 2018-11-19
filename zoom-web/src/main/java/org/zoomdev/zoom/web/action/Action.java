@@ -7,7 +7,6 @@ import org.zoomdev.zoom.common.Destroyable;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.web.parameter.ParameterParser;
-import org.zoomdev.zoom.web.parameter.PreParameterParser;
 import org.zoomdev.zoom.web.parameter.PreParameterParserManager;
 import org.zoomdev.zoom.web.rendering.Rendering;
 
@@ -89,6 +88,9 @@ public class Action implements ActionHandler, Destroyable {
 
 
     private static final Log log = LogFactory.getLog(Action.class);
+
+
+    private String[] parameterNames;
 
     /**
      * 对于一个singleton的aciton，target为controller，
@@ -442,6 +444,13 @@ public class Action implements ActionHandler, Destroyable {
         return true;
     }
 
+    public String[] getParameterNames() {
+        return parameterNames;
+    }
+
+    public void setParameterNames(String[] parameterNames) {
+        this.parameterNames = parameterNames;
+    }
 
     public Object getTarget() {
         return target;

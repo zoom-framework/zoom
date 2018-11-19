@@ -17,7 +17,6 @@ import org.zoomdev.zoom.ioc.configuration.SimpleConfigBuilder;
 import org.zoomdev.zoom.ioc.impl.ZoomIocContainer;
 import org.zoomdev.zoom.web.action.ActionFactory;
 import org.zoomdev.zoom.web.action.ActionHandler;
-import org.zoomdev.zoom.web.action.ActionInterceptor;
 import org.zoomdev.zoom.web.action.ActionInterceptorFactory;
 import org.zoomdev.zoom.web.action.impl.SimpleActionBuilder;
 import org.zoomdev.zoom.web.action.impl.SimpleActionFactory;
@@ -46,7 +45,7 @@ public class ZoomWeb {
     long first = System.currentTimeMillis();
 
 
-    public ZoomWeb(){
+    public ZoomWeb() {
         this.ioc = new ZoomIocContainer();
         WebUtils.setIoc(ioc);
     }
@@ -75,10 +74,10 @@ public class ZoomWeb {
     private void resolveClasses() {
         // 初始化classInfo
         ActionInterceptorFactory actionInterceptorFactory = new SimpleActionInterceptorFactory();
-        ioc.getIocClassLoader().append(ActionInterceptorFactory.class,actionInterceptorFactory,true);
+        ioc.getIocClassLoader().append(ActionInterceptorFactory.class, actionInterceptorFactory, true);
         ioc.getIocClassLoader().append(SimpleActionFactory.class);
 
-     //   ioc.getIocClassLoader().append(ActionFactory.class,ioc.fetch(SimpleActionFactory.class),true);
+        //   ioc.getIocClassLoader().append(ActionFactory.class,ioc.fetch(SimpleActionFactory.class),true);
 
         ClassResolvers classResolvers = new ClassResolvers(new SimpleConfigBuilder(ioc),
                 new SimpleActionBuilder(ioc, router));

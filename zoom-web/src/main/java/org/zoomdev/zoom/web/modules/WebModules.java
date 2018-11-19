@@ -7,11 +7,10 @@ import org.zoomdev.zoom.common.annotations.Module;
 import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.common.caster.ValueCaster;
 import org.zoomdev.zoom.common.utils.Classes;
-import org.zoomdev.zoom.web.action.ActionFactory;
-import org.zoomdev.zoom.web.action.ActionInterceptorFactory;
-import org.zoomdev.zoom.web.action.impl.SimpleActionFactory;
-import org.zoomdev.zoom.web.action.impl.SimpleActionInterceptorFactory;
-import org.zoomdev.zoom.web.utils.RequestUtils;
+import org.zoomdev.zoom.web.parameter.ParameterParserFactory;
+import org.zoomdev.zoom.web.parameter.PreParameterParserManager;
+import org.zoomdev.zoom.web.parameter.parser.impl.SimpleParameterParserFactory;
+import org.zoomdev.zoom.web.parameter.pre.impl.SimplePreParameterParserManager;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -33,6 +32,16 @@ public class WebModules {
 
     }
 
+    @IocBean
+    public ParameterParserFactory getParameterParserFactory() {
+        return new SimpleParameterParserFactory();
+    }
+
+
+    @IocBean
+    public PreParameterParserManager getPreParameterParserManager() {
+        return new SimplePreParameterParserManager();
+    }
 
 
     static class Request2BeanProvider implements Caster.CasterProvider {
@@ -82,6 +91,7 @@ public class WebModules {
             HttpServletRequest request = (HttpServletRequest) src;
             return getParameters(request);
         }
+
         /**
          * 将request转成map
          *

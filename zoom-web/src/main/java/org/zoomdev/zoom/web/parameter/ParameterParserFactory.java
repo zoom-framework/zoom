@@ -14,5 +14,15 @@ public interface ParameterParserFactory {
      * @param names
      * @return
      */
-    ParameterParser createParamParser(Class<?> controllerClass, Method method, String[] names);
+    ParameterParser createParamParser(
+            Class<?> controllerClass,
+            Method method,
+            String[] names);
+
+
+    void add(
+            ParameterAdapterMaker maker
+    );
+
+
 }

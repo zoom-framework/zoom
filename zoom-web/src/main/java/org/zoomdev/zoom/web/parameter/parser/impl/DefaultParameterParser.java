@@ -7,7 +7,7 @@ import org.zoomdev.zoom.web.parameter.adapter.ParameterAdapter;
 import java.lang.reflect.Type;
 
 
-public class DefaultParameterParser implements ParameterParser {
+class DefaultParameterParser implements ParameterParser {
 
     private String[] names;
     private Type[] types;

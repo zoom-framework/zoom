@@ -47,11 +47,13 @@ public class MockHttpServletRequest implements HttpServletRequest {
                 new HashMap<String, String[]>()
         );
     }
+
     public MockHttpServletRequest(
             String serverPath) {
-        this(serverPath,"GET","application/json",new byte[0],new HashMap<String, String>(),new HashMap<String, String[]>());
+        this(serverPath, "GET", "application/json", new byte[0], new HashMap<String, String>(), new HashMap<String, String[]>());
 
     }
+
     public MockHttpServletRequest(
             String serverPath,
             String method,

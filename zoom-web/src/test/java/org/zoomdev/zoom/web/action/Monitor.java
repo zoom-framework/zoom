@@ -1,8 +1,5 @@
 package org.zoomdev.zoom.web.action;
 
-import org.codehaus.jackson.map.ObjectMapper;
-
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Monitor {
@@ -15,11 +12,12 @@ public class Monitor {
         num.incrementAndGet();
     }
 
-    public void setArguments(Object...arguments){
+    public void setArguments(Object... arguments) {
         this.arguments = arguments;
         num.incrementAndGet();
     }
-    public Object[] arguments(){
+
+    public Object[] arguments() {
         return arguments;
     }
 

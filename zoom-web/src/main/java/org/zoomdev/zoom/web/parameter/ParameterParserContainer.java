@@ -2,12 +2,14 @@ package org.zoomdev.zoom.web.parameter;
 
 import org.zoomdev.zoom.web.action.ActionContext;
 
+
 /**
- * 对参数预处理解析之后的结果处理
- *
- * @author renxueliang
+ * 承载 ParameterAdapter
  */
-public interface ParameterParser {
+public interface ParameterParserContainer {
+
+
+    boolean shouldAdapt(ActionContext context);
 
     /**
      * @return

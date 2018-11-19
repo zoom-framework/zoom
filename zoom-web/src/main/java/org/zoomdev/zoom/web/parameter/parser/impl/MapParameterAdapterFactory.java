@@ -1,21 +1,19 @@
 package org.zoomdev.zoom.web.parameter.parser.impl;
 
-import org.zoomdev.zoom.common.utils.Classes;
+import org.zoomdev.zoom.web.action.ActionContext;
 import org.zoomdev.zoom.web.parameter.adapter.ParameterAdapter;
-import org.zoomdev.zoom.web.parameter.adapter.impl.BasicParameterAdapter;
 import org.zoomdev.zoom.web.parameter.adapter.impl.map.NamedMapParameterAdapter;
 import org.zoomdev.zoom.web.parameter.adapter.impl.map.PathMapParameterAdapter;
 import org.zoomdev.zoom.web.parameter.adapter.impl.map.RequestBodyMapAdapter;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Collection;
 import java.util.Map;
 
-public class MapParameterParserFactory extends AbsParameterParserFactory<Map<String, Object>> {
+class MapParameterAdapterFactory extends AbstractParameterAdapterFactory<Map<String, Object>> {
 
 
-    public MapParameterParserFactory() {
+    public MapParameterAdapterFactory() {
 
     }
 
@@ -39,5 +37,11 @@ public class MapParameterParserFactory extends AbsParameterParserFactory<Map<Str
             return NamedMapParameterAdapter.ADAPTER;
         }
     }
+
+    @Override
+    public boolean shouldAdapt(ActionContext context) {
+        return context.getPreParam() instanceof Map;
+    }
+
 
 }

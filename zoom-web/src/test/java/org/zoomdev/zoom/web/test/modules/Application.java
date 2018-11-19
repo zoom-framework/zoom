@@ -16,14 +16,13 @@ public class Application {
     private static final Log log = LogFactory.getLog(Application.class);
 
     @Inject
-    public void config(ActionInterceptorFactory factory,ActionInterceptor interceptor) throws Exception {
+    public void config(ActionInterceptorFactory factory, ActionInterceptor interceptor) throws Exception {
 
         factory.add(interceptor, "*", 1);
     }
 
     @IocBean
     public ActionInterceptor getActionInterceptor(final Monitor monitor) throws Exception {
-
 
 
         return new ActionInterceptorAdapter() {

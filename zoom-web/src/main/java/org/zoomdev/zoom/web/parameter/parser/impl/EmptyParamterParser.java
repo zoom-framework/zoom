@@ -6,13 +6,13 @@ import org.zoomdev.zoom.web.parameter.ParameterParser;
 /**
  * 0个参数使用本解析器
  */
-public class EmptyParamterParser implements ParameterParser {
+class EmptyParamterParser implements ParameterParser {
 
     public static final ParameterParser DEFAULT = new EmptyParamterParser();
 
     private static final String[] EMPTY = new String[0];
 
-    private EmptyParamterParser(){
+    private EmptyParamterParser() {
 
     }
 

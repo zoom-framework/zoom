@@ -21,12 +21,13 @@ public class UserController {
      * simple
      */
     @JsonResponse
-    public void index(){
-        
+    public void index() {
+
     }
 
     /**
      * Simple type post test
+     *
      * @param id
      */
     @JsonResponse
@@ -35,17 +36,17 @@ public class UserController {
             Date date,
             String name,
             short age
-            ) {
+    ) {
     }
 
 
     @JsonResponse
     public void basic(HttpServletResponse response, HttpServletRequest request,
                       ActionContext context,
-                      HttpSession session){
+                      HttpSession session) {
     }
 
-    public static class LoginRequest{
+    public static class LoginRequest {
 
         private String account;
         private String password;
@@ -70,9 +71,7 @@ public class UserController {
     @JsonResponse
     public void login(
             LoginRequest request
-    ){
-
-
+    ) {
 
 
     }

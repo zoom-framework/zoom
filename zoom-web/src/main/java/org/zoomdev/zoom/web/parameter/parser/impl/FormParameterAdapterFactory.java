@@ -1,19 +1,16 @@
 package org.zoomdev.zoom.web.parameter.parser.impl;
 
-import org.zoomdev.zoom.common.utils.Classes;
+import org.zoomdev.zoom.web.action.ActionContext;
 import org.zoomdev.zoom.web.parameter.adapter.ParameterAdapter;
 import org.zoomdev.zoom.web.parameter.adapter.impl.form.NamedFormParameterAdapter;
 import org.zoomdev.zoom.web.parameter.adapter.impl.form.RequestBodyForm2BeanAdapter;
-import org.zoomdev.zoom.web.parameter.adapter.impl.form.RequestBodyForm2MapAdapter;
 import org.zoomdev.zoom.web.parameter.adapter.impl.map.PathMapParameterAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.Map;
 
-public class FormParameterParserFactory extends AbsParameterParserFactory<HttpServletRequest> {
+class FormParameterAdapterFactory extends AbstractParameterAdapterFactory<HttpServletRequest> {
 
 
     @Override
@@ -38,4 +35,8 @@ public class FormParameterParserFactory extends AbsParameterParserFactory<HttpSe
     }
 
 
+    @Override
+    public boolean shouldAdapt(ActionContext context) {
+        return context.getPreParam() instanceof HttpServletRequest;
+    }
 }

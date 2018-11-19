@@ -17,6 +17,7 @@ public class UploadPreParamParser implements PreParameterParser {
     public Object preParse(ActionContext context) throws Exception {
         return doUpload(context.getRequest());
     }
+
     private static DiskFileItemFactory factory = new DiskFileItemFactory();
 
     public static Map<String, Object> doUpload(HttpServletRequest request) {
@@ -43,6 +44,7 @@ public class UploadPreParamParser implements PreParameterParser {
         }
 
     }
+
     @Override
     public boolean shouldParse(String contentType) {
         return contentType != null && contentType.startsWith("multipart/form-data;");

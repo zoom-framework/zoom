@@ -1,8 +1,6 @@
 package org.zoomdev.zoom.web.action;
 
 import junit.framework.TestCase;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.mockito.Mockito;
 import org.zoomdev.zoom.common.utils.DataObject;
 import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.web.ZoomFilter;
@@ -23,6 +21,7 @@ import static org.mockito.Mockito.when;
 public class ActionTest extends TestCase {
 
     ZoomFilter filter = new ZoomFilter();
+
     public void test() throws ServletException, IOException {
         FilterConfig config = mock(FilterConfig.class);
         when(config.getInitParameter("exclusions")).thenReturn("*.js|*.gif|*.jpg|*.png|*.css|*.ico|*.jar");
@@ -30,47 +29,44 @@ public class ActionTest extends TestCase {
 
         IocContainer ioc = filter.getWeb().getIoc();
         Monitor monitor = new Monitor();
-        ioc.getIocClassLoader().append( Monitor.class,monitor,false );
+        ioc.getIocClassLoader().append(Monitor.class, monitor, false);
 
         filter.init(config);
 
         int count = 0;
 
-        request("/user/index",DataObject.as());
+        request("/user/index", DataObject.as());
 
-        assertEquals(monitor.count(),++count);
+        assertEquals(monitor.count(), ++count);
 
-        request("/user/put",DataObject.as(
-                "id","1",  //passs different type
-                "age",20,
-                "date","2017-08-12",
-                "name","韩贝贝"
+        request("/user/put", DataObject.as(
+                "id", "1",  //passs different type
+                "age", 20,
+                "date", "2017-08-12",
+                "name", "韩贝贝"
         ));
-        assertEquals(monitor.count(),++count);
-        assertEquals(monitor.arguments()[0],1);
+        assertEquals(monitor.count(), ++count);
+        assertEquals(monitor.arguments()[0], 1);
 
-        request("/user/basic",DataObject.as(
+        request("/user/basic", DataObject.as(
 
         ));
-        assertEquals(monitor.count(),++count);
+        assertEquals(monitor.count(), ++count);
         assertTrue(HttpServletResponse.class.isAssignableFrom(monitor.arguments()[0].getClass()));
         assertTrue(HttpServletRequest.class.isAssignableFrom(monitor.arguments()[1].getClass()));
         assertTrue(ActionContext.class.isAssignableFrom(monitor.arguments()[2].getClass()));
         assertTrue(HttpSession.class.isAssignableFrom(monitor.arguments()[3].getClass()));
 
 
-
-
-
         filter.destroy();
 
     }
 
-    private void request(String url,Object data) throws IOException, ServletException {
+    private void request(String url, Object data) throws IOException, ServletException {
 
         filter.doFilter(mockJsonRequest(
                 url,
-               data
+                data
         ), mockJsonResponse(), mockNextChain());
     }
 
