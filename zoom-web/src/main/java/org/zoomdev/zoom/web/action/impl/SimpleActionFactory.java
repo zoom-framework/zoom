@@ -5,6 +5,8 @@ import org.zoomdev.zoom.aop.impl.ReflectMethodCaller;
 import org.zoomdev.zoom.aop.reflect.ClassInfo;
 import org.zoomdev.zoom.common.ConfigurationConstants;
 import org.zoomdev.zoom.common.annotations.Inject;
+import org.zoomdev.zoom.common.filter.Filter;
+import org.zoomdev.zoom.common.utils.CollectionUtils;
 import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.web.action.Action;
 import org.zoomdev.zoom.web.action.ActionContext;
@@ -114,7 +116,34 @@ public class SimpleActionFactory implements ActionFactory,PreParameterParserMana
         }
         return names;
     }
+    public static String[] getPathVariableNames(Method method, String[] names) {
+        Annotation[][] paramAnnotations = method.getParameterAnnotations();
+        int c = names.length;
+        List<String> pathVariableNames = new ArrayList<String>();
+        final Filter<Annotation> filter = new Filter<Annotation>() {
+            @Override
+            public boolean accept(Annotation value) {
+                return value instanceof Param;
+            }
+        };
+        for (int i = 0; i < c; ++i) {
+            Annotation[] annotations = paramAnnotations[i];
+            Param param = (Param) CollectionUtils.get(annotations, filter);
+            if (param != null) {
+                if (param.name().startsWith("{") && param.name().endsWith("}")) {
+                    String pathName = param.name()
+                            .substring(1, param.name().length() - 1);
+                    pathVariableNames.add(pathName);
+                    break;
+                } else if (param.pathVariable()) {
+                    pathVariableNames.add(StringUtils.isEmpty(param.name()) ? names[i] : param.name());
+                    break;
+                }
+            }
+        }
 
+        return CollectionUtils.toArray(pathVariableNames);
+    }
     @Override
     public Action createAction(Object target, Class<?> controllerClass, Method method,
                                ActionInterceptorFactory actionInterceptorFactory) {
@@ -128,7 +157,7 @@ public class SimpleActionFactory implements ActionFactory,PreParameterParserMana
 
         String[] names = getNames(controllerClass, method);
 
-        action.setPathVariableNames(AbsParameterParserFactory.getPathVariableNames(method, names));
+        action.setPathVariableNames(getPathVariableNames(method, names));
         action.setCaller(new ReflectMethodCaller(method));
         action.setTarget(target);
 

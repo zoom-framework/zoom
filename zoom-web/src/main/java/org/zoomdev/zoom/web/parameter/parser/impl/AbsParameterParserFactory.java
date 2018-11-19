@@ -2,6 +2,7 @@ package org.zoomdev.zoom.web.parameter.parser.impl;
 
 import org.apache.commons.lang3.StringUtils;
 import org.zoomdev.zoom.common.Destroyable;
+import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.common.utils.CollectionUtils;
 import org.zoomdev.zoom.web.annotations.Param;
 import org.zoomdev.zoom.web.parameter.ParameterParser;
@@ -16,77 +17,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbsParameterParserFactory<T> implements ParameterParserFactory, Destroyable {
-    private static final EmptyParamterParser EMPTY = new EmptyParamterParser();
 
-    public static String[] getPathVariableNames(Method method, String[] names) {
-        Annotation[][] paramAnnotations = method.getParameterAnnotations();
-        Class<?>[] types = method.getParameterTypes();
-        int c = types.length;
-        Type[] genericTypes = method.getGenericParameterTypes();
-        ParameterAdapter<?>[] adapters = new ParameterAdapter<?>[c];
-        List<String> pathValiableNames = new ArrayList<String>();
-        for (int i = 0; i < c; ++i) {
-            Annotation[] annotations = paramAnnotations[i];
-            Class<?> type = types[i];
-            Type genericType = genericTypes[i];
-            for (Annotation annotation : annotations) {
-                if (annotation instanceof Param) {
-                    Param param = (Param) annotation;
-                    if (param.name().startsWith("{") && param.name().endsWith("}")) {
-                        String pathName = param.name()
-                                .substring(1, param.name().length() - 1);
-                        pathValiableNames.add(pathName);
-                        break;
-                    } else if (param.pathVariable()) {
-                        pathValiableNames.add(StringUtils.isEmpty(param.name()) ? names[i] : param.name());
-                        break;
-                    }
-                }
-            }
-        }
 
-        return CollectionUtils.toArray(pathValiableNames);
-    }
+
 
     public AbsParameterParserFactory() {
     }
 
-    protected abstract ParameterAdapter<T> createAdapter(String name, Class<?> type, Type genericType, Annotation[] annotations);
+    protected abstract ParameterAdapter<T> createAdapter(String name, Type type, Annotation[] annotations);
 
     @SuppressWarnings("rawtypes")
     @Override
-    public ParameterParser createParamParser(Class<?> controllerClass, Method method,
-                                             String[] names) {
-
-
+    public ParameterParser createParamParser(Class<?> controllerClass, Method method, String[] names) {
         int c = names.length;
-        if (c > 0) {
-            Annotation[][] paramAnnotations = method.getParameterAnnotations();
-            Class<?>[] types = method.getParameterTypes();
-            Type[] genericTypes = method.getGenericParameterTypes();
-            ParameterAdapter[] adapters = new ParameterAdapter[c];
-            for (int i = 0; i < c; ++i) {
-                String name = names[i];
-                Annotation[] annotations = paramAnnotations[i];
-                Class<?> type = types[i];
-                Type genericType = genericTypes[i];
-                adapters[i] = getAdapter(name, type, genericType, annotations);
-            }
-            return new DefaultParameterParser(names, types, adapters);
-
-        } else {
-            return EMPTY;
+        Annotation[][] paramAnnotations = method.getParameterAnnotations();
+        Type[] genericTypes = method.getGenericParameterTypes();
+        ParameterAdapter[] adapters = new ParameterAdapter[c];
+        for (int i = 0; i < c; ++i) {
+            adapters[i] = getAdapter(names[i], genericTypes[i], paramAnnotations[i]);
         }
+        return new DefaultParameterParser(names, genericTypes, adapters);
     }
 
 
-    protected ParameterAdapter<?> getAdapter(String name, Class<?> type, Type genericType, Annotation[] annotations) {
+    protected ParameterAdapter<?> getAdapter(String name, Type type, Annotation[] annotations) {
         ParameterAdapter<?> adapter = BasicParameterAdapter.getAdapter(type);
         if (adapter != null) {
             return adapter;
         }
 
-        return createAdapter(name, type, genericType, annotations);
+        return createAdapter(name, type, annotations);
 
     }
 

@@ -135,4 +135,26 @@ public class CollectionUtilsTest extends TestCase {
        );
 
     }
+
+
+
+    public void testGet(){
+
+        Integer[] data = new Integer[]{1,2,3};
+
+       assertEquals( (Integer)CollectionUtils.get(data, new Filter<Integer>() {
+           @Override
+           public boolean accept(Integer value) {
+               return value==1;
+           }
+       }),(Integer)1);
+
+
+        assertEquals( (Integer)CollectionUtils.get(data, new Filter<Integer>() {
+            @Override
+            public boolean accept(Integer value) {
+                return value==4;
+            }
+        }),null);
+    }
 }

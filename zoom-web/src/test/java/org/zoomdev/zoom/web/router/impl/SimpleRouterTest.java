@@ -2,7 +2,7 @@ package org.zoomdev.zoom.web.router.impl;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.zoomdev.zoom.mock.MockHttpServletRequest;
+import org.zoomdev.zoom.web.action.MockHttpServletRequest;
 import org.zoomdev.zoom.web.action.impl.GroupActionHandler;
 import org.zoomdev.zoom.web.router.Router;
 

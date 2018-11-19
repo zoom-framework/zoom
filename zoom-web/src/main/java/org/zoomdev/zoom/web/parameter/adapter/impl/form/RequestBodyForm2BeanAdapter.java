@@ -14,17 +14,6 @@ public class RequestBodyForm2BeanAdapter implements ParameterAdapter<HttpServlet
     @Override
     public Object get(ActionContext context, HttpServletRequest data, String name, Type type) {
         return Caster.toType(data, type);
-
-//        try {
-//            Object target = type.newInstance();
-//
-//            RequestUtils.toBean(context.getRequest(), target);
-//
-//            return target;
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-
     }
 
 }

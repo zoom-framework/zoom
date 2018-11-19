@@ -45,13 +45,16 @@ public class ZoomWeb {
     private static Log log = LogFactory.getLog(ZoomWeb.class);
     long first = System.currentTimeMillis();
 
+
+    public ZoomWeb(){
+        this.ioc = new ZoomIocContainer();
+        WebUtils.setIoc(ioc);
+    }
+
     public void init() {
 
         printLogo();
-        // 初始化ioc容器
-        ioc = new ZoomIocContainer();
 
-        WebUtils.setIoc(ioc);
 
         /// 加载整个项目的主配置
         loadApplicationConfig();

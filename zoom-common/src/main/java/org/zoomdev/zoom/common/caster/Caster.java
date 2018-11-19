@@ -1,5 +1,6 @@
 package org.zoomdev.zoom.common.caster;
 
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
@@ -17,6 +18,7 @@ import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.NClob;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -367,6 +369,8 @@ public class Caster {
         );
 
         Caster.registerCastProvider(new Map2BeanProvider());
+
+        Caster.register(String.class,Date.class,new String2Date());
     }
 
 
@@ -1494,6 +1498,57 @@ public class Caster {
             }
 
             return dest;
+        }
+    }
+
+    /**
+     * 注意日期转换比较特殊，有如下模式:
+     *
+     * yyyyMMdd   总结一下 : 8-12位数字，偶数位数  或者 4-2-2[ 2[:2[:2]]]
+     * yyyy-MM-dd
+     * yyyyMMddhhmmss
+     * yyyy-MM-dd hh:mm:ss:SSS
+     * yyyy-MM-dd hh:mm
+     * yyyy-MM-dd hh
+     *
+     *
+     *
+     *
+     */
+    private static final String SHORT_DATE_TIME = "yyyyMMddHHmmssSSS";
+    private static final String LONG_DATE_TIME = "yyyy-MM-dd HH:mm:ss:SSS";
+
+    private static class String2Date implements ValueCaster {
+        @Override
+        public Object to(Object src) {
+            String str = (String)src;
+            if(str.length() < 8 || str.length() > 17){
+                throw new CasterException("Not a valid date :"+str);
+            }
+
+            if(StringUtils.isNumeric(str)){
+                //纯数字
+                if(str.length() % 2 > 0 && str.length() != SHORT_DATE_TIME.length()){
+                    throw new CasterException("Not a valid date :"+str);
+                }
+
+                try {
+                    return new SimpleDateFormat(SHORT_DATE_TIME.substring(0,str.length()))
+                            .parse(str);
+                } catch (ParseException e) {
+                    throw new CasterException("Not a valid date :"+str);
+                }
+            }
+
+            //长时间
+
+            try {
+                return new SimpleDateFormat(LONG_DATE_TIME.substring(0,str.length()))
+                        .parse(str);
+            } catch (ParseException e) {
+                throw new CasterException("Not a valid date :"+str);
+            }
+
         }
     }
 }

@@ -14,6 +14,7 @@ import org.zoomdev.zoom.web.action.impl.SimpleActionInterceptorFactory;
 import org.zoomdev.zoom.web.utils.RequestUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.Map;
 
 @Module
@@ -66,7 +67,10 @@ public class WebModules {
         @Override
         public Object to(Object src) {
             HttpServletRequest request = (HttpServletRequest) src;
-            return Caster.to(RequestUtils.getParameters(request), toType);
+
+
+            return null;
+
         }
 
     }
@@ -76,9 +80,22 @@ public class WebModules {
         @Override
         public Object to(Object src) {
             HttpServletRequest request = (HttpServletRequest) src;
-            return RequestUtils.getParameters(request);
+            return getParameters(request);
         }
-
+        /**
+         * 将request转成map
+         *
+         * @param request
+         * @return
+         */
+        public static Map<String, Object> getParameters(HttpServletRequest request) {
+            Map<String, String[]> params = request.getParameterMap();
+            Map<String, Object> data = new HashMap<String, Object>();
+            for (Map.Entry<String, String[]> entry : params.entrySet()) {
+                data.put(entry.getKey(), entry.getValue()[0]);
+            }
+            return data;
+        }
     }
 
 

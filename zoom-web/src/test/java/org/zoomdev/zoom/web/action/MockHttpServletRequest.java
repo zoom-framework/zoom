@@ -1,5 +1,6 @@
 package org.zoomdev.zoom.web.action;
 
+
 import org.zoomdev.zoom.common.json.JSON;
 
 import javax.servlet.*;
@@ -10,9 +11,10 @@ import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.*;
 
-public class MockHttpServerRequest implements HttpServletRequest {
+public class MockHttpServletRequest implements HttpServletRequest {
 
 
+    private MockHttpSession session = new MockHttpSession();
     private Map<String, String> headers;
 
     private Map<String, String[]> parameters;
@@ -24,7 +26,7 @@ public class MockHttpServerRequest implements HttpServletRequest {
     private ServletInputStream inputStream;
     private String contentType;
 
-    public static MockHttpServerRequest json(
+    public static MockHttpServletRequest json(
             String serverPath,
             String method,
             Object data
@@ -32,21 +34,25 @@ public class MockHttpServerRequest implements HttpServletRequest {
         return json(serverPath, method, data, new HashMap<String, String>());
     }
 
-    public static MockHttpServerRequest json(
+    public static MockHttpServletRequest json(
             String serverPath,
             String method,
             Object data,
             Map<String, String> headers
     ) {
-        return new MockHttpServerRequest(
+        return new MockHttpServletRequest(
                 serverPath, method, "application/json;charset=utf-8",
                 JSON.stringify(data).getBytes(),
                 headers,
                 new HashMap<String, String[]>()
         );
     }
+    public MockHttpServletRequest(
+            String serverPath) {
+        this(serverPath,"GET","application/json",new byte[0],new HashMap<String, String>(),new HashMap<String, String[]>());
 
-    public MockHttpServerRequest(
+    }
+    public MockHttpServletRequest(
             String serverPath,
             String method,
             String contentType,
@@ -171,12 +177,12 @@ public class MockHttpServerRequest implements HttpServletRequest {
 
     @Override
     public HttpSession getSession(boolean create) {
-        return null;
+        return session;
     }
 
     @Override
     public HttpSession getSession() {
-        return null;
+        return session;
     }
 
     @Override

@@ -4,42 +4,38 @@ import org.zoomdev.zoom.web.action.ActionContext;
 import org.zoomdev.zoom.web.parameter.ParameterParser;
 import org.zoomdev.zoom.web.parameter.adapter.ParameterAdapter;
 
+import java.lang.reflect.Type;
+
 
 public class DefaultParameterParser implements ParameterParser {
 
     private String[] names;
-    private Class<?>[] types;
+    private Type[] types;
     @SuppressWarnings("rawtypes")
     private ParameterAdapter[] adapters;
 
     @SuppressWarnings("rawtypes")
-    public DefaultParameterParser(String[] names, Class<?>[] types, ParameterAdapter[] adapters) {
+    public DefaultParameterParser(
+            String[] names,
+            Type[] types,
+            ParameterAdapter[] adapters) {
         this.names = names;
-        for (String name : names) {
-            if (name == null) {
-                throw new RuntimeException("name不能为null");
-            }
-        }
         this.types = types;
         this.adapters = adapters;
-        for (ParameterAdapter parameterAdapter : adapters) {
-            if (parameterAdapter == null) {
-                throw new RuntimeException("adapter不能为null");
-            }
-        }
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public Object[] parse(ActionContext context) throws Exception {
         Object data = context.getPreParam();
+        final ParameterAdapter[] adapters = this.adapters;
+        final String[] names = this.names;
+        final Type[] types = this.types;
         int c = names.length;
         Object[] args = new Object[c];
         for (int i = 0; i < c; ++i) {
             args[i] = adapters[i].get(context, data, names[i], types[i]);
-
         }
-
         return args;
     }
 

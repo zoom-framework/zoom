@@ -40,48 +40,9 @@ public class RequestUtils {
         }
     }
 
-    /**
-     * 将request转成map
-     *
-     * @param request
-     * @return
-     */
-    public static Map<String, Object> getParameters(HttpServletRequest request) {
-        Map<String, String[]> params = request.getParameterMap();
-        Map<String, Object> data = new HashMap<String, Object>();
-        for (Entry<String, String[]> entry : params.entrySet()) {
-            data.put(entry.getKey(), entry.getValue()[0]);
-        }
-        return data;
-    }
 
 
-    /**
-     * 整个request转成一个bean
-     *
-     * @param request
-     * @param classOfT
-     * @return
-     */
-    public static <T> T getParameters(HttpServletRequest request, Class<?> classOfT) {
-        //	BeanUtils.setProperty(bean, name, name);
-        return null;
-    }
-
-    public static void toBean(HttpServletRequest request, Object target) {
-        assert (target != null);
-
-        Field[] fields = CachedClasses.getFields(target.getClass());
-        for (Field field : fields) {
-            Object value = request.getParameter(field.getName());
-            try {
-                field.set(target, Caster.to(value, field.getType()));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
 
 
-    }
 
 }

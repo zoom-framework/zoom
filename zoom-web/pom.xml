@@ -102,12 +102,6 @@
         </dependency>
 
 
-        <dependency>
-            <groupId>org.zoomdev.zoom</groupId>
-            <artifactId>zoom-mock</artifactId>
-            <version>0.2.3-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
 
     </dependencies>
 

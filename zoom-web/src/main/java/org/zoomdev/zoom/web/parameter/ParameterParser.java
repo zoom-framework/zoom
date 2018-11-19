@@ -9,7 +9,7 @@ import org.zoomdev.zoom.web.action.ActionContext;
  */
 public interface ParameterParser {
 
-    interface HttpParameterDecoder {
+    interface ParameterAdapterFactory {
         Object[] decode(ActionContext context) throws Exception;
     }
 
@@ -17,5 +17,6 @@ public interface ParameterParser {
      * @return
      */
     Object[] parse(ActionContext context) throws Exception;
+
 
 }

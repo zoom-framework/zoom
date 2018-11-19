@@ -248,4 +248,21 @@ public class CollectionUtils {
         }
         return set;
     }
+
+
+    /**
+     * 获取满足条件的一个
+     * @param values
+     * @param filter
+     * @param <T>
+     * @return
+     */
+    public static <T> T get(T[] values,Filter<T> filter){
+        for(T data : values){
+            if(filter.accept(data)){
+                return data;
+            }
+        }
+        return null;
+    }
 }

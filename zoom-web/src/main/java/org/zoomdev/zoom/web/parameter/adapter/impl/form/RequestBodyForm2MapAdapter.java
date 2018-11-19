@@ -14,7 +14,7 @@ public class RequestBodyForm2MapAdapter implements ParameterAdapter<HttpServletR
 
     @Override
     public Object get(ActionContext context, HttpServletRequest data, String name, Type type) {
-        return Caster.toType(RequestUtils.getParameters(data), type);
+        return Caster.toType(data, type);
     }
 
 }

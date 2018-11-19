@@ -69,13 +69,17 @@ import java.io.IOException;
  */
 public class ZoomFilter implements Filter {
 
+    public ZoomWeb getWeb() {
+        return web;
+    }
+
     private ZoomWeb web;
     private static final Log log = LogFactory.getLog(ZoomFilter.class);
 
     org.zoomdev.zoom.common.filter.Filter<String> filter;
 
     public ZoomFilter() {
-
+        web = new ZoomWeb();
     }
 
 
@@ -118,7 +122,7 @@ public class ZoomFilter implements Filter {
         filter = PatternFilterFactory.createFilter(exts);
 
         try {
-            web = new ZoomWeb();
+
             web.init();
         } catch (Throwable e) {
             log.error("启动失败!", e);

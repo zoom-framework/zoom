@@ -10,7 +10,10 @@ public class SimpleParameterParserFactory implements ParameterParserFactory, Des
 
     @Override
     public ParameterParser createParamParser(Class<?> controllerClass, Method method, String[] names) {
-        return new AutoParameterParser(controllerClass, method, names);
+        if(names.length==0){
+            return EmptyParamterParser.DEFAULT;
+        }
+        return new SimpleParameterParser(controllerClass, method, names);
     }
 
     @Override
