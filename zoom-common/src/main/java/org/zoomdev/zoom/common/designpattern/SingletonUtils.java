@@ -46,6 +46,14 @@ public class SingletonUtils {
 
     }
 
+    /**
+     * 判断某个值存不存在，如果不存在则同步创建
+     * @param lock
+     * @param lockValue
+     * @param init
+     * @param <V>
+     * @return
+     */
     public static <V> V doubleLockValue(Object lock, SingletonValue<V> lockValue, SingletonInit<V> init) {
         V value = lockValue.getValue();
         if (value == null) {
@@ -87,7 +95,8 @@ public class SingletonUtils {
 
 
     /**
-     * 同步修改一个map的key ，对于同一个key的修改 同步创建、同步修改
+     * 同步修改一个map中的内容，对于同一个key，判断不存在则创建，否则修改。
+     * 创建和修改都是线程安全的。
      *
      * @param map
      * @param key

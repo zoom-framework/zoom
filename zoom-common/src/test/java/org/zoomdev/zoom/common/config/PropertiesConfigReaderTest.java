@@ -182,9 +182,17 @@ public class PropertiesConfigReaderTest {
         }
 
         File file = res.getFile();
-        Map<String, Object> data = new PropertiesConfigReader().load(new FileInputStream(file), new ConfigReader());
+        PropertiesConfigReader configReader = new PropertiesConfigReader();
+        ConfigReader reader = new ConfigReader();
+        Map<String, Object> data = configReader.load(new FileInputStream(file));
 
 
         System.out.print(data);
+
+        Set<String> keys = reader.keys("*");
+
+        assertNotNull(keys);
+
+
     }
 }

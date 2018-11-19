@@ -26,7 +26,7 @@ import java.util.Set;
  *
  * @author jzoom
  */
-public class ConfigReader implements ConfigKeyParser {
+public class ConfigReader  {
 
     private static final Log logger = LogFactory.getLog(ConfigReader.class);
 
@@ -102,35 +102,24 @@ public class ConfigReader implements ConfigKeyParser {
 
         logger.info("加载配置" + file.getAbsolutePath());
 
-        if (name.endsWith(".yml")) {
+        ConfigLoader loader;
 
-        }
         if (name.endsWith(".json")) {
-
-
-            InputStream is = null;
-            try {
-                is = new FileInputStream(file);
-                Map<String, Object> data = JSON.parse(is, Map.class);
-                for (Entry<String, Object> entry : data.entrySet()) {
-                    this.data.put(entry.getKey(), entry.getValue());
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(String.format("配置文件%s加载失败", file));
-            } finally {
-                Io.close(is);
-            }
-
+            loader=  new JsonConfigReader();
         } else if (name.endsWith(".properties")) {
-            try {
-                data.putAll(new PropertiesConfigReader().load(new FileInputStream(file), this));
-            } catch (Exception e) {
-                throw new RuntimeException(String.format("配置文件%s加载失败", file));
-            }
+            loader = new PropertiesConfigReader();
         } else {
             throw new RuntimeException("不支持的配置类型" + file);
         }
-
+        InputStream is = null;
+        try {
+            is = new FileInputStream(file);
+            data.putAll(loader.load(is));
+        } catch (Exception e) {
+            throw new RuntimeException(String.format("配置文件%s加载失败", file));
+        }finally {
+            Io.close(is);
+        }
     }
 
 

@@ -5,5 +5,5 @@ import java.io.InputStream;
 import java.util.Map;
 
 public interface ConfigLoader {
-    Map<String, Object> load(InputStream is, ConfigKeyParser parser) throws IOException;
+    Map<String, Object> load(InputStream is) throws IOException;
 }

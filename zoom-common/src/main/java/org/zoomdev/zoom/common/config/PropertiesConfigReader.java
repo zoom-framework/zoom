@@ -55,7 +55,7 @@ class PropertiesConfigReader implements ConfigLoader {
 
 
     @Override
-    public Map<String, Object> load(InputStream in, ConfigKeyParser parser) throws IOException {
+    public Map<String, Object> load(InputStream in) throws IOException {
         try {
             Properties p = new Properties();
             p.load(in);
