@@ -8,7 +8,9 @@ public class Utils {
 
     public static void createTables(Dao dao) {
         DatabaseBuilder builder = dao.builder();
-        String sql = builder.dropIfExists("product")
+        String sql = builder
+
+                .dropIfExists("product")
                 .createTable("product")
                 .add("pro_id").integer().keyPrimary().autoIncement()
                 .add("pro_name").string(100).keyIndex().notNull()
@@ -19,15 +21,13 @@ public class Utils {
                 .add("pro_count").integer().defaultValue(100)
                 .add("tp_id").integer().keyIndex()
                 .add("shp_id").string(30).keyIndex()
-                .add("create_at").timestamp().defaultValue(new ZoomDatabaseBuilder.FunctionValue("CURRENT_TIMESTAMP"))
-
+                .add("create_at").timestamp().defaultValue(new DatabaseBuilder.FunctionValue("CURRENT_TIMESTAMP"))
 
                 .dropIfExists("type")
                 .createTable("type")
                 .add("tp_id").integer().keyPrimary().autoIncement()
                 .add("tp_title").string(100).keyIndex().notNull()
                 .add("shp_id").string(30).keyIndex().notNull().keyIndex()
-
 
                 .dropIfExists("customer")
                 .createTable("customer")

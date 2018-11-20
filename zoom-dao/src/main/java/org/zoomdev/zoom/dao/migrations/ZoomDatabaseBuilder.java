@@ -25,17 +25,7 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
         abstract void build(List<String> sqls);
     }
 
-    public static class FunctionValue {
-        String value;
 
-        public FunctionValue(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-    }
 
     private class DropTableIfExists extends BuildInfo {
 

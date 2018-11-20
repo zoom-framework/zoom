@@ -6,6 +6,8 @@ import org.zoomdev.zoom.common.annotations.IocBean;
 import org.zoomdev.zoom.common.annotations.Module;
 import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.common.caster.ValueCaster;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
+import org.zoomdev.zoom.common.utils.CachedClasses;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.web.parameter.ParameterParserFactory;
 import org.zoomdev.zoom.web.parameter.PreParameterParserManager;
@@ -13,6 +15,7 @@ import org.zoomdev.zoom.web.parameter.parser.impl.SimpleParameterParserFactory;
 import org.zoomdev.zoom.web.parameter.pre.impl.SimplePreParameterParserManager;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -77,9 +80,25 @@ public class WebModules {
         public Object to(Object src) {
             HttpServletRequest request = (HttpServletRequest) src;
 
-
-            return null;
-
+            try {
+                Object data = toType.newInstance();
+                Field[] fields = CachedClasses.getFields(toType );
+                for(Field field : fields){
+                    Object value;
+                    if(field.getType().isArray()){
+                        value = request.getParameterValues(field.getName());
+                    }else{
+                        value = request.getParameter(field.getName());
+                    }
+                    if(value==null){
+                        continue;
+                    }
+                    field.set(data,Caster.toType(value,field.getGenericType()));
+                }
+                return data;
+            } catch (Exception e) {
+               throw new ZoomException(e);
+            }
         }
 
     }

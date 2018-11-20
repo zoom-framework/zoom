@@ -12,6 +12,17 @@ package org.zoomdev.zoom.dao.migrations;
  */
 public interface DatabaseBuilder {
 
+     class FunctionValue {
+        String value;
+
+        public FunctionValue(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
 
     DatabaseBuilder dropIfExists(String table);
 
