@@ -2,6 +2,7 @@ package org.zoomdev.zoom.web.action;
 
 
 import org.zoomdev.zoom.common.json.JSON;
+import org.zoomdev.zoom.common.utils.CollectionUtils;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -234,12 +235,12 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     @Override
     public Object getAttribute(String name) {
-        return null;
+        return attr.get(name);
     }
 
     @Override
     public Enumeration<String> getAttributeNames() {
-        return null;
+        return CollectionUtils.toEnumeration(attr.keySet());
     }
 
     @Override
@@ -322,9 +323,12 @@ public class MockHttpServletRequest implements HttpServletRequest {
         return null;
     }
 
+
+    private Map<String,Object> attr = new HashMap<String, Object>();
+
     @Override
     public void setAttribute(String name, Object o) {
-
+        attr.put(name,o);
     }
 
     @Override

@@ -1,11 +1,9 @@
 package org.zoomdev.zoom.web.parameter.parser.impl;
 
 import org.zoomdev.zoom.common.Destroyable;
-import org.zoomdev.zoom.web.annotations.Param;
 import org.zoomdev.zoom.web.parameter.ParameterAdapterFactory;
 import org.zoomdev.zoom.web.parameter.ParameterAdapterMaker;
-import org.zoomdev.zoom.web.parameter.adapter.ParameterAdapter;
-import org.zoomdev.zoom.web.parameter.adapter.impl.BasicParameterAdapter;
+import org.zoomdev.zoom.web.parameter.ParameterAdapter;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -25,7 +23,7 @@ abstract class AbstractParameterAdapterFactory<T> implements ParameterAdapterFac
 
     @Override
     public ParameterAdapter createParameterAdapter(String name, Type type, Annotation[] annotations) {
-        ParameterAdapter<?> adapter = BasicParameterAdapter.getAdapter(type);
+        ParameterAdapter<?> adapter = BasicParameterAdapter.getAdapter(name,type,annotations);
         if (adapter != null) {
             return adapter;
         }
@@ -42,39 +40,10 @@ abstract class AbstractParameterAdapterFactory<T> implements ParameterAdapterFac
     }
 
 
-    protected static boolean isPathVariable(String name, Annotation[] annotations) {
-        for (Annotation annotation : annotations) {
-            if (annotation instanceof Param) {
-                Param param = (Param) annotation;
-                if (param.name().startsWith("{") && param.name().endsWith("}")) {
-                    return true;
-                }
-                if (param.pathVariable()) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     @Override
     public void addAdapterMaker(ParameterAdapterMaker factory) {
         factories.add(factory);
     }
 
-    protected static boolean isRequestBody(String name, Annotation[] annotations) {
-        for (Annotation annotation : annotations) {
-            if (annotation instanceof Param) {
-                Param param = (Param) annotation;
-                if (Param.BODY.equals(param.name())) {
-                    return true;
-                }
-                if (param.body()) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
 }

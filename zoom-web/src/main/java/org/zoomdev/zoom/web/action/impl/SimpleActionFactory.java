@@ -81,25 +81,27 @@ public class SimpleActionFactory implements ActionFactory {
         String[] names = classInfo.getParameterNames(controllerClass, method);
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
         int index = 0;
+        final Filter filter = new Filter<Annotation>() {
+            @Override
+            public boolean accept(Annotation value) {
+                return value instanceof Param;
+            }
+        };
         for (String name : names) {
             if (name == null) {
                 throw new RuntimeException("获取名称失败");
             }
-
             Annotation[] annotations = parameterAnnotations[index];
-
-            for (Annotation annotation : annotations) {
-                if (annotation instanceof Param) {
-                    Param param = (Param) annotation;
-                    if (param.name().startsWith("{") && param.name().endsWith("}")) {
-                        String pathName = param.name()
-                                .substring(1, param.name().length() - 1);
-                        names[index] = pathName;
-                        break;
-                    } else {
-                        if (!StringUtils.isEmpty(param.name())) {
-                            names[index] = param.name();
-                        }
+            Param param = (Param)CollectionUtils.get(annotations, filter);
+            if(param!=null){
+                if (param.name().startsWith("{") && param.name().endsWith("}")) {
+                    String pathName = param.name()
+                            .substring(1, param.name().length() - 1);
+                    names[index] = pathName;
+                    break;
+                } else {
+                    if (!StringUtils.isEmpty(param.name())) {
+                        names[index] = param.name();
                     }
                 }
             }

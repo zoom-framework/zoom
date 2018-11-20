@@ -1,7 +1,5 @@
 package org.zoomdev.zoom.web.parameter;
 
-import org.zoomdev.zoom.web.parameter.adapter.ParameterAdapter;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 

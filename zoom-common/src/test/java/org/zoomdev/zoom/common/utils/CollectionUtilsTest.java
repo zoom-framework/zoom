@@ -6,10 +6,7 @@ import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.common.json.JSON;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CollectionUtilsTest extends TestCase {
 
@@ -156,5 +153,29 @@ public class CollectionUtilsTest extends TestCase {
                 return value==4;
             }
         }),null);
+    }
+
+
+    public void testEnu(){
+
+
+
+        Enumeration<String> enumeration = CollectionUtils.toEnumeration(
+                Arrays.asList("1","2","3")
+        );
+
+        List<String> list = new ArrayList<String>();
+        while (enumeration.hasMoreElements()){
+            String str = enumeration.nextElement();
+            list.add(str);
+
+        }
+
+        assertEquals(list.size(),3);
+        assertEquals(list.get(1),"1");
+        assertEquals(list.get(2),"2");
+        assertEquals(list.get(3),"3");
+
+
     }
 }

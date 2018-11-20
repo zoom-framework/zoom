@@ -5,7 +5,7 @@ import org.zoomdev.zoom.web.action.ActionContext;
 import org.zoomdev.zoom.web.parameter.ParameterAdapterFactory;
 import org.zoomdev.zoom.web.parameter.ParameterParser;
 import org.zoomdev.zoom.web.parameter.ParameterParserContainer;
-import org.zoomdev.zoom.web.parameter.adapter.ParameterAdapter;
+import org.zoomdev.zoom.web.parameter.ParameterAdapter;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

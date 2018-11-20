@@ -70,6 +70,23 @@ public class CollectionUtils {
         return collection.get(collection.size()-1);
     }
 
+    public static <T> Enumeration<T> toEnumeration(Iterable<T> it) {
+        assert(it!=null);
+        final Iterator<T> iterator = it.iterator();
+
+        return new Enumeration<T>() {
+            @Override
+            public boolean hasMoreElements() {
+                return iterator.hasNext();
+            }
+
+            @Override
+            public T nextElement() {
+                return iterator.next();
+            }
+        };
+    }
+
     static interface KeyValue {
         String getKeyValue(Object data, String... keys);
     }

@@ -1,17 +1,30 @@
 package org.zoomdev.zoom.web.parameter.parser.impl;
 
+import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.web.action.ActionContext;
-import org.zoomdev.zoom.web.parameter.adapter.ParameterAdapter;
-import org.zoomdev.zoom.web.parameter.adapter.impl.map.NamedMapParameterAdapter;
-import org.zoomdev.zoom.web.parameter.adapter.impl.map.PathMapParameterAdapter;
-import org.zoomdev.zoom.web.parameter.adapter.impl.map.RequestBodyMapAdapter;
+import org.zoomdev.zoom.web.parameter.ParameterAdapter;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Map;
 
 class MapParameterAdapterFactory extends AbstractParameterAdapterFactory<Map<String, Object>> {
+    public static final NamedMapParameterAdapter ADAPTER = new NamedMapParameterAdapter();
 
+
+    public static class NamedMapParameterAdapter implements ParameterAdapter<Map<String, Object>> {
+
+
+        public NamedMapParameterAdapter() {
+
+        }
+
+        @Override
+        public Object get(ActionContext context, Map<String, Object> data, String name, Type type) {
+            return Caster.toType(data.get(name), type);
+        }
+
+    }
 
     public MapParameterAdapterFactory() {
 
@@ -27,15 +40,7 @@ class MapParameterAdapterFactory extends AbstractParameterAdapterFactory<Map<Str
             String name,
             Type type,
             Annotation[] annotations) {
-        if (isRequestBody(name, annotations)) {
-            return RequestBodyMapAdapter.ADAPTER;
-        } else if (isPathVariable(name, annotations)) {
-            //简单类型直接来
-            return (ParameterAdapter) PathMapParameterAdapter.ADAPTER;
-        } else {
-            //简单类型直接来
-            return NamedMapParameterAdapter.ADAPTER;
-        }
+        return ADAPTER;
     }
 
     @Override

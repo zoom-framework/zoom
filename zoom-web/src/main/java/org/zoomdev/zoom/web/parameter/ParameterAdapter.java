@@ -1,4 +1,4 @@
-package org.zoomdev.zoom.web.parameter.adapter;
+package org.zoomdev.zoom.web.parameter;
 
 
 import org.zoomdev.zoom.web.action.ActionContext;
