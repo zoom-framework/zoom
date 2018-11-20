@@ -139,7 +139,7 @@ public class TestBuilder extends AbstractDaoTest {
                         "tpId", 1,
                         "shpId", FIRST_BUSINESS,
                         "price", 50.0,
-                        "img", "image binary".getBytes(),
+                        "img", "image binary" .getBytes(),
                         "info", "very very long text,好长好长啊a"
 
                 )), 1);

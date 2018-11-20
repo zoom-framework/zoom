@@ -104,7 +104,7 @@ public class TestEntity extends AbstractDaoTest {
                 simpleProduct.setPrice(100);
                 simpleProduct.setInfo("介绍");
                 simpleProduct.setThumb("Http://mycom/1.jpg");
-                simpleProduct.setImg("测试图片src".getBytes());
+                simpleProduct.setImg("测试图片src" .getBytes());
 
                 dao.ar(SimpleProduct.class)
                         .insert(simpleProduct);
@@ -238,29 +238,29 @@ public class TestEntity extends AbstractDaoTest {
     }
 
     @Test
-    public void testFilter(){
-      execute(new RunWithDao() {
-          @Override
-          public void run(Dao dao) {
-              Shop shop = new Shop();
-              shop.setTitle("测试商家");
-              shop.setAddress("测试地址");
-              shop.setId("business2");
-              dao.ar(Shop.class).insert(shop);
+    public void testFilter() {
+        execute(new RunWithDao() {
+            @Override
+            public void run(Dao dao) {
+                Shop shop = new Shop();
+                shop.setTitle("测试商家");
+                shop.setAddress("测试地址");
+                shop.setId("business2");
+                dao.ar(Shop.class).insert(shop);
 
 
-              shop.setTitle("测试商家500");
-              shop.setAddress("测试地址500");
-              dao.ar(Shop.class).filter("title")
-                      .update(shop);
-              Shop shop2 =  dao.ar(Shop.class).get("business2");
+                shop.setTitle("测试商家500");
+                shop.setAddress("测试地址500");
+                dao.ar(Shop.class).filter("title")
+                        .update(shop);
+                Shop shop2 = dao.ar(Shop.class).get("business2");
 
-              assertEquals(shop.getId(),shop2.getId());
-              assertEquals(shop2.getTitle(),"测试商家500");
-              assertEquals(shop2.getAddress(),"测试地址");
+                assertEquals(shop.getId(), shop2.getId());
+                assertEquals(shop2.getTitle(), "测试商家500");
+                assertEquals(shop2.getAddress(), "测试地址");
 
-          }
-      });
+            }
+        });
 
     }
 

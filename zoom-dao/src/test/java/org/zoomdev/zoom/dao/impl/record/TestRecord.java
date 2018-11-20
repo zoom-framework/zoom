@@ -147,7 +147,7 @@ public class TestRecord extends AbstractDaoTest {
                         "pro_name", "牛肉饭",
                         "shp_id", FIRST_BUSINESS,
                         "pro_price", 50.0,
-                        "pro_img", "image binary".getBytes(),
+                        "pro_img", "image binary" .getBytes(),
                         "pro_info", "very very long text,好长好长啊a"
 
                 ), "pro_id"), 1);

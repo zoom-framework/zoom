@@ -1,6 +1,5 @@
 package org.zoomdev.zoom.dao.impl;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.dao.adapters.EntityField;
 import org.zoomdev.zoom.dao.utils.DaoUtils;
@@ -34,10 +33,10 @@ public class ZoomAutoEntity implements AutoEntity {
                 for (EntityField entityField : entityFields) {
                     // 注意这里有个坑，GenerateKey生成的数据，类型可能与数据库MetaData的不一致。
                     Object value = entityField.getFieldValue(rs.getObject(index++));
-                    if(entityField.getFieldType()==null){
-                        entityField.set(data,value );
-                    }else{
-                        entityField.set(data, Caster.toType(value,entityField.getFieldType()));
+                    if (entityField.getFieldType() == null) {
+                        entityField.set(data, value);
+                    } else {
+                        entityField.set(data, Caster.toType(value, entityField.getFieldType()));
                     }
 
                 }

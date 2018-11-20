@@ -12,7 +12,7 @@ package org.zoomdev.zoom.dao.migrations;
  */
 public interface DatabaseBuilder {
 
-     class FunctionValue {
+    class FunctionValue {
         String value;
 
         public FunctionValue(String value) {

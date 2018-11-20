@@ -1,6 +1,5 @@
 package org.zoomdev.zoom.dao.driver.oracle;
 
-import javassist.expr.Cast;
 import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.common.caster.ValueCaster;
 import org.zoomdev.zoom.dao.Dao;
@@ -12,7 +11,6 @@ import org.zoomdev.zoom.dao.meta.TableMeta;
 import org.zoomdev.zoom.dao.migrations.TableBuildInfo;
 import org.zoomdev.zoom.dao.migrations.ZoomDatabaseBuilder;
 
-import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.*;
@@ -312,7 +310,7 @@ public class OracleDriver extends AbsDriver implements AutoGenerateProvider {
 
         buildUnique(table, sqlList);
 
-        buildComment(table,sqlList);
+        buildComment(table, sqlList);
     }
 
 
@@ -346,19 +344,25 @@ public class OracleDriver extends AbsDriver implements AutoGenerateProvider {
 
     static {
         //注意这里需要适配一下oracle的奇葩类型
-        Caster.register(oracle.sql.TIMESTAMP.class, Date.class, new ValueCaster() {
-            @Override
-            public Object to(Object src) {
-                oracle.sql.TIMESTAMP timestamp = (oracle.sql.TIMESTAMP)src;
-                try {
-                    return timestamp.dateValue();
-                } catch (SQLException e) {
-                    throw new Caster.CasterException("Cannot convert  oracle.sql.TIMESTAMP  to java.util.Date",e);
+        // 还得看下这个类有没有
+        try {
+            Class<?> oracleTimestamp = Class.forName("oracle.sql.Datum");
+            Caster.register(oracleTimestamp, Date.class, new ValueCaster() {
+                @Override
+                public Object to(Object src) {
+                    oracle.sql.Datum timestamp = (oracle.sql.Datum) src;
+                    try {
+                        return timestamp.dateValue();
+                    } catch (SQLException e) {
+                        throw new Caster.CasterException("Cannot convert  oracle.sql.TIMESTAMP  to java.util.Date", e);
+                    }
                 }
-            }
-        });
-    }
+            });
+        } catch (Exception e) {
 
+        }
+
+    }
 
 
 }

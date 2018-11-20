@@ -2,7 +2,6 @@ package org.zoomdev.zoom.dao.impl;
 
 import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.migrations.DatabaseBuilder;
-import org.zoomdev.zoom.dao.migrations.ZoomDatabaseBuilder;
 
 public class Utils {
 

@@ -107,15 +107,15 @@ public abstract class AbsDriver implements SqlDriver {
     }
 
 
-    protected void buildComment(TableBuildInfo table, List<String> sqlList){
+    protected void buildComment(TableBuildInfo table, List<String> sqlList) {
 
-        if(table.getComment() != null){
+        if (table.getComment() != null) {
             sqlList.add(String.format("COMMENT ON TABLE %s IS '%s'",
-                    protectTable(table.getName()),table.getComment()));
+                    protectTable(table.getName()), table.getComment()));
         }
         for (ColumnMeta columnMeta : table.getColumns()) {
 
-            if (columnMeta.getComment()!=null) {
+            if (columnMeta.getComment() != null) {
 
                 sqlList.add(String.format("COMMENT ON COLUMN %s.%s IS '%s'",
                         protectTable(table.getName()),

@@ -249,12 +249,75 @@ dao.ar("product").delete(record);
 ```java
 
 
+    @Table("product")
+    public static class Product {
+
+
+        @AutoGenerate
+        Integer id;
+
+        /// 表示不想用name，而是用title,这里可以写name,也可以写pro_name
+        @Column("name")
+        String title;
+
+        String thumb;
+
+        Double price;
+
+        String info;
+        ///...其他略
+    }
+
+/// 插入商品
+Product product = new Product();
+product.setTitle("我的商品");
+product.setPrice(100.0D);
+product.setInfo("好长好长的描述");
+product.setThumb("图片的url");
+product.setImg(Io.readBytes(new File("/Users/jzoom/Documents/FEEBEB71F4A304883EFA5E349A50DB2B.jpg")));
+product.setCount(200);
+
+dao.ar(Product.class)
+        .insert(product);
+
+///获取到自增id
+int insertId = product.getId();
+
+/// 修改商品
+product.setCount(300);
+product.setPrice(188D);
+product.setTitle("测试");
+
+dao.ar(Product.class)
+        .filter("count|price")        //增加一个更新过滤器
+        .update(product);
+
+//// 主键获取到商品
+Product record = dao.ar(Product.class).get(insertId);
+/// 没有修改名称
+assertEquals(record.getTitle(),"我的商品");
+/// 修改price和count成功
+assertEquals(record.getCount(),300);
+assertEquals(record.getPrice(),188D,0);
+
+/// 查询所有商品,同样可以设置查询字段过滤器
+List<Product> list = dao.ar(Product.class)
+        .filter("id|title").find();
+
+/// 分页查询
+Page<Product> page = dao.ar(Product.class)
+        .like("title",SqlBuilder.Like.MATCH_BOTH,"我的")
+        .page(1,30);
+
+/// 删除商品
+dao.ar(Product.class).delete(record);
 
 
 ```
 
 
-### where条件
+### where条件查询
+
 
 
 

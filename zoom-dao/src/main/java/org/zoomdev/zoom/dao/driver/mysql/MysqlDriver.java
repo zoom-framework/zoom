@@ -174,7 +174,7 @@ public class MysqlDriver extends AbsDriver {
                 if (columnMeta.isPrimary()) {
                     if (columnMeta.isAuto()) {
                         sb.append(" PRIMARY KEY");
-                        sb.append(" auto_increment".toUpperCase());
+                        sb.append(" auto_increment" .toUpperCase());
                     } else {
                         //single primary key
                         if (primaryKeys.size() == 1) {
@@ -220,7 +220,7 @@ public class MysqlDriver extends AbsDriver {
 
         sb.append(")charset=utf8");
 
-        createTableComment(sb,table);
+        createTableComment(sb, table);
 
         return sb.toString();
     }

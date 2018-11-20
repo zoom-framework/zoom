@@ -3,10 +3,11 @@ package org.zoomdev.zoom.dao.impl;
 import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.common.caster.ValueCaster;
 import org.zoomdev.zoom.common.io.Io;
-import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.StringReader;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.PreparedStatement;
@@ -50,7 +51,7 @@ class StatementAdapters {
         add(Map.class, String.class);
         add(Collection.class, String.class);
 
-        add(File.class,byte[].class);
+        add(File.class, byte[].class);
     }
 
 
@@ -103,11 +104,10 @@ class StatementAdapters {
             return new CasterProxyStatementAdapter(Caster.wrap(String.class), STRING2CLOB);
         } else if (Blob.class.isAssignableFrom(columnType)) {
             //先转成byte[]
-            return new CasterProxyStatementAdapter(Caster.wrap(byte[].class),BYTEARRAY2BLOB);
+            return new CasterProxyStatementAdapter(Caster.wrap(byte[].class), BYTEARRAY2BLOB);
         }
         return DEFAULT;
     }
-
 
 
     static class ByteArray2Blob implements StatementAdapter {

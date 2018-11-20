@@ -26,7 +26,6 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
     }
 
 
-
     private class DropTableIfExists extends BuildInfo {
 
         private String table;
@@ -80,10 +79,10 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
 
     @Override
     public DatabaseBuilder comment(String comment) {
-        if(columnMeta!=null){
+        if (columnMeta != null) {
             columnMeta.setComment(comment);
 
-        }else if(tableBuildInfo!=null){
+        } else if (tableBuildInfo != null) {
             tableBuildInfo.comment = comment;
         }
 
@@ -211,12 +210,11 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
         }
 
 
-
         StringBuilder sb = new StringBuilder();
 
         for (String sql : list) {
             sb.append(sql);
-            if(!sql.endsWith(";")){
+            if (!sql.endsWith(";")) {
                 sb.append(";");
             }
             sb.append("\n");

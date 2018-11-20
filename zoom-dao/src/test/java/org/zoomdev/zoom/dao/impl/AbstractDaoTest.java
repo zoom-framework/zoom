@@ -117,7 +117,7 @@ public abstract class AbstractDaoTest {
             try {
                 runWithDao.run(dao);
             } catch (Exception e) {
-               throw new RuntimeException(e);
+                throw new RuntimeException(e);
             }
 
             Classes.destroy(dao);

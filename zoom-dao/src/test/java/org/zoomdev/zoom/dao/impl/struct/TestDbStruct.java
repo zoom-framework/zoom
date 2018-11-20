@@ -20,7 +20,7 @@ public class TestDbStruct extends AbstractDaoTest {
         dao.getDbStructFactory().getTableMeta("shop");
 
 
-       // oracle.sql.TIMESTAMP timestamp;
+        // oracle.sql.TIMESTAMP timestamp;
 
     }
 }

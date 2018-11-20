@@ -1,6 +1,5 @@
 package org.zoomdev.zoom.dao.impl;
 
-import org.zoomdev.zoom.common.utils.CachedClasses;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.SqlBuilder;
@@ -40,8 +39,8 @@ class BeanEntity extends AbstractEntity {
 
 
         constructor = Classes.findNoneParameterConstructor(type);
-        if(constructor==null){
-            throw new DaoException("不支持绑定本实体类"+type+" 找不到无参且public的构造函数");
+        if (constructor == null) {
+            throw new DaoException("不支持绑定本实体类" + type + " 找不到无参且public的构造函数");
         }
 
 
