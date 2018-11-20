@@ -3,6 +3,7 @@ package org.zoomdev.zoom.common.caster;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import sun.rmi.runtime.Log;
 
 import java.lang.reflect.Field;
 import java.sql.Blob;
@@ -24,18 +25,18 @@ public class CasterTest {
     @Test
     public void testInteger() {
 
-        Assert.assertEquals(1.0, Caster.to(1, double.class));
+        Assert.assertEquals((Double)1.0, Caster.to(1, double.class));
         assertEquals("1", Caster.to(1, String.class));
-        assertEquals(1.0f, Caster.to(1, float.class));
-        assertEquals(true, Caster.to(1, boolean.class));
-        assertEquals((byte) 1, Caster.to(1, byte.class));
-        assertEquals('0', Caster.to(0x30, char.class));
-        assertEquals(1L, Caster.to(1, long.class));
-        assertEquals((short) 1, Caster.to(1, short.class));
-        assertEquals(false, Caster.to(0, boolean.class));
-        assertEquals(true, Caster.to(-1, boolean.class));
-        assertEquals(true, Caster.to(Integer.MAX_VALUE, boolean.class));
-        assertEquals(true, Caster.to(Integer.MIN_VALUE, boolean.class));
+        assertEquals((Float)1.0f, Caster.to(1, float.class));
+        assertEquals((Boolean)true, Caster.to(1, boolean.class));
+        assertEquals((Byte)(byte) 1, Caster.to(1, byte.class));
+        assertEquals((Character)'0', Caster.to(0x30, char.class));
+        assertEquals((Long)1L, Caster.to(1, long.class));
+        assertEquals((Short)(short) 1, Caster.to(1, short.class));
+        assertEquals((Boolean)false, Caster.to(0, boolean.class));
+        assertEquals((Boolean)true, Caster.to(-1, boolean.class));
+        assertEquals((Boolean)true, Caster.to(Integer.MAX_VALUE, boolean.class));
+        assertEquals((Boolean)true, Caster.to(Integer.MIN_VALUE, boolean.class));
 
     }
 
@@ -43,19 +44,19 @@ public class CasterTest {
     @Test
     public void testDouble() {
 
-        assertEquals(1.0d, Caster.to(1.0d, double.class));
+        assertEquals((Double)1.0d, Caster.to(1.0d, double.class));
         assertEquals("1.0", Caster.to(1.0d, String.class));
-        assertEquals(1.0f, Caster.to(1.0d, float.class));
-        assertEquals(true, Caster.to(1.0d, boolean.class));
-        assertEquals((byte) 1, Caster.to((double) 1.0, byte.class));
-        assertEquals('0', Caster.to((double) 0x30, char.class));
-        assertEquals(1L, Caster.to(1.0d, long.class));
-        assertEquals((short) 1, Caster.to(1.0d, short.class));
+        assertEquals((Float)1.0f, Caster.to(1.0d, float.class));
+        assertEquals((Boolean)true, Caster.to(1.0d, boolean.class));
+        assertEquals((Byte)(byte) 1, Caster.to((double) 1.0, byte.class));
+        assertEquals((Character)'0', Caster.to((double) 0x30, char.class));
+        assertEquals((Long)1L, Caster.to(1.0d, long.class));
+        assertEquals((Short)(short) 1, Caster.to(1.0d, short.class));
 
-        assertEquals(false, Caster.to(0.0d, boolean.class));
-        assertEquals(true, Caster.to(-1.0d, boolean.class));
-        assertEquals(true, Caster.to(Double.MAX_VALUE, boolean.class));
-        assertEquals(true, Caster.to(Double.MIN_VALUE, boolean.class));
+        assertEquals((Boolean)false, Caster.to(0.0d, boolean.class));
+        assertEquals((Boolean)true, Caster.to(-1.0d, boolean.class));
+        assertEquals((Boolean)true, Caster.to(Double.MAX_VALUE, boolean.class));
+        assertEquals((Boolean)true, Caster.to(Double.MIN_VALUE, boolean.class));
 
     }
 
@@ -63,33 +64,33 @@ public class CasterTest {
     @Test
     public void testFloat() {
 
-        assertEquals(1.0d, Caster.to(1.0f, double.class));
+        assertEquals((Double)1.0d, Caster.to(1.0f, double.class));
         assertEquals("1.0", Caster.to(1.0f, String.class));
-        assertEquals(1.0f, Caster.to(1.0f, float.class));
-        assertEquals(true, Caster.to(1.0f, boolean.class));
-        assertEquals((byte) 1, Caster.to(1.0f, byte.class));
-        assertEquals('0', Caster.to((float) 0x30, char.class));
-        assertEquals(1L, Caster.to(1.0f, long.class));
-        assertEquals((short) 1, Caster.to(1.0f, short.class));
+        assertEquals((Float)1.0f, Caster.to(1.0f, float.class));
+        assertEquals((Boolean)true, Caster.to(1.0f, boolean.class));
+        assertEquals((Byte)(byte) 1, Caster.to(1.0f, byte.class));
+        assertEquals((Character)'0', Caster.to((float) 0x30, char.class));
+        assertEquals((Long)1L, Caster.to(1.0f, long.class));
+        assertEquals((Short)(short) 1, Caster.to(1.0f, short.class));
 
-        assertEquals(false, Caster.to(0.0f, boolean.class));
-        assertEquals(true, Caster.to(-1.0f, boolean.class));
-        assertEquals(true, Caster.to(Float.MAX_VALUE, boolean.class));
-        assertEquals(true, Caster.to(Float.MIN_VALUE, boolean.class));
+        assertEquals((Boolean)false, Caster.to(0.0f, boolean.class));
+        assertEquals((Boolean)true, Caster.to(-1.0f, boolean.class));
+        assertEquals((Boolean)true, Caster.to(Float.MAX_VALUE, boolean.class));
+        assertEquals((Boolean)true, Caster.to(Float.MIN_VALUE, boolean.class));
 
     }
 
 
     @Test
     public void testNull() {
-        assertEquals(0.0, Caster.to(null, double.class));
-        assertEquals(0, Caster.to(null, int.class));
-        assertEquals(0.0f, Caster.to(null, float.class));
-        assertEquals((byte) 0, Caster.to(null, byte.class));
-        assertEquals((short) 0, Caster.to(null, short.class));
-        assertEquals(0L, Caster.to(null, long.class));
-        assertEquals(false, Caster.to(null, boolean.class));
-        assertEquals('\0', Caster.to(null, char.class));
+        assertEquals((Double)0.0, Caster.to(null, double.class));
+        assertEquals((Integer)0, Caster.to(null, int.class));
+        assertEquals((Float)0.0f, Caster.to(null, float.class));
+        assertEquals((Byte)(byte) 0, Caster.to(null, byte.class));
+        assertEquals((Short)(short) 0, Caster.to(null, short.class));
+        assertEquals((Long)0L, Caster.to(null, long.class));
+        assertEquals((Boolean)false, Caster.to(null, boolean.class));
+        assertEquals((Character)'\0', Caster.to(null, char.class));
 
     }
 

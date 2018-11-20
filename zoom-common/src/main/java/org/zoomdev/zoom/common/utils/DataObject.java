@@ -127,7 +127,7 @@ public class DataObject extends LinkedHashMap<String, Object> {
         return Caster.to(get(key), byte[].class);
     }
 
-    public <T> T get(String key, Class<?> classOfT) {
+    public <T> T get(String key, Class<T> classOfT) {
         return Caster.to(get(key), classOfT);
     }
 

@@ -220,8 +220,15 @@ public class MysqlDriver extends AbsDriver {
 
         sb.append(")charset=utf8");
 
+        createTableComment(sb,table);
+
         return sb.toString();
     }
+
+    protected void createTableComment(StringBuilder sb, TableBuildInfo table) {
+        sb.append(" COMMENT='").append(table.getName()).append("'");
+    }
+
 
     @Override
     public void buildTable(TableBuildInfo table, List<String> sqlList) {
@@ -232,6 +239,14 @@ public class MysqlDriver extends AbsDriver {
         buildIndex(table, sqlList);
 
         buildUnique(table, sqlList);
+
+
+    }
+
+    @Override
+    protected void buildComment(TableBuildInfo table, List<String> sqlList) {
+
+
     }
 
     @Override

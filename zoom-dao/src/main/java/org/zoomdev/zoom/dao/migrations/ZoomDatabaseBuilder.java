@@ -80,7 +80,13 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
 
     @Override
     public DatabaseBuilder comment(String comment) {
-        tableBuildInfo.comment = comment;
+        if(columnMeta!=null){
+            columnMeta.setComment(comment);
+
+        }else if(tableBuildInfo!=null){
+            tableBuildInfo.comment = comment;
+        }
+
         return this;
     }
 
@@ -90,6 +96,8 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
         tableBuildInfo.name = table;
         tables.add(tableBuildInfo);
         buildInfos.add(new CreateTable(tableBuildInfo));
+
+        columnMeta = null;
         return this;
     }
 

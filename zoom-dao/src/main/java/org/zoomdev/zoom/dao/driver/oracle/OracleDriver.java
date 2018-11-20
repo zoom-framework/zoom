@@ -1,5 +1,8 @@
 package org.zoomdev.zoom.dao.driver.oracle;
 
+import javassist.expr.Cast;
+import org.zoomdev.zoom.common.caster.Caster;
+import org.zoomdev.zoom.common.caster.ValueCaster;
 import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.auto.AutoField;
 import org.zoomdev.zoom.dao.driver.AbsDriver;
@@ -9,6 +12,8 @@ import org.zoomdev.zoom.dao.meta.TableMeta;
 import org.zoomdev.zoom.dao.migrations.TableBuildInfo;
 import org.zoomdev.zoom.dao.migrations.ZoomDatabaseBuilder;
 
+import java.lang.reflect.Type;
+import java.sql.SQLException;
 import java.sql.Types;
 import java.util.*;
 import java.util.Map.Entry;
@@ -307,6 +312,7 @@ public class OracleDriver extends AbsDriver implements AutoGenerateProvider {
 
         buildUnique(table, sqlList);
 
+        buildComment(table,sqlList);
     }
 
 
@@ -337,4 +343,22 @@ public class OracleDriver extends AbsDriver implements AutoGenerateProvider {
         }
         return null;
     }
+
+    static {
+        //注意这里需要适配一下oracle的奇葩类型
+        Caster.register(oracle.sql.TIMESTAMP.class, Date.class, new ValueCaster() {
+            @Override
+            public Object to(Object src) {
+                oracle.sql.TIMESTAMP timestamp = (oracle.sql.TIMESTAMP)src;
+                try {
+                    return timestamp.dateValue();
+                } catch (SQLException e) {
+                    throw new Caster.CasterException("Cannot convert  oracle.sql.TIMESTAMP  to java.util.Date",e);
+                }
+            }
+        });
+    }
+
+
+
 }

@@ -102,4 +102,23 @@ public class Io {
             Io.close(writer);
         }
     }
+
+    /**
+     * 适合小文件
+     * @param src
+     * @return
+     */
+    public static byte[] readBytes(File src) throws IOException {
+        assert(src!=null);
+        InputStream is = null;
+        try{
+            is = new FileInputStream(src);
+            byte[] bytes = new byte[(int) src.length()];
+            read(is,bytes);
+            return bytes;
+        }finally {
+            Io.close(is);
+        }
+
+    }
 }

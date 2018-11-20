@@ -80,7 +80,8 @@ class BeanEntityFactory extends AbstractEntityFactory {
                     entityField.setSelectColumnName(context.column.value());
                 } else {
                     // 最短距离算法算出哪个字段最接近
-                    throw new DaoException("绑定实体类出错，找不到字段的配置" + context.field + "当前所有可用字段为"
+                    throw new DaoException("绑定实体类出错，找不到字段的配置" +
+                            context.field.getDeclaringClass().getName()+"#"+context.field.getName() + "当前所有可用字段为"
                             + StringUtils.join(context.getAvliableFields(), ","));
                 }
             }
@@ -327,6 +328,10 @@ class BeanEntityFactory extends AbstractEntityFactory {
 
         for (int index = 0; index < fields.length; ++index) {
             Field field = fields[index];
+            // 内部类
+            if(field.getName().startsWith("this$")){
+                continue;
+            }
             if (field.isAnnotationPresent(ColumnIgnore.class)) {
                 continue;
             }

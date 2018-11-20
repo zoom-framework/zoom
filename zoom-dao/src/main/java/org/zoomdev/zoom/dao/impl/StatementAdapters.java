@@ -3,10 +3,10 @@ package org.zoomdev.zoom.dao.impl;
 import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.common.caster.ValueCaster;
 import org.zoomdev.zoom.common.io.Io;
+import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 
-import java.io.ByteArrayInputStream;
-import java.io.StringReader;
+import java.io.*;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.PreparedStatement;
@@ -15,10 +15,15 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+
+/**
+ * 主要是处理Clob、Blob的适配问题，其他都可以由DataSource自己处理
+ */
 class StatementAdapters {
 
     static String2Clob STRING2CLOB = new String2Clob();
     static ByteArray2Blob BYTEARRAY2BLOB = new ByteArray2Blob();
+
 
     static Map<String, StatementAdapter> pool = new ConcurrentHashMap<String, StatementAdapter>();
 
@@ -45,7 +50,7 @@ class StatementAdapters {
         add(Map.class, String.class);
         add(Collection.class, String.class);
 
-
+        add(File.class,byte[].class);
     }
 
 
@@ -69,13 +74,13 @@ class StatementAdapters {
         if (fieldType == columnType || columnType.isAssignableFrom(fieldType)) {
             return DEFAULT;
         }
-        if (columnType == Clob.class) {
+        if (Clob.class.isAssignableFrom(columnType)) {
             if (fieldType == String.class) {
                 return STRING2CLOB;
             }
             //先转成String
             return new CasterProxyStatementAdapter(Caster.wrap(fieldType, String.class), STRING2CLOB);
-        } else if (columnType == Blob.class) {
+        } else if (Blob.class.isAssignableFrom(columnType)) {
             if (fieldType == byte[].class) {
                 return BYTEARRAY2BLOB;
             }
@@ -93,15 +98,17 @@ class StatementAdapters {
     }
 
     public static StatementAdapter create(Class<?> columnType) {
-        if (columnType == Clob.class) {
+        if (Clob.class.isAssignableFrom(columnType)) {
             //先转成String
             return new CasterProxyStatementAdapter(Caster.wrap(String.class), STRING2CLOB);
-        } else if (columnType == Blob.class) {
+        } else if (Blob.class.isAssignableFrom(columnType)) {
             //先转成byte[]
-            return new CasterProxyStatementAdapter(Caster.wrap(byte[].class), BYTEARRAY2BLOB);
+            return new CasterProxyStatementAdapter(Caster.wrap(byte[].class),BYTEARRAY2BLOB);
         }
         return DEFAULT;
     }
+
+
 
     static class ByteArray2Blob implements StatementAdapter {
 

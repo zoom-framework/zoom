@@ -1,15 +1,20 @@
 package org.zoomdev.zoom.dao.impl;
 
+import org.zoomdev.zoom.common.utils.CachedClasses;
+import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.SqlBuilder;
 import org.zoomdev.zoom.dao.adapters.EntityField;
 import org.zoomdev.zoom.dao.meta.JoinMeta;
 
+import java.lang.reflect.Constructor;
 import java.util.Map;
 
 class BeanEntity extends AbstractEntity {
 
     Class<?> type;
+
+    Constructor<?> constructor;
 
     private JoinMeta[] joins;
 
@@ -32,6 +37,13 @@ class BeanEntity extends AbstractEntity {
 //        }
         this.joins = joins;
         this.type = type;
+
+
+        constructor = Classes.findNoneParameterConstructor(type);
+        if(constructor==null){
+            throw new DaoException("不支持绑定本实体类"+type+" 找不到无参且public的构造函数");
+        }
+
 
         if (joins != null) {
             for (JoinMeta join : joins) {

@@ -106,7 +106,7 @@ public abstract class AbstractDaoTest {
 
 
     protected static interface RunWithDao {
-        void run(Dao dao);
+        void run(Dao dao) throws Exception;
     }
 
 
@@ -114,7 +114,11 @@ public abstract class AbstractDaoTest {
         for (int i = 0; i < MAX; ++i) {
             Dao dao = new ZoomDao(getDataSoueceProvoider(i).getDataSource());
 
-            runWithDao.run(dao);
+            try {
+                runWithDao.run(dao);
+            } catch (Exception e) {
+               throw new RuntimeException(e);
+            }
 
             Classes.destroy(dao);
             //connection count ==0;

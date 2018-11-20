@@ -4,23 +4,20 @@ import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
+import org.zoomdev.zoom.common.io.Io;
+import org.zoomdev.zoom.common.json.JSON;
 import org.zoomdev.zoom.common.utils.BeanUtils;
 import org.zoomdev.zoom.common.utils.Classes;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
+import java.io.*;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.NClob;
-import java.sql.SQLException;
+import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -45,7 +42,7 @@ public class Caster {
     /**
      * 默认模式
      */
-    private static ObjectMapper mapper = new ObjectMapper();
+    private static ObjectMapper mapper = JSON.getMapper();
 
     /**
      * 包装一个首次非空的值之后缓存的caster
@@ -194,6 +191,10 @@ public class Caster {
             super(message);
         }
 
+        public CasterException(String message,Throwable e) {
+            super(message,e);
+        }
+
         public CasterException(Throwable e) {
             super(e);
         }
@@ -312,6 +313,7 @@ public class Caster {
         Caster.register(Blob.class, String.class, new Blob2String());
         Caster.register(Blob.class, byte[].class, new Blob2ByteArray());
 
+
         Caster.register(String.class, byte[].class, new String2ByteArray());
 
         Caster.registerParameterizedType(
@@ -371,8 +373,40 @@ public class Caster {
         Caster.registerCastProvider(new Map2BeanProvider());
 
         Caster.register(String.class,Date.class,new String2Date());
+
+        Caster.register(File.class,byte[].class,new File2ByteArray());
+
+        Caster.register(File.class,InputStream.class,new File2InputStream());
+
+        Caster.register(Timestamp.class,Date.class,new Timestamp2Date());
+
     }
 
+    /**
+     * If A can cast to B
+     * And B can cast to C
+     *
+     * You can register like this
+     *
+     * Caster.register(  A.class,C.class,new CasterBridge( A.class,B.class,C.class )  )
+     *
+     */
+    static class CasterBridge implements ValueCaster{
+
+        private ValueCaster caster1;
+        private ValueCaster caster2;
+
+        CasterBridge(Class<?> srcType,Class<?> bridgetType,Class<?> destType){
+            this.caster1 = Caster.get(srcType,bridgetType);
+            this.caster2 = Caster.wrap(bridgetType,destType);
+        }
+
+        @Override
+        public Object to(Object src) {
+            //dest to bridget  bridget to src
+            return  caster1.to(caster2.to(src));
+        }
+    }
 
     static class Map2BeanProvider implements Caster.CasterProvider {
 
@@ -1125,7 +1159,7 @@ public class Caster {
         }
 
         if (targetType instanceof Class) {
-            return to(src, (Class) targetType);
+            return (T) to(src, (Class) targetType);
         }
 
 
@@ -1134,7 +1168,7 @@ public class Caster {
 
 
     @SuppressWarnings("unchecked")
-    public static <T> T to(Object src, Class<?> targetClass) {
+    public static <T> T to(Object src, Class<T> targetClass) {
         if (src == null) {
             if (targetClass.isPrimitive()) {
                 // default of primitive value
@@ -1522,7 +1556,7 @@ public class Caster {
         @Override
         public Object to(Object src) {
             String str = (String)src;
-            if(str.length() < 8 || str.length() > 17){
+            if(str.length() < 8 ){
                 throw new CasterException("Not a valid date :"+str);
             }
 
@@ -1549,6 +1583,38 @@ public class Caster {
                 throw new CasterException("Not a valid date :"+str);
             }
 
+        }
+    }
+
+    private static class File2ByteArray implements ValueCaster {
+        @Override
+        public Object to(Object src) {
+            try {
+                return Io.readBytes((File)src);
+            } catch (IOException e) {
+               throw new CasterException("Cannot read file "+src,e);
+            }
+        }
+    }
+
+
+    private static class File2InputStream implements ValueCaster {
+        @Override
+        public Object to(Object src) {
+            File file = (File)src;
+            try {
+                return new FileInputStream(file);
+            } catch (FileNotFoundException e) {
+                throw new CasterException("Cannot open file as stream ,file not found"+file,e);
+            }
+        }
+    }
+
+    private static class Timestamp2Date implements ValueCaster {
+        @Override
+        public Object to(Object src) {
+            Timestamp timestamp = (Timestamp)src;
+            return new Date(timestamp.getTime());
         }
     }
 }
