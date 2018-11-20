@@ -127,10 +127,8 @@ public class SimpleActionFactory implements ActionFactory {
                     String pathName = param.name()
                             .substring(1, param.name().length() - 1);
                     pathVariableNames.add(pathName);
-                    break;
                 } else if (param.pathVariable()) {
                     pathVariableNames.add(StringUtils.isEmpty(param.name()) ? names[i] : param.name());
-                    break;
                 }
             }
         }
