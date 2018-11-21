@@ -5,6 +5,7 @@ import org.zoomdev.zoom.dao.adapters.EntityField;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -116,4 +117,8 @@ public interface Entity {
     String parseOn(String on);
 
     Set<String> getAvailableFields();
+
+
+
+    List<EntityField> select(List<EntityField> holder,Iterable<String> fields);
 }

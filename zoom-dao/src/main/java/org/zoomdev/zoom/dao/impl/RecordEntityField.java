@@ -8,9 +8,15 @@ import java.lang.reflect.Type;
 public class RecordEntityField extends AbstractEntityField {
 
 
-    private String field;
 
-    private Class<?> type;
+
+
+
+    protected String field;
+
+    protected Class<?> type;
+
+
 
 
     RecordEntityField(String field, Class<?> type) {
@@ -53,4 +59,21 @@ public class RecordEntityField extends AbstractEntityField {
     }
 
 
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        RecordEntityField recordEntityField= new RecordEntityField(
+                field,type
+        );
+
+        recordEntityField.validators = validators;
+        recordEntityField.caster = caster;
+        recordEntityField.statementAdapter = statementAdapter;
+        recordEntityField.autoField = autoField;
+        recordEntityField.columnMeta = columnMeta;
+        recordEntityField.originalFieldName = originalFieldName;
+        recordEntityField.column = column;
+        recordEntityField.selectColumnName = selectColumnName;
+
+        return recordEntityField;
+    }
 }

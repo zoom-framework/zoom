@@ -1,12 +1,26 @@
 package org.zoomdev.zoom.dao.impl;
 
+import com.sun.xml.internal.fastinfoset.util.CharArrayArray;
+import org.apache.commons.lang3.StringUtils;
+import org.zoomdev.zoom.common.designpattern.SingletonUtils;
+import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.Record;
 import org.zoomdev.zoom.dao.SqlBuilder;
 import org.zoomdev.zoom.dao.adapters.EntityField;
+import org.zoomdev.zoom.dao.utils.DaoUtils;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
 
 public class RecordEntity extends AbstractEntity {
+
+
+
+
     RecordEntity(String table,
                  EntityField[] entityFields,
                  EntityField[] primaryKeys,
@@ -28,6 +42,50 @@ public class RecordEntity extends AbstractEntity {
     @Override
     public void setQuerySource(SqlBuilder builder) {
         builder.table(table);
+    }
+
+    private Map<String,EntityField> pool = new ConcurrentHashMap<String, EntityField>();
+
+    public List<EntityField> select(
+            List<EntityField> holder,
+            Iterable<String> fields
+    ){
+        for(String key : fields){
+            EntityField field = pool.get(key);
+            if(field==null){
+                Matcher matcher;
+                String fieldName;
+                String alias = null;
+                if( (matcher=  BuilderKit.AS_PATTERN.matcher(key)).matches() ){
+                    fieldName = matcher.group(1);
+                    alias = matcher.group(2);
+
+                }else{
+                    fieldName = key;
+                }
+                RecordEntityField entityField = (RecordEntityField) tryToFind(fieldName);
+                if(entityField==null){
+                    throw new DaoException("找不到"+key+"对应的字段,所有可能的字段为"+StringUtils.join(getAvailableFields()));
+                }
+
+                if(alias!=null){
+                    try {
+                        RecordEntityField recordEntityField = (RecordEntityField) entityField.clone();
+                        recordEntityField.field = alias;
+                        pool.put(key,recordEntityField);
+                        field = recordEntityField;
+                    } catch (CloneNotSupportedException e) {
+                        throw new DaoException(e);
+                    }
+                }else{
+                    field = entityField;
+                    pool.put(key,entityField);
+                }
+            }
+            holder.add(field);
+        }
+
+        return holder;
     }
 
 }

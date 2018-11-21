@@ -42,7 +42,7 @@ public class SimpleParameterParserFactory implements ParameterParserFactory, Des
     @Override
     public ParameterParser createParamParser(Class<?> controllerClass, Method method, String[] names) {
         if (names.length == 0) {
-            return EmptyParamterParser.DEFAULT;
+            return EmptyParameterParser.DEFAULT;
         }
         return new SimpleParameterParser(
                 createContainers()

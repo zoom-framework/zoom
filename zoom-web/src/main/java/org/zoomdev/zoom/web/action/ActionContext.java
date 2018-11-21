@@ -94,11 +94,27 @@ public class ActionContext implements Destroyable {
         return data;
     }
 
+    /**
+     * 与put是同义词
+     * @param key
+     * @param value
+     * @return
+     */
     public ActionContext set(String key, Object value) {
         checkData().put(key, value);
         return this;
     }
 
+    /**
+     *
+     * set的同义词
+     * @param key
+     * @param value
+     * @return
+     */
+    public ActionContext put(String key, Object value) {
+        return set(key,value);
+    }
     public <T> T get(String key, Class<T> classOfT) {
         return Caster.to(checkData().get(key), classOfT);
     }

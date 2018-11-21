@@ -5,6 +5,7 @@ import org.zoomdev.zoom.common.utils.PatternUtils;
 import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.Entity;
 import org.zoomdev.zoom.dao.adapters.EntityField;
+import org.zoomdev.zoom.dao.meta.ColumnMeta;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -91,6 +92,29 @@ public abstract class AbstractEntity implements Entity {
             if (entityField.getFieldName().equals(field)) {
                 return entityField;
             }
+        }
+        return null;
+    }
+
+    /**
+     * 尽一切可能
+     * @return
+     */
+    protected EntityField tryToFind(String field){
+        for (EntityField entityField : entityFields) {
+            if (field.equalsIgnoreCase(entityField.getFieldName())) {
+                return entityField;
+            }
+            if(field.equalsIgnoreCase(entityField.getColumnName())){
+                return entityField;
+            }
+            ColumnMeta meta = entityField.getColumnMeta();
+            if(meta!=null){
+                if(field.equalsIgnoreCase(meta.getName())){
+                    return entityField;
+                }
+            }
+
         }
         return null;
     }

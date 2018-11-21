@@ -341,6 +341,7 @@ public class EntitySqlUtils {
         Object data = entity.newInstance();
         for (int i = 0, c = entityFields.size(); i < c; ++i) {
             EntityField entityField = entityFields.get(i);
+            assert(entityField!=null);
             try {
                 Object r = rs.getObject(i + 1);
                 entityField.set(data, entityField.getFieldValue(r));
@@ -358,6 +359,12 @@ public class EntitySqlUtils {
             Filter<EntityField> filter,
             List<EntityField> entityFields) {
         // build select
+        if(entityFields.size() > 0 ){
+            for (EntityField field : entityFields) {
+                builder.selectRaw(field.getSelectColumnName());
+            }
+            return;
+        }
         for (EntityField field : entity.getEntityFields()) {
             if (filter == null || filter.accept(field)) {
                 builder.selectRaw(field.getSelectColumnName());

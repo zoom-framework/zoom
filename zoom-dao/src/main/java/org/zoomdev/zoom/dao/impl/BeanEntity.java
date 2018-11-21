@@ -1,5 +1,6 @@
 package org.zoomdev.zoom.dao.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.SqlBuilder;
@@ -7,6 +8,7 @@ import org.zoomdev.zoom.dao.adapters.EntityField;
 import org.zoomdev.zoom.dao.meta.JoinMeta;
 
 import java.lang.reflect.Constructor;
+import java.util.List;
 import java.util.Map;
 
 class BeanEntity extends AbstractEntity {
@@ -77,6 +79,19 @@ class BeanEntity extends AbstractEntity {
             }
         }
 
+    }
+
+    @Override
+    public List<EntityField> select(List<EntityField> holder, Iterable<String> fields) {
+        for(String key : fields){
+            RecordEntityField entityField = (RecordEntityField) tryToFind(key);
+            if(entityField==null){
+                throw new DaoException("找不到"+key+"对应的字段,所有可能的字段为"+StringUtils.join(getAvailableFields()));
+            }
+            holder.add(entityField);
+        }
+
+        return holder;
     }
 
 

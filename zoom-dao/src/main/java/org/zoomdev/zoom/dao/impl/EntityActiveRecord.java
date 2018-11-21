@@ -364,13 +364,12 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
 
     @Override
     public EAr<T> select(String select) {
-        filter(select.replace(",", "|"));
-        return this;
+        return select(Arrays.asList(select.split(",")));
     }
 
     @Override
     public EAr<T> select(Iterable<String> select) {
-        filter(StringUtils.join(select, "|"));
+        entity.select(entityFields,select);
         return this;
     }
 

@@ -11,33 +11,23 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-abstract class AbstractEntityField implements EntityField {
+abstract class AbstractEntityField implements EntityField , Cloneable {
     /// 数据从数据库取出来之后转化成实体类的字段类型
     protected ValueCaster caster;
 
-    private StatementAdapter statementAdapter;
+    protected StatementAdapter statementAdapter;
 
-    private AutoField autoField;
+    protected AutoField autoField;
 
-    @Override
-    public ColumnMeta getColumnMeta() {
-        return columnMeta;
-    }
+    protected ColumnMeta columnMeta;
 
-    public void setColumnMeta(ColumnMeta columnMeta) {
-        this.columnMeta = columnMeta;
-    }
+    protected String originalFieldName;
 
-    private ColumnMeta columnMeta;
+    protected String column;
 
+    protected String selectColumnName;
 
-    private String originalFieldName;
-
-    private String column;
-
-    private String selectColumnName;
-
-    Validator validator;
+    protected Validator[] validators;
 
     AbstractEntityField() {
 
@@ -105,14 +95,29 @@ abstract class AbstractEntityField implements EntityField {
     }
 
 
-    private Validator[] validators;
+
+
+
+
+    @Override
+    public ColumnMeta getColumnMeta() {
+        return columnMeta;
+    }
+
+    public void setColumnMeta(ColumnMeta columnMeta) {
+        this.columnMeta = columnMeta;
+    }
+
+
 
     @Override
     public Validator[] getValidators() {
         return validators;
     }
 
-    public void setValidators(List<org.zoomdev.zoom.dao.validator.Validator> validators) {
+    public void setValidators(List<Validator> validators) {
         this.validators = validators.toArray(new Validator[validators.size()]);
     }
+
+
 }
