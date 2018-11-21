@@ -51,6 +51,7 @@ public class Utils {
                 .add("shp_sales").integer()
 
                 //订单 , 关键字???
+                .dropIfExists("shp_order")
                 .createTable("shp_order")
                 .add("ord_id").integer().keyPrimary().autoIncement()
                 .add("shp_id").string(30).notNull()

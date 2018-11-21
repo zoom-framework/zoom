@@ -84,7 +84,7 @@ class BeanEntity extends AbstractEntity {
     @Override
     public List<EntityField> select(List<EntityField> holder, Iterable<String> fields) {
         for(String key : fields){
-            RecordEntityField entityField = (RecordEntityField) tryToFind(key);
+            EntityField entityField = tryToFind(key);
             if(entityField==null){
                 throw new DaoException("找不到"+key+"对应的字段,所有可能的字段为"+StringUtils.join(getAvailableFields()));
             }

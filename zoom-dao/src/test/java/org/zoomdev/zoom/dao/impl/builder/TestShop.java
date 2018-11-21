@@ -19,6 +19,8 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public class TestShop extends AbstractDaoTest {
 
@@ -34,7 +36,7 @@ public class TestShop extends AbstractDaoTest {
         }
     }
 
-    @Table("product")
+    @Table("shp_product")
     public static class Product {
 
 
@@ -133,8 +135,8 @@ public class TestShop extends AbstractDaoTest {
     protected void process(Dao dao) {
 
         dao.builder()
-                .dropIfExists("product")
-                .createTable("product").comment("产品")
+                .dropIfExists("shp_product")
+                .createTable("shp_product").comment("产品")
                 .add("PRO_ID").comment("编号").integer().keyPrimary().autoIncement()
                 .add("PRO_NAME").comment("名称").string(100).keyIndex().notNull()
                 .add("PRO_PRICE").comment("价格").number().keyIndex().notNull()
@@ -145,8 +147,8 @@ public class TestShop extends AbstractDaoTest {
                 .add("TP_ID").comment("类型编号").integer().keyIndex()
                 .add("CREATE_AT").comment("创建时间").timestamp().defaultValue(new DatabaseBuilder.FunctionValue("CURRENT_TIMESTAMP"))
 
-                .dropIfExists("type")
-                .createTable("type").comment("类型")
+                .dropIfExists("shp_type")
+                .createTable("shp_type").comment("类型")
                 .add("TP_ID").comment("编号").integer().keyPrimary().autoIncement()
                 .add("TP_TITLE").comment("标题").string(100).keyIndex().notNull()
 
@@ -164,28 +166,28 @@ public class TestShop extends AbstractDaoTest {
             public void run(Dao dao) throws Exception {
 
                 /// 插入商品
-                Product product = new Product();
-                product.setTitle("我的商品");
-                product.setPrice(100.0D);
-                product.setInfo("好长好长的描述");
-                product.setThumb("图片的url");
-                product.setImg(Io.readBytes(new File(IMAGE_FILE)));
-                product.setCount(200);
+                Product shp_product = new Product();
+                shp_product.setTitle("我的商品");
+                shp_product.setPrice(100.0D);
+                shp_product.setInfo("好长好长的描述");
+                shp_product.setThumb("图片的url");
+                shp_product.setImg(Io.readBytes(new File(IMAGE_FILE)));
+                shp_product.setCount(200);
 
                 dao.ar(Product.class)
-                        .insert(product);
+                        .insert(shp_product);
 
                 ///获取到自增id
-                int insertId = product.getId();
+                int insertId = shp_product.getId();
 
                 /// 修改商品
-                product.setCount(300);
-                product.setPrice(188D);
-                product.setTitle("测试");
+                shp_product.setCount(300);
+                shp_product.setPrice(188D);
+                shp_product.setTitle("测试");
 
                 dao.ar(Product.class)
                         .filter("count|price")        //增加一个更新过滤器
-                        .update(product);
+                        .update(shp_product);
 
                 //// 主键获取到商品
                 Product record = dao.ar(Product.class).get(insertId);
@@ -221,7 +223,7 @@ public class TestShop extends AbstractDaoTest {
             @Override
             public void run(Dao dao) {
                 /// 插入商品 ,在默认情况下，往数据库方向的字段，将被改成大写,可以使用dao.setNameAdapter来修改默认行为
-                Record product = Record.as(
+                Record shp_product = Record.as(
                         "pro_name", "我的商品",
                         "pro_price", 100.0D,
                         "pro_info", "好长好长的描述",
@@ -231,36 +233,36 @@ public class TestShop extends AbstractDaoTest {
                         "pro_count", 200,
                         "tp_id", 1
                 );
-                dao.table("product")
-                        .insert(product, "pro_id");
+                dao.table("shp_product")
+                        .insert(shp_product, "pro_id");
 
                 ///获取到自增id
-                int insertId = product.getInt("pro_id");
+                int insertId = shp_product.getInt("pro_id");
 
                 /// 修改商品
                 /// 使用链式的set,来设置或者使用setAll一次性设置要修改的字段
-                dao.table("product")
+                dao.table("shp_product")
                         .where("pro_id", insertId)
                         .set("pro_count", 3000)
                         .set("pro_price", 188D)
                         .update();
 
                 //// 主键获取到商品
-                Record record = dao.table("product").where("pro_id", insertId).get();
+                Record record = dao.table("shp_product").where("pro_id", insertId).get();
                 /// 修改price和count成功
                 assertEquals(record.getInt("pro_count"), 3000);
                 assertEquals(record.getDouble("pro_price"), 188D, 0);
 
                 /// 查询所有商品,仅仅查看pro_id,pro_name字段
-                List<Record> list = dao.table("product").select("pro_id,pro_name").find();
+                List<Record> list = dao.table("shp_product").select("pro_id,pro_name").find();
 
                 /// 分页查询
-                Page<Record> page = dao.table("product")
+                Page<Record> page = dao.table("shp_product")
                         .like("pro_name", SqlBuilder.Like.MATCH_BOTH, "我的")
                         .page(1, 30);
 
                 /// 删除商品
-                dao.table("product").where("pro_id", insertId).delete();
+                dao.table("shp_product").where("pro_id", insertId).delete();
             }
         });
 
@@ -269,7 +271,7 @@ public class TestShop extends AbstractDaoTest {
 
     protected void doActionWithActiveRecord(Dao dao) {
         /// 插入商品
-        Record product = Record.as(
+        Record shp_product = Record.as(
                 "name", "我的商品",
                 "price", 100.0D,
                 "info", "好长好长的描述",
@@ -278,23 +280,23 @@ public class TestShop extends AbstractDaoTest {
                 "count", 200,
                 "tpId", 1
         );
-        dao.ar("product")
-                .insert(product);
+        dao.ar("shp_product")
+                .insert(shp_product);
 
         ///获取到自增id
-        int insertId = product.getInt("id");
+        int insertId = shp_product.getInt("id");
 
         /// 修改商品
-        product.set("count", 300);
-        product.set("price", 188D);
-        product.set("name", "测试");
+        shp_product.set("count", 300);
+        shp_product.set("price", 188D);
+        shp_product.set("name", "测试");
 
-        dao.ar("product")
+        dao.ar("shp_product")
                 .filter("count|price")        //增加一个更新过滤器
-                .update(product);
+                .update(shp_product);
 
         //// 主键获取到商品
-        Record record = dao.ar("product").get(insertId);
+        Record record = dao.ar("shp_product").get(insertId);
         /// 没有修改名称
         assertEquals(record.getString("name"), "我的商品");
         /// 修改price和count成功
@@ -302,15 +304,22 @@ public class TestShop extends AbstractDaoTest {
         assertEquals(record.getDouble("price"), 188D, 0);
 
         /// 查询所有商品
-        List<Record> list = dao.ar("product").find();
+        List<Record> list = dao.ar("shp_product")
+                .select("id,name as title")     // 这里也支持as，表示不想用name而使用title
+                .find();
+
+        record = list.get(0);
+        assertEquals(record.size(),2);
+        assertNotNull(record.get("title"));
+        assertNull(record.get("name"));
 
         /// 分页查询
-        Page<Record> page = dao.ar("product")
+        Page<Record> page = dao.ar("shp_product")
                 .like("name", SqlBuilder.Like.MATCH_BOTH, "我的")
                 .page(1, 30);
 
         /// 删除商品
-        dao.ar("product").delete(record);
+        dao.ar("shp_product").delete(record);
 
     }
 }

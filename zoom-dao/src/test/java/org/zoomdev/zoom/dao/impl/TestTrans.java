@@ -1,6 +1,7 @@
 package org.zoomdev.zoom.dao.impl;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.DaoException;
@@ -9,6 +10,22 @@ import org.zoomdev.zoom.dao.Record;
 import static org.junit.Assert.assertEquals;
 
 public class TestTrans extends AbstractDaoTest {
+
+
+
+
+    @BeforeClass
+    public static void setup() {
+
+        execute(new RunWithDao() {
+            @Override
+            public void run(Dao dao) {
+                Utils.createTables(dao);
+            }
+        });
+
+    }
+
     @Override
     protected void process(final Dao dao) {
 
