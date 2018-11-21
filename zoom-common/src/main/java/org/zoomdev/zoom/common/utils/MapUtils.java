@@ -78,4 +78,29 @@ public class MapUtils {
         return dest;
     }
 
+
+    /**
+     * 转成 a=b&c=d的形式
+     * @param data
+     * @return
+     */
+    public static String toQueryString(Map<String,Object> data) {
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for(Map.Entry<String,Object> entry: data.entrySet()){
+            if(first){
+                first = false;
+            }else{
+                sb.append("&");
+            }
+            sb.append(entry.getKey()).append("=");
+            if(entry.getValue()==null){
+                continue;
+            }
+            sb.append(String.valueOf(entry.getValue()));
+        }
+
+        return sb.toString();
+
+    }
 }

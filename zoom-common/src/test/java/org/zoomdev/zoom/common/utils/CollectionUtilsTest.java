@@ -172,10 +172,32 @@ public class CollectionUtilsTest extends TestCase {
         }
 
         assertEquals(list.size(),3);
-        assertEquals(list.get(1),"1");
-        assertEquals(list.get(2),"2");
-        assertEquals(list.get(3),"3");
+        assertEquals(list.get(0),"1");
+        assertEquals(list.get(1),"2");
+        assertEquals(list.get(2),"3");
 
 
     }
+
+
+
+    public void testAs(){
+        List<String> list = CollectionUtils.asList("1","2","3");
+        assertEquals(list.size(),3);
+
+        assertEquals(list.getClass(),ArrayList.class);
+    }
+
+    public void testListGet(){
+
+        assertNull( CollectionUtils.getAt(null,0) );
+
+        List<String> list = Arrays.asList("1","2","3");
+        assertNull(CollectionUtils.getAt(list,list.size()));
+
+        assertEquals(CollectionUtils.getAt(list,0),"1");
+
+    }
+
+
 }

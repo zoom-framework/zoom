@@ -13,6 +13,7 @@ import java.io.*;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -371,6 +372,7 @@ public class Caster {
         );
 
         Caster.registerCastProvider(new Map2BeanProvider());
+        Caster.registerCastProvider(new String2BeanProvider());
 
         Caster.register(String.class,Date.class,new String2Date());
 
@@ -408,18 +410,53 @@ public class Caster {
         }
     }
 
-    static class Map2BeanProvider implements Caster.CasterProvider {
+    static class String2BeanProvider implements Caster.CasterProvider{
 
         @Override
         public ValueCaster getCaster(Class<?> srcType, Class<?> toType) {
-            if (Map.class.isAssignableFrom(srcType)) {
-                if (Classes.isSimple(toType)) {
-                    //转化简单类型应该是不行的
-                    return null;
-                }
-                //java开头的一律略过
-                if (toType.getName().startsWith("java")) return null;
+            if(CharSequence.class.isAssignableFrom(srcType) && !isSimple(toType)){
+                ValueCaster caster = Caster.get(Map.class,toType);
+                return new String2Bean(caster);
+            }
+            return null;
+        }
 
+
+    }
+
+    private static boolean isSimple(Class<?> toType){
+        if (Classes.isSimple(toType)) {
+            //转化简单类型应该是不行的
+            return true;
+        }
+        //java开头的一律略过
+        if (toType.getName().startsWith("java")) return true;
+
+        return false;
+
+    }
+    private static class String2Bean implements ValueCaster {
+
+        private ValueCaster caster;
+
+        public String2Bean(ValueCaster caster){
+            this.caster = caster;
+        }
+
+        @Override
+        public Object to(Object src) {
+            String str = (String) src;
+            Map<String,Object> data = JSON.parse(str,Map.class);
+            return caster.to(data);
+        }
+    }
+    static class Map2BeanProvider implements Caster.CasterProvider {
+
+
+
+        @Override
+        public ValueCaster getCaster(Class<?> srcType, Class<?> toType) {
+            if (Map.class.isAssignableFrom(srcType) && !isSimple(toType)) {
                 return new Map2Bean(toType);
             }
 

@@ -60,9 +60,8 @@ public class ActionContext implements Destroyable {
     private Exception exception;
 
     /**
-     * 路径上面的参数
+     * 这里可以在Request期间存放一些数据
      */
-    private Map<String, Object> pathVariables;
     private Map<String, Object> data;
 
     /**
@@ -95,7 +94,7 @@ public class ActionContext implements Destroyable {
         return data;
     }
 
-    public ActionContext put(String key, Object value) {
+    public ActionContext set(String key, Object value) {
         checkData().put(key, value);
         return this;
     }
@@ -188,13 +187,6 @@ public class ActionContext implements Destroyable {
         return this.exception;
     }
 
-    public Map<String, Object> getPathVariables() {
-        return pathVariables;
-    }
-
-    public void setPathVariables(Map<String, Object> pathVariables) {
-        this.pathVariables = pathVariables;
-    }
 
     public Map<String, Object> getData() {
         return data;
@@ -210,8 +202,15 @@ public class ActionContext implements Destroyable {
         return result;
     }
 
+    /**
+     * 这个方法将直接设置要渲染的对象，并且将状态改成 {@link ActionContext#STATE_BEFORE_RENDER}
+     * @param renderObject
+     */
     public void setRenderObject(Object renderObject) {
         this.renderObject = renderObject;
+        this.result = result;
+        this.exception = null;
+        setState(STATE_BEFORE_RENDER);
     }
 
     @Override
@@ -225,10 +224,11 @@ public class ActionContext implements Destroyable {
         result = null;
         preParam = null;
         target = null;
-        pathVariables = null;
         if (args != null) {
             Arrays.fill(args, null);
             args = null;
         }
+
+        local.remove();
     }
 }

@@ -121,4 +121,20 @@ public class Io {
         }
 
     }
+
+    /**
+     * copy streams
+     * @param inputStream
+     * @param outputStream
+     * @throws IOException
+     */
+    public static void copy(
+            FileInputStream inputStream,
+            OutputStream outputStream)  throws IOException{
+        byte[] bytes = new byte[4096];
+        int len = 0;
+        while((len=inputStream.read(bytes,0,4096)) != EOF){
+            outputStream.write(bytes,0,len);
+        }
+    }
 }

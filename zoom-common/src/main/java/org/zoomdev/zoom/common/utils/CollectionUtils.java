@@ -1,5 +1,6 @@
 package org.zoomdev.zoom.common.utils;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.zoomdev.zoom.common.designpattern.SingletonUtils;
 import org.zoomdev.zoom.common.filter.Filter;
 
@@ -85,6 +86,33 @@ public class CollectionUtils {
                 return iterator.next();
             }
         };
+    }
+
+    /**
+     * 可修改的list
+     * @param values
+     * @param <T>
+     * @return
+     */
+    public static <T> List<T> asList(T... values) {
+        List<T> list = new ArrayList<T>();
+        Collections.addAll(list,values);
+
+        return list;
+    }
+
+    /**
+     * 获取一个List的某个元素
+     * @param list
+     * @param index
+     * @return
+     */
+    public static <T> T getAt(List<T> list, int index) {
+        if(list == null || list.size() <= index){
+            return null;
+        }
+        return list.get(index);
+
     }
 
     static interface KeyValue {

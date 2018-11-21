@@ -6,10 +6,7 @@ import org.zoomdev.zoom.common.io.Io;
 import org.zoomdev.zoom.common.json.JSON;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Writer;
+import java.io.*;
 
 public class ResponseUtils {
 
@@ -58,7 +55,7 @@ public class ResponseUtils {
         }
     }
 
-    public static void write(HttpServletResponse response, FileInputStream inputStream, int length) {
+    public static void write(HttpServletResponse response, InputStream inputStream, int length) {
 
         OutputStream writer = null;
         try {

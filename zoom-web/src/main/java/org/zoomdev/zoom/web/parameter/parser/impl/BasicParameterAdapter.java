@@ -90,7 +90,7 @@ class BasicParameterAdapter {
 
         @Override
         public Object get(ActionContext context, Object data, String name, Type type) {
-            return context.getRequest().getAttribute(name);
+            return Caster.toType(context.getRequest().getAttribute(name),type);
         }
 
     }

@@ -11,30 +11,49 @@ import org.zoomdev.zoom.web.annotations.Param;
 public class QueryController {
 
 
-
-
     @Mapping("module/{page}/id")
     public void pageSegment3(
 
-            @Param(pathVariable = true,name = "page")
+            @Param(pathVariable = true, name = "page")
                     String test
-    ){
+    ) {
 
     }
 
     @Mapping("module/{page}/{id}")
-    public void pageSegment2(){
+    public void pageSegment2(
+            @Param(pathVariable = true)
+                    String page,
+            @Param(pathVariable = true)
+                    Integer id
+
+    ) {
 
     }
 
     @Mapping("{module}/index/{id}")
-    public void pageIndex(){
+    public void pageIndex(
+            @Param(pathVariable = true)
+                    String module,
+            @Param(pathVariable = true)
+                    Integer id,
+            String param0
+    ) {
 
     }
 
 
     @Mapping("{module}/{page}/{id}")
-    public void page(){
+    public void page(
+
+            @Param(pathVariable = true)
+                    String module,
+            @Param(pathVariable = true)
+                    String page,
+            @Param(pathVariable = true)
+                    String id,
+            String param0
+    ) {
 
     }
 

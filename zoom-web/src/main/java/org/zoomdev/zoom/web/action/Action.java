@@ -141,6 +141,10 @@ public class Action implements ActionHandler, Destroyable {
 
     public void release(ActionContext context) throws Exception {
         ioc.release(IocContainer.Scope.REQUEST);
+
+
+        /// 寿终正寝,完成了光荣的使命，可以销毁了
+        context.destroy();
     }
 
 

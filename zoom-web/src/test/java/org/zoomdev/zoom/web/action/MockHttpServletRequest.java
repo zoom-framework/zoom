@@ -3,6 +3,8 @@ package org.zoomdev.zoom.web.action;
 
 import org.zoomdev.zoom.common.json.JSON;
 import org.zoomdev.zoom.common.utils.CollectionUtils;
+import org.zoomdev.zoom.common.utils.Converter;
+import org.zoomdev.zoom.common.utils.MapUtils;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -35,6 +37,29 @@ public class MockHttpServletRequest implements HttpServletRequest {
         return json(serverPath, method, data, new HashMap<String, String>());
     }
 
+    private static  Map<String,String[]> getParameters(Map<String,Object> data){
+        return MapUtils.convert(data, new Converter<Object, String[]>() {
+            @Override
+            public String[] convert(Object data) {
+                return new String[]{String.valueOf(data)};
+            }
+        });
+    }
+
+    public static MockHttpServletRequest form(
+            String serverPath,
+            String method,
+            Map<String,Object> data,
+            Map<String, String> headers
+    ) {
+        return new MockHttpServletRequest(
+                serverPath, method, "www",
+                MapUtils.toQueryString(data).getBytes(),
+                headers,
+
+                getParameters(data)
+        );
+    }
     public static MockHttpServletRequest json(
             String serverPath,
             String method,

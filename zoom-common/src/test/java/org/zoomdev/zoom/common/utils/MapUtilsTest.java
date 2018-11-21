@@ -130,4 +130,16 @@ public class MapUtilsTest {
         assertEquals(testClass.title,"测试1");
     }
 
+
+    @Test
+    public void testQueryString(){
+        Map<String,Object> data = MapUtils.asMap(
+                "id",1,
+                "name","张三",
+                "title","test");
+
+        assertEquals(MapUtils.toQueryString(data),"id=1&name=张三&title=test");
+
+
+    }
 }

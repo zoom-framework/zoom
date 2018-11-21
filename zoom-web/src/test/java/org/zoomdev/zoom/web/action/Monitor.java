@@ -13,7 +13,7 @@ public class Monitor {
     }
 
     public void setArguments(Object... arguments) {
-        this.arguments = arguments;
+        this.arguments = arguments.clone();
         num.incrementAndGet();
     }
 
