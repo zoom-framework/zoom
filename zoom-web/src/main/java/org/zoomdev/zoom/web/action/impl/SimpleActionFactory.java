@@ -63,7 +63,7 @@ public class SimpleActionFactory implements ActionFactory {
 
 
     protected Rendering createErrorRendering(Class<?> controllerClass, Method method) {
-        return renderingFactory.createRendering(controllerClass, method);
+        return renderingFactory.createExceptionRendering(controllerClass, method);
     }
 
     /**
