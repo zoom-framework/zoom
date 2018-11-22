@@ -5,27 +5,27 @@ public class WebConfig {
     /**
      * 默认模板后缀
      */
-    private String ext;
+    private String templateExt = ".html";
 
     /**
      * 错误处理页面
      */
-    private String error;
+    private String errorPage = "/error";
 
-    public String getExt() {
-        return ext;
+    public String getTemplateExt() {
+        return templateExt;
     }
 
-    public void setExt(String ext) {
-        this.ext = ext;
+    public void setTemplateExt(String templateExt) {
+        this.templateExt = templateExt;
     }
 
-    public String getError() {
-        return error;
+    public String getErrorPage() {
+        return errorPage;
     }
 
-    public void setError(String error) {
-        this.error = error;
+    public void setErrorPage(String errorPage) {
+        this.errorPage = errorPage;
     }
 
 }

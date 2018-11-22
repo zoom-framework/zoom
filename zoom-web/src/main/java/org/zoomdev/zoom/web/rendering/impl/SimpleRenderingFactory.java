@@ -41,6 +41,23 @@ public class SimpleRenderingFactory implements RenderingFactoryManager {
 
     }
 
+    @Override
+    public Rendering createExceptionRendering(Class<?> targetClass, Method method) {
+
+        Rendering rendering = null;
+        for(RenderingFactory factory : factoryList){
+            rendering = factory.createExceptionRendering(targetClass,method);
+            if(rendering!=null){
+                break;
+            }
+        }
+        if(rendering!=null){
+            return new GroupRendering(viewRendering, rendering);
+        }else {
+            return viewRendering;
+        }
+    }
+
 
     @Override
     public void add(RenderingFactory factory) {

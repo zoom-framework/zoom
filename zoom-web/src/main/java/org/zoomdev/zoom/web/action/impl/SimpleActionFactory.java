@@ -18,10 +18,6 @@ import org.zoomdev.zoom.web.parameter.PreParameterParserManager;
 import org.zoomdev.zoom.web.rendering.Rendering;
 import org.zoomdev.zoom.web.rendering.RenderingFactory;
 import org.zoomdev.zoom.web.rendering.RenderingFactoryManager;
-import org.zoomdev.zoom.web.rendering.impl.BeetlRendering;
-import org.zoomdev.zoom.web.rendering.impl.SimpleErrorRenderingFactory;
-import org.zoomdev.zoom.web.rendering.impl.SimpleRenderingFactory;
-import org.zoomdev.zoom.web.rendering.impl.TemplateRendering;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -48,13 +44,8 @@ public class SimpleActionFactory implements ActionFactory {
 
 
     @Inject
-    private RenderingFactoryManager renderingFactoryManager;
+    private RenderingFactoryManager renderingFactory;
 
-
-    private RenderingFactory renderingFactory;
-
-
-    private RenderingFactory errorRenderingFactory;
 
 
     public SimpleActionFactory() {
@@ -63,7 +54,7 @@ public class SimpleActionFactory implements ActionFactory {
 
 
     protected Rendering createRendering(Class<?> targetClass, Method method) {
-        return getRenderingFactory().createRendering(targetClass, method);
+        return renderingFactory.createRendering(targetClass, method);
     }
 
     protected ParameterParser createParameterParser(Class<?> controllerClass, Method method, String[] names) {
@@ -72,7 +63,7 @@ public class SimpleActionFactory implements ActionFactory {
 
 
     protected Rendering createErrorRendering(Class<?> controllerClass, Method method) {
-        return getErrorRenderingFactory().createRendering(controllerClass, method);
+        return renderingFactory.createRendering(controllerClass, method);
     }
 
     /**
@@ -175,30 +166,6 @@ public class SimpleActionFactory implements ActionFactory {
     }
 
 
-    public RenderingFactory getRenderingFactory() {
-        if (errorRenderingFactory == null) {
-            renderingFactory = renderingFactoryManager;
-        }
-        return renderingFactory;
-    }
-
-    private TemplateRendering createTemplateRendering() {
-        return BeetlRendering.createFileRendering();
-    }
-
-    public void setRenderingFactory(RenderingFactory renderingFactory) {
-        this.renderingFactory = renderingFactory;
-    }
-
-    public RenderingFactory getErrorRenderingFactory() {
-        if (errorRenderingFactory == null)
-            errorRenderingFactory = new SimpleErrorRenderingFactory(createTemplateRendering());
-        return errorRenderingFactory;
-    }
-
-    public void setErrorRenderingFactory(RenderingFactory errorRenderingFactory) {
-        this.errorRenderingFactory = errorRenderingFactory;
-    }
 
 
 }

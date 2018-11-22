@@ -5,7 +5,6 @@ import org.zoomdev.zoom.common.utils.PathUtils;
 import org.zoomdev.zoom.web.action.ActionContext;
 import org.zoomdev.zoom.web.exception.StatusException;
 import org.zoomdev.zoom.web.rendering.Rendering;
-import org.zoomdev.zoom.web.utils.RequestUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

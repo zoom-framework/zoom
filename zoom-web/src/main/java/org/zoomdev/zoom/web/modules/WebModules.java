@@ -57,11 +57,12 @@ public class WebModules {
 
     @IocBean
     public RenderingFactoryManager getRenderingFactoryManager(
-            TemplateEngineManager manager
+            TemplateEngineManager manager,
+            WebConfig webConfig
     ){
         return new SimpleRenderingFactory(
                 new JsonRenderingFactory(),
-                new TemplateRenderingFactory(manager)
+                new TemplateRenderingFactory(manager,webConfig)
         );
     }
 

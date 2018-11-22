@@ -69,10 +69,6 @@
             <groupId>org.zoomdev.zoom</groupId>
             <artifactId>zoom-ioc</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.zoomdev.zoom</groupId>
-            <artifactId>zoom-event</artifactId>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/log4j/log4j -->
         <dependency>
             <groupId>log4j</groupId>
@@ -80,12 +76,6 @@
             <version>1.2.17</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.ibeetl/beetl -->
-        <dependency>
-            <groupId>com.ibeetl</groupId>
-            <artifactId>beetl</artifactId>
-            <version>2.5.3</version>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
         <dependency>
             <groupId>commons-fileupload</groupId>

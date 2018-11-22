@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 public class JsonRenderingFactory implements RenderingFactory {
 
     private JsonRendering jsonRendering = new JsonRendering();
+    private JsonErrorRendering errorRendering = new JsonErrorRendering();
 
 
     
@@ -17,6 +18,15 @@ public class JsonRenderingFactory implements RenderingFactory {
         if (targetClass.isAnnotationPresent(JsonResponse.class)
                 || method.isAnnotationPresent(JsonResponse.class)) {
             return jsonRendering;
+        }
+        return null;
+    }
+
+    @Override
+    public Rendering createExceptionRendering(Class<?> targetClass, Method method) {
+        if (targetClass.isAnnotationPresent(JsonResponse.class)
+                || method.isAnnotationPresent(JsonResponse.class)) {
+            return errorRendering;
         }
         return null;
     }

@@ -4,4 +4,6 @@ import java.lang.reflect.Method;
 
 public interface RenderingFactory {
     Rendering createRendering(Class<?> targetClass, Method method);
+
+    Rendering createExceptionRendering( Class<?> targetClass, Method method );
 }
