@@ -46,6 +46,9 @@ public class Classes {
         return new RuntimeException(e);
     }
 
+    public static boolean isCollection(Class<?> type) {
+        return Collection.class.isAssignableFrom(type);
+    }
 
 
     public abstract static class ClassReference<T> {

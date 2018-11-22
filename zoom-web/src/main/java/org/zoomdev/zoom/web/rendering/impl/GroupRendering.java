@@ -14,7 +14,8 @@ public class GroupRendering implements Rendering {
     @Override
     public boolean render(ActionContext context) throws Exception {
         for (Rendering rendering : renderings) {
-            if (rendering.render(context)) return true;
+            if (rendering.render(context))
+                return true;
         }
         return false;
     }

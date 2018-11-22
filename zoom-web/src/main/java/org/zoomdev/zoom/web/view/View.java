@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
  * @see org.zoomdev.zoom.web.view.impl.RedirectView
  * @see org.zoomdev.zoom.web.view.impl.StringView
  * @see org.zoomdev.zoom.web.view.impl.OutputStreamView
- * @see org.zoomdev.zoom.web.view.impl.CacheControlView
  */
 public interface View {
 

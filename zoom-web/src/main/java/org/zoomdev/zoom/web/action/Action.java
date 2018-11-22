@@ -151,7 +151,7 @@ public class Action implements ActionHandler, Destroyable {
     public void handle(ActionContext context) {
         try {
             process(context);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             // 错误处理
             context.setException(e);
             handlerError(context);
@@ -310,7 +310,7 @@ public class Action implements ActionHandler, Destroyable {
      * @param context
      * @throws Exception
      */
-    public void process(ActionContext context) throws Exception {
+    public void process(ActionContext context) throws Throwable {
 
         switch (context.getState()) {
 

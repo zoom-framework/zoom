@@ -1,5 +1,6 @@
 package org.zoomdev.zoom.web.rendering.impl;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.zoomdev.zoom.web.action.ActionContext;
 import org.zoomdev.zoom.web.rendering.Rendering;
 import org.zoomdev.zoom.web.resp.JsonResponseAdapter;
@@ -17,9 +18,16 @@ public class AdaptedJsonRendering implements Rendering {
 
     @Override
     public boolean render(ActionContext context) throws Exception {
-        Object result = context.getResult();
+
         HttpServletResponse response = context.getResponse();
-        result = adapter.adapterOk(result);
+
+        Object result = context.getResult();
+        Throwable exception = context.getException();
+        if(exception!=null){
+            result = adapter.adapterException(exception);
+        }else{
+            result = adapter.adapterOk(result);
+        }
         ResponseUtils.json(response, result);
         return true;
 

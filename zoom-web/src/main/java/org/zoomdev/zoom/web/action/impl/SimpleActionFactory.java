@@ -17,6 +17,7 @@ import org.zoomdev.zoom.web.parameter.ParameterParserFactory;
 import org.zoomdev.zoom.web.parameter.PreParameterParserManager;
 import org.zoomdev.zoom.web.rendering.Rendering;
 import org.zoomdev.zoom.web.rendering.RenderingFactory;
+import org.zoomdev.zoom.web.rendering.RenderingFactoryManager;
 import org.zoomdev.zoom.web.rendering.impl.BeetlRendering;
 import org.zoomdev.zoom.web.rendering.impl.SimpleErrorRenderingFactory;
 import org.zoomdev.zoom.web.rendering.impl.SimpleRenderingFactory;
@@ -44,6 +45,10 @@ public class SimpleActionFactory implements ActionFactory {
 
     @Inject
     private ParameterParserFactory parameterParserFactory;
+
+
+    @Inject
+    private RenderingFactoryManager renderingFactoryManager;
 
 
     private RenderingFactory renderingFactory;
@@ -172,7 +177,7 @@ public class SimpleActionFactory implements ActionFactory {
 
     public RenderingFactory getRenderingFactory() {
         if (errorRenderingFactory == null) {
-            renderingFactory = new SimpleRenderingFactory(createTemplateRendering());
+            renderingFactory = renderingFactoryManager;
         }
         return renderingFactory;
     }

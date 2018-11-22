@@ -88,13 +88,6 @@ public class TestView extends TestCase {
                 )
         ));
 
-        response = new MockHttpServletResponse();
-        CacheControlView cacheControlView = CacheControlView.forceCache(
-                new StringView("content")
-        );
-
-
-        cacheControlView.render(response);
 
 
     }

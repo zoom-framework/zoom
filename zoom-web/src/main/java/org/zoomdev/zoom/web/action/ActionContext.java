@@ -57,7 +57,7 @@ public class ActionContext implements Destroyable {
     private Object[] args;
     private Object result;
     private Object target;
-    private Exception exception;
+    private Throwable exception;
 
     /**
      * 这里可以在Request期间存放一些数据
@@ -195,11 +195,11 @@ public class ActionContext implements Destroyable {
         return (T) target;
     }
 
-    public void setException(Exception e) {
+    public void setException(Throwable e) {
         this.exception = e;
     }
 
-    public Exception getException() {
+    public Throwable getException() {
         return this.exception;
     }
 

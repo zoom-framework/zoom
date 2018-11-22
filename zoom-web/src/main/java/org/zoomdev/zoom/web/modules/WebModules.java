@@ -9,10 +9,14 @@ import org.zoomdev.zoom.common.caster.ValueCaster;
 import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.utils.CachedClasses;
 import org.zoomdev.zoom.common.utils.Classes;
+import org.zoomdev.zoom.web.WebConfig;
 import org.zoomdev.zoom.web.parameter.ParameterParserFactory;
 import org.zoomdev.zoom.web.parameter.PreParameterParserManager;
 import org.zoomdev.zoom.web.parameter.parser.impl.SimpleParameterParserFactory;
 import org.zoomdev.zoom.web.parameter.pre.impl.SimplePreParameterParserManager;
+import org.zoomdev.zoom.web.rendering.RenderingFactoryManager;
+import org.zoomdev.zoom.web.rendering.TemplateEngineManager;
+import org.zoomdev.zoom.web.rendering.impl.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
@@ -40,6 +44,26 @@ public class WebModules {
         return new SimpleParameterParserFactory();
     }
 
+
+    @IocBean
+    public WebConfig webConfig(){
+        return new WebConfig();
+    }
+
+    @IocBean
+    public TemplateEngineManager getTemplateEngineManager(WebConfig config){
+        return new SimpleTemplateEngineManager(config);
+    }
+
+    @IocBean
+    public RenderingFactoryManager getRenderingFactoryManager(
+            TemplateEngineManager manager
+    ){
+        return new SimpleRenderingFactory(
+                new JsonRenderingFactory(),
+                new TemplateRenderingFactory(manager)
+        );
+    }
 
     @IocBean
     public PreParameterParserManager getPreParameterParserManager() {
@@ -85,7 +109,8 @@ public class WebModules {
                 Field[] fields = CachedClasses.getFields(toType );
                 for(Field field : fields){
                     Object value;
-                    if(field.getType().isArray()){
+                    if(field.getType().isArray()
+                            || Classes.isCollection(field.getType())){
                         value = request.getParameterValues(field.getName());
                     }else{
                         value = request.getParameter(field.getName());

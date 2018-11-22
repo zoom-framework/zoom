@@ -10,6 +10,7 @@ import org.zoomdev.zoom.web.utils.RequestUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -80,16 +81,34 @@ public abstract class TemplateRendering implements Rendering {
     }
 
 
+
+    /**
+     * 将request中的所有attribute合并到一个map中
+     *
+     * @param data
+     * @param request
+     */
+    public static void merge(Map<String, Object> data, HttpServletRequest request) {
+        assert (data != null && request != null);
+        Enumeration<String> enumeration = request.getAttributeNames();
+        while (enumeration.hasMoreElements()) {
+            String key = enumeration.nextElement();
+            data.put(key, request.getAttribute(key));
+        }
+    }
+
     private Map<String, Object> merge(Map<String, Object> data, ActionContext context) {
         if (data == null) {
             data = new HashMap<String, Object>();
         }
 
+        merge(data, context.getRequest());
+
         if (context.getData() != null) {
             data.putAll(context.getData());
         }
 
-        RequestUtils.merge(data, context.getRequest());
+
 
         return data;
     }

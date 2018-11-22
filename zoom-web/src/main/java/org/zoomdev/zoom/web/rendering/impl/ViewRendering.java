@@ -8,8 +8,10 @@ public class ViewRendering implements Rendering {
 
     @Override
     public boolean render(ActionContext context) throws Exception {
-        if (context.getRenderObject() instanceof View) {
-            ((View) context.getResult()).render(context.getResponse());
+
+        Object renderObject;
+        if ( (renderObject = context.getRenderObject()) instanceof View) {
+            ((View) renderObject).render(context.getResponse());
             return true;
         }
         return false;
