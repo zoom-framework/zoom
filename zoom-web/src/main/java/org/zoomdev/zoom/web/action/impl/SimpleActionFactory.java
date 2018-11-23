@@ -53,6 +53,51 @@ public class SimpleActionFactory implements ActionFactory {
     }
 
 
+
+    public void setIoc(IocContainer ioc) {
+        this.ioc = ioc;
+    }
+
+    public ClassInfo getClassInfo() {
+        return classInfo;
+    }
+
+    public void setClassInfo(ClassInfo classInfo) {
+        this.classInfo = classInfo;
+    }
+
+    public String getEncoding() {
+        return encoding;
+    }
+
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
+    }
+
+    public PreParameterParserManager getPreParameterParserManager() {
+        return preParameterParserManager;
+    }
+
+    public void setPreParameterParserManager(PreParameterParserManager preParameterParserManager) {
+        this.preParameterParserManager = preParameterParserManager;
+    }
+
+    public ParameterParserFactory getParameterParserFactory() {
+        return parameterParserFactory;
+    }
+
+    public void setParameterParserFactory(ParameterParserFactory parameterParserFactory) {
+        this.parameterParserFactory = parameterParserFactory;
+    }
+
+    public RenderingFactoryManager getRenderingFactory() {
+        return renderingFactory;
+    }
+
+    public void setRenderingFactory(RenderingFactoryManager renderingFactory) {
+        this.renderingFactory = renderingFactory;
+    }
+
     protected Rendering createRendering(Class<?> targetClass, Method method) {
         return renderingFactory.createRendering(targetClass, method);
     }
