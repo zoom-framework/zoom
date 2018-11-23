@@ -2,65 +2,74 @@ package org.zoomdev.zoom.web.rendering.impl;
 
 import org.zoomdev.zoom.web.annotations.JsonResponse;
 import org.zoomdev.zoom.web.rendering.Rendering;
+import org.zoomdev.zoom.web.rendering.RenderingChain;
 import org.zoomdev.zoom.web.rendering.RenderingFactory;
-import org.zoomdev.zoom.web.rendering.RenderingFactoryManager;
 
+import java.awt.image.renderable.RenderContext;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
-public class SimpleRenderingFactory implements RenderingFactoryManager {
-
-    protected static Rendering viewRendering = new ViewRendering();
+public class SimpleRenderingFactory implements RenderingFactory{
 
 
-    private List<RenderingFactory> factoryList = new ArrayList<RenderingFactory>();
+    List<Rendering> renderings;
+    List<Rendering> errorRenderings;
 
-    public SimpleRenderingFactory(
-            RenderingFactory... factories
-    ) {
-        Collections.addAll(factoryList,factories);
+
+    public SimpleRenderingFactory(){
+        renderings = new ArrayList<Rendering>();
+        errorRenderings = new ArrayList<Rendering>();
     }
 
-    @Override
-    public Rendering createRendering(Class<?> targetClass, Method method) {
 
-        Rendering rendering = null;
-        for(RenderingFactory factory : factoryList){
-            rendering = factory.createRendering(targetClass,method);
-            if(rendering!=null){
-                break;
+    private Map<String,RenderingChain> pool = new HashMap<String, RenderingChain>();
+
+    private RenderingChain createRendering(Class<?> targetClass, Method method,String keyPrefix,List<Rendering> src){
+        StringBuilder sb = new StringBuilder(keyPrefix);
+        List<Rendering> list = new ArrayList<Rendering>();
+        for(Rendering rendering : src){
+            if(rendering.shouldHandle(targetClass,method)){
+                sb.append(rendering.getUid());
+                list.add(rendering);
             }
         }
-        if(rendering!=null){
-            return new GroupRendering(viewRendering, rendering);
-        }else {
-            return viewRendering;
+        String key = sb.toString();
+        RenderingChain  rendering = pool.get(key);
+        if(rendering==null){
+            GroupRendering groupRendering = new GroupRendering(list.toArray(new Rendering[list.size()]));
+            rendering = groupRendering;
+            pool.put(key, rendering);
         }
-
+        return rendering;
     }
 
     @Override
-    public Rendering createExceptionRendering(Class<?> targetClass, Method method) {
-
-        Rendering rendering = null;
-        for(RenderingFactory factory : factoryList){
-            rendering = factory.createExceptionRendering(targetClass,method);
-            if(rendering!=null){
-                break;
-            }
-        }
-        if(rendering!=null){
-            return new GroupRendering(viewRendering, rendering);
-        }else {
-            return viewRendering;
-        }
+    public synchronized RenderingChain createRendering(Class<?> targetClass, Method method) {
+        return createRendering(targetClass,method,"",renderings);
     }
 
+    @Override
+    public synchronized RenderingChain createExceptionRendering(Class<?> targetClass, Method method) {
+        return createRendering(targetClass,method,"error",errorRenderings);
+    }
 
     @Override
-    public void add(RenderingFactory factory) {
-        factoryList.add(factory);
+    public void add(int index, Rendering rendering) {
+        this.renderings.add(index,rendering);
+    }
+
+    @Override
+    public void addError(int index, Rendering rendering) {
+        this.errorRenderings.add(index,rendering);
+    }
+
+    @Override
+    public void add(Rendering rendering) {
+        this.renderings.add(rendering);
+    }
+
+    @Override
+    public void addError(Rendering rendering) {
+        this.errorRenderings.add(rendering);
     }
 }

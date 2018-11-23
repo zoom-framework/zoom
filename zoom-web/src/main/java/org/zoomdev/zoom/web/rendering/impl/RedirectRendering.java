@@ -1,7 +1,11 @@
 package org.zoomdev.zoom.web.rendering.impl;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.zoomdev.zoom.web.action.ActionContext;
+import org.zoomdev.zoom.web.annotations.JsonResponse;
 import org.zoomdev.zoom.web.rendering.Rendering;
+
+import java.lang.reflect.Method;
 
 public class RedirectRendering implements Rendering {
     public static final String REDIRECT = "redirect:";
@@ -9,8 +13,9 @@ public class RedirectRendering implements Rendering {
 
     @Override
     public boolean render(ActionContext context) throws Exception {
-        if (context.getResult() instanceof String) {
-            String result = (String) context.getResult();
+        Object renderObject = context.getRenderObject();
+        if (renderObject instanceof String) {
+            String result = (String) renderObject;
             if (result.startsWith(RedirectRendering.REDIRECT)) {
                 context.getResponse().sendRedirect(result.substring(RedirectRendering.REDIRECT.length()));
                 return true;
@@ -24,4 +29,13 @@ public class RedirectRendering implements Rendering {
         return false;
     }
 
+    @Override
+    public String getUid() {
+        return "redirect";
+    }
+
+    @Override
+    public boolean shouldHandle(Class<?> targetClass, Method method) {
+        return true;
+    }
 }

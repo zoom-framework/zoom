@@ -2,8 +2,11 @@ package org.zoomdev.zoom.web.rendering.impl;
 
 import org.zoomdev.zoom.web.action.ActionContext;
 import org.zoomdev.zoom.web.rendering.Rendering;
+import org.zoomdev.zoom.web.rendering.RenderingChain;
 
-public class GroupRendering implements Rendering {
+import java.lang.reflect.Method;
+
+public class GroupRendering implements RenderingChain {
 
     private Rendering[] renderings;
 
@@ -19,5 +22,6 @@ public class GroupRendering implements Rendering {
         }
         return false;
     }
+
 
 }

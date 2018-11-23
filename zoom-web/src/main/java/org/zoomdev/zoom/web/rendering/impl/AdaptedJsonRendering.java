@@ -2,17 +2,20 @@ package org.zoomdev.zoom.web.rendering.impl;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.zoomdev.zoom.web.action.ActionContext;
+import org.zoomdev.zoom.web.annotations.JsonResponse;
 import org.zoomdev.zoom.web.rendering.Rendering;
 import org.zoomdev.zoom.web.resp.JsonResponseAdapter;
 import org.zoomdev.zoom.web.utils.ResponseUtils;
 
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Method;
 
 public class AdaptedJsonRendering implements Rendering {
 
-    private JsonResponseAdapter adapter;
+    private final JsonResponseAdapter adapter;
 
     public AdaptedJsonRendering(JsonResponseAdapter adapter) {
+        assert (adapter!=null);
         this.adapter = adapter;
     }
 
@@ -31,6 +34,21 @@ public class AdaptedJsonRendering implements Rendering {
         ResponseUtils.json(response, result);
         return true;
 
+    }
+
+    @Override
+    public boolean shouldHandle(Class<?> targetClass, Method method) {
+        JsonResponse response = targetClass.getAnnotation(JsonResponse.class);
+        if(response==null){
+            response = method.getAnnotation(JsonResponse.class);
+        }
+
+        return response!=null && response.value() != null;
+    }
+
+    @Override
+    public String getUid() {
+        return adapter.getClass().getName();
     }
 
 

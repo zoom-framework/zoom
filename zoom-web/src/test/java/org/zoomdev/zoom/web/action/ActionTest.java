@@ -253,8 +253,55 @@ public class ActionTest extends TestCase {
         assertEquals( monitor.arguments()[2],"1" );
         assertEquals( monitor.arguments()[3],"param0" );
 
+        request("/test/testStatusException500",new HashMap<String,Object>());
+        assertEquals(monitor.count(), ++count);
+        assertEquals(monitor.getResponse().getStatus(),500);
+        request("/test/testStatusException404",new HashMap<String,Object>());
+        assertEquals(monitor.count(), ++count);
+        request("/test/testStatusException403",new HashMap<String,Object>());
+        assertEquals(monitor.count(), ++count);
+        request("/test/testStatusException401",new HashMap<String,Object>());
+        assertEquals(monitor.count(), ++count);
+        request("/test/testStatusException400",new HashMap<String,Object>());
+        assertEquals(monitor.count(), ++count);
+        request("/test/testStatusException405",new HashMap<String,Object>());
+        assertEquals(monitor.count(), ++count);
+        request("/test/testStatusException500_",new HashMap<String,Object>());
+        assertEquals(monitor.count(), ++count);
 
 
+
+
+
+        request("/temp/index",new HashMap<String,Object>());
+        assertEquals(monitor.count(), ++count);
+
+        request("/temp/test",new HashMap<String,Object>());
+        assertEquals(monitor.count(), ++count);
+
+
+        request("/temp/hello",new HashMap<String,Object>());
+        assertEquals(monitor.count(), ++count);
+
+
+        request("/temp/testError",new HashMap<String,Object>());
+        assertEquals(monitor.count(), ++count);
+
+        request("/temp/test1",new HashMap<String,Object>());
+        assertEquals(monitor.count(), ++count);
+
+        request("/temp/testView",new HashMap<String,Object>());
+        assertEquals(monitor.count(), ++count);
+
+        request("/temp/redirectView",new HashMap<String,Object>());
+        assertEquals(monitor.count(), ++count);
+        assertEquals(((MockHttpServletResponse)monitor.getResponse())
+                .getRedirectUrl(),"redirect/test");
+
+        request("/temp/redirectView2",new HashMap<String,Object>());
+        assertEquals(monitor.count(), ++count);
+        assertEquals(((MockHttpServletResponse)monitor.getResponse())
+                .getRedirectUrl(),"redirect/view2");
 
         filter.destroy();
 
@@ -273,7 +320,7 @@ public class ActionTest extends TestCase {
         filter.doFilter(mockJsonRequest(
                 url,
                 data
-        ), mockJsonResponse(), mockNextChain());
+        ), new MockHttpServletResponse(), mockNextChain());
     }
 
     private FilterChain mockNextChain() {
@@ -283,14 +330,7 @@ public class ActionTest extends TestCase {
     }
 
     private HttpServletResponse mockJsonResponse() throws IOException {
-        ServletOutputStream outputStream = mock(ServletOutputStream.class);
-
-
-        HttpServletResponse response = mock(HttpServletResponse.class);
-
-        when(response.getOutputStream()).thenReturn(outputStream);
-
-        return response;
+        return new MockHttpServletResponse();
     }
 
     private MockHttpServletRequest mockFormRequest(

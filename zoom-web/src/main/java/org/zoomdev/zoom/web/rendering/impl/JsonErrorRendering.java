@@ -5,11 +5,13 @@ import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.common.utils.MapUtils;
 import org.zoomdev.zoom.web.action.ActionContext;
+import org.zoomdev.zoom.web.annotations.JsonResponse;
 import org.zoomdev.zoom.web.exception.StatusException;
 import org.zoomdev.zoom.web.rendering.Rendering;
 import org.zoomdev.zoom.web.utils.ResponseUtils;
 
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Method;
 
 public class JsonErrorRendering implements Rendering {
 
@@ -36,6 +38,16 @@ public class JsonErrorRendering implements Rendering {
         }
 
         return true;
+    }
+
+    @Override
+    public boolean shouldHandle(Class<?> targetClass, Method method) {
+        return targetClass.isAssignableFrom(JsonResponse.class) || method.isAnnotationPresent(JsonResponse.class);
+    }
+
+    @Override
+    public String getUid() {
+        return "jsonError";
     }
 
 }

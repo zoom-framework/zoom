@@ -9,6 +9,7 @@ import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.web.parameter.ParameterParser;
 import org.zoomdev.zoom.web.parameter.PreParameterParserManager;
 import org.zoomdev.zoom.web.rendering.Rendering;
+import org.zoomdev.zoom.web.rendering.RenderingChain;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,12 +22,12 @@ public class Action implements ActionHandler, Destroyable {
     /**
      * 渲染器
      */
-    private Rendering rendering;
+    private RenderingChain rendering;
 
     /**
      * 异常渲染器
      */
-    private Rendering errorRendering;
+    private RenderingChain errorRendering;
 
     /**
      * 对参数进行预处理,如将整个request读取一个json
@@ -346,19 +347,19 @@ public class Action implements ActionHandler, Destroyable {
         this.paramParser = paramParser;
     }
 
-    public Rendering getRendering() {
+    public RenderingChain getRendering() {
         return rendering;
     }
 
-    public void setRendering(Rendering rendering) {
+    public void setRendering(RenderingChain rendering) {
         this.rendering = rendering;
     }
 
-    public Rendering getErrorRendering() {
+    public RenderingChain getErrorRendering() {
         return errorRendering;
     }
 
-    public void setErrorRendering(Rendering errorRendering) {
+    public void setErrorRendering(RenderingChain errorRendering) {
         this.errorRendering = errorRendering;
     }
 

@@ -16,8 +16,8 @@ import org.zoomdev.zoom.web.parameter.ParameterParser;
 import org.zoomdev.zoom.web.parameter.ParameterParserFactory;
 import org.zoomdev.zoom.web.parameter.PreParameterParserManager;
 import org.zoomdev.zoom.web.rendering.Rendering;
+import org.zoomdev.zoom.web.rendering.RenderingChain;
 import org.zoomdev.zoom.web.rendering.RenderingFactory;
-import org.zoomdev.zoom.web.rendering.RenderingFactoryManager;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -44,7 +44,7 @@ public class SimpleActionFactory implements ActionFactory {
 
 
     @Inject
-    private RenderingFactoryManager renderingFactory;
+    private RenderingFactory renderingFactory;
 
 
 
@@ -90,15 +90,15 @@ public class SimpleActionFactory implements ActionFactory {
         this.parameterParserFactory = parameterParserFactory;
     }
 
-    public RenderingFactoryManager getRenderingFactory() {
+    public RenderingFactory getRenderingFactory() {
         return renderingFactory;
     }
 
-    public void setRenderingFactory(RenderingFactoryManager renderingFactory) {
+    public void setRenderingFactory(RenderingFactory renderingFactory) {
         this.renderingFactory = renderingFactory;
     }
 
-    protected Rendering createRendering(Class<?> targetClass, Method method) {
+    protected RenderingChain createRendering(Class<?> targetClass, Method method) {
         return renderingFactory.createRendering(targetClass, method);
     }
 
@@ -107,7 +107,7 @@ public class SimpleActionFactory implements ActionFactory {
     }
 
 
-    protected Rendering createErrorRendering(Class<?> controllerClass, Method method) {
+    protected RenderingChain createErrorRendering(Class<?> controllerClass, Method method) {
         return renderingFactory.createExceptionRendering(controllerClass, method);
     }
 

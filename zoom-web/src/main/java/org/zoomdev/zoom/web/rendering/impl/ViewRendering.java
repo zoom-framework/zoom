@@ -4,6 +4,8 @@ import org.zoomdev.zoom.web.action.ActionContext;
 import org.zoomdev.zoom.web.rendering.Rendering;
 import org.zoomdev.zoom.web.view.View;
 
+import java.lang.reflect.Method;
+
 public class ViewRendering implements Rendering {
 
     @Override
@@ -15,6 +17,16 @@ public class ViewRendering implements Rendering {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean shouldHandle(Class<?> targetClass, Method method) {
+        return true;
+    }
+
+    @Override
+    public String getUid() {
+        return "view";
     }
 
 }

@@ -1,7 +1,10 @@
 package org.zoomdev.zoom.web.rendering.impl;
 
+import org.zoomdev.zoom.common.annotations.Inject;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.common.utils.PathUtils;
+import org.zoomdev.zoom.web.WebConfig;
 import org.zoomdev.zoom.web.action.ActionContext;
 import org.zoomdev.zoom.web.exception.StatusException;
 import org.zoomdev.zoom.web.rendering.Rendering;
@@ -24,6 +27,13 @@ public abstract class TemplateRendering implements Rendering {
      */
     private String ext;
 
+
+    private WebConfig webConfig;
+
+    public TemplateRendering(WebConfig webConfig){
+        this.webConfig = webConfig;
+    }
+
     /**
      * 获取默认模板位置(WEB-INF/templates)
      *
@@ -35,8 +45,7 @@ public abstract class TemplateRendering implements Rendering {
 
 
     public String getExt() {
-
-        return ext == null ? ".html" : ext;
+        return ext == null ? webConfig.getTemplateExt() : ext;
     }
 
     public void setExt(String ext) {
@@ -59,6 +68,9 @@ public abstract class TemplateRendering implements Rendering {
         if (result instanceof Map) {
             data = (Map<String, Object>) result;
             data = merge(data, context);
+            if(path.contains("{")){
+                throw new ZoomException("本方法必须要返回一个明确的模板路径,如users/index");
+            }
         } else if (result instanceof String) {
             path = (String) result;
             data = merge(data, context);
@@ -68,9 +80,10 @@ public abstract class TemplateRendering implements Rendering {
             } else {
                 response.setStatus(500);
             }
-            path = "/error";
+            path = webConfig.getErrorPage();
             data = new HashMap<String, Object>();
             Throwable error = (Throwable) result;
+            data.put("exception",error);
             data.put("message", error.getMessage());
             data.put("error", Classes.formatStackTrace(error));
         }
@@ -96,6 +109,12 @@ public abstract class TemplateRendering implements Rendering {
         }
     }
 
+    /**
+     *
+     * @param data
+     * @param context
+     * @return
+     */
     private Map<String, Object> merge(Map<String, Object> data, ActionContext context) {
         if (data == null) {
             data = new HashMap<String, Object>();
@@ -106,8 +125,6 @@ public abstract class TemplateRendering implements Rendering {
         if (context.getData() != null) {
             data.putAll(context.getData());
         }
-
-
 
         return data;
     }

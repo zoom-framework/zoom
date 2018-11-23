@@ -75,7 +75,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     @Override
     public void sendRedirect(String location) throws IOException {
-
+        this.redirectUrl = location;
     }
 
     @Override
@@ -181,7 +181,8 @@ public class MockHttpServletResponse implements HttpServletResponse {
         if(writer==null){
             writer = new PrintWriter(stringWriter);
         }else{
-            throw new RuntimeException("Stream is already opened");
+            if(outputStream!=null)
+                throw new RuntimeException("Stream is already opened");
         }
         return writer;
     }
@@ -240,5 +241,11 @@ public class MockHttpServletResponse implements HttpServletResponse {
     @Override
     public Locale getLocale() {
         return null;
+    }
+
+    private String redirectUrl;
+
+    public String getRedirectUrl() {
+        return redirectUrl;
     }
 }

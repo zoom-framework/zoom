@@ -11,7 +11,6 @@ import org.zoomdev.zoom.web.action.ActionFactory;
 import org.zoomdev.zoom.web.action.ActionInterceptorFactory;
 import org.zoomdev.zoom.web.annotations.Controller;
 import org.zoomdev.zoom.web.annotations.Mapping;
-import org.zoomdev.zoom.web.annotations.Template;
 import org.zoomdev.zoom.web.router.Router;
 
 import java.lang.reflect.Method;
@@ -116,14 +115,7 @@ public class SimpleActionBuilder extends ClassResolver {
         }
         action.setHttpMethods(methods);
         //模板路径
-        Template template = method.getAnnotation(Template.class);
-        if (template != null) {
-            action.setPath(template.path());
-        } else {
-            action.setPath(key.substring(1));
-        }
-
-
+        action.setPath(key.substring(1));
         if (log.isInfoEnabled()) {
             log.info(String.format("注册Action成功:key:[%s] class:[%s] method:[%s] loader:[%s]", key, clazz, method.getName(), clazz.getClassLoader()));
         }

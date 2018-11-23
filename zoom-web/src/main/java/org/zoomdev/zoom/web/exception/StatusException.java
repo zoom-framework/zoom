@@ -27,23 +27,7 @@ public class StatusException extends ZoomException implements RestException {
 
     }
 
-    /**
-     * 429 请求过多被限制
-     *
-     * @author jzoom
-     */
-    public static class TooManyRequestsException extends StatusException {
 
-        public TooManyRequestsException() {
-            super(429);
-        }
-
-        /**
-         *
-         */
-        private static final long serialVersionUID = 386179606607321203L;
-
-    }
 
     /**
      * 401 未授权
@@ -87,7 +71,9 @@ public class StatusException extends ZoomException implements RestException {
      * @author jzoom
      */
     public static class ServerException extends StatusException {
-
+        public ServerException() {
+            super(500, null,null);
+        }
         public ServerException(String code, String error) {
             super(500, code, error);
         }
@@ -186,18 +172,17 @@ public class StatusException extends ZoomException implements RestException {
     private String error;
 
     public StatusException(int status) {
-        super(String.format("[%d]", status));
         this.status = status;
+        this.error = String.format("[%d]", status);
     }
 
     public StatusException(int status, String code) {
-        super(String.format("[%d]: %s", code, status));
         this.status = status;
         this.code = code;
+        this.error = String.format("[%d]: %s", status, code);
     }
 
     public StatusException(int status, String code, String error) {
-        super(error);
         this.status = status;
         this.code = code;
         this.error = error;
@@ -227,4 +212,9 @@ public class StatusException extends ZoomException implements RestException {
         this.error = error;
     }
 
+
+    @Override
+    public String getMessage() {
+        return error;
+    }
 }

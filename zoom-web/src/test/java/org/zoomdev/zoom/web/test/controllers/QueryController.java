@@ -19,6 +19,32 @@ public class QueryController {
     ) {
 
     }
+    @Mapping(value = "module/{page}/id",method = {Mapping.POST})
+    public void pageSegment4(
+
+            @Param(pathVariable = true, name = "page")
+                    String test
+    ) {
+
+    }
+
+    @Mapping(value = "module/{page}/id",method = {Mapping.GET})
+    public void pageSegment5(
+
+            @Param(pathVariable = true, name = "page")
+                    String test
+    ) {
+
+    }
+
+    @Mapping(value = "module/{page}/id",method = {Mapping.DELETE})
+    public void pageSegment6(
+
+            @Param(pathVariable = true, name = "page")
+                    String test
+    ) {
+
+    }
 
     @Mapping("module/{page}/{id}")
     public void pageSegment2(
