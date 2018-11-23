@@ -156,115 +156,107 @@ public class TestShop extends AbstractDaoTest {
 
         doActionWithActiveRecord(dao);
 
+        try {
+            testEntityActiveRecord(dao);
+        } catch (IOException e) {
+           throw new RuntimeException(e);
+        }
+
+        testRawActiveRecord(dao);
     }
 
-    @Test
-    public void testEntityActiveRecord() {
-
-        execute(new RunWithDao() {
-            @Override
-            public void run(Dao dao) throws Exception {
-
-                /// 插入商品
-                Product shp_product = new Product();
-                shp_product.setTitle("我的商品");
-                shp_product.setPrice(100.0D);
-                shp_product.setInfo("好长好长的描述");
-                shp_product.setThumb("图片的url");
-                shp_product.setImg(Io.readBytes(new File(IMAGE_FILE)));
-                shp_product.setCount(200);
-
-                dao.ar(Product.class)
-                        .insert(shp_product);
-
-                ///获取到自增id
-                int insertId = shp_product.getId();
-
-                /// 修改商品
-                shp_product.setCount(300);
-                shp_product.setPrice(188D);
-                shp_product.setTitle("测试");
-
-                dao.ar(Product.class)
-                        .filter("count|price")        //增加一个更新过滤器
-                        .update(shp_product);
-
-                //// 主键获取到商品
-                Product record = dao.ar(Product.class).get(insertId);
-                /// 没有修改名称
-                assertEquals(record.getTitle(), "我的商品");
-                /// 修改price和count成功
-                assertEquals(record.getCount(), 300);
-                assertEquals(record.getPrice(), 188D, 0);
-
-                /// 查询所有商品,同样可以设置查询字段过滤器
-                List<Product> list = dao.ar(Product.class)
-                        .filter("id|title").find();
-
-                /// 分页查询
-                Page<Product> page = dao.ar(Product.class)
-                        .like("title", SqlBuilder.Like.MATCH_BOTH, "我的")
-                        .page(1, 30);
-
-                /// 删除商品
-                dao.ar(Product.class).delete(record);
+    public void testEntityActiveRecord(Dao dao) throws IOException {
 
 
-            }
-        });
+        /// 插入商品
+        Product shp_product = new Product();
+        shp_product.setTitle("我的商品");
+        shp_product.setPrice(100.0D);
+        shp_product.setInfo("好长好长的描述");
+        shp_product.setThumb("图片的url");
+        shp_product.setImg(Io.readBytes(new File(IMAGE_FILE)));
+        shp_product.setCount(200);
+
+        dao.ar(Product.class)
+                .insert(shp_product);
+
+        ///获取到自增id
+        int insertId = shp_product.getId();
+
+        /// 修改商品
+        shp_product.setCount(300);
+        shp_product.setPrice(188D);
+        shp_product.setTitle("测试");
+
+        dao.ar(Product.class)
+                .filter("count|price")        //增加一个更新过滤器
+                .update(shp_product);
+
+        //// 主键获取到商品
+        Product record = dao.ar(Product.class).get(insertId);
+        /// 没有修改名称
+        assertEquals(record.getTitle(), "我的商品");
+        /// 修改price和count成功
+        assertEquals(record.getCount(), 300);
+        assertEquals(record.getPrice(), 188D, 0);
+
+        /// 查询所有商品,同样可以设置查询字段过滤器
+        List<Product> list = dao.ar(Product.class)
+                .filter("id|title").find();
+
+        /// 分页查询
+        Page<Product> page = dao.ar(Product.class)
+                .like("title", SqlBuilder.Like.MATCH_BOTH, "我的")
+                .page(1, 30);
+
+        /// 删除商品
+        dao.ar(Product.class).delete(record);
 
     }
 
-    @Test
-    public void testRawActiveRecord() {
+    public void testRawActiveRecord(Dao dao) {
 
+        /// 插入商品 ,在默认情况下，往数据库方向的字段，将被改成大写,可以使用dao.setNameAdapter来修改默认行为
+        Record shp_product = Record.as(
+                "pro_name", "我的商品",
+                "pro_price", 100.0D,
+                "pro_info", "好长好长的描述",
+                "pro_thumb", "图片的url",
+                /// 在RawActiveRecord模式下不适配数据库字段类型，所以插入和更新二进制操作在某些数据库类型下不支持
+                // "pro_img", new File(IMAGE_FILE),
+                "pro_count", 200,
+                "tp_id", 1
+        );
+        dao.table("shp_product")
+                .insert(shp_product, "pro_id");
 
-        execute(new RunWithDao() {
-            @Override
-            public void run(Dao dao) {
-                /// 插入商品 ,在默认情况下，往数据库方向的字段，将被改成大写,可以使用dao.setNameAdapter来修改默认行为
-                Record shp_product = Record.as(
-                        "pro_name", "我的商品",
-                        "pro_price", 100.0D,
-                        "pro_info", "好长好长的描述",
-                        "pro_thumb", "图片的url",
-                        /// 在RawActiveRecord模式下不适配数据库字段类型，所以插入和更新二进制操作在某些数据库类型下不支持
-                        // "pro_img", new File(IMAGE_FILE),
-                        "pro_count", 200,
-                        "tp_id", 1
-                );
-                dao.table("shp_product")
-                        .insert(shp_product, "pro_id");
+        ///获取到自增id
+        int insertId = shp_product.getInt("pro_id");
 
-                ///获取到自增id
-                int insertId = shp_product.getInt("pro_id");
+        /// 修改商品
+        /// 使用链式的set,来设置或者使用setAll一次性设置要修改的字段
+        dao.table("shp_product")
+                .where("pro_id", insertId)
+                .set("pro_count", 3000)
+                .set("pro_price", 188D)
+                .update();
 
-                /// 修改商品
-                /// 使用链式的set,来设置或者使用setAll一次性设置要修改的字段
-                dao.table("shp_product")
-                        .where("pro_id", insertId)
-                        .set("pro_count", 3000)
-                        .set("pro_price", 188D)
-                        .update();
+        //// 主键获取到商品
+        Record record = dao.table("shp_product").where("pro_id", insertId).get();
+        /// 修改price和count成功
+        assertEquals(record.getInt("pro_count"), 3000);
+        assertEquals(record.getDouble("pro_price"), 188D, 0);
 
-                //// 主键获取到商品
-                Record record = dao.table("shp_product").where("pro_id", insertId).get();
-                /// 修改price和count成功
-                assertEquals(record.getInt("pro_count"), 3000);
-                assertEquals(record.getDouble("pro_price"), 188D, 0);
+        /// 查询所有商品,仅仅查看pro_id,pro_name字段
+        List<Record> list = dao.table("shp_product").select("pro_id,pro_name").find();
 
-                /// 查询所有商品,仅仅查看pro_id,pro_name字段
-                List<Record> list = dao.table("shp_product").select("pro_id,pro_name").find();
+        /// 分页查询
+        Page<Record> page = dao.table("shp_product")
+                .like("pro_name", SqlBuilder.Like.MATCH_BOTH, "我的")
+                .page(1, 30);
 
-                /// 分页查询
-                Page<Record> page = dao.table("shp_product")
-                        .like("pro_name", SqlBuilder.Like.MATCH_BOTH, "我的")
-                        .page(1, 30);
-
-                /// 删除商品
-                dao.table("shp_product").where("pro_id", insertId).delete();
-            }
-        });
+        /// 删除商品
+        dao.table("shp_product").where("pro_id", insertId).delete();
 
     }
 
