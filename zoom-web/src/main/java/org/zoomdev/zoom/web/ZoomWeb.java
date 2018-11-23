@@ -40,6 +40,7 @@ public class ZoomWeb {
 
     private ActionFactory actionFactory;
 
+    private ResScanner scanner;
 
     private static Log log = LogFactory.getLog(ZoomWeb.class);
     long first = System.currentTimeMillis();
@@ -84,7 +85,7 @@ public class ZoomWeb {
 
         ioc.getIocClassLoader().append(ClassResolvers.class, classResolvers, true);
 
-        classResolvers.visit(ResScanner.me());
+        classResolvers.visit(scanner);
     }
 
     private void createRouter() {
@@ -138,7 +139,9 @@ public class ZoomWeb {
         }
 
         try {
-            ResScanner.me().scan(ZoomWeb.class.getClassLoader(), jarFilter);
+            scanner = new ResScanner();
+            ioc.getIocClassLoader().append(ResScanner.class,scanner,true);
+            scanner.scan(ZoomWeb.class.getClassLoader(), jarFilter);
         } catch (IOException e) {
             throw new RuntimeException("扫描解析文件出错", e);
         }
@@ -180,7 +183,7 @@ public class ZoomWeb {
 
         CachedClasses.clear();
         PatternFilterFactory.clear();
-        ResScanner.me().destroy();
+        scanner.destroy();
     }
 
     public boolean handle(HttpServletRequest request, HttpServletResponse response) throws Exception {

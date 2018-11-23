@@ -151,7 +151,7 @@ public class ResScanner implements Destroyable {
             return className;
         }
 
-        public Class<?> loadClass() {
+        protected Class<?> loadClass() {
             try {
                 return Class.forName(className, false, classLoader);
             } catch (ClassNotFoundException e) {
@@ -188,11 +188,6 @@ public class ResScanner implements Destroyable {
 
     private Filter<File> scanFilter;
 
-    private static ResScanner res = new ResScanner();
-
-    public static ResScanner me() {
-        return res;
-    }
 
     public void scan() throws IOException {
         scan(getClass().getClassLoader(), fastFilter);

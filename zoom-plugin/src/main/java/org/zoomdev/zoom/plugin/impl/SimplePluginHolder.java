@@ -76,7 +76,8 @@ public class SimplePluginHolder implements PluginHolder {
         return plugin.isInstalled();
     }
 
-    IocContainer ioc;
+    private IocContainer ioc;
+
     private List<Router.RemoveToken> tokens;
 
     @Override

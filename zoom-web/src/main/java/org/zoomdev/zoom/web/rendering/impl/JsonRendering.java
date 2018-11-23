@@ -27,7 +27,7 @@ public class JsonRendering implements Rendering {
 
     @Override
     public boolean shouldHandle(Class<?> targetClass, Method method) {
-        return targetClass.isAssignableFrom(JsonResponse.class) || method.isAnnotationPresent(JsonResponse.class);
+        return targetClass.isAnnotationPresent(JsonResponse.class) || method.isAnnotationPresent(JsonResponse.class);
     }
 
 }

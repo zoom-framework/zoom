@@ -1,10 +1,13 @@
-package org.zoomdev.zoom.ioc;
+package org.zoomdev.zoom.ioc.modules;
 
 import junit.framework.TestCase;
 import org.zoomdev.zoom.common.config.ConfigReader;
 import org.zoomdev.zoom.common.res.ClassResolvers;
 import org.zoomdev.zoom.common.res.ResScanner;
 import org.zoomdev.zoom.common.utils.Classes;
+import org.zoomdev.zoom.ioc.IocClassLoader;
+import org.zoomdev.zoom.ioc.IocContainer;
+import org.zoomdev.zoom.ioc.IocMethod;
 import org.zoomdev.zoom.ioc.configuration.SimpleConfigBuilder;
 import org.zoomdev.zoom.ioc.impl.ZoomIocContainer;
 import org.zoomdev.zoom.ioc.models.PushService;
@@ -21,7 +24,7 @@ public class TestIoc extends TestCase {
 
 
         IocClassLoader classLoader = ioc.getIocClassLoader();
-        ResScanner scanner = ResScanner.me();
+        ResScanner scanner = new ResScanner();
         scanner.scan();
 
 
@@ -57,5 +60,59 @@ public class TestIoc extends TestCase {
         Classes.destroy(ioc);
 
         Classes.destroy(subIoc);
+    }
+
+
+    public static class A{
+
+        private final B b;
+
+        public A(B b){
+            this.b = b;
+        }
+        
+    }
+
+    public static class B{
+
+    }
+
+    public static class C{
+
+    }
+
+
+
+    public void testScopeIoc() throws IOException {
+
+        IocContainer ioc = new ZoomIocContainer(
+        );
+
+        ioc.addEventListener(new IocMethodVisitorImpl());
+
+
+
+        IocContainer container = new ZoomIocContainer(
+                ioc.getScope(),
+                ioc.getIocClassLoader(),
+                ioc.getEventListeners()
+        );
+
+        container.getIocClassLoader().append(A.class);
+
+        container.getIocClassLoader().append(B.class);
+
+
+        container.getIocClassLoader().append(C.class);
+
+
+        container.fetch(A.class);
+        container.fetch(B.class);
+        container.fetch(C.class);
+
+
+
+        Classes.destroy(container);
+
     }
 }

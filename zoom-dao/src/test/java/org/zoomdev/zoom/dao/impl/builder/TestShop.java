@@ -15,6 +15,7 @@ import org.zoomdev.zoom.dao.migrations.DatabaseBuilder;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -36,6 +37,28 @@ public class TestShop extends AbstractDaoTest {
         }
     }
 
+
+    public static class ProductInfo{
+
+        public ProductInfo(){
+
+        }
+
+        public ProductInfo(String title) {
+            this.title = title;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        private String title;
+    }
+
     @Table("shp_product")
     public static class Product {
 
@@ -49,7 +72,16 @@ public class TestShop extends AbstractDaoTest {
 
         String thumb;
         Double price;
-        String info;
+
+        public List<ProductInfo> getInfo() {
+            return info;
+        }
+
+        public void setInfo(List<ProductInfo> info) {
+            this.info = info;
+        }
+
+        List<ProductInfo> info;
 
         public byte[] getImg() {
             return img;
@@ -97,13 +129,7 @@ public class TestShop extends AbstractDaoTest {
             this.price = price;
         }
 
-        public String getInfo() {
-            return info;
-        }
 
-        public void setInfo(String info) {
-            this.info = info;
-        }
 
 
         public int getCount() {
@@ -172,7 +198,9 @@ public class TestShop extends AbstractDaoTest {
         Product shp_product = new Product();
         shp_product.setTitle("我的商品");
         shp_product.setPrice(100.0D);
-        shp_product.setInfo("好长好长的描述");
+        shp_product.setInfo(
+                Arrays.asList(new ProductInfo("好长好长的描述"))
+        );
         shp_product.setThumb("图片的url");
         shp_product.setImg(Io.readBytes(new File(IMAGE_FILE)));
         shp_product.setCount(200);

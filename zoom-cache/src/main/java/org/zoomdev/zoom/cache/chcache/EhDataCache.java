@@ -20,8 +20,8 @@ public class EhDataCache implements DataCache {
     public static final String CACHE_NAME = "global";
 
     @Inject
-    public void init() {
-        Res res = ResScanner.me().getFile("ehcache.xml");
+    public void init(ResScanner scanner) {
+        Res res = scanner.getFile("ehcache.xml");
         if (res == null) {
             log.warn("没有找到ehcache的配置文件ehcache.xml,不使用缓存");
             return;

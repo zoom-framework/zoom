@@ -30,7 +30,7 @@ public class CasterTest2 extends TestCase {
 
     public void testFile() throws IOException {
 
-        ResScanner scanner = ResScanner.me();
+        ResScanner scanner = new ResScanner();
         scanner.scan();
         List<ResScanner.Res> resList = scanner.findFile("*");
         File file = resList.get(0).getFile();

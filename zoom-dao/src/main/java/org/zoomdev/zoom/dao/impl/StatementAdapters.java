@@ -13,6 +13,7 @@ import java.sql.Clob;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -50,6 +51,7 @@ class StatementAdapters {
 
         add(Map.class, String.class);
         add(Collection.class, String.class);
+        add(List.class, String.class);
 
         add(File.class, byte[].class);
     }

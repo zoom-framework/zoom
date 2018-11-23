@@ -77,28 +77,27 @@ abstract class ZoomIocConstructor implements IocConstructor {
         type = classEnhancer.enhance(type);
 
         Constructor<?>[] constructors = type.getConstructors();
-        if (constructors.length == 0) {
-            return new IocClassConstructor(key, ZoomIocContainer.EMPTY_KEYS, type);
-        }
-
+        Constructor<?> constructor;
         if (constructors.length == 1) {
-            Constructor<?> constructor = constructors[0];
-            return new IocConstructorContructor(key,
-                    ZoomIocContainer.parseParameterKeys(
-                            type.getClassLoader(),
-                            constructor.getParameterAnnotations(),
-                            constructor.getParameterTypes(),
-                            iocClassLoader), constructor);
-        }
+            constructor = constructors[0];
 
-        //如果有多个构造函数，那么寻找无参数的
-        Constructor<?> constructor = Classes.findNoneParameterConstructor(type);
-        if (constructor == null) {
-            throw new IocException("不能创建IocConstructor,请提供无参数构造函数，否则系统无法判断应该使用哪一个构造函数来创建对象.");
+        }else{
+            //如果有多个构造函数，那么寻找无参数的
+            constructor = Classes.findNoneParameterConstructor(type);
+            if (constructor == null) {
+                throw new IocException("不能创建IocConstructor,请提供无参数构造函数，否则系统无法判断应该使用哪一个构造函数来创建对象.");
+            }
         }
 
 
-        return new IocClassConstructor(key, ZoomIocContainer.EMPTY_KEYS, type);
+
+
+        return new IocConstructorContructor(key,
+                ZoomIocContainer.parseParameterKeys(
+                        type.getClassLoader(),
+                        constructor.getParameterAnnotations(),
+                        constructor.getParameterTypes(),
+                        iocClassLoader), constructor);
     }
 
     static class IocInstanceConstructor extends ZoomIocConstructor {
@@ -142,30 +141,6 @@ abstract class ZoomIocConstructor implements IocConstructor {
 
     }
 
-    static class IocClassConstructor extends ZoomIocConstructor {
-
-        private Class<?> type;
-
-
-        public IocClassConstructor(IocKey key, IocKey[] parameterKeys, Class<?> type) {
-            super(key, parameterKeys);
-            this.type = type;
-
-            if (type.isInterface()) {
-                throw new IocException("在创建ioc构造器的时候失败," + key.getType() + ":类型" + type + "不能作为类初始化参数,必须是实际类");
-            }
-        }
-
-        @Override
-        public IocObject newInstance(IocObject[] values) {
-            try {
-                return ZoomIocObject.wrap(iocClass, type.newInstance());
-            } catch (Exception e) {
-                throw new IocException(e);
-            }
-        }
-
-    }
 
     /**
      * Module的IocBean标注的方法

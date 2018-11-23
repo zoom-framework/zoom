@@ -11,7 +11,7 @@ public class TestIo extends TestCase {
 
     public void test() throws IOException {
 
-        ResScanner scanner = ResScanner.me();
+        ResScanner scanner = new ResScanner();
         scanner.scan();
 
         ResScanner.Res file = scanner.getFile("application.properties");

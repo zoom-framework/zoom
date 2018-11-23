@@ -13,7 +13,7 @@ public class TestConfigReader extends TestCase {
 
         ConfigReader reader = ConfigReader.getDefault();
 
-        ResScanner scanner = ResScanner.me();
+        ResScanner scanner = new ResScanner();
         scanner.scan();
 
         ResScanner.Res appconfig = scanner.getFile("application.properties");
@@ -33,7 +33,7 @@ public class TestConfigReader extends TestCase {
 
         ConfigReader reader = ConfigReader.getDefault();
 
-        ResScanner scanner = ResScanner.me();
+        ResScanner scanner =new ResScanner();
         scanner.scan();
 
         ResScanner.Res appconfig = scanner.getFile("application.json");
