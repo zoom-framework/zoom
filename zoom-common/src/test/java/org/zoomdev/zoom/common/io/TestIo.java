@@ -3,9 +3,8 @@ package org.zoomdev.zoom.common.io;
 import junit.framework.TestCase;
 import org.zoomdev.zoom.common.res.ResScanner;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.util.Arrays;
 
 public class TestIo extends TestCase {
 
@@ -24,10 +23,26 @@ public class TestIo extends TestCase {
         assertEquals(Io.readString(stream,"utf-8"),
                 new String(bytes));
 
+
         Io.closeAny(stream);
+
+
+       assertTrue(Arrays.equals(Io.readBytes( file.getFile() ),bytes));
 
         Io.readString(file.getFile(),"utf-8");
 
         Io.writeString(new File(file.getFile().getAbsolutePath()+".back"),new String(bytes));
+
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("hello".getBytes());
+
+        Io.copy(inputStream,outputStream);
+
+        assertTrue(Arrays.equals("hello".getBytes(),outputStream.toByteArray()));
+
+
+
     }
 }

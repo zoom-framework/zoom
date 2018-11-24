@@ -3,8 +3,12 @@ package org.zoomdev.zoom.common.json;
 import org.apache.commons.lang3.ObjectUtils;
 import org.codehaus.jackson.type.TypeReference;
 import org.junit.Test;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.utils.MapUtils;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -96,5 +100,48 @@ public class JSONTest {
 
         assertEquals(JSON.parse("{\"target\":{\"name\":{\"name\":\"test\"}}}",new TestType() ),parse);
 
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        JSON.write(outputStream,target);
+
+
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(
+                "{\"target\":{\"name\":{\"name\":\"test\"}}}".getBytes()
+        );
+
+        JSON.parse(inputStream,Map.class);
+
+
+
+        StringReader reader = new StringReader( "{\"target\":{\"name\":{\"name\":\"test\"}}}");
+
+        JSON.parse(reader,Map.class);
+
+
+
     }
+
+    @Test(expected = ZoomException.class)
+    public void testError1(){
+            JSON.parse("[]",Map.class);
+    }
+
+
+    @Test(expected = ZoomException.class)
+    public void testError2(){
+        JSON.parse("[]",new TestType());
+    }
+
+
+    @Test(expected = ZoomException.class)
+    public void testError3(){
+        JSON.parse(new StringReader("[]"),Map.class);
+    }
+
+
+    @Test(expected = ZoomException.class)
+    public void testError42(){
+        JSON.parse(new ByteArrayInputStream("[]".getBytes()),Map.class);
+    }
+
 }

@@ -129,7 +129,7 @@ public class Io {
      * @throws IOException
      */
     public static void copy(
-            FileInputStream inputStream,
+            InputStream inputStream,
             OutputStream outputStream)  throws IOException{
         byte[] bytes = new byte[4096];
         int len = 0;

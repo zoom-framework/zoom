@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
-import org.zoomdev.zoom.common.Initializeable;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.io.Io;
 import org.zoomdev.zoom.common.json.JSON;
 import org.zoomdev.zoom.common.utils.BeanUtils;
@@ -53,17 +53,17 @@ public class Caster {
      * @return
      */
     public static ValueCaster wrapFirstVisit(Type dest) {
-        return new WrapException(new FirstVisitValueCaster(dest));
+        return new WrapExceptionCaster(new FirstVisitValueCaster(dest));
     }
 
 
-    public static class WrapException implements ValueCaster {
+    static class WrapExceptionCaster implements ValueCaster {
 
-        public WrapException(ValueCaster valueCaster) {
+        public WrapExceptionCaster(ValueCaster valueCaster) {
             this.valueCaster = valueCaster;
         }
 
-        private ValueCaster valueCaster;
+        protected ValueCaster valueCaster;
 
         @Override
         public Object to(Object src) {
@@ -81,9 +81,9 @@ public class Caster {
 
     static class FirstVisitValueCaster implements ValueCaster {
 
-        private Type dest;
+        Type dest;
 
-        private ValueCaster caster;
+        ValueCaster caster;
 
         public FirstVisitValueCaster(Type dest) {
             assert (dest != null);
@@ -144,7 +144,7 @@ public class Caster {
     }
 
 
-    private static class EmptyValueCaster implements ValueCaster {
+    static class EmptyValueCaster implements ValueCaster {
 
         @Override
         public Object to(Object src) {
@@ -163,7 +163,7 @@ public class Caster {
      */
     public static ValueCaster wrap(Class<?> srcType, Class<?> toType) {
         if (toType == null) {
-            throw new NullPointerException("srcType and toType must not be null");
+            throw new CasterException("toType must not be null");
         }
         if (srcType == null) {
             return wrapFirstVisit(toType);
@@ -183,10 +183,10 @@ public class Caster {
         }
 
 
-        return new WrapCheckNull(get(srcType, toType));
+        return new CheckNullCaster(get(srcType, toType));
     }
 
-    public static class CasterException extends RuntimeException {
+    public static class CasterException extends ZoomException {
 
         public CasterException(String message) {
             super(message);
@@ -1234,10 +1234,10 @@ public class Caster {
         return (T) caster.to(src);
     }
 
-    static final class WrapCheckNull implements ValueCaster {
+    static final class CheckNullCaster implements ValueCaster {
         private final ValueCaster caster;
 
-        WrapCheckNull(ValueCaster caster) {
+        CheckNullCaster(ValueCaster caster) {
             this.caster = caster;
         }
 
@@ -1565,7 +1565,7 @@ public class Caster {
             throw new CasterException("Cannot cast " + srcType + " to " + toType);
         }
 
-        return new WrapCheckNull(caster);
+        return new CheckNullCaster(caster);
 
     }
 

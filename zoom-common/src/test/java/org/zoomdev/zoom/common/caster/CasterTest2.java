@@ -191,7 +191,7 @@ public class CasterTest2 extends TestCase {
             )
         });
 
-        Object data = JSON.stringify( a);
+        String data = JSON.stringify( a);
 
         A newA = Caster.to(data,A.class);
 
@@ -212,5 +212,13 @@ public class CasterTest2 extends TestCase {
 
         },field.getGenericType());
 
+
+        //String to Bean
+
+
+
     }
+
+
+
 }
