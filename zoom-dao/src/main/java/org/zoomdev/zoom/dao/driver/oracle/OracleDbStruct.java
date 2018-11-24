@@ -26,7 +26,7 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
     private static final Log log = LogFactory.getLog(OracleDbStruct.class);
 
     @Override
-    public Collection<String> getTableNames() {
+    public List<String> getTableNames() {
         List<Record> list = dao.ar()
                 .nameAdapter(EmptyNameAdapter.DEFAULT)
                 .executeQuery("SELECT TABLE_NAME FROM user_tab_comments");
@@ -125,7 +125,7 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
     }
 
     @Override
-    public Collection<TableNameAndComment> getNameAndComments()
+    public List<TableNameAndComment> getNameAndComments()
 
     {
         List<Record> list = dao.ar()

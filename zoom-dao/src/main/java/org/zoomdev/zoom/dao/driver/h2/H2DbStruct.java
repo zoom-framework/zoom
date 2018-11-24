@@ -29,7 +29,7 @@ public class H2DbStruct extends AbsDbStruct {
 
 
     @Override
-    public Collection<TableNameAndComment> getNameAndComments() {
+    public List<TableNameAndComment> getNameAndComments() {
         List<Record> list = dao.ar()
                 .table("information_schema.tables")
                 .select("TABLE_NAME as NAME,REMARKS AS COMMENT")
@@ -61,7 +61,7 @@ public class H2DbStruct extends AbsDbStruct {
     }
 
     @Override
-    public Collection<String> getTableNames() {
+    public List<String> getTableNames() {
         return CollectionUtils.map(
                 getNameAndComments(),
                 new Converter<TableNameAndComment, String>() {

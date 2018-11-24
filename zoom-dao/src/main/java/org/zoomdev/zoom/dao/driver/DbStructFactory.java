@@ -3,6 +3,7 @@ package org.zoomdev.zoom.dao.driver;
 import org.zoomdev.zoom.dao.meta.TableMeta;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 
@@ -46,7 +47,7 @@ public interface DbStructFactory {
      *
      * @return
      */
-    Collection<String> getTableNames();
+    List<String> getTableNames();
 
     /**
      * 获取基础的tableMeda信息,只有jvm获取的信息
@@ -62,7 +63,7 @@ public interface DbStructFactory {
      *
      * @return
      */
-    Collection<TableNameAndComment> getNameAndComments();
+    List<TableNameAndComment> getNameAndComments();
 
 
     /**

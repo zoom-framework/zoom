@@ -36,7 +36,7 @@ public class CachedDbStructFactory implements DbStructFactory, Destroyable {
     }
 
     @Override
-    public Collection<String> getTableNames() {
+    public List<String> getTableNames() {
         List<String> array = new ArrayList<String>();
         for (TableNameAndComment data : getNameAndComments()) {
             array.add(data.getName());
@@ -59,8 +59,8 @@ public class CachedDbStructFactory implements DbStructFactory, Destroyable {
 
 
     @Override
-    public Collection<TableNameAndComment> getNameAndComments() {
-        return (Collection<TableNameAndComment>) SingletonUtils.liteDoubleLockMap(pool, NAME_AND_COMMENT_KEY_NAME, new SingletonUtils.SingletonInit<Object>() {
+    public List<TableNameAndComment> getNameAndComments() {
+        return (List<TableNameAndComment>) SingletonUtils.liteDoubleLockMap(pool, NAME_AND_COMMENT_KEY_NAME, new SingletonUtils.SingletonInit<Object>() {
             @Override
             public Object create() {
                 return factory.getNameAndComments();
@@ -80,7 +80,7 @@ public class CachedDbStructFactory implements DbStructFactory, Destroyable {
 
     @Override
     public Collection<String> getSequences() {
-        return (Collection<String>) SingletonUtils.liteDoubleLockMap(pool, ALL_SEQUENCES, new SingletonUtils.SingletonInit<Object>() {
+        return (List<String>) SingletonUtils.liteDoubleLockMap(pool, ALL_SEQUENCES, new SingletonUtils.SingletonInit<Object>() {
             @Override
             public Object create() {
                 return factory.getSequences();

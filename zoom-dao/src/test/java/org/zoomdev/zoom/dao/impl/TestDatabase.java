@@ -17,8 +17,6 @@ import org.zoomdev.zoom.dao.annotations.AutoGenerate;
 import org.zoomdev.zoom.dao.annotations.Column;
 import org.zoomdev.zoom.dao.annotations.Table;
 import org.zoomdev.zoom.dao.entities.*;
-import org.zoomdev.zoom.dao.impl.AbstractDaoTest;
-import org.zoomdev.zoom.dao.impl.ZoomDao;
 import org.zoomdev.zoom.dao.migrations.DatabaseBuilder;
 
 import java.io.File;
@@ -39,7 +37,7 @@ import static org.junit.Assert.*;
 public class TestDatabase extends AbstractDaoTest {
 
     @BeforeClass
-    public static void setup(){
+    public static void setup() {
         execute(new RunWithDao() {
             @Override
             public void run(Dao dao) throws Exception {
@@ -51,6 +49,7 @@ public class TestDatabase extends AbstractDaoTest {
 
 
     static final String IMAGE_FILE;
+
     public static void createTables(Dao dao) {
         DatabaseBuilder builder = dao.builder();
         String sql = builder
@@ -112,7 +111,6 @@ public class TestDatabase extends AbstractDaoTest {
 
 
         builder.build();
-
 
 
         dao.builder()
@@ -438,7 +436,6 @@ public class TestDatabase extends AbstractDaoTest {
     }
 
 
-
     protected int getProductCount(Dao dao) {
         return dao.ar("product").count();
     }
@@ -674,14 +671,14 @@ public class TestDatabase extends AbstractDaoTest {
                                 "pro_name", "牛肉饭",
                                 "shp_id", FIRST_BUSINESS,
                                 "pro_price", 50.0,
-                           //     "pro_img", "image binary".getBytes(),
+                                //     "pro_img", "image binary".getBytes(),
                                 "pro_info", "very very long text,好长好长啊a"
 
                         ), "pro_id"), 1);
 
 
                 Record product = dao.table("product").where("pro_id", 1).get();
-             //   assertEquals(product.get("pro_img").getClass(), byte[].class);
+                //   assertEquals(product.get("pro_img").getClass(), byte[].class);
 
 
                 //买家注册 (add)
@@ -889,7 +886,6 @@ public class TestDatabase extends AbstractDaoTest {
     }
 
 
-
     /**
      * 比较一下， 正则表达式缓存和不缓存的速度
      */
@@ -954,7 +950,7 @@ public class TestDatabase extends AbstractDaoTest {
                 simpleProduct.setPrice(100);
                 simpleProduct.setInfo("介绍");
                 simpleProduct.setThumb("Http://mycom/1.jpg");
-                simpleProduct.setImg("测试图片src" .getBytes());
+                simpleProduct.setImg("测试图片src".getBytes());
 
                 dao.ar(SimpleProduct.class)
                         .insert(simpleProduct);
@@ -1213,23 +1209,24 @@ public class TestDatabase extends AbstractDaoTest {
     }
 
 
-
+    @Test
     public void testDbStruct() {
 
 
+        execute(new RunWithDao() {
+            @Override
+            public void run(Dao dao) throws Exception {
+                dao.getDbStructFactory().getTriggers();
+                dao.getDbStructFactory().getNameAndComments();
 
-     execute(new RunWithDao() {
-         @Override
-         public void run(Dao dao) throws Exception {
-             dao.getDbStructFactory().getTriggers();
-             dao.getDbStructFactory().getNameAndComments();
+                dao.getDbStructFactory().getSequences();
 
-             dao.getDbStructFactory().getSequences();
-             dao.getDbStructFactory().getTableMeta("shp_shop");
+                dao.getDbStructFactory().getTableNames();
+                dao.getDbStructFactory().getTableMeta("shp_product");
 
-             assertNotNull( dao.getDbStructFactory().getTableNames()  );
-         }
-     });
+                assertNotNull(dao.getDbStructFactory().getTableNames());
+            }
+        });
 
     }
 }

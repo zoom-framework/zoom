@@ -27,12 +27,12 @@ public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
 
 
     @Override
-    public Collection<String> getTableNames() {
+    public List<String> getTableNames() {
         return null;
     }
 
     @Override
-    public Collection<TableNameAndComment> getNameAndComments() {
+    public List<TableNameAndComment> getNameAndComments() {
         List<Record> list = dao.ar().executeQuery(
                 "select table_comment as comment,table_name as name from information_schema.tables where table_schema=?",
                 dbName);
