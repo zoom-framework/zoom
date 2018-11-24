@@ -7,7 +7,6 @@ import org.zoomdev.zoom.cache.annotations.Cache;
 import org.zoomdev.zoom.cache.annotations.CacheRemove;
 import org.zoomdev.zoom.cache.ehcache.EhDataCache;
 import org.zoomdev.zoom.cache.modules.CacheModule;
-import org.zoomdev.zoom.cache.oscache.OSCache;
 import org.zoomdev.zoom.common.filter.MethodFilter;
 import org.zoomdev.zoom.common.res.ResScanner;
 import org.zoomdev.zoom.common.utils.CachedClasses;
@@ -52,16 +51,6 @@ public class TestCache extends TestCase {
     }
 
 
-
-    public void testRemoveCache(){
-        DataCache cache = new OSCache();
-        cache.set("test","value");
-
-        assertEquals(cache.get("test"),"value");
-
-        cache.remove("test");
-        assertEquals(cache.get("test"),null);
-    }
 
 
     public void test() throws IllegalAccessException, InstantiationException, IOException {
@@ -145,5 +134,13 @@ public class TestCache extends TestCase {
         assertEquals(count+1,service.count);
 
         assertEquals("TestWithoutFormat",v);
+
+
+        cache.set("test","value");
+
+        assertEquals(cache.get("test"),"value");
+
+        cache.remove("test");
+        assertEquals(cache.get("test"),null);
     }
 }
