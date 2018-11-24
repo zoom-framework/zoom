@@ -1,7 +1,9 @@
 package org.zoomdev.zoom.common.res;
 
 
+import org.zoomdev.zoom.common.Destroyable;
 import org.zoomdev.zoom.common.res.ResScanner.ClassRes;
+import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.common.utils.Visitor;
 
 import java.lang.reflect.Field;
@@ -12,7 +14,7 @@ import java.util.List;
 
 ;
 
-public class ClassResolvers {
+public class ClassResolvers implements Destroyable {
 
     List<ClassResolver> resolvers;
 
@@ -68,4 +70,8 @@ public class ClassResolvers {
 
     }
 
+    @Override
+    public void destroy() {
+        Classes.destroy(this.resolvers);
+    }
 }

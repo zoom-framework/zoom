@@ -22,6 +22,7 @@ import org.zoomdev.zoom.web.rendering.impl.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -131,7 +132,7 @@ public class WebModules {
                 for(Field field : fields){
                     Object value;
                     if(field.getType().isArray()
-                            || Classes.isCollection(field.getType())){
+                            || Iterable.class.isAssignableFrom(field.getType())){
                         value = request.getParameterValues(field.getName());
                     }else{
                         value = request.getParameter(field.getName());

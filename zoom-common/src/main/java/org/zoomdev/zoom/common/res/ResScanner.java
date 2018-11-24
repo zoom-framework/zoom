@@ -65,6 +65,10 @@ public class ResScanner implements Destroyable {
     };
 
 
+    /**
+     * 为了将来可能的扩展，这里将Class、jar、文件进行抽象
+     * 不过我觉得没有什么必要，考虑砍掉。
+     */
     public static interface Res {
         /**
          * 获取实际文件
@@ -216,8 +220,7 @@ public class ResScanner implements Destroyable {
             while ((entry = inputStream.getNextEntry()) != null) {
                 String name = entry.getName();
                 if (name.endsWith("class")) {
-                    addClass(name.replace(".class", "")
-                            .replace("/", "."), classLoader, null);
+                    addStreamClass(inputStream,getClassNameInJarStream(name), classLoader);
                 }
             }
 
@@ -225,6 +228,19 @@ public class ResScanner implements Destroyable {
             Io.close(inputStream);
         }
 
+    }
+
+    /**
+     * 下个版本可能会进行解压缩
+     * @param inputStream
+     * @param classNameInJarStream
+     * @param classLoader
+     */
+    private void addStreamClass(
+            ZipInputStream inputStream,
+            String classNameInJarStream, ClassLoader classLoader) {
+
+        classes.add(new ClassRes(classNameInJarStream,null,classLoader));
     }
 
     /**
@@ -336,12 +352,12 @@ public class ResScanner implements Destroyable {
      * @param className
      * @return
      */
-    public Res getClass(String className) {
+    public ClassRes getClass(String className) {
         assert (!StringUtils.isEmpty(className));
 
 
         // 资源文件应该没有几个
-        for (Res res : classes) {
+        for (ClassRes res : classes) {
             if (className.equals(res.getName())) {
                 return res;
             }
@@ -439,17 +455,28 @@ public class ResScanner implements Destroyable {
         if (log.isTraceEnabled()) {
             log.trace("扫描到了文件" + file.getAbsolutePath());
         }
-        if (name.endsWith("class")) {
-            if (scanFilter.accept(file))
+        if (scanFilter.accept(file)){
+            // ALL FILE
+            addFile(name, file);
+            if (name.endsWith("class")) {
                 parseClass(root, classLoader, file);
-        } else if (name.endsWith("jar")) {
-            if (scanFilter.accept(file))
+            } else if (name.endsWith("jar")) {
                 parseJar(file, classLoader);
+            }else{
 
-        } else {
-            if (scanFilter.accept(file))
-                parseOther(name, file);
+            }
         }
+
+    }
+
+
+    /**
+     * 获取到jar文件里面的class文件的类名
+     * @param entryName
+     * @return
+     */
+    private static String getClassNameInJarStream(String entryName){
+        return entryName.substring(0, entryName.length() - ".class".length()).replace("/", ".");
     }
 
     /**
@@ -475,9 +502,7 @@ public class ResScanner implements Destroyable {
             while ((entry = inputStream.getNextEntry()) != null) {
                 String name = entry.getName();
                 if (name.endsWith(".class")) {
-                    addJarClass(
-                            name.substring(0, name.length() - ".class".length())
-                                    .replace("/", "."), classLoader, file);
+                    addJarClass(getClassNameInJarStream(name), classLoader, file);
                 } else {
                     if (entry.isDirectory()) {
                         continue;
@@ -533,7 +558,7 @@ public class ResScanner implements Destroyable {
      * @param name
      * @param file
      */
-    private void parseOther(String name, File file) {
+    private void addFile(String name, File file) {
         files.add(new FileRes(file));
     }
 
@@ -550,6 +575,9 @@ public class ResScanner implements Destroyable {
         }
         addClass(className, classLoader, file);
     }
+
+
+
 
     /**
      * 解析一个class文件对应的class名称

@@ -42,6 +42,7 @@ public abstract class AbsDbStruct implements DbStructFactory {
                         ColumnMeta column = new ColumnMeta();
                         String className = data.getColumnClassName(i);
                         column.setDataType(Classes.forName(className));
+                        column.setTable(table);
                         column.setName(data.getColumnName(i));
                         column.setType(data.getColumnType(i));
                         column.setRawType(data.getColumnTypeName(i));

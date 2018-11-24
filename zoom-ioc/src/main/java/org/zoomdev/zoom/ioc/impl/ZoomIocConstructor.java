@@ -2,6 +2,7 @@ package org.zoomdev.zoom.ioc.impl;
 
 import org.apache.commons.lang3.StringUtils;
 import org.zoomdev.zoom.common.annotations.IocBean;
+import org.zoomdev.zoom.common.utils.CachedClasses;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.ioc.*;
 
@@ -46,7 +47,7 @@ abstract class ZoomIocConstructor implements IocConstructor {
     }
 
     static IocEvent createEvent(Class<?> type, String name) {
-        List<Method> methods = Classes.findPublicMethods(type, name);
+        List<Method> methods = CachedClasses.getPublicMethods(type, name);
         if (methods.size() == 0) {
             throw new IocException("在创建" + name + "的时候失败" + type + ",未找到相关方法");
         }

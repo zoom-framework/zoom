@@ -1,5 +1,6 @@
 package org.zoomdev.zoom.common.utils;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.common.exceptions.ZoomException;
 
@@ -47,17 +48,17 @@ public class BeanUtils {
      * 本方法只是浅层拷贝
      *
      * @param dest
-     * @param data
+     * @param src
      * @param <T>
      * @return
      */
-    public static <T> T merge(T dest, T data) {
-        assert (dest != null && data != null);
+    public static <T> T merge(T dest, T src) {
+        assert (dest != null && src != null);
         Field[] fields = CachedClasses.getFields(dest.getClass());
         try {
             for (Field field : fields) {
-                Object value = field.get(data);
-                if (value == null) {
+                Object value = field.get(src);
+                if(value==null){
                     continue;
                 }
                 field.set(dest, value);

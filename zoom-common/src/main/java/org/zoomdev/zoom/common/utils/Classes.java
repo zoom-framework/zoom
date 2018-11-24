@@ -1,6 +1,7 @@
 package org.zoomdev.zoom.common.utils;
 
 import org.zoomdev.zoom.common.Destroyable;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -46,9 +47,6 @@ public class Classes {
         return new RuntimeException(e);
     }
 
-    public static boolean isCollection(Class<?> type) {
-        return Collection.class.isAssignableFrom(type);
-    }
 
 
     public abstract static class ClassReference<T> {
@@ -136,6 +134,7 @@ public class Classes {
 
     // 获取所有
     private static void getFields(List<Field> result, Class<?> clazz) {
+       assert (result!=null && clazz!=null);
         try {
             Field[] list = clazz.getDeclaredFields();
             for (Field field : list) {
@@ -154,57 +153,43 @@ public class Classes {
 
     }
 
-    public static Field findField(Class<?> clazz, String name) {
+
+    public static Field getField(Class<?> clazz,String name){
+
+        Field result = null;
         try {
-            Field result = null;
+            result = clazz.getField(name);
+            return result;
+        } catch (NoSuchFieldException e) {
+
+        }
+        do {
             try {
-                result = clazz.getField(name);
+                result = clazz.getDeclaredField(name);
                 return result;
             } catch (NoSuchFieldException e) {
-
-            }
-            do {
-                result = clazz.getDeclaredField(name);
-                if (result != null) {
-                    return result;
-                }
                 clazz = clazz.getSuperclass();
                 if (clazz == Object.class) {
                     return null;
+                    //throw new RuntimeException("Cannot find field " + name + " in " + clazz.getName());
                 }
-            } while (true);
-        } catch (Exception e) {
+            }
 
-            return null;
-        }
+        } while (true);
     }
+
+
 
     /**
      * @param clazz
      * @return
      */
-    public static Field getField(Class<?> clazz, String name) {
-        try {
-            Field result = null;
-            try {
-                result = clazz.getField(name);
-                return result;
-            } catch (NoSuchFieldException e) {
-
-            }
-            do {
-                result = clazz.getDeclaredField(name);
-                if (result != null) {
-                    return result;
-                }
-                clazz = clazz.getSuperclass();
-                if (clazz == Object.class) {
-                    throw new RuntimeException("Cannot find field " + name + " in " + clazz.getName());
-                }
-            } while (true);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+    public static Field fetchField(Class<?> clazz, String name) {
+        Field field = getField(clazz,name);
+        if(field==null){
+            throw new ZoomException("Cannot find filed "+ name + " in class "+clazz);
         }
+        return field;
     }
 
     /**
@@ -214,6 +199,7 @@ public class Classes {
      * @return 所有获取到的Field
      */
     static List<Field> getFields(Class<?> clazz) {
+        assert ( clazz !=null && !clazz.isInterface() );
         List<Field> result = new ArrayList<Field>();
         Class<?> tmp = clazz;
         do {
@@ -226,24 +212,7 @@ public class Classes {
         return result;
     }
 
-    /*
-     * 取得某一类所在包的所有类名 不含迭代
-     */
-    public static String[] getPackageAllClassName(String classLocation, String packageName) {
-        // 将packageName分解
-        String[] packagePathSplit = packageName.split("[.]");
-        String realClassLocation = classLocation;
-        int packageLength = packagePathSplit.length;
-        for (int i = 0; i < packageLength; i++) {
-            realClassLocation = realClassLocation + File.separator + packagePathSplit[i];
-        }
-        File packeageDir = new File(realClassLocation);
-        if (packeageDir.isDirectory()) {
-            String[] allClassName = packeageDir.list();
-            return allClassName;
-        }
-        return null;
-    }
+
 
     public static boolean isSimpleClass(Class<?> type) {
         if (type.isPrimitive()) {
@@ -291,17 +260,7 @@ public class Classes {
         return null != desc && src == desc;
     }
 
-    /**
-     * 获取field泛型类型
-     */
-    public static Class<?> getFieldListGenType(Field field) {
-        java.lang.reflect.Type type = field.getGenericType();
-        if (type instanceof ParameterizedType) {
-            ParameterizedType pType = (ParameterizedType) type;
-            return (Class<?>) pType.getActualTypeArguments()[0];
-        }
-        return null;
-    }
+
 
     /**
      * 获取所有的public方法
@@ -351,50 +310,6 @@ public class Classes {
         return srcClass == destClass || isWapClass(srcClass, destClass) || isWapClass(destClass, srcClass);
     }
 
-    /**
-     * 从class中提取所有相关的接口、超类
-     *
-     * @param clazz
-     * @return
-     */
-    public static Class<?>[] extract(Class<?> clazz) {
-        if (clazz.isInterface()) {
-            return new Class<?>[]{clazz};
-        }
-        Set<Class<?>> set = new HashSet<Class<?>>();
-        Class<?>[] interfaces = clazz.getInterfaces();
-        if (interfaces != null) {
-            for (Class<?> cls : interfaces) {
-                set.add(cls);
-            }
-        }
-
-        while (clazz != null) {
-            set.add(clazz);
-            clazz = clazz.getSuperclass();
-        }
-
-        return set.toArray(new Class<?>[set.size()]);
-
-    }
-
-    /**
-     * 获取所有的setXXX方法
-     *
-     * @param type
-     * @return
-     */
-    public static List<Method> getSetters(Class<?> type) {
-        List<Method> methods = findPublicMethods(type);
-        List<Method> setters = new ArrayList<Method>(methods.size());
-        for (Method method : methods) {
-            String methodName = method.getName();
-            if (methodName.startsWith("set") && methodName.length() > 3 && method.getParameterTypes().length == 1) {
-                setters.add(method);
-            }
-        }
-        return setters;
-    }
 
     /**
      * 设置静态字段的值
@@ -405,7 +320,7 @@ public class Classes {
      * @throws Exception
      */
     public static void set(Class<?> clazz, String name, Object value) throws Exception {
-        Field field = getField(clazz, name);
+        Field field = fetchField(clazz, name);
         field.setAccessible(true);
         field.set(null, value);
     }
@@ -421,22 +336,10 @@ public class Classes {
             return getCause(((InvocationTargetException) e).getTargetException());
         }
 
-
         return e;
     }
 
-    /**
-     * 获取一个错误的明确的原因
-     *
-     * @return
-     */
-    public static String why(Throwable e) {
-        Throwable t = getCause(e);
-        if (t instanceof NoClassDefFoundError) {
-            return "找不到类定义,是否缺少对应的.jar文件或者.class文件?" + ((NoClassDefFoundError) t).getMessage();
-        }
-        return "未知原因";
-    }
+
 
     /**
      * 仅仅通过名称来查找static Method
@@ -458,24 +361,7 @@ public class Classes {
         return list;
     }
 
-    /**
-     * 通过名称查找public方法
-     *
-     * @param type
-     * @param name
-     * @return
-     */
-    public static List<Method> findPublicMethods(Class<?> type, String name) {
-        assert (name != null);
-        List<Method> methods = findPublicMethods(type);
-        List<Method> result = new ArrayList<Method>();
-        for (Method method : methods) {
-            if (name.equals(method.getName())) {
-                result.add(method);
-            }
-        }
-        return result;
-    }
+
 
     public static void destroy(Map<?, ?> map) {
         for (Entry<?, ?> entry : map.entrySet()) {

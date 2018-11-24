@@ -87,7 +87,7 @@ public abstract class AbstractEntity implements Entity {
     }
 
 
-    public EntityField getFieldByName(String field) {
+    public EntityField getFieldByFieldName(String field) {
         for (EntityField entityField : entityFields) {
             if (entityField.getFieldName().equals(field)) {
                 return entityField;
@@ -123,7 +123,7 @@ public abstract class AbstractEntity implements Entity {
     private String getColumnNameByFieldName(String field) {
         String column = file2column.get(field);
         if (column == null) {
-            EntityField entityField = getFieldByName(field);
+            EntityField entityField = getFieldByFieldName(field);
             if (entityField != null) {
                 column = entityField.getColumnName();
                 file2column.put(field, column);
@@ -225,5 +225,17 @@ public abstract class AbstractEntity implements Entity {
             }
         });
 
+    }
+
+
+    @Override
+    public EntityField getFieldByColumnName(String columnName) {
+        assert(columnName!=null);
+        for(EntityField field : entityFields){
+            if(columnName.equalsIgnoreCase(field.getColumnName())){
+                return field;
+            }
+        }
+        return null;
     }
 }

@@ -17,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CachedClasses {
 
 
+
     private static class ClassHolder {
         Field[] fields;
         Method[] publicMethods;
@@ -37,6 +38,7 @@ public class CachedClasses {
     }
 
     public static Field[] getFields(Class<?> type) {
+        assert (type!=null);
         ClassHolder holder = getHolder(type);
         if (holder.fields == null) {
             synchronized (holder) {

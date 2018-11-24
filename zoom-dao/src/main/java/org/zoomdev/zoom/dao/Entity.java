@@ -40,10 +40,17 @@ public interface Entity {
     /**
      * 获取field
      *
-     * @param name
+     * @param name      field名称
      * @return
      */
-    EntityField getFieldByName(String name);
+    EntityField getFieldByFieldName(String name);
+
+    /**
+     * 通过字段查找
+     * @param columnName
+     * @return
+     */
+    EntityField getFieldByColumnName(String columnName);
 
     /**
      * 绑定到哪个实体类

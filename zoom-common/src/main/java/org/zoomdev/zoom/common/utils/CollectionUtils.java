@@ -171,7 +171,7 @@ public class CollectionUtils {
 
             Field[] fields = new Field[keys.length];
             for (int i = 0; i < keys.length; ++i) {
-                fields[i] = Classes.getField(type, keys[i]);
+                fields[i] = Classes.fetchField(type, keys[i]);
                 fields[i].setAccessible(true);
             }
 
