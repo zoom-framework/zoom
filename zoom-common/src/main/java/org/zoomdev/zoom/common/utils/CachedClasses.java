@@ -52,7 +52,7 @@ public class CachedClasses {
         return holder.fields;
     }
 
-    public static ClassHolder getHolder(Class<?> type) {
+    protected static ClassHolder getHolder(Class<?> type) {
         return SingletonUtils.liteDoubleLockMap(map, type, new SingletonInit<ClassHolder>() {
             @Override
             public ClassHolder create() {

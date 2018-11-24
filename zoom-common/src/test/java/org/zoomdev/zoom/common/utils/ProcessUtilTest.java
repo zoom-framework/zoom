@@ -33,6 +33,8 @@ public class ProcessUtilTest extends TestCase {
             }
         };
 
+        thread.setName("serviceThread");
+
         thread.start();
 
         Thread.sleep(1);

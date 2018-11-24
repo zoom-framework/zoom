@@ -1297,6 +1297,56 @@ public class Caster {
         }
     }
 
+    /// 一定是Array类型
+    private static ValueCaster getWithIterable(Class<?> toType){
+        return new Iterable2Array(toType.getComponentType());
+    }
+    /// 一定是Array类型
+    private static ValueCaster getWithArray(Class<?> toType){
+        return new Array2Array(toType.getComponentType());
+    }
+    private static class Array2Array implements ValueCaster{
+
+        private Class<?> toType;
+
+        public Array2Array(Class<?> toType){
+            this.toType = toType;
+        }
+
+        @Override
+        public Object to(Object src) {
+            Object[] iterable = ( Object[])src;
+            Object array =  java.lang.reflect.Array.newInstance(toType,iterable.length);
+            for(Object data : iterable){
+                Caster.toType(data,toType);
+            }
+            //array
+
+           return array;
+        }
+    }
+    private static class Iterable2Array implements ValueCaster{
+
+        private Class<?> toType;
+
+        public Iterable2Array(Class<?> toType){
+            this.toType = toType;
+        }
+
+        @Override
+        public Object to(Object src) {
+            Iterable iterable = (Iterable)src;
+            List list = new ArrayList();
+            for(Object data : iterable){
+                list.add(Caster.toType(data,toType));
+            }
+            //array
+            Object array = java.lang.reflect.Array.newInstance(toType,list.size());
+            list.toArray((Object[])array);
+            return array;
+        }
+    }
+
     private static EqValueCaster eqValueCaster = new EqValueCaster();
 
     private static ValueCaster get(Class<?> srcType, Class<?> toType) {
@@ -1305,6 +1355,21 @@ public class Caster {
          */
         if (isWrapClass(srcType, toType) || isWrapClass(toType, srcType)) {
             return eqValueCaster;
+        }
+
+
+        if(toType.isArray()){
+
+            if(Iterable.class.isAssignableFrom(srcType)){
+                return getWithIterable(toType);
+            }else if(srcType.isArray()){
+                if(srcType.getComponentType() == toType.getComponentType()){
+                    return eqValueCaster;
+                }
+                return getWithArray(toType);
+            }else{
+                throw new CasterException(String.format("Cannot cast %s to %s ,src type must be Iterable or Array ", srcType.getName(), toType.getName()));
+            }
         }
 
         /**
@@ -1460,9 +1525,9 @@ public class Caster {
         ValueCaster caster = map.get(key);
         if (caster == null) {
             if (src instanceof Iterable) {
-                caster = getWithIterable((Iterable) src, targetType);
+                caster = getWithIterable( targetType);
             } else if (src instanceof Map) {
-                caster = getWithMap((Map) src, targetType);
+                caster = getWithMap(targetType);
             } else {
                 for (ParameterizedTypeCasterfactory type : typeCanbeConvertToParameterizedType) {
                     if (type.is(src, targetType)) {
@@ -1479,34 +1544,35 @@ public class Caster {
         return caster;
     }
 
-    private static ValueCaster getWithMap(Map src, ParameterizedType targetType) {
+    private static ValueCaster getWithMap(ParameterizedType targetType) {
         Type rowType = targetType.getRawType();
         if (rowType instanceof Class) {
             if (!Map.class.isAssignableFrom((Class) rowType)) {
-                throw new CasterException("Cannot cast " + src + " to type:" + targetType + " targetType must be Map");
+                throw new CasterException("Cannot cast Map to type:" + targetType + " targetType must be Map");
             }
             return new MapValueCaster(targetType);
         } else {
-            throw new CasterException("Cannot cast " + src + " to type:" + targetType + " targetType must be Map");
+            throw new CasterException("Cannot cast Map to type:" + targetType + " targetType must be Map");
         }
 
     }
 
-    private static ValueCaster getWithIterable(Iterable src, ParameterizedType targetType) {
+    private static ValueCaster getWithIterable(
+            ParameterizedType targetType) {
         Type[] types = targetType.getActualTypeArguments();
         if (types.length > 1) {
-            throw new CasterException("Cannot cast src:" + src + " to type:" + targetType);
+            throw new CasterException("Cannot cast src:Iterable to type:" + targetType);
         }
 
         Type collectionType = targetType.getRawType();
         //如果还是一个泛型?
         if (collectionType instanceof ParameterizedType) {
-            throw new CasterException("Cannot cast src:" + src + " to type:" + targetType + " targetType must be some kind of Iterable");
+            throw new CasterException("Cannot cast src:Iterable to type:" + targetType + " targetType must be some kind of Iterable");
         }
 
         Class<?> collectionClass = (Class<?>) collectionType;
         if (!Collection.class.isAssignableFrom(collectionClass)) {
-            throw new CasterException("Cannot cast src:" + src + " to type:" + targetType + " targetType must be some kind of Iterable");
+            throw new CasterException("Cannot cast src:Iterable to type:" + targetType + " targetType must be some kind of Iterable");
         }
 
         return new IterableValueCaster((Class<? extends Collection>) collectionClass, types[0]);

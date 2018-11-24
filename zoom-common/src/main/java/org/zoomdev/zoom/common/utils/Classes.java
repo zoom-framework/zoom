@@ -23,6 +23,8 @@ public class Classes {
         throw new RuntimeException("不能获取class " + type);
     }
 
+
+
     /**
      * 直接初始化一个对象
      *
@@ -30,6 +32,13 @@ public class Classes {
      * @return
      */
     public static Object newInstance(Class<?> type) {
+        // 如果是泛型，那么就new一个对应的出来
+        // 如果是array类型，那么就new一个数组
+        // new一个普通的
+        if(type==null){
+            throw new NullPointerException();
+        }
+
         try {
             return type.newInstance();
         } catch (Throwable e) {
@@ -48,34 +57,6 @@ public class Classes {
     }
 
 
-
-    public abstract static class ClassReference<T> {
-        private Type type;
-
-        public ClassReference() {
-            type = getClass().getGenericSuperclass();
-        }
-
-        public Type getType() {
-            return type;
-        }
-
-    }
-
-    public static Type getParameterizedType(ClassReference<?> classReference) {
-        return classReference.getType();
-    }
-
-    public static Type[] getParameterizedTypes(final Class<?> clazz) {
-        if (clazz == null || "java.lang.Object".equals(clazz.getName()))
-            return null;
-        // 看看父类
-        Type superclass = clazz.getGenericSuperclass();
-        if (null != superclass && superclass instanceof ParameterizedType)
-            return ((ParameterizedType) superclass).getActualTypeArguments();
-
-        return null;
-    }
 
     /**
      * 获取一个类的所有泛型信息
@@ -116,21 +97,6 @@ public class Classes {
         }
     }
 
-    public static List<Class<?>> getInsterfaces(Class<?> clazz) {
-        List<Class<?>> list = new ArrayList<Class<?>>();
-        boolean working = true;
-        do {
-            Class<?>[] interfaces = clazz.getInterfaces();
-            if (interfaces != null) {
-                for (Class<?> class1 : interfaces) {
-                    list.add(class1);
-                }
-            }
-            clazz = clazz.getSuperclass();
-            working = !clazz.equals(Object.class);
-        } while (working);
-        return list;
-    }
 
     // 获取所有
     private static void getFields(List<Field> result, Class<?> clazz) {
@@ -235,8 +201,10 @@ public class Classes {
     }
 
     public static boolean isDateTime(Class<?> type) {
-        return Calendar.class.isAssignableFrom(type) || java.util.Date.class.isAssignableFrom(type)
-                || java.sql.Date.class.isAssignableFrom(type) || java.sql.Time.class.isAssignableFrom(type);
+        return Calendar.class.isAssignableFrom(type)
+                || java.util.Date.class.isAssignableFrom(type)
+                || java.sql.Date.class.isAssignableFrom(type)
+                || java.sql.Time.class.isAssignableFrom(type);
     }
 
     public static boolean isString(Class<?> src) {
@@ -341,25 +309,7 @@ public class Classes {
 
 
 
-    /**
-     * 仅仅通过名称来查找static Method
-     *
-     * @param clazz
-     * @param name
-     */
-    public static List<Method> getStaticMethods(Class<?> clazz, String name) {
 
-        // 静态方法不能继承，所以只搜索本类
-        Method[] methods = clazz.getDeclaredMethods();
-        List<Method> list = new ArrayList<Method>(methods.length);
-        for (Method method : methods) {
-            if (Modifier.isStatic(method.getModifiers())) {
-                list.add(method);
-            }
-        }
-
-        return list;
-    }
 
 
 
