@@ -33,6 +33,8 @@ public class SimpleActionBuilder extends ClassResolver {
     private Object target;
     private String key;
 
+    ActionInterceptorFactory actionInterceptorFactory;
+
     public List<Router.RemoveToken> getRemoveTokenList() {
         return removeTokenList;
     }
@@ -99,7 +101,7 @@ public class SimpleActionBuilder extends ClassResolver {
 
     @Override
     public void visitMethod(Method method) {
-        ActionFactory actionFactory = ioc.fetch(SimpleActionFactory.class);
+        ActionFactory actionFactory = ioc.fetch(ActionFactory.class);
         ActionInterceptorFactory actionInterceptorFactory = ioc.fetch(ActionInterceptorFactory.class);
 
         Action action = actionFactory

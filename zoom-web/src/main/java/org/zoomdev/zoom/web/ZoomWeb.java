@@ -17,6 +17,7 @@ import org.zoomdev.zoom.ioc.configuration.SimpleConfigBuilder;
 import org.zoomdev.zoom.ioc.impl.ZoomIocContainer;
 import org.zoomdev.zoom.web.action.ActionFactory;
 import org.zoomdev.zoom.web.action.ActionHandler;
+import org.zoomdev.zoom.web.action.impl.SimpleActionBuilder;
 import org.zoomdev.zoom.web.router.Router;
 import org.zoomdev.zoom.web.router.impl.BracesRouterParamRule;
 import org.zoomdev.zoom.web.router.impl.ZoomRouter;
@@ -54,10 +55,11 @@ public class ZoomWeb {
         loadApplicationConfig();
         // 扫描整个资源, .class .jar 其他配置文件等
         scanResources();
+        createRouter();
         // 初始化router
         resolveClasses();
 
-        createRouter();
+
         printTime();
 
 
@@ -66,18 +68,20 @@ public class ZoomWeb {
     }
 
     private void resolveClasses() {
-        // 初始化classInfo
-      /*  ActionInterceptorFactory actionInterceptorFactory = new SimpleActionInterceptorFactory();
-        ioc.getIocClassLoader().append(ActionInterceptorFactory.class, actionInterceptorFactory, true);
-        ioc.getIocClassLoader().append(SimpleActionFactory.class);*/
+        SimpleConfigBuilder configBuilder= new SimpleConfigBuilder(ioc);
+        SimpleActionBuilder actionBuilder= new SimpleActionBuilder(
+                ioc,
+                router,
+                null
+        );
 
-        //   ioc.getIocClassLoader().append(ActionFactory.class,ioc.fetch(SimpleActionFactory.class),true);
-
-        ClassResolvers classResolvers = new ClassResolvers(new SimpleConfigBuilder(ioc));
+        ClassResolvers classResolvers = new ClassResolvers(configBuilder,actionBuilder);
         classResolvers.visit(scanner);
     }
 
     private void createRouter() {
+        router = new ZoomRouter();
+        ioc.getIocClassLoader().append(Router.class,router,true);
         router = ioc.fetch(Router.class);
     }
 

@@ -111,26 +111,7 @@ public class WebModules {
         return new SimplePreParameterParserManager();
     }
 
-    @IocBean
-    public Router getRouter(){
-        return new ZoomRouter();
-    }
 
-    @Inject()
-    public void config(
-            IocContainer ioc,
-            Router router,
-            ResScanner resScanner
-    ){
-        SimpleActionBuilder builder= new SimpleActionBuilder(
-                ioc,
-                router,
-                null
-        );
-
-        ClassResolvers classResolvers = new ClassResolvers(builder);
-        classResolvers.visit(resScanner);
-    }
 
     static class Request2BeanProvider implements Caster.CasterProvider {
 
