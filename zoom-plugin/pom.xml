@@ -32,12 +32,12 @@
         </dependency>
         <dependency>
             <groupId>org.zoomdev.zoom</groupId>
-            <artifactId>zoom-dao</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.zoomdev.zoom</groupId>
             <artifactId>zoom-web</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.zoomdev.zoom</groupId>
+            <artifactId>zoom-aop</artifactId>
+        </dependency>
     </dependencies>
 </project>

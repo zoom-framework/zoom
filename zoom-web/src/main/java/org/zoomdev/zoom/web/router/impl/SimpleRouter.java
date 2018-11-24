@@ -23,6 +23,11 @@ public class SimpleRouter implements Router, Destroyable {
      */
     private Map<ActionHandler, Boolean> actionPool;
 
+
+    public SimpleRouter(){
+        this(new BracesRouterParamRule());
+    }
+
     public SimpleRouter(RouterParamRule rule) {
         if (rule == null) {
             throw new NullPointerException();

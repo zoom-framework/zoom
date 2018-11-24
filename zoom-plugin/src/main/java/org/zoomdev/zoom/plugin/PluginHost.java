@@ -22,6 +22,8 @@ public interface PluginHost {
 
     PluginHolder load(URL url) throws PluginException;
 
+
+
     /**
      * 安装
      *
@@ -40,6 +42,7 @@ public interface PluginHost {
 
     void startup(PluginHolder pluginHolder) throws PluginException;
 
+    void shutdown(boolean ignoreError) throws PluginException;
 
     void startup() throws PluginException;
 

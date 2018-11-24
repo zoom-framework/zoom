@@ -14,14 +14,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SimplePluginHost implements PluginHost {
+public class ZoomPluginHost implements PluginHost {
 
     private List<PluginHolder> holders;
 
-    @Inject
     private IocContainer ioc;
 
-    @Inject
     private Router router;
 
 
@@ -30,9 +28,11 @@ public class SimplePluginHost implements PluginHost {
     private List<PluginHolder> runningPlugins;
 
 
-    public SimplePluginHost() {
+    public ZoomPluginHost(IocContainer ioc,Router router) {
         holders = new ArrayList<PluginHolder>();
         runningPlugins = new ArrayList<PluginHolder>();
+        this.ioc = ioc;
+        this.router = router;
     }
 
     public synchronized PluginHolder load(URL plugin) throws PluginException {
@@ -99,6 +99,7 @@ public class SimplePluginHost implements PluginHost {
     }
 
 
+    @Override
     public synchronized void shutdown(boolean ignoreError) {
         for (PluginHolder plugin : runningPlugins) {
             try {
