@@ -117,6 +117,7 @@ public abstract class AbstractDaoTest {
             try {
                 runWithDao.run(dao);
             } catch (Exception e) {
+                e.printStackTrace();
                 if(e instanceof RuntimeException){
                     throw (RuntimeException)e;
                 }
