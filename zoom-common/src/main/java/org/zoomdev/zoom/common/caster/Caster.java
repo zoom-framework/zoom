@@ -604,9 +604,9 @@ public class Caster {
             is.read(data);
             return data;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new CasterException(e);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new CasterException(e);
         } finally {
             close(is);
         }
@@ -1153,7 +1153,7 @@ public class Caster {
         if (type == char.class) {
             return Character.class;
         }
-        throw new RuntimeException("impossible");
+        throw new CasterException("impossible");
     }
 
     private static Object getDefaultValue(Class<?> targetClass) {
@@ -1181,7 +1181,7 @@ public class Caster {
         if (targetClass == char.class) {
             return (char) 0;
         }
-        throw new RuntimeException("impossible");
+        throw new CasterException("impossible");
     }
 
     @SuppressWarnings("rawtypes")

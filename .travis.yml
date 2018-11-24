@@ -31,7 +31,7 @@ before_install:
 after_success:
   - mvn jacoco:report coveralls:report
 
-script: mvn clean test -e -X
+script: mvn clean test -e
 
 cache:
   directories:

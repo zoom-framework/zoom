@@ -1,5 +1,6 @@
 package org.zoomdev.zoom.common.caster;
 import junit.framework.TestCase;
+import org.junit.Test;
 import org.zoomdev.zoom.common.json.JSON;
 import org.zoomdev.zoom.common.res.ResScanner;
 import org.zoomdev.zoom.common.utils.Classes;
@@ -13,8 +14,11 @@ import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class CasterTest2 extends TestCase {
+import static org.junit.Assert.assertEquals;
 
+public class CasterTest2{
+
+    @Test
     public void testDate(){
 
         Date date = Caster.to("20001010",Date.class);
@@ -32,6 +36,7 @@ public class CasterTest2 extends TestCase {
     }
 
 
+    @Test
     public void testFile() throws IOException {
 
         ResScanner scanner = new ResScanner();
@@ -172,6 +177,7 @@ public class CasterTest2 extends TestCase {
         }
     }
 
+    @Test
     public void testBean() throws NoSuchMethodException {
 
 
