@@ -7,7 +7,6 @@ import org.zoomdev.zoom.cache.annotations.CacheRemove;
 import org.zoomdev.zoom.common.exceptions.ZoomException;
 
 import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.List;
 
 public class CacheRemoveInterceptorFactory extends AnnotationMethodInterceptorFactory<CacheRemove> {

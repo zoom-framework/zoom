@@ -1,18 +1,19 @@
 package org.zoomdev.zoom.cache;
 
 import junit.framework.TestCase;
-import org.apache.commons.lang3.StringUtils;
 import org.zoomdev.zoom.aop.AopFactory;
 import org.zoomdev.zoom.aop.javassist.JavassistAopFactory;
 import org.zoomdev.zoom.cache.annotations.Cache;
 import org.zoomdev.zoom.cache.annotations.CacheRemove;
+import org.zoomdev.zoom.cache.ehcache.EhDataCache;
 import org.zoomdev.zoom.cache.modules.CacheModule;
 import org.zoomdev.zoom.cache.oscache.OSCache;
 import org.zoomdev.zoom.common.filter.MethodFilter;
+import org.zoomdev.zoom.common.res.ResScanner;
 import org.zoomdev.zoom.common.utils.CachedClasses;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.Collections;
 
 public class TestCache extends TestCase {
 
@@ -63,24 +64,30 @@ public class TestCache extends TestCase {
     }
 
 
-    public void test() throws IllegalAccessException, InstantiationException {
+    public void test() throws IllegalAccessException, InstantiationException, IOException {
 
         final AopFactory aopFactory = new JavassistAopFactory();
 
+
+        ResScanner resScanner = new ResScanner();
+        resScanner.scan();
+
         CacheModule cacheModule = new CacheModule();
-        DataCache cache = cacheModule.getCache();
+        EhDataCache cache = (EhDataCache) cacheModule.getCache();
+        cache.init(resScanner);
+
         cacheModule.init(aopFactory, cache);
 
         System.out.println("======2=");
         //test cache
 
-        cache.set("test", "value", 200);
+        cache.set("test", "value", 1000);
         System.out.println("======3=");
 
         assertEquals(cache.get("test"), "value");
         System.out.println("======4=");
         try {
-            Thread.sleep(50);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -88,7 +95,7 @@ public class TestCache extends TestCase {
         assertEquals(cache.get("test"), "value");
 
         try {
-            Thread.sleep(400);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

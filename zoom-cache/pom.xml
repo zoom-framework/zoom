@@ -45,11 +45,18 @@
             <artifactId>zoom-common</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <version>2.10.2</version>
+            <optional>true</optional>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/opensymphony/oscache -->
         <dependency>
             <groupId>opensymphony</groupId>
             <artifactId>oscache</artifactId>
             <version>2.4.1</version>
+            <optional>true</optional>
         </dependency>
 
 

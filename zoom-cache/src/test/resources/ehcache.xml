@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache >
+
+	<!-- 磁盘缓存位置 -->
+	<diskStore path="java.io.tmpdir/ehcache" />
+
+	<!-- 默认缓存 -->
+	<defaultCache maxEntriesLocalHeap="10000" eternal="false"
+		timeToIdleSeconds="1200" timeToLiveSeconds="1200"
+		maxEntriesLocalDisk="10000000" diskExpiryThreadIntervalSeconds="120"
+		memoryStoreEvictionPolicy="LRU">
+		<persistence strategy="localTempSwap"></persistence>
+	</defaultCache>
+
+	<cache
+		name="global"
+		maxElementsInMemory="20000"
+		eternal="false"
+		timeToIdleSeconds="3600"
+		overflowToDisk="false"
+		memoryStoreEvictionPolicy="LRU"/>
+</ehcache>
