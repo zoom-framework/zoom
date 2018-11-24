@@ -5,7 +5,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * 缓存接口
  *
- * @param <T>
  * @author jzoom
  */
 public interface DataCache {

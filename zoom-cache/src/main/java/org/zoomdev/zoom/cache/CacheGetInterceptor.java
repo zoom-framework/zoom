@@ -21,13 +21,18 @@ public class CacheGetInterceptor implements MethodInterceptor {
 
     private static final Log log = LogFactory.getLog(CacheGetInterceptor.class);
 
-    public CacheGetInterceptor(String format, int count, DataCache cache, boolean fill, int timeoutM,
-                               boolean igoreNull, boolean lockWhenNull) {
+    public CacheGetInterceptor(String format,
+                               int count,
+                               DataCache cache,
+                               boolean fill,
+                               int timeoutMs,
+                               boolean ignoreNull,
+                               boolean lockWhenNull) {
         this.format = format;
         this.count = count;
         this.cache = cache;
         this.fill = fill;
-        this.ignoreNull = igoreNull;
+        this.ignoreNull = ignoreNull;
         this.timeoutMs = timeoutMs;
         this.lockWhenNull = lockWhenNull;
     }

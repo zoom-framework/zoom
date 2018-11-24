@@ -21,11 +21,11 @@ public @interface Cache {
 
 
     /**
-     * 超时秒数
+     * 超时毫秒
      *
      * @return
      */
-    int timeoutSeconds() default 20 * 60;
+    int timeoutMs() default 20 * 60 * 1000;
 
     /**
      * 如果没有从缓存拿到结果，那么就将方法返回的结果放到缓存中

@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.zoomdev.zoom.aop.MethodInterceptor;
 import org.zoomdev.zoom.aop.factory.AnnotationMethodInterceptorFactory;
 import org.zoomdev.zoom.cache.annotations.CacheRemove;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
@@ -22,11 +23,11 @@ public class CacheRemoveInterceptorFactory extends AnnotationMethodInterceptorFa
         String format = annotation.format();
         int count = method.getParameterTypes().length;
         if (StringUtils.isEmpty(format)) {
-            format = method.toString() + ":" + StringUtils.join(Collections.nCopies(count, "%s"), ":");
+            throw new ZoomException("format为空");
         } else {
             int formatCount = StringUtils.countMatches(format, "%s");
             if (formatCount < count) {
-                throw new RuntimeException("%s的个数不能小于参数个数");
+                throw new ZoomException("%s的个数不能小于参数个数");
             }
         }
 

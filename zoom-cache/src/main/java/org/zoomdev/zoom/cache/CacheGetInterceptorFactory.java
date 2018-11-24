@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.zoomdev.zoom.aop.MethodInterceptor;
 import org.zoomdev.zoom.aop.factory.AnnotationMethodInterceptorFactory;
 import org.zoomdev.zoom.cache.annotations.Cache;
+import org.zoomdev.zoom.common.utils.Classes;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
@@ -21,16 +22,21 @@ public class CacheGetInterceptorFactory extends AnnotationMethodInterceptorFacto
     @Override
     protected void createMethodInterceptors(Cache annotation, Method method, List<MethodInterceptor> interceptors) {
         String format = annotation.format();
-        int count = method.getParameterTypes().length;
+        int count = Classes.getParameterCount(method);
         if (StringUtils.isEmpty(format)) {
-            format = method.toString() + ":" + StringUtils.join(Collections.nCopies(count, "%s"), ":");
+            format = method.toString()
+                    + ":"
+                    + StringUtils.join(
+                    Collections.nCopies(count, "%s"),
+                    ":"
+            );
         } else {
             int formatCount = StringUtils.countMatches(format, "%s");
             if (formatCount > count) {
                 throw new RuntimeException("%s的个数不能大于参数个数");
             }
         }
-        int timeoutMs = annotation.timeoutSeconds() * 1000;
+        int timeoutMs = annotation.timeoutMs();
         boolean fill = annotation.fill();
         interceptors.add(new CacheGetInterceptor(format, count, cache, fill, timeoutMs, annotation.ignoreNull(), annotation.lockWhenNull()));
 
