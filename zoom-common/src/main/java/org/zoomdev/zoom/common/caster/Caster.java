@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
+import org.zoomdev.zoom.common.Initializeable;
 import org.zoomdev.zoom.common.io.Io;
 import org.zoomdev.zoom.common.json.JSON;
 import org.zoomdev.zoom.common.utils.BeanUtils;
@@ -13,7 +14,6 @@ import java.io.*;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
-import java.nio.charset.Charset;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -192,8 +192,8 @@ public class Caster {
             super(message);
         }
 
-        public CasterException(String message,Throwable e) {
-            super(message,e);
+        public CasterException(String message, Throwable e) {
+            super(message, e);
         }
 
         public CasterException(Throwable e) {
@@ -374,48 +374,47 @@ public class Caster {
         Caster.registerCastProvider(new Map2BeanProvider());
         Caster.registerCastProvider(new String2BeanProvider());
 
-        Caster.register(String.class,Date.class,new String2Date());
+        Caster.register(String.class, Date.class, new String2Date());
 
-        Caster.register(File.class,byte[].class,new File2ByteArray());
+        Caster.register(File.class, byte[].class, new File2ByteArray());
 
-        Caster.register(File.class,InputStream.class,new File2InputStream());
+        Caster.register(File.class, InputStream.class, new File2InputStream());
 
-        Caster.register(Timestamp.class,Date.class,new Timestamp2Date());
+        Caster.register(Timestamp.class, Date.class, new Timestamp2Date());
 
     }
 
     /**
      * If A can cast to B
      * And B can cast to C
-     *
+     * <p>
      * You can register like this
-     *
+     * <p>
      * Caster.register(  A.class,C.class,new CasterBridge( A.class,B.class,C.class )  )
-     *
      */
-    static class CasterBridge implements ValueCaster{
+    static class CasterBridge implements ValueCaster {
 
         private ValueCaster caster1;
         private ValueCaster caster2;
 
-        CasterBridge(Class<?> srcType,Class<?> bridgetType,Class<?> destType){
-            this.caster1 = Caster.get(srcType,bridgetType);
-            this.caster2 = Caster.wrap(bridgetType,destType);
+        CasterBridge(Class<?> srcType, Class<?> bridgetType, Class<?> destType) {
+            this.caster1 = Caster.get(srcType, bridgetType);
+            this.caster2 = Caster.wrap(bridgetType, destType);
         }
 
         @Override
         public Object to(Object src) {
             //dest to bridget  bridget to src
-            return  caster1.to(caster2.to(src));
+            return caster1.to(caster2.to(src));
         }
     }
 
-    static class String2BeanProvider implements Caster.CasterProvider{
+    static class String2BeanProvider implements Caster.CasterProvider {
 
         @Override
         public ValueCaster getCaster(Class<?> srcType, Class<?> toType) {
-            if(CharSequence.class.isAssignableFrom(srcType) && !isSimple(toType)){
-                ValueCaster caster = Caster.get(Map.class,toType);
+            if (CharSequence.class.isAssignableFrom(srcType) && !isSimple(toType)) {
+                ValueCaster caster = Caster.get(Map.class, toType);
                 return new String2Bean(caster);
             }
             return null;
@@ -424,7 +423,7 @@ public class Caster {
 
     }
 
-    private static boolean isSimple(Class<?> toType){
+    private static boolean isSimple(Class<?> toType) {
         if (Classes.isSimple(toType)) {
             //转化简单类型应该是不行的
             return true;
@@ -435,23 +434,24 @@ public class Caster {
         return false;
 
     }
+
     private static class String2Bean implements ValueCaster {
 
         private ValueCaster caster;
 
-        public String2Bean(ValueCaster caster){
+        public String2Bean(ValueCaster caster) {
             this.caster = caster;
         }
 
         @Override
         public Object to(Object src) {
             String str = (String) src;
-            Map<String,Object> data = JSON.parse(str,Map.class);
+            Map<String, Object> data = JSON.parse(str, Map.class);
             return caster.to(data);
         }
     }
-    static class Map2BeanProvider implements Caster.CasterProvider {
 
+    static class Map2BeanProvider implements Caster.CasterProvider {
 
 
         @Override
@@ -479,7 +479,7 @@ public class Caster {
             Map data = (Map) src;
             try {
                 Object result = toType.newInstance();
-                return BeanUtils.mergeMap(result,data);
+                return BeanUtils.mergeMap(result, data);
             } catch (Exception e) {
                 throw new Caster.CasterException(e);
             }
@@ -1298,51 +1298,107 @@ public class Caster {
     }
 
     /// 一定是Array类型
-    private static ValueCaster getWithIterable(Class<?> toType){
+    private static ValueCaster getWithIterable(Class<?> toType) {
         return new Iterable2Array(toType.getComponentType());
     }
+
+    private static ValueCaster getWithArrayParameterizedType(ParameterizedType type){
+        Class<?> rawType =Classes.getClass(type);
+        if (!Collection.class.isAssignableFrom(rawType)) {
+             throw new CasterException("Cannot cast array to " + type + " dest type must be Collection ");
+        }
+
+        Type[] types = type.getActualTypeArguments();
+        if(types.length != 1){
+            throw new CasterException("Cannot cast array to " + type + " dest type must be Collection ");
+        }
+
+        return new Array2ParameterizedType( rawType,types[0]);
+    }
+
     /// 一定是Array类型
-    private static ValueCaster getWithArray(Class<?> toType){
+    private static ValueCaster getWithArray(Class<?> toType) {
         return new Array2Array(toType.getComponentType());
     }
-    private static class Array2Array implements ValueCaster{
 
-        private Class<?> toType;
+    private static Collection newCollection(Class<?> type){
+        if(type.isInterface()){
 
-        public Array2Array(Class<?> toType){
-            this.toType = toType;
-        }
-
-        @Override
-        public Object to(Object src) {
-            Object[] iterable = ( Object[])src;
-            Object array =  java.lang.reflect.Array.newInstance(toType,iterable.length);
-            for(Object data : iterable){
-                Caster.toType(data,toType);
+            if(List.class.isAssignableFrom(type)){
+                return new ArrayList();
+            }else if(Set.class.isAssignableFrom(type)){
+                return new LinkedHashSet();
+            }else{
+                throw new CasterException("Cannot initialize "+type);
             }
-            //array
 
-           return array;
+
+        }else{
+            return (Collection) Classes.newInstance(type);
         }
     }
-    private static class Iterable2Array implements ValueCaster{
+
+    private static class Array2ParameterizedType implements ValueCaster{
+
+        private final Class<?> collectionType;
+        private final Type elementType;
+
+        public Array2ParameterizedType(Class<?> collectionType,Type elementType){
+            this.collectionType = collectionType;
+            this.elementType =elementType;
+        }
+
+        @Override
+        public Object to(Object src) {
+            Object[] it = (Object[])src;
+            Collection collection = newCollection(collectionType);
+            for(Object i : it){
+                collection.add(Caster.toType(i,elementType));
+            }
+
+            return collection;
+        }
+    }
+
+    private static class Array2Array implements ValueCaster {
 
         private Class<?> toType;
 
-        public Iterable2Array(Class<?> toType){
+        public Array2Array(Class<?> toType) {
             this.toType = toType;
         }
 
         @Override
         public Object to(Object src) {
-            Iterable iterable = (Iterable)src;
-            List list = new ArrayList();
-            for(Object data : iterable){
-                list.add(Caster.toType(data,toType));
+            Object[] iterable = (Object[]) src;
+            Object array = java.lang.reflect.Array.newInstance(toType, iterable.length);
+            for (Object data : iterable) {
+                Caster.toType(data, toType);
             }
             //array
-            Object array = java.lang.reflect.Array.newInstance(toType,list.size());
-            list.toArray((Object[])array);
+
+            return array;
+        }
+    }
+
+    private static class Iterable2Array implements ValueCaster {
+
+        private Class<?> toType;
+
+        public Iterable2Array(Class<?> toType) {
+            this.toType = toType;
+        }
+
+        @Override
+        public Object to(Object src) {
+            Iterable iterable = (Iterable) src;
+            List list = new ArrayList();
+            for (Object data : iterable) {
+                list.add(Caster.toType(data, toType));
+            }
+            //array
+            Object array = java.lang.reflect.Array.newInstance(toType, list.size());
+            list.toArray((Object[]) array);
             return array;
         }
     }
@@ -1358,19 +1414,20 @@ public class Caster {
         }
 
 
-        if(toType.isArray()){
+        if (toType.isArray()) {
 
-            if(Iterable.class.isAssignableFrom(srcType)){
+            if (Iterable.class.isAssignableFrom(srcType)) {
                 return getWithIterable(toType);
-            }else if(srcType.isArray()){
-                if(srcType.getComponentType() == toType.getComponentType()){
+            } else if (srcType.isArray()) {
+                if (srcType.getComponentType() == toType.getComponentType()) {
                     return eqValueCaster;
                 }
                 return getWithArray(toType);
-            }else{
+            } else {
                 throw new CasterException(String.format("Cannot cast %s to %s ,src type must be Iterable or Array ", srcType.getName(), toType.getName()));
             }
         }
+
 
         /**
          * 否则需要将class全部解出来，以便加以判断
@@ -1524,8 +1581,11 @@ public class Caster {
 
         ValueCaster caster = map.get(key);
         if (caster == null) {
-            if (src instanceof Iterable) {
-                caster = getWithIterable( targetType);
+            Class<?> srcType = src.getClass();
+            if (srcType.isArray()) {
+                caster = getWithArrayParameterizedType(  targetType);
+            } else if (src instanceof Iterable) {
+                caster = getWithIterable(targetType);
             } else if (src instanceof Map) {
                 caster = getWithMap(targetType);
             } else {
@@ -1640,17 +1700,13 @@ public class Caster {
 
     /**
      * 注意日期转换比较特殊，有如下模式:
-     *
+     * <p>
      * yyyyMMdd   总结一下 : 8-12位数字，偶数位数  或者 4-2-2[ 2[:2[:2]]]
      * yyyy-MM-dd
      * yyyyMMddhhmmss
      * yyyy-MM-dd hh:mm:ss:SSS
      * yyyy-MM-dd hh:mm
      * yyyy-MM-dd hh
-     *
-     *
-     *
-     *
      */
     private static final String SHORT_DATE_TIME = "yyyyMMddHHmmssSSS";
     private static final String LONG_DATE_TIME = "yyyy-MM-dd HH:mm:ss:SSS";
@@ -1658,32 +1714,32 @@ public class Caster {
     private static class String2Date implements ValueCaster {
         @Override
         public Object to(Object src) {
-            String str = (String)src;
-            if(str.length() < 8 ){
-                throw new CasterException("Not a valid date :"+str);
+            String str = (String) src;
+            if (str.length() < 8) {
+                throw new CasterException("Not a valid date :" + str);
             }
 
-            if(StringUtils.isNumeric(str)){
+            if (StringUtils.isNumeric(str)) {
                 //纯数字
-                if(str.length() % 2 > 0 && str.length() != SHORT_DATE_TIME.length()){
-                    throw new CasterException("Not a valid date :"+str);
+                if (str.length() % 2 > 0 && str.length() != SHORT_DATE_TIME.length()) {
+                    throw new CasterException("Not a valid date :" + str);
                 }
 
                 try {
-                    return new SimpleDateFormat(SHORT_DATE_TIME.substring(0,str.length()))
+                    return new SimpleDateFormat(SHORT_DATE_TIME.substring(0, str.length()))
                             .parse(str);
                 } catch (ParseException e) {
-                    throw new CasterException("Not a valid date :"+str);
+                    throw new CasterException("Not a valid date :" + str);
                 }
             }
 
             //长时间
 
             try {
-                return new SimpleDateFormat(LONG_DATE_TIME.substring(0,str.length()))
+                return new SimpleDateFormat(LONG_DATE_TIME.substring(0, str.length()))
                         .parse(str);
             } catch (ParseException e) {
-                throw new CasterException("Not a valid date :"+str);
+                throw new CasterException("Not a valid date :" + str);
             }
 
         }
@@ -1693,9 +1749,9 @@ public class Caster {
         @Override
         public Object to(Object src) {
             try {
-                return Io.readBytes((File)src);
+                return Io.readBytes((File) src);
             } catch (IOException e) {
-               throw new CasterException("Cannot read file "+src,e);
+                throw new CasterException("Cannot read file " + src, e);
             }
         }
     }
@@ -1704,11 +1760,11 @@ public class Caster {
     private static class File2InputStream implements ValueCaster {
         @Override
         public Object to(Object src) {
-            File file = (File)src;
+            File file = (File) src;
             try {
                 return new FileInputStream(file);
             } catch (FileNotFoundException e) {
-                throw new CasterException("Cannot open file as stream ,file not found"+file,e);
+                throw new CasterException("Cannot open file as stream ,file not found" + file, e);
             }
         }
     }
@@ -1716,7 +1772,7 @@ public class Caster {
     private static class Timestamp2Date implements ValueCaster {
         @Override
         public Object to(Object src) {
-            Timestamp timestamp = (Timestamp)src;
+            Timestamp timestamp = (Timestamp) src;
             return new Date(timestamp.getTime());
         }
     }

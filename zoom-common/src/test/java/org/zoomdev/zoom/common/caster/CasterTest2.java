@@ -1,14 +1,15 @@
 package org.zoomdev.zoom.common.caster;
-
 import junit.framework.TestCase;
 import org.zoomdev.zoom.common.json.JSON;
 import org.zoomdev.zoom.common.res.ResScanner;
+import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.common.utils.DataObject;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -201,6 +202,15 @@ public class CasterTest2 extends TestCase {
         assertEquals(newA.arrayOfB[0].list.get(0).title,"titleOfC");
 
 
+        Field field = Classes.fetchField(B.class,"list");
+
+        Caster.toType(new Map[]{
+
+                DataObject.as(
+                        "title","123"
+                )
+
+        },field.getGenericType());
 
     }
 }
