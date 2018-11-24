@@ -33,7 +33,7 @@ public class Classes {
         try {
             return type.newInstance();
         } catch (Throwable e) {
-            throw new RuntimeException("为了初始化该类" + type);
+            throw new RuntimeException("不能初始化" + type);
         }
     }
 

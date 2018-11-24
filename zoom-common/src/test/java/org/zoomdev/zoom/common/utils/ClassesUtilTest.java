@@ -28,7 +28,7 @@ public class ClassesUtilTest {
        assertEquals(Classes.getClass(Integer.class),Integer.class);
 
 
-       Classes.newInstance(Integer.class);
+      // Classes.newInstance(Integer.class);
 
 
 
@@ -44,21 +44,21 @@ public class ClassesUtilTest {
 
     @Test(expected = RuntimeException.class)
     public void restMakeThrowable(){
-        Classes.makeThrow(new InvocationTargetException(
+        throw Classes.makeThrow(new InvocationTargetException(
                 new IOException()
         ));
     }
 
     @Test(expected = RuntimeException.class)
     public void restMakeThrowable1(){
-        Classes.makeThrow(
+        throw Classes.makeThrow(
                 new IOException());
     }
 
 
     @Test(expected = ZoomException.class)
     public void restMakeThrowable2(){
-        Classes.makeThrow(new ZoomException());
+        throw Classes.makeThrow(new ZoomException());
     }
 
 
