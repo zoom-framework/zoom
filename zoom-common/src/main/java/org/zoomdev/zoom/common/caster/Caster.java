@@ -1423,8 +1423,6 @@ public class Caster {
                     return eqValueCaster;
                 }
                 return getWithArray(toType);
-            } else {
-                throw new CasterException(String.format("Cannot cast %s to %s ,src type must be Iterable or Array ", srcType.getName(), toType.getName()));
             }
         }
 
