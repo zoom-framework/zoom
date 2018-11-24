@@ -66,21 +66,18 @@ public class ZoomIocClassLoader extends IocBase implements IocClassLoader, Destr
 
     @Override
     public void appendModule(Class moduleClass) {
-        try {
-            log.info(String.format("初始化Module [%s]", moduleClass));
-            Object module = Classes.newInstance(moduleClass);
-            append(moduleClass, module);
-            //bean
-            Method[] methods = CachedClasses.getPublicMethods(moduleClass);
-            for (Method method : methods) {
-                IocBean bean = method.getAnnotation(IocBean.class);
-                if (bean != null) {
-                    append(module, method);
-                }
+        log.info(String.format("初始化Module [%s]", moduleClass));
+        Object module = Classes.newInstance(moduleClass);
+        append(moduleClass, module);
+        //bean
+        Method[] methods = CachedClasses.getPublicMethods(moduleClass);
+        for (Method method : methods) {
+            IocBean bean = method.getAnnotation(IocBean.class);
+            if (bean != null) {
+                append(module, method);
             }
-        } catch (Exception e) {
-            throw new IocException("Module初始化失败，Module必须有一个默认构造函数", e);
         }
+
     }
 
     @Override

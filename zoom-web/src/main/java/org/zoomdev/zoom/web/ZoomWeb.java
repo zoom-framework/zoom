@@ -17,13 +17,9 @@ import org.zoomdev.zoom.ioc.configuration.SimpleConfigBuilder;
 import org.zoomdev.zoom.ioc.impl.ZoomIocContainer;
 import org.zoomdev.zoom.web.action.ActionFactory;
 import org.zoomdev.zoom.web.action.ActionHandler;
-import org.zoomdev.zoom.web.action.ActionInterceptorFactory;
-import org.zoomdev.zoom.web.action.impl.SimpleActionBuilder;
-import org.zoomdev.zoom.web.action.impl.SimpleActionFactory;
-import org.zoomdev.zoom.web.action.impl.SimpleActionInterceptorFactory;
 import org.zoomdev.zoom.web.router.Router;
 import org.zoomdev.zoom.web.router.impl.BracesRouterParamRule;
-import org.zoomdev.zoom.web.router.impl.SimpleRouter;
+import org.zoomdev.zoom.web.router.impl.ZoomRouter;
 import org.zoomdev.zoom.web.utils.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,17 +50,14 @@ public class ZoomWeb {
     public void init() {
 
         printLogo();
-
-
         /// 加载整个项目的主配置
         loadApplicationConfig();
         // 扫描整个资源, .class .jar 其他配置文件等
         scanResources();
         // 初始化router
-        createRouter();
-
         resolveClasses();
 
+        createRouter();
         printTime();
 
 
@@ -74,22 +67,17 @@ public class ZoomWeb {
 
     private void resolveClasses() {
         // 初始化classInfo
-        ActionInterceptorFactory actionInterceptorFactory = new SimpleActionInterceptorFactory();
+      /*  ActionInterceptorFactory actionInterceptorFactory = new SimpleActionInterceptorFactory();
         ioc.getIocClassLoader().append(ActionInterceptorFactory.class, actionInterceptorFactory, true);
-        ioc.getIocClassLoader().append(SimpleActionFactory.class);
+        ioc.getIocClassLoader().append(SimpleActionFactory.class);*/
 
         //   ioc.getIocClassLoader().append(ActionFactory.class,ioc.fetch(SimpleActionFactory.class),true);
 
-        ClassResolvers classResolvers = new ClassResolvers(new SimpleConfigBuilder(ioc),
-                new SimpleActionBuilder(ioc, router));
-
-        ioc.getIocClassLoader().append(ClassResolvers.class, classResolvers, true);
-
+        ClassResolvers classResolvers = new ClassResolvers(new SimpleConfigBuilder(ioc));
         classResolvers.visit(scanner);
     }
 
     private void createRouter() {
-        ioc.getIocClassLoader().append(Router.class, new SimpleRouter(new BracesRouterParamRule()), true);
         router = ioc.fetch(Router.class);
     }
 

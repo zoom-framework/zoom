@@ -1,6 +1,5 @@
 package org.zoomdev.zoom.web.modules;
 
-import javafx.scene.web.WebView;
 import org.zoomdev.zoom.common.ConfigurationConstants;
 import org.zoomdev.zoom.common.annotations.Inject;
 import org.zoomdev.zoom.common.annotations.IocBean;
@@ -8,10 +7,17 @@ import org.zoomdev.zoom.common.annotations.Module;
 import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.common.caster.ValueCaster;
 import org.zoomdev.zoom.common.exceptions.ZoomException;
+import org.zoomdev.zoom.common.res.ClassResolvers;
+import org.zoomdev.zoom.common.res.ResScanner;
 import org.zoomdev.zoom.common.utils.CachedClasses;
 import org.zoomdev.zoom.common.utils.Classes;
+import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.web.WebConfig;
-import org.zoomdev.zoom.web.annotations.JsonResponse;
+import org.zoomdev.zoom.web.action.ActionFactory;
+import org.zoomdev.zoom.web.action.ActionInterceptorFactory;
+import org.zoomdev.zoom.web.action.impl.SimpleActionBuilder;
+import org.zoomdev.zoom.web.action.impl.SimpleActionFactory;
+import org.zoomdev.zoom.web.action.impl.SimpleActionInterceptorFactory;
 import org.zoomdev.zoom.web.parameter.ParameterParserFactory;
 import org.zoomdev.zoom.web.parameter.PreParameterParserManager;
 import org.zoomdev.zoom.web.parameter.parser.impl.SimpleParameterParserFactory;
@@ -19,10 +25,11 @@ import org.zoomdev.zoom.web.parameter.pre.impl.SimplePreParameterParserManager;
 import org.zoomdev.zoom.web.rendering.RenderingFactory;
 import org.zoomdev.zoom.web.rendering.TemplateEngineManager;
 import org.zoomdev.zoom.web.rendering.impl.*;
+import org.zoomdev.zoom.web.router.Router;
+import org.zoomdev.zoom.web.router.impl.ZoomRouter;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,6 +73,18 @@ public class WebModules {
 
 
     @IocBean
+    public ActionInterceptorFactory getActionInterceptorFactory(){
+        return new SimpleActionInterceptorFactory();
+    }
+
+
+
+    @IocBean
+    public ActionFactory getActionFactory(){
+        return new SimpleActionFactory();
+    }
+
+    @IocBean
     public RenderingFactory getRenderingFactoryManager(
             TemplateEngineRendering rendering
     ){
@@ -92,6 +111,26 @@ public class WebModules {
         return new SimplePreParameterParserManager();
     }
 
+    @IocBean
+    public Router getRouter(){
+        return new ZoomRouter();
+    }
+
+    @Inject()
+    public void config(
+            IocContainer ioc,
+            Router router,
+            ResScanner resScanner
+    ){
+        SimpleActionBuilder builder= new SimpleActionBuilder(
+                ioc,
+                router,
+                null
+        );
+
+        ClassResolvers classResolvers = new ClassResolvers(builder);
+        classResolvers.visit(resScanner);
+    }
 
     static class Request2BeanProvider implements Caster.CasterProvider {
 

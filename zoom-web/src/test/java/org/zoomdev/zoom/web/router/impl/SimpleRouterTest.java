@@ -24,7 +24,7 @@ public class SimpleRouterTest {
         assertEquals(rule.getParamName("{action}"), "action");
         assertEquals(rule.match("action"), false);
 
-        SimpleRouter router = new SimpleRouter(new BracesRouterParamRule());
+        ZoomRouter router = new ZoomRouter(new BracesRouterParamRule());
 
         Router.RemoveToken removeToken1 = router.register("/{action}/index", new MockAction("index", "action"));
         Router.RemoveToken removeToken2 = router.register("/{action}/{edit}", new MockAction("paths", "action", "edit"));

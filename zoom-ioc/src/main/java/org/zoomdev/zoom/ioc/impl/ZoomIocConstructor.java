@@ -13,14 +13,18 @@ import java.util.List;
 abstract class ZoomIocConstructor implements IocConstructor {
 
     static ZoomIocConstructor createFromIocBean(Object target, Method method, IocClassLoader classLoader) {
-        IocBean iocBean = method.getAnnotation(IocBean.class);
-        String initialize = iocBean.initialize();
-        String name = iocBean.name();
-        String destroy = iocBean.destroy();
-        IocKey key = new ZoomIocKey(name, method.getReturnType());
-        return new IocBeanConstructor(key,
-                ZoomIocContainer.parseParameterKeys(target, method, classLoader), target, method,
-                initialize, destroy);
+        try{
+            IocBean iocBean = method.getAnnotation(IocBean.class);
+            String initialize = iocBean.initialize();
+            String name = iocBean.name();
+            String destroy = iocBean.destroy();
+            IocKey key = new ZoomIocKey(name, method.getReturnType());
+            return new IocBeanConstructor(key,
+                    ZoomIocContainer.parseParameterKeys(target, method, classLoader), target, method,
+                    initialize, destroy);
+        }catch (Exception e){
+            throw new IocException("不能创建IocBean:["+target+"] "+method,e);
+        }
     }
 
 

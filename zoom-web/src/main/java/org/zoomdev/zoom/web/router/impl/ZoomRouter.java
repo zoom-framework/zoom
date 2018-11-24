@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class SimpleRouter implements Router, Destroyable {
+public class ZoomRouter implements Router, Destroyable {
 
     Map<String, ActionHandler> actionMap;
     final RouterParamRule rule;
@@ -24,11 +24,11 @@ public class SimpleRouter implements Router, Destroyable {
     private Map<ActionHandler, Boolean> actionPool;
 
 
-    public SimpleRouter(){
+    public ZoomRouter(){
         this(new BracesRouterParamRule());
     }
 
-    public SimpleRouter(RouterParamRule rule) {
+    public ZoomRouter(RouterParamRule rule) {
         if (rule == null) {
             throw new NullPointerException();
         }

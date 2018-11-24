@@ -10,8 +10,7 @@ import org.zoomdev.zoom.plugin.impl.ZoomPluginHost;
 import org.zoomdev.zoom.web.action.impl.SimpleActionFactory;
 import org.zoomdev.zoom.web.modules.WebModules;
 import org.zoomdev.zoom.web.router.Router;
-import org.zoomdev.zoom.web.router.impl.SimpleRouter;
-import sun.management.MethodInfo;
+import org.zoomdev.zoom.web.router.impl.ZoomRouter;
 
 import java.io.IOException;
 import java.net.URL;
@@ -31,7 +30,7 @@ public class TestPlugin extends TestCase {
         SimpleActionFactory simpleActionFactory = new SimpleActionFactory();
         iocContainer.getIocClassLoader().append(SimpleActionFactory.class,simpleActionFactory,true);
 
-        Router router = new SimpleRouter();
+        Router router = new ZoomRouter();
         PluginHost host = new ZoomPluginHost(
             iocContainer,router
         );

@@ -163,7 +163,9 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
                 arg = new ZoomIocKey(paramInject.value(), type);
             } else {
                 arg = new ZoomIocKey(type);
-                iocClassLoader.append(type);
+                if(!type.isInterface()){
+                    iocClassLoader.append(type);
+                }
             }
             args[index++] = arg;
         }
