@@ -193,9 +193,13 @@ public class CasterTest2 extends TestCase {
 
         String data = JSON.stringify( a);
 
-        A newA = Caster.to(data,A.class);
 
+        /// String 2 bean
+        A newA = Caster.to(data,A.class);
         System.out.println(newA);
+
+
+
         assertEquals(newA.name,a.name);
         assertEquals(newA.arrayOfB.length,1);
         assertEquals(newA.arrayOfB[0].id,1);
@@ -204,6 +208,8 @@ public class CasterTest2 extends TestCase {
 
         Field field = Classes.fetchField(B.class,"list");
 
+
+        /// array 2 List
         Caster.toType(new Map[]{
 
                 DataObject.as(
@@ -211,9 +217,6 @@ public class CasterTest2 extends TestCase {
                 )
 
         },field.getGenericType());
-
-
-        //String to Bean
 
 
 
