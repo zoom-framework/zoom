@@ -39,6 +39,12 @@ public interface IocContainer extends Destroyable {
      */
     <T> T fetch(Class<T> type);
 
+    /**
+     * 获取指定的IocObject列表，每一个列表元素都是经过注入初始化的
+     * @param keys
+     * @return
+     */
+    IocObject[] fetchValues(IocKey[] keys);
 
     /**
      * IOC容器类加载器
@@ -79,5 +85,8 @@ public interface IocContainer extends Destroyable {
     void release(Scope scope);
 
 
-    IocScope getScope();
+    IocScope getScope(Scope scope);
+
+
+
 }

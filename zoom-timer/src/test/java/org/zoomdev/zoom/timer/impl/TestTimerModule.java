@@ -72,9 +72,7 @@ public class TestTimerModule extends TestCase {
 
 
         IocContainer subContainer = new ZoomIocContainer(
-                container.getScope(),
-                container.getIocClassLoader(),
-                container.getEventListeners()
+                container
         );
 
 

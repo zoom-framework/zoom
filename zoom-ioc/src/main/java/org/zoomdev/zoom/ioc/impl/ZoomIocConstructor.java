@@ -118,7 +118,7 @@ abstract class ZoomIocConstructor implements IocConstructor {
         }
 
         @Override
-        public IocObject newInstance(IocObject[] values) {
+        public IocObject newInstance() {
             return ZoomIocObject.wrap(iocClass, instance, inited);
         }
     }
@@ -134,8 +134,9 @@ abstract class ZoomIocConstructor implements IocConstructor {
         }
 
         @Override
-        public IocObject newInstance(IocObject[] values) {
+        public IocObject newInstance() {
             try {
+                IocObject[] values = iocClass.getValues(parameterKeys);
                 return ZoomIocObject.wrap(iocClass, constructor.newInstance(ZoomIocContainer.getValues(
                         values
                 )));
@@ -171,8 +172,9 @@ abstract class ZoomIocConstructor implements IocConstructor {
         }
 
         @Override
-        public IocObject newInstance(IocObject[] values) {
+        public IocObject newInstance() {
             try {
+                IocObject[] values = iocClass.getValues(parameterKeys);
                 Object bean = method.invoke(target, ZoomIocContainer.getValues(values));
 
                 IocEvent iocDestroy = null;

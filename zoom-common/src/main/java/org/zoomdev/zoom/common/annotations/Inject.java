@@ -9,8 +9,13 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER})
 public @interface Inject {
     /**
-     * 系统调用，优先级最高
+     *
+     * 如果order设置为0，那么表示这个方法在所有ioc对象开始注入前注入
+     *
      */
+    public static final int SYSTEM= 0;
+
+
     public static final int USER = 1;
 
     /**

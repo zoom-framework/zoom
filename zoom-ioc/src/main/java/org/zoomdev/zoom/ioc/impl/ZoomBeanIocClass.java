@@ -15,10 +15,11 @@ public class ZoomBeanIocClass extends ZoomIocClass {
 
     public ZoomBeanIocClass(
             IocContainer ioc,
+            IocScope scope,
             IocClassLoader classLoader,
             IocConstructor constructor,
             IocKey key) {
-        super(ioc, classLoader, constructor, key);
+        super(ioc, scope,classLoader, constructor, key);
     }
 
     private boolean injectorCreated = false;
@@ -32,8 +33,8 @@ public class ZoomBeanIocClass extends ZoomIocClass {
 
 
     @Override
-    public IocObject newInstance(IocScope scope) {
-        IocObject obj = getAndCreate(scope, constructor);
+    public IocObject newInstance() {
+        IocObject obj = fetch(constructor);
         Object instance = obj.get();
 
         if (!injectorCreated) {

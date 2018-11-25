@@ -30,7 +30,12 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
         getIocClassLoader().append(IocContainer.class, this, true);
     }
 
-    public ZoomIocContainer(IocScope parentScope, IocClassLoader parentClassLoader, List<IocEventListener> eventListeners) {
+    public ZoomIocContainer(IocContainer parent) {
+
+        IocScope parentScope = parent.getScope(Scope.APPLICATION);
+        IocClassLoader parentClassLoader = parent.getIocClassLoader();
+        List<IocEventListener> eventListeners = parent.getEventListeners();
+
         globalScope = new GroupScope(this, this, parentScope);
         this.iocClassLoader = new GroupClassLoader(this, parentClassLoader);
         this.iocClassLoader.setClassEnhancer(new NoneEnhancer());
@@ -62,6 +67,15 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
     @Override
     public <T> T fetch(Class<T> type) {
         return (T) fetch(new ZoomIocKey(type)).get();
+    }
+
+    @Override
+    public IocObject[] fetchValues(IocKey[] keys) {
+        IocObject[] values = new IocObject[keys.length];
+        for (int i = 0, c = keys.length; i < c; ++i) {
+            values[i] = fetch(keys[i]);
+        }
+        return values;
     }
 
     private void initObject(ZoomIocObject obj, IocScope scope) {
@@ -113,7 +127,7 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
                         throw new IocException("找不到IocClass key:" + key + " 请提供ioc的配置");
                     }
                 }
-                obj = (ZoomIocObject) iocClass.newInstance(scope);
+                obj = (ZoomIocObject) iocClass.newInstance();
                 if (obj == null) {
                     throw new IocException("创建对象失败");
                 }
@@ -235,7 +249,7 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
     }
 
     @Override
-    public IocScope getScope() {
+    public IocScope getScope(Scope scope) {
         return globalScope;
     }
 

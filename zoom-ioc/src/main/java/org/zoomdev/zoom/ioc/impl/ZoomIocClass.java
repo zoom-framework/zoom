@@ -14,14 +14,27 @@ public abstract class ZoomIocClass extends IocBase implements IocClass {
     IocMethod[] methods;
     IocField[] fields;
 
+    IocScope scope;
 
-    public ZoomIocClass(IocContainer ioc, IocClassLoader classLoader, IocConstructor constructor, IocKey key) {
+
+    public ZoomIocClass(
+            IocContainer ioc,
+            IocScope scope,
+            IocClassLoader classLoader,
+            IocConstructor constructor,
+            IocKey key) {
         super(ioc);
         this.classLoader = classLoader;
         this.constructor = constructor;
         this.key = key;
+        this.scope =scope;
     }
 
+
+    @Override
+    public IocScope getScope() {
+        return scope;
+    }
 
     @Override
     public IocConstructor getIocConstructor() {
@@ -29,24 +42,23 @@ public abstract class ZoomIocClass extends IocBase implements IocClass {
     }
 
 
-    protected IocObject[] getValues(IocScope scope, IocKey[] keys) {
+    @Override
+    public IocObject[] getValues(IocKey[] keys) {
         IocObject[] values = new IocObject[keys.length];
         for (int i = 0, c = keys.length; i < c; ++i) {
             values[i] = scope.get(keys[i]);
             if (values[i] == null) {
                 IocClass iocClass = classLoader.get(keys[i]);
-                values[i] = iocClass.newInstance(scope);
+                values[i] = iocClass.newInstance();
             }
         }
         return values;
     }
 
-    public IocObject getAndCreate(IocScope scope, IocConstructor iocConstructor) {
+    public IocObject fetch(IocConstructor iocConstructor) {
         IocObject obj = scope.get(iocConstructor.getKey());
         if (obj == null) {
-            IocKey key = iocConstructor.getKey();
-            IocKey[] keys = iocConstructor.getParameterKeys();
-            obj = iocConstructor.newInstance(getValues(scope, keys));
+            obj = iocConstructor.newInstance();
             scope.put(key, obj);
         }
         return obj;

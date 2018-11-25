@@ -14,6 +14,6 @@ public interface IocConstructor {
 
     IocKey[] getParameterKeys();
 
-    IocObject newInstance(IocObject[] values);
+    IocObject newInstance();
 
 }

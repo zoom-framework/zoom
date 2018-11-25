@@ -47,6 +47,7 @@ public class ZoomIocClassLoader extends IocBase implements IocClassLoader, Destr
                         .createFromClass(type, key, ZoomIocClassLoader.this, classEnhancer);
                 IocClass iocClass = new ZoomBeanIocClass(
                         ioc,
+                        ioc.getScope(IocContainer.Scope.APPLICATION),
                         ZoomIocClassLoader.this,
                         constructor,
                         constructor.getKey());
@@ -89,6 +90,7 @@ public class ZoomIocClassLoader extends IocBase implements IocClassLoader, Destr
                 ZoomIocConstructor constructor = ZoomIocConstructor.createFromInstance(baseType, instance, initialized);
                 IocClass iocClass = new ZoomBeanIocClass(
                         ioc,
+                        ioc.getScope(IocContainer.Scope.APPLICATION),
                         ZoomIocClassLoader.this,
                         constructor,
                         constructor.getKey());
@@ -106,7 +108,7 @@ public class ZoomIocClassLoader extends IocBase implements IocClassLoader, Destr
     @Override
     public IocClass append(Object moduleInstance, Method method) {
         ZoomIocConstructor constructor = ZoomIocConstructor.createFromIocBean(moduleInstance, method, this);
-        ZoomBeanIocClass iocClass = new ZoomBeanIocClass(ioc, this, constructor, constructor.getKey());
+        ZoomBeanIocClass iocClass = new ZoomBeanIocClass(ioc,  ioc.getScope(IocContainer.Scope.APPLICATION),this, constructor, constructor.getKey());
         constructor.setIocClass(iocClass);
         pool.put(constructor.getKey(), iocClass);
 

@@ -51,9 +51,7 @@ public class TestIoc extends TestCase {
 
 
         IocContainer subIoc = new ZoomIocContainer(
-                ioc.getScope(),
-                ioc.getIocClassLoader(),
-                ioc.getEventListeners()
+                ioc
         );
 
 
@@ -93,9 +91,7 @@ public class TestIoc extends TestCase {
 
 
         IocContainer container = new ZoomIocContainer(
-                ioc.getScope(),
-                ioc.getIocClassLoader(),
-                ioc.getEventListeners()
+                ioc
         );
 
         container.getIocClassLoader().append(A.class);
