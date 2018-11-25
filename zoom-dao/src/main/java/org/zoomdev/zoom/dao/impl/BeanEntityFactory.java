@@ -347,7 +347,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
 
                 if (context.config != null && context.config.columnMeta != null) {
                     //validator
-                    entityField.setValidators(createValidators(context.config.columnMeta));
+                    entityField.setValidators(context.config.columnMeta.getValidators());
 
                 }
 

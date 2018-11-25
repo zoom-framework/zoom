@@ -11,7 +11,7 @@ public @interface Inject {
     /**
      * 系统调用，优先级最高
      */
-    public static final int SYSTEM = 0;
+    public static final int USER = 1;
 
     /**
      * IoxBean的名臣
@@ -28,6 +28,6 @@ public @interface Inject {
     String config() default "";
 
 
-    int order() default SYSTEM;
+    int order() default USER;
 
 }

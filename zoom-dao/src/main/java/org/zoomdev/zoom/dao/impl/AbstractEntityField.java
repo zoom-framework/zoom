@@ -115,8 +115,8 @@ abstract class AbstractEntityField implements EntityField , Cloneable {
         return validators;
     }
 
-    public void setValidators(List<Validator> validators) {
-        this.validators = validators.toArray(new Validator[validators.size()]);
+    public void setValidators(Validator[] validators) {
+        this.validators = validators;
     }
 
 

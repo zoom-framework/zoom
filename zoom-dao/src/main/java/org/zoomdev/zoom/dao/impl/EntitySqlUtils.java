@@ -145,6 +145,7 @@ public class EntitySqlUtils {
 
         //在insert的时候，需要判断一下null值是否可以入库
 
+        //
 
     }
 
@@ -242,7 +243,11 @@ public class EntitySqlUtils {
 
     private static void appendValue(List<Object> values, Object value,
                                     List<StatementAdapter> insertFields,
-                                    EntityField entityField, StringBuilder sql, String[] specialValues, int index, SqlDriver driver) {
+                                    EntityField entityField,
+                                    StringBuilder sql,
+                                    String[] specialValues,
+                                    int index,
+                                    SqlDriver driver) {
         validateValue(entityField, value);
         values.add(value);
         insertFields.add(entityField.getStatementAdapter());

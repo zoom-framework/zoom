@@ -1,8 +1,12 @@
 package org.zoomdev.zoom.dao.meta;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.zoomdev.zoom.dao.validator.*;
 
 import java.io.Serializable;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 字段属性
@@ -41,6 +45,20 @@ public class ColumnMeta implements Serializable {
     private boolean nullable;
 
     private int maxLen;
+
+
+
+
+    public Validator[] getValidators() {
+        return validators;
+    }
+
+    public void setValidators(Validator[] validators) {
+        this.validators = validators;
+    }
+
+    @JsonIgnore
+    private Validator[] validators;
 
     /**
      * 是否自动提交

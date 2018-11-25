@@ -6,6 +6,7 @@ import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.meta.TableMeta;
 import org.zoomdev.zoom.dao.utils.DaoUtils;
+import org.zoomdev.zoom.dao.validator.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ public abstract class AbsDbStruct implements DbStructFactory {
                         column.setName(data.getColumnName(i));
                         column.setType(data.getColumnType(i));
                         column.setRawType(data.getColumnTypeName(i));
+                        column.setValidators(createValidators(column));
                         columnMetas.add(column);
                     }
 
@@ -80,6 +82,68 @@ public abstract class AbsDbStruct implements DbStructFactory {
      */
     public void clearCache() {
 
+    }
+
+
+    private Validator createLengthValidator(ColumnMeta columnMeta) {
+        if (columnMeta.getMaxLen() != 0) {
+
+            //什么类型
+            switch (columnMeta.getType()) {
+                case Types.VARCHAR:
+                case Types.CHAR:
+                case Types.CLOB: {
+                    //字节判断
+                    return new ByteStringValidator(columnMeta.getMaxLen());
+                }
+                case Types.NVARCHAR:
+                case Types.NCHAR:
+                case Types.NCLOB: {
+                    return new StringValidator(columnMeta.getMaxLen());
+                }
+                case Types.BLOB:
+            }
+
+        }
+
+        return null;
+    }
+
+
+    private Validator createFormatValidator(ColumnMeta columnMeta) {
+        //什么类型
+        switch (columnMeta.getType()) {
+            case Types.INTEGER:
+            case Types.BIGINT:
+            case Types.SMALLINT: {
+                return IntegerValidator.DEFAULT;
+            }
+            case Types.NUMERIC:
+            case Types.DECIMAL: {
+                return NumberValidator.DEFAULT;
+            }
+            case Types.BOOLEAN: {
+
+            }
+        }
+        return null;
+    }
+
+    protected Validator[] createValidators(ColumnMeta columnMeta) {
+        List<Validator> list = new ArrayList<Validator>();
+        if (!columnMeta.isNullable()) {
+            if (columnMeta.getDefaultValue() == null) {
+                list.add(new NotNullValidator());
+            }
+        }
+
+        Validator validator = createLengthValidator(columnMeta);
+        if (validator != null) {
+            list.add(validator);
+        }
+
+
+        return list.toArray(new Validator[list.size()]);
     }
 
 }

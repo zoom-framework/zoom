@@ -22,7 +22,7 @@ public class CacheRemoveInterceptorFactory extends AnnotationMethodInterceptorFa
         String format = annotation.format();
         int count = method.getParameterTypes().length;
         if (StringUtils.isEmpty(format)) {
-            throw new ZoomException("format为空");
+            throw new ZoomException(method+"format为空");
         } else {
             int formatCount = StringUtils.countMatches(format, "%s");
             if (formatCount < count) {

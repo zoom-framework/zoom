@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.zoomdev.zoom.aop.MethodInterceptor;
 import org.zoomdev.zoom.aop.factory.AnnotationMethodInterceptorFactory;
 import org.zoomdev.zoom.cache.annotations.Cache;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.utils.Classes;
 
 import java.lang.reflect.Method;
@@ -24,16 +25,11 @@ public class CacheGetInterceptorFactory extends AnnotationMethodInterceptorFacto
         String format = annotation.format();
         int count = Classes.getParameterCount(method);
         if (StringUtils.isEmpty(format)) {
-            format = method.toString()
-                    + ":"
-                    + StringUtils.join(
-                    Collections.nCopies(count, "%s"),
-                    ":"
-            );
+            throw new ZoomException(method+"format不能为空");
         } else {
             int formatCount = StringUtils.countMatches(format, "%s");
             if (formatCount > count) {
-                throw new RuntimeException("%s的个数不能大于参数个数");
+                throw new ZoomException("%s的个数不能大于参数个数");
             }
         }
         int timeoutMs = annotation.timeoutMs();
