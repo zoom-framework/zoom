@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
 /**
  * IOC方法接口
  */
-public interface IocMethod {
+public interface IocMethod extends IocInjector {
 
     IocKey[] getParameterKeys();
 

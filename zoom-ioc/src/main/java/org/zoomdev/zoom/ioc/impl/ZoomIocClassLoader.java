@@ -10,6 +10,8 @@ import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.ioc.*;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -50,7 +52,8 @@ public class ZoomIocClassLoader extends IocBase implements IocClassLoader, Destr
                         ioc.getScope(IocContainer.Scope.APPLICATION),
                         ZoomIocClassLoader.this,
                         constructor,
-                        constructor.getKey());
+                        constructor.getKey(),
+                        IocBean.USER);
                 constructor.setIocClass(iocClass);
                 return iocClass;
             }
@@ -66,23 +69,25 @@ public class ZoomIocClassLoader extends IocBase implements IocClassLoader, Destr
     private static final Log log = LogFactory.getLog(ZoomIocClassLoader.class);
 
     @Override
-    public void appendModule(Class moduleClass) {
+    public List<IocClass> appendModule(Class moduleClass) {
         log.info(String.format("初始化Module [%s]", moduleClass));
         Object module = Classes.newInstance(moduleClass);
-        append(moduleClass, module);
+        append(moduleClass, module,false,IocBean.SYSTEM);
+        List<IocClass> list = new ArrayList<IocClass>();
         //bean
         Method[] methods = CachedClasses.getPublicMethods(moduleClass);
         for (Method method : methods) {
             IocBean bean = method.getAnnotation(IocBean.class);
             if (bean != null) {
-                append(module, method);
+                append(module, method, bean.order());
             }
         }
+        return list;
 
     }
 
     @Override
-    public <T> IocClass append(final Class<T> baseType, final T instance, final boolean initialized) {
+    public <T> IocClass append(final Class<T> baseType, final T instance, final boolean initialized, final int order) {
         IocKey key = new ZoomIocKey(baseType);
         return SingletonUtils.liteDoubleLockMap(pool, key, new SingletonUtils.SingletonInit<IocClass>() {
             @Override
@@ -93,22 +98,24 @@ public class ZoomIocClassLoader extends IocBase implements IocClassLoader, Destr
                         ioc.getScope(IocContainer.Scope.APPLICATION),
                         ZoomIocClassLoader.this,
                         constructor,
-                        constructor.getKey());
+                        constructor.getKey(), order);
                 constructor.setIocClass(iocClass);
                 return iocClass;
             }
         });
     }
 
-    @Override
-    public <T> IocClass append(Class<T> baseType, T instance) {
-        return append(baseType, instance, false);
-    }
+
 
     @Override
-    public IocClass append(Object moduleInstance, Method method) {
+    public IocClass append(Object moduleInstance, Method method, int order) {
         ZoomIocConstructor constructor = ZoomIocConstructor.createFromIocBean(moduleInstance, method, this);
-        ZoomBeanIocClass iocClass = new ZoomBeanIocClass(ioc,  ioc.getScope(IocContainer.Scope.APPLICATION),this, constructor, constructor.getKey());
+        ZoomBeanIocClass iocClass = new ZoomBeanIocClass(
+                ioc,
+                ioc.getScope(IocContainer.Scope.APPLICATION),
+                this,
+                constructor,
+                constructor.getKey(), order);
         constructor.setIocClass(iocClass);
         pool.put(constructor.getKey(), iocClass);
 

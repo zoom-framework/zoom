@@ -14,6 +14,13 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 public @interface IocBean {
 
+    /// order = SYSTEM , 表示依赖本IocBean指定Bean的方法将会优先执行。
+    int SYSTEM = 0;
+
+    /// order = USER, 表示会对方法或者字段注入无要求。
+    int USER = 1;
+
+
     /**
      * ioc容器中的名称
      *
@@ -35,4 +42,12 @@ public @interface IocBean {
      * @return
      */
     String destroy() default "";
+
+    /**
+     * {@link IocBean#USER}
+     * {@link IocBean#SYSTEM}
+     *
+     * @return
+     */
+    int order() default USER;
 }

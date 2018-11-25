@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 import org.junit.Test;
 import org.zoomdev.zoom.aop.javassist.JavassistClassInfo;
 import org.zoomdev.zoom.aop.reflect.ClassInfo;
+import org.zoomdev.zoom.common.annotations.IocBean;
 import org.zoomdev.zoom.common.res.ResScanner;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.ioc.IocContainer;
@@ -30,12 +31,12 @@ public class TestPlugin {
         IocContainer iocContainer = new ZoomIocContainer();
 
         ClassInfo info = new JavassistClassInfo();
-        iocContainer.getIocClassLoader().append(ClassInfo.class,info,true);
+        iocContainer.getIocClassLoader().append(ClassInfo.class,info,true,IocBean.USER);
 
         iocContainer.getIocClassLoader().appendModule(WebModules.class);
 
         SimpleActionFactory simpleActionFactory = new SimpleActionFactory();
-        iocContainer.getIocClassLoader().append(SimpleActionFactory.class,simpleActionFactory,true);
+        iocContainer.getIocClassLoader().append(SimpleActionFactory.class,simpleActionFactory,true,IocBean.USER);
 
         Router router = new ZoomRouter();
         PluginHost host = new ZoomPluginHost(
@@ -71,12 +72,12 @@ public class TestPlugin {
         IocContainer iocContainer = new ZoomIocContainer();
 
         ClassInfo info = new JavassistClassInfo();
-        iocContainer.getIocClassLoader().append(ClassInfo.class,info,true);
+        iocContainer.getIocClassLoader().append(ClassInfo.class,info,true,IocBean.USER);
 
         iocContainer.getIocClassLoader().appendModule(WebModules.class);
 
         SimpleActionFactory simpleActionFactory = new SimpleActionFactory();
-        iocContainer.getIocClassLoader().append(SimpleActionFactory.class,simpleActionFactory,true);
+        iocContainer.getIocClassLoader().append(SimpleActionFactory.class,simpleActionFactory,true,IocBean.USER);
 
         Router router = new ZoomRouter();
         PluginHost host = new ZoomPluginHost(
@@ -123,12 +124,12 @@ public class TestPlugin {
         IocContainer iocContainer = new ZoomIocContainer();
 
         ClassInfo info = new JavassistClassInfo();
-        iocContainer.getIocClassLoader().append(ClassInfo.class,info,true);
+        iocContainer.getIocClassLoader().append(ClassInfo.class,info,true,IocBean.SYSTEM);
 
         iocContainer.getIocClassLoader().appendModule(WebModules.class);
 
         SimpleActionFactory simpleActionFactory = new SimpleActionFactory();
-        iocContainer.getIocClassLoader().append(SimpleActionFactory.class,simpleActionFactory,true);
+        iocContainer.getIocClassLoader().append(SimpleActionFactory.class,simpleActionFactory,true,IocBean.SYSTEM);
 
         Router router = new ZoomRouter();
         PluginHost host = new ZoomPluginHost(

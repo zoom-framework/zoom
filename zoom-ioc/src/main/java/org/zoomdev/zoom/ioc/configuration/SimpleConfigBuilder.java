@@ -1,11 +1,13 @@
 package org.zoomdev.zoom.ioc.configuration;
 
 import org.zoomdev.zoom.common.annotations.ApplicationModule;
+import org.zoomdev.zoom.common.annotations.IocBean;
 import org.zoomdev.zoom.common.annotations.Module;
 import org.zoomdev.zoom.common.filter.impl.ClassAnnotationFilter;
 import org.zoomdev.zoom.common.filter.pattern.PatternFilterFactory;
 import org.zoomdev.zoom.common.res.ClassResolver;
-import org.zoomdev.zoom.ioc.IocContainer;
+import org.zoomdev.zoom.ioc.*;
+import org.zoomdev.zoom.ioc.impl.ZoomIocKey;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -95,11 +97,47 @@ public class SimpleConfigBuilder extends ClassResolver {
             ioc.getIocClassLoader().appendModule(type);
         }
 
-        for (Class<?> type : types) {
+        for(Class<?> type : types){
+            IocObject module = ioc.get(new ZoomIocKey(type));
+            IocClass iocClass = module.getIocClass();
+            IocMethod[] methods = iocClass.getIocMethods();
+            if(methods==null || methods.length ==0){
+                continue;
+            }
+            int index = 0;
+            for(IocMethod method : methods){
+                if(method==null){
+                    continue;
+                }
+                if(hasSystemOrder(method)){
+                    //inject
+                    method.inject(module);
+                    methods[index] = null;
+                }
+                ++index;
+            }
+        }
+
+        for(Class<?> type : types){
             ioc.fetch(type);
         }
 
+
         list.clear();
 
+    }
+
+    private boolean hasSystemOrder(IocMethod method){
+        IocKey[] keys = method.getParameterKeys();
+        for(IocKey key : keys){
+            IocClass iocClass = ioc.getIocClassLoader().get(key);
+            if(iocClass==null){
+                throw new IocException("未找到指定的IocClass:"+key);
+            }
+            if(iocClass.getOrder() == IocBean.SYSTEM){
+                return true;
+            }
+        }
+        return false;
     }
 }

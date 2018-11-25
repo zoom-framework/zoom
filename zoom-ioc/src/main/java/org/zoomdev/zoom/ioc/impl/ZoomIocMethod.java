@@ -85,4 +85,8 @@ public class ZoomIocMethod extends IocBase implements IocMethod {
     }
 
 
+    @Override
+    public void inject(IocObject target) {
+        invoke(target);
+    }
 }

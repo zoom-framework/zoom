@@ -2,6 +2,7 @@ package org.zoomdev.zoom.ioc.impl;
 
 import org.apache.commons.lang3.StringUtils;
 import org.zoomdev.zoom.common.annotations.Inject;
+import org.zoomdev.zoom.common.annotations.IocBean;
 import org.zoomdev.zoom.common.utils.CachedClasses;
 import org.zoomdev.zoom.ioc.*;
 
@@ -26,8 +27,7 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
         globalScope = new GlobalScope(this, this);
         this.iocClassLoader = new ZoomIocClassLoader(this);
         this.iocClassLoader.setClassEnhancer(new NoneEnhancer());
-
-        getIocClassLoader().append(IocContainer.class, this, true);
+        getIocClassLoader().append(IocContainer.class, this, true,IocBean.SYSTEM);
     }
 
     public ZoomIocContainer(IocContainer parent) {
@@ -40,8 +40,7 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
         this.iocClassLoader = new GroupClassLoader(this, parentClassLoader);
         this.iocClassLoader.setClassEnhancer(new NoneEnhancer());
         this.eventListeners.addAll(eventListeners);
-
-        getIocClassLoader().append(IocContainer.class, this, true);
+        getIocClassLoader().append(IocContainer.class, this, true,IocBean.SYSTEM);
     }
 
 
@@ -61,12 +60,17 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
 
     @Override
     public IocObject fetch(IocKey key) {
-        return fetch(globalScope, key);
+        return fetch(globalScope, key,true);
     }
 
     @Override
     public <T> T fetch(Class<T> type) {
         return (T) fetch(new ZoomIocKey(type)).get();
+    }
+
+    @Override
+    public IocObject get(IocKey key) {
+        return fetch(globalScope,key,false);
     }
 
     @Override
@@ -83,38 +87,44 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
 
         if (!obj.inited) {
             obj.inited = true;
-
-            //先初始化构造器中没有被初始化的
-            IocClass iocClass = obj.getIocClass();
-            IocConstructor iocConstructor = iocClass.getIocConstructor();
-
-
-            for (IocKey key : iocConstructor.getParameterKeys()) {
-                ZoomIocObject childObject = (ZoomIocObject) scope.get(key);
-                initObject(childObject, scope);
-            }
-
-
-            IocField[] fields = iocClass.getIocFields();
-            if (fields != null) {
-                for (IocField field : fields) {
-                    field.set(obj);
-                }
-            }
-
-            IocMethod[] methods = iocClass.getIocMethods();
-            if (methods != null) {
-                for (IocMethod method : methods) {
-                    method.invoke(obj);
-                }
-            }
-
-            obj.initialize();
-
+            inject(obj,scope);
         }
     }
 
-    public synchronized IocObject fetch(IocScope scope, IocKey key) {
+    private void inject(ZoomIocObject obj, IocScope scope){
+        //先初始化构造器中没有被初始化的
+        IocClass iocClass = obj.getIocClass();
+        IocConstructor iocConstructor = iocClass.getIocConstructor();
+
+
+        for (IocKey key : iocConstructor.getParameterKeys()) {
+            ZoomIocObject childObject = (ZoomIocObject) scope.get(key);
+            initObject(childObject, scope);
+        }
+
+
+        IocField[] fields = iocClass.getIocFields();
+        if (fields != null) {
+            for (IocField field : fields) {
+                field.inject(obj);
+            }
+        }
+
+        IocMethod[] methods = iocClass.getIocMethods();
+        if (methods != null) {
+            for (IocMethod method : methods) {
+                if(method==null){
+                    //可能是空的
+                    continue;
+                }
+                method.inject(obj);
+            }
+        }
+
+        obj.initialize();
+    }
+
+    public synchronized IocObject fetch(IocScope scope, IocKey key,boolean inject) {
         try {
             ZoomIocObject obj = (ZoomIocObject) scope.get(key);
             IocClass iocClass = null;
@@ -132,9 +142,9 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
                     throw new IocException("创建对象失败");
                 }
             }
-
-            initObject(obj, scope);
-
+            if(inject){
+                initObject(obj, scope);
+            }
             return obj;
         } catch (Throwable e) {
             throw new IocException("获取ioc对象失败" + key, e);
@@ -222,7 +232,7 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
 
     @Override
     public IocMethod getMethod(IocClass iocClass, Method target) {
-        IocMethod method = iocClass.getMethod(target);
+        IocMethod method = iocClass.getIocMethod(target);
         if (method != null) {
             return method;
         }
@@ -234,7 +244,7 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
 
     @Override
     public IocMethodProxy getMethodProxy(IocClass iocClass, Method target) {
-        IocMethod method = iocClass.getMethod(target);
+        IocMethod method = iocClass.getIocMethod(target);
         if (method != null) {
             return new IocIocMethodPorxy(method);
         }
@@ -292,7 +302,11 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
      * @param type
      * @return
      */
-    public static IocMethod[] parseMethods(IocContainer ioc, IocClass iocClass, Class<?> type, IocClassLoader classLoader) {
+    public static IocMethod[] parseMethods(
+            IocContainer ioc,
+            IocClass iocClass,
+            Class<?> type,
+            IocClassLoader classLoader) {
         Method[] methods = CachedClasses.getPublicMethods(type);
         if (methods == null || methods.length == 0) return null;
         List<IocMethod> iocMethods = new ArrayList<IocMethod>();
@@ -300,7 +314,8 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
             Inject inject = method.getAnnotation(Inject.class);
             if (inject != null) {
                 try {
-                    iocMethods.add(createIocMethod(ioc, iocClass, type, method));
+                    IocMethod iocMethod = createIocMethod(ioc, iocClass, type, method);
+                    iocMethods.add(iocMethod);
                 } catch (Throwable t) {
                     throw new IocException("注入方法失败" + method, t);
                 }

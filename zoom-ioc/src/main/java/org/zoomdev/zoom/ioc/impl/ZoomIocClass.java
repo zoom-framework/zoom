@@ -16,20 +16,27 @@ public abstract class ZoomIocClass extends IocBase implements IocClass {
 
     IocScope scope;
 
+    int order;
 
     public ZoomIocClass(
             IocContainer ioc,
             IocScope scope,
             IocClassLoader classLoader,
             IocConstructor constructor,
-            IocKey key) {
+            IocKey key,
+            int order) {
         super(ioc);
         this.classLoader = classLoader;
         this.constructor = constructor;
         this.key = key;
         this.scope =scope;
+        this.order = order;
     }
 
+    @Override
+    public int getOrder() {
+        return order;
+    }
 
     @Override
     public IocScope getScope() {

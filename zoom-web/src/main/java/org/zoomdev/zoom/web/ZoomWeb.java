@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.common.ConfigurationConstants;
+import org.zoomdev.zoom.common.annotations.IocBean;
 import org.zoomdev.zoom.common.config.ConfigReader;
 import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.common.filter.OrFilter;
@@ -81,7 +82,7 @@ public class ZoomWeb {
 
     private void createRouter() {
         router = new ZoomRouter();
-        ioc.getIocClassLoader().append(Router.class,router,true);
+        ioc.getIocClassLoader().append(Router.class,router,true,IocBean.SYSTEM);
         router = ioc.fetch(Router.class);
     }
 
@@ -132,7 +133,7 @@ public class ZoomWeb {
 
         try {
             scanner = new ResScanner();
-            ioc.getIocClassLoader().append(ResScanner.class,scanner,true);
+            ioc.getIocClassLoader().append(ResScanner.class,scanner,true,IocBean.SYSTEM);
             scanner.scan(ZoomWeb.class.getClassLoader(), jarFilter);
         } catch (IOException e) {
             throw new RuntimeException("扫描解析文件出错", e);

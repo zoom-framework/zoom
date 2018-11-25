@@ -18,8 +18,9 @@ public class ZoomBeanIocClass extends ZoomIocClass {
             IocScope scope,
             IocClassLoader classLoader,
             IocConstructor constructor,
-            IocKey key) {
-        super(ioc, scope,classLoader, constructor, key);
+            IocKey key,
+            int order) {
+        super(ioc, scope,classLoader, constructor, key,order);
     }
 
     private boolean injectorCreated = false;
@@ -46,7 +47,7 @@ public class ZoomBeanIocClass extends ZoomIocClass {
     }
 
     @Override
-    public IocMethod getMethod(Method method) {
+    public IocMethod getIocMethod(Method method) {
         if (getIocMethods() != null) {
             for (IocMethod iocMethod : getIocMethods()) {
                 if (iocMethod.getMethod() == method) {

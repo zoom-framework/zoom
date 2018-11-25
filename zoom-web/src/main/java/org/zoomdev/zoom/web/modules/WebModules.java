@@ -72,14 +72,17 @@ public class WebModules {
     }
 
 
-    @IocBean
+    /**
+     * 涉及拦截器都是系统级别
+     * @return
+     */
+    @IocBean(order = IocBean.SYSTEM)
     public ActionInterceptorFactory getActionInterceptorFactory(){
         return new SimpleActionInterceptorFactory();
     }
 
 
-
-    @IocBean
+    @IocBean(order = IocBean.SYSTEM)
     public ActionFactory getActionFactory(){
         return new SimpleActionFactory();
     }

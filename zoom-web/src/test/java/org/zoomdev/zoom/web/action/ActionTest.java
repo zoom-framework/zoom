@@ -1,6 +1,7 @@
 package org.zoomdev.zoom.web.action;
 
 import junit.framework.TestCase;
+import org.zoomdev.zoom.common.annotations.IocBean;
 import org.zoomdev.zoom.common.json.JSON;
 import org.zoomdev.zoom.common.utils.DataObject;
 import org.zoomdev.zoom.ioc.IocContainer;
@@ -32,7 +33,7 @@ public class ActionTest extends TestCase {
 
         IocContainer ioc = filter.getWeb().getIoc();
         Monitor monitor = new Monitor();
-        ioc.getIocClassLoader().append(Monitor.class, monitor, false);
+        ioc.getIocClassLoader().append(Monitor.class, monitor, false,IocBean.USER);
 
         filter.init(config);
 

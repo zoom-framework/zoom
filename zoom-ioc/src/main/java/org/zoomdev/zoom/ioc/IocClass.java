@@ -47,7 +47,10 @@ public interface IocClass {
     IocKey getKey();
 
 
-    IocMethod getMethod(Method method);
+    IocMethod getIocMethod(Method method);
+
+
+    int getOrder();
 
 
 }
