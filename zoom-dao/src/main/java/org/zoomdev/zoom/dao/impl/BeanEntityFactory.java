@@ -355,7 +355,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
                 if (e instanceof DaoException) {
                     throw (DaoException) e;
                 }
-                throw new DaoException("绑定Entity失败，发生异常:" + type, e);
+                throw new DaoException("绑定Entity失败，发生异常: 实体类:" + type + " 表:" + table , e);
             }
         }
 

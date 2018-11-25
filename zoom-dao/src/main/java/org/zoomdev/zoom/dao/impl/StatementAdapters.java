@@ -30,7 +30,10 @@ class StatementAdapters {
     static Map<String, StatementAdapter> pool = new ConcurrentHashMap<String, StatementAdapter>();
 
     static String getKey(Class<?> fieldType, Class<?> columnType) {
-        return fieldType.getName() + ":" + columnType.getName();
+        if(fieldType==null){
+            return columnType.getName();
+        }
+        return new StringBuilder().append(fieldType.getName())+"2"+columnType.getName();
     }
 
     static StatementAdapter DEFAULT = new StatementAdapter() {
@@ -40,20 +43,9 @@ class StatementAdapters {
         }
     };
 
-    static void add(Class<?> fieldType, Class<?> columnType) {
-        pool.put(getKey(fieldType, columnType), new CasterProxyStatementAdapter(
-                Caster.wrap(fieldType, columnType),
-                DEFAULT
-        ));
-    }
-
     static {
 
-        add(Map.class, String.class);
-        add(Collection.class, String.class);
-        add(List.class, String.class);
 
-        add(File.class, byte[].class);
     }
 
 
@@ -77,38 +69,48 @@ class StatementAdapters {
         if (fieldType == columnType || columnType.isAssignableFrom(fieldType)) {
             return DEFAULT;
         }
-        if (Clob.class.isAssignableFrom(columnType)) {
-            if (fieldType == String.class) {
-                return STRING2CLOB;
+
+        String key = getKey(fieldType, columnType);
+        StatementAdapter adapter = pool.get(key);
+        if (adapter == null) {
+            if (Clob.class.isAssignableFrom(columnType)) {
+                if (fieldType == String.class) {
+                    adapter= STRING2CLOB;
+                }else{
+                    adapter=new CasterProxyStatementAdapter(Caster.wrap(fieldType, String.class), STRING2CLOB);
+                }
+            } else if (Blob.class.isAssignableFrom(columnType)) {
+                if (fieldType == byte[].class) {
+                    adapter = BYTEARRAY2BLOB;
+                }else{
+                    adapter = new CasterProxyStatementAdapter(Caster.wrap(fieldType, byte[].class), BYTEARRAY2BLOB);
+                }
+            }else{
+                adapter = new CasterProxyStatementAdapter(Caster.wrap(fieldType,columnType),DEFAULT);
             }
-            //先转成String
-            return new CasterProxyStatementAdapter(Caster.wrap(fieldType, String.class), STRING2CLOB);
-        } else if (Blob.class.isAssignableFrom(columnType)) {
-            if (fieldType == byte[].class) {
-                return BYTEARRAY2BLOB;
-            }
-            //先转成byte[]
-            return new CasterProxyStatementAdapter(Caster.wrap(fieldType, byte[].class), BYTEARRAY2BLOB);
+            pool.put(key,adapter);
         }
 
-        StatementAdapter adapter = pool.get(getKey(fieldType, columnType));
-        if (adapter != null) {
-            return adapter;
-        }
-
-        return DEFAULT;
-        //return new CasterStatementAdapter(Caster.wrap(fieldType, columnType));
+        return adapter;
     }
 
     public static StatementAdapter create(Class<?> columnType) {
-        if (Clob.class.isAssignableFrom(columnType)) {
-            //先转成String
-            return new CasterProxyStatementAdapter(Caster.wrap(String.class), STRING2CLOB);
-        } else if (Blob.class.isAssignableFrom(columnType)) {
-            //先转成byte[]
-            return new CasterProxyStatementAdapter(Caster.wrap(byte[].class), BYTEARRAY2BLOB);
+        String key = getKey(null,columnType);
+        StatementAdapter adapter = pool.get(key);
+        if(adapter==null){
+            if (Clob.class.isAssignableFrom(columnType)) {
+                //先转成String
+                adapter = new CasterProxyStatementAdapter(Caster.wrap(String.class),STRING2CLOB);
+            } else if (Blob.class.isAssignableFrom(columnType)) {
+                //先转成byte[]
+                adapter = new CasterProxyStatementAdapter(Caster.wrap(byte[].class),BYTEARRAY2BLOB);
+            }else{
+                adapter = new CasterProxyStatementAdapter(Caster.wrap(columnType),DEFAULT);
+            }
+            pool.put(key,adapter);
         }
-        return DEFAULT;
+
+        return adapter;
     }
 
 

@@ -347,6 +347,14 @@ public class OracleDriver extends AbsDriver implements AutoGenerateProvider {
         // 还得看下这个类有没有
         try {
             Class<?> oracleTimestamp = Class.forName("oracle.sql.Datum");
+            Caster.register(Date.class, oracle.sql.TIMESTAMP.class, new ValueCaster() {
+                @Override
+                public Object to(Object src) {
+                    return new oracle.sql.TIMESTAMP(new java.sql.Date(
+                            ((Date) src).getTime()
+                    ));
+                }
+            });
             Caster.register(oracleTimestamp, Date.class, new ValueCaster() {
                 @Override
                 public Object to(Object src) {
@@ -359,7 +367,7 @@ public class OracleDriver extends AbsDriver implements AutoGenerateProvider {
                 }
             });
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
 
     }

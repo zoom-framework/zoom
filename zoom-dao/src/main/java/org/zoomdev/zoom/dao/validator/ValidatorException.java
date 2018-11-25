@@ -1,6 +1,7 @@
 package org.zoomdev.zoom.dao.validator;
 
 import org.zoomdev.zoom.common.exceptions.ZoomException;
+import org.zoomdev.zoom.dao.adapters.EntityField;
 
 public class ValidatorException extends ZoomException {
 
@@ -16,6 +17,25 @@ public class ValidatorException extends ZoomException {
 
     private int type;
 
+    public Object getValue() {
+        return value;
+    }
+
+    public void setValue(Object value) {
+        this.value = value;
+    }
+
+    public EntityField getEntityField() {
+        return entityField;
+    }
+
+    public void setEntityField(EntityField entityField) {
+        this.entityField = entityField;
+    }
+
+    private Object value;
+
+    private EntityField entityField;
 
     public ValidatorException(int type) {
         this.type = type;
@@ -24,5 +44,16 @@ public class ValidatorException extends ZoomException {
 
     public int getType() {
         return type;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    private String message;
+
+    @Override
+    public String getMessage() {
+        return message;
     }
 }

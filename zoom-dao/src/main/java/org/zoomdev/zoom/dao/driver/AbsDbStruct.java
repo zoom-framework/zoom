@@ -142,6 +142,12 @@ public abstract class AbsDbStruct implements DbStructFactory {
             list.add(validator);
         }
 
+        validator = createFormatValidator(columnMeta);
+        if(validator!=null){
+            list.add(validator);
+        }
+
+
 
         return list.toArray(new Validator[list.size()]);
     }

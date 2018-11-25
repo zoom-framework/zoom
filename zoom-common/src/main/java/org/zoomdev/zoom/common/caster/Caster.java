@@ -260,6 +260,8 @@ public class Caster {
         Caster.register(String.class, double.class, new String2Double());
         Caster.register(String.class, float.class, new String2Float());
 
+        //boolean 到 Integer
+        Caster.register(boolean.class,int.class,new Boolean2Int());
 
         //database
 
@@ -381,6 +383,8 @@ public class Caster {
         Caster.register(File.class, InputStream.class, new File2InputStream());
 
         Caster.register(Timestamp.class, Date.class, new Timestamp2Date());
+
+        Caster.register(long.class,Timestamp.class,new Long2Timestamp());
 
     }
 
@@ -1064,6 +1068,10 @@ public class Caster {
             map.put(getKey(getWrapClass(src), to), caster);
         }
 
+        if(to.isPrimitive() && src.isPrimitive()){
+            map.put(getKey(getWrapClass(src), getWrapClass(to)), caster);
+        }
+
         map.put(getKey(src, to), caster);
     }
 
@@ -1415,7 +1423,6 @@ public class Caster {
 
 
         if (toType.isArray()) {
-
             if (Iterable.class.isAssignableFrom(srcType)) {
                 return getWithIterable(toType);
             } else if (srcType.isArray()) {
@@ -1426,6 +1433,29 @@ public class Caster {
             }
         }
 
+
+        ValueCaster caster = getPosible(srcType,toType,map);
+        if(caster!=null){
+            return caster;
+        }
+
+        final CasterProvider[] providers = Caster.providers;
+        if (providers != null) {
+            for (CasterProvider casterProvider : providers) {
+                caster = casterProvider.getCaster(srcType, toType);
+                if (caster != null) {
+                    String key = new StringBuilder(srcType.toString()).append("2").append(toType.toString()).toString();
+                    map.put(key, caster);
+                    return caster;
+                }
+            }
+        }
+
+
+        throw new CasterException(String.format("Cannot cast %s to %s ", srcType.getName(), toType.getName()));
+    }
+
+    public static <V> V getPosible(Class<?> srcType,Class<?> toType,Map<String,V> map){
 
         /**
          * 否则需要将class全部解出来，以便加以判断
@@ -1441,29 +1471,14 @@ public class Caster {
         for (String s : srcs) {
             for (String t : tos) {
                 String key = new StringBuilder(s).append("2").append(t).toString();
-                ValueCaster caster = map.get(key);
+                V caster = map.get(key);
                 if (caster == null) {
                     continue;
                 }
                 return caster;
             }
         }
-
-
-        final CasterProvider[] providers = Caster.providers;
-        if (providers != null) {
-            for (CasterProvider casterProvider : providers) {
-                ValueCaster caster = casterProvider.getCaster(srcType, toType);
-                if (caster != null) {
-                    String key = new StringBuilder(srcType.toString()).append("2").append(toType.toString()).toString();
-                    map.put(key, caster);
-                    return caster;
-                }
-            }
-        }
-
-
-        throw new CasterException(String.format("Cannot cast %s to %s ", srcType.getName(), toType.getName()));
+        return null;
     }
 
     private static class Object2String implements ValueCaster {
@@ -1772,6 +1787,21 @@ public class Caster {
         public Object to(Object src) {
             Timestamp timestamp = (Timestamp) src;
             return new Date(timestamp.getTime());
+        }
+    }
+
+    private static class Long2Timestamp implements ValueCaster {
+        @Override
+        public Object to(Object src) {
+            Long value = (Long)src;     //毫秒
+            return new Timestamp(value );
+        }
+    }
+
+    private static class Boolean2Int implements ValueCaster {
+        @Override
+        public Object to(Object src) {
+            return ((Boolean)src) ? 1 : 0;
         }
     }
 }

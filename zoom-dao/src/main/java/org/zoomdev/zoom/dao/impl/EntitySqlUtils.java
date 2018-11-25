@@ -199,20 +199,22 @@ public class EntitySqlUtils {
                 validator.validate(value);
             }
         } catch (ValidatorException e) {
+            e.setEntityField(field);
+            e.setValue(value);
+            String message = null;
             switch (e.getType()) {
                 case ValidatorException.CAST:
-                    throw new DaoException(
-                            String.format("数据格式错误,数据%s不能转化成类型:%s", value, field.getColumnMeta().getDataType()), e
-                    );
+                    message = String.format("%s格式错误,需要的格式为%s,而实际为%s", field.getColumnMeta().getComment(), field.getColumnMeta().getDataType(), value);
+                    break;
                 case ValidatorException.LENGTH:
-                    throw new DaoException(
-                            String.format("数据%s长度过长", value), e
-                    );
+                    message = String.format("数据%s长度过长", value);
+                    break;
                 case ValidatorException.NULL:
-                    throw new DaoException(
-                            String.format("%s不能为空", field.getColumnMeta().getComment()), e
-                    );
+                    message = String.format("%s不能为空", field.getColumnMeta().getComment());
+                    break;
             }
+            e.setMessage(message);
+            throw e;
         }
 
     }
@@ -346,7 +348,7 @@ public class EntitySqlUtils {
         Object data = entity.newInstance();
         for (int i = 0, c = entityFields.size(); i < c; ++i) {
             EntityField entityField = entityFields.get(i);
-            assert(entityField!=null);
+            assert (entityField != null);
             try {
                 Object r = rs.getObject(i + 1);
                 entityField.set(data, entityField.getFieldValue(r));
@@ -364,7 +366,7 @@ public class EntitySqlUtils {
             Filter<EntityField> filter,
             List<EntityField> entityFields) {
         // build select
-        if(entityFields.size() > 0 ){
+        if (entityFields.size() > 0) {
             for (EntityField field : entityFields) {
                 builder.selectRaw(field.getSelectColumnName());
             }

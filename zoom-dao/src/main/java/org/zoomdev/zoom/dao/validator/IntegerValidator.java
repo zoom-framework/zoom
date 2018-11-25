@@ -33,6 +33,7 @@ public class IntegerValidator implements Validator {
             if (!PatternUtils.isInteger((String) value)) {
                 throw new ValidatorException(ValidatorException.CAST);
             }
+            return;
         }
 
         if (value instanceof Number) {

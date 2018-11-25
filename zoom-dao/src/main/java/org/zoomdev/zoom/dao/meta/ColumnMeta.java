@@ -198,6 +198,6 @@ public class ColumnMeta implements Serializable {
 
     @Override
     public String toString() {
-        return "name:" + name;
+        return name+":"+comment;
     }
 }

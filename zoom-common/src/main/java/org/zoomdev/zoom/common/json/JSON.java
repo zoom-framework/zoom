@@ -8,10 +8,16 @@ import org.zoomdev.zoom.common.io.Io;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.text.SimpleDateFormat;
 
 public class JSON {
 
     static ObjectMapper mapper = new ObjectMapper();
+
+    static {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        mapper.setDateFormat(sdf);
+    }
 
     /**
      * mapper

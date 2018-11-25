@@ -1,5 +1,6 @@
 package org.zoomdev.zoom.dao.driver.mysql;
 
+import org.apache.commons.lang3.StringUtils;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 import org.zoomdev.zoom.dao.driver.AbsDriver;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
@@ -187,7 +188,8 @@ public class MysqlDriver extends AbsDriver {
                             : " NOT NULL");
                 }
             }
-            //sb.append(" COMMENT '").append(columnMeta.getComment()==null ? "":columnMeta.getComment()).append("'");
+
+            createColumnComment(sb,columnMeta);
 
             if (index < table.getColumns().size() - 1) {
                 sb.append(",");
@@ -225,8 +227,17 @@ public class MysqlDriver extends AbsDriver {
         return sb.toString();
     }
 
+    protected void createColumnComment(StringBuilder sb, ColumnMeta columnMeta) {
+        if(!StringUtils.isEmpty(columnMeta.getComment())){
+            sb.append(" COMMENT '")
+                    .append(columnMeta.getComment()).append("'");
+        }
+
+
+    }
+
     protected void createTableComment(StringBuilder sb, TableBuildInfo table) {
-        sb.append(" COMMENT='").append(table.getName()).append("'");
+        sb.append(" COMMENT='").append(table.getComment()).append("'");
     }
 
 
@@ -234,13 +245,10 @@ public class MysqlDriver extends AbsDriver {
     public void buildTable(TableBuildInfo table, List<String> sqlList) {
 
         sqlList.add(buildCreateTable(table));
-
         //index
         buildIndex(table, sqlList);
 
         buildUnique(table, sqlList);
-
-
     }
 
     @Override
