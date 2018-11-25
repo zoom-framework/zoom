@@ -32,7 +32,8 @@ public class WebUtils {
      */
     public static void runAfter(Runnable runnable){
         if(startupSuccess.get()){
-            throw new ZoomException("Already startup");
+            runnable.run();
+            return;
         }
         after.add(runnable);
     }
