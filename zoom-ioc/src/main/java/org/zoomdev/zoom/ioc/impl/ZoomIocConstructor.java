@@ -174,7 +174,7 @@ abstract class ZoomIocConstructor implements IocConstructor {
         @Override
         public IocObject newInstance() {
             try {
-                IocObject[] values = iocClass.getValues(parameterKeys);
+                IocObject[] values = iocClass.getIoc().fetchValues(parameterKeys);
                 Object bean = method.invoke(target, ZoomIocContainer.getValues(values));
 
                 IocEvent iocDestroy = null;
