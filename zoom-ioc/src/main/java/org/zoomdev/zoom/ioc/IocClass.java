@@ -52,5 +52,7 @@ public interface IocClass {
 
     int getOrder();
 
+    IocContainer getIoc();
+
 
 }

@@ -15,4 +15,9 @@ public class IocBase implements Destroyable {
     public void destroy() {
         ioc = null;
     }
+
+
+    public IocContainer getIoc() {
+        return ioc;
+    }
 }

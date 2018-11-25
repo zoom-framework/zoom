@@ -1,6 +1,7 @@
 package org.zoomdev.zoom.web.utils;
 
 import org.zoomdev.zoom.async.impl.Asyncs;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.ioc.IocContainer;
 
 import java.util.ArrayList;
@@ -24,7 +25,17 @@ public class WebUtils {
     private static AtomicBoolean startupSuccess = new AtomicBoolean(false);
 
     private static Collection<Runnable> queue = Collections.synchronizedList(new ArrayList<Runnable>());
+    private static Collection<Runnable> after = new ArrayList<Runnable>();
 
+    /**
+     * 最后处理
+     */
+    public static void runAfter(Runnable runnable){
+        if(startupSuccess.get()){
+            throw new ZoomException("Already startup");
+        }
+        after.add(runnable);
+    }
 
 
     /**
@@ -43,6 +54,11 @@ public class WebUtils {
     }
 
     public static void setStartupSuccess() {
+
+        for(Runnable runnable : after){
+            runnable.run();
+        }
+
         synchronized (queue) {
             startupSuccess.set(true);
             for (Runnable runnable : queue) {
