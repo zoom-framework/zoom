@@ -15,9 +15,20 @@ import java.util.Map;
 
 public class SimpleOracleAutoIncreaseProvider implements AutoGenerateProvider {
 
+    private String sequenceName="%s_sequence";
+    private String triggerName = "%s_increase";
 
-    public SimpleOracleAutoIncreaseProvider() {
 
+    public SimpleOracleAutoIncreaseProvider(){
+
+    }
+
+    public SimpleOracleAutoIncreaseProvider(
+            String sequenceName,
+            String triggerName
+    ) {
+        this.sequenceName = sequenceName;
+        this.triggerName = triggerName;
     }
 
 
@@ -85,11 +96,11 @@ public class SimpleOracleAutoIncreaseProvider implements AutoGenerateProvider {
 
 
     private String getSepcialTriggerName(String table){
-        return (table + "_increase").toUpperCase();
+        return String.format(triggerName,table).toUpperCase();
     }
 
     private String getSepcialSequenceName(String table){
-        return (table + "_sequence").toUpperCase();
+        return String.format(sequenceName,table).toUpperCase();
     }
 
     /**

@@ -46,10 +46,6 @@ public abstract class AbsDriver implements SqlDriver {
         return sb.append(name);
     }
 
-    @Override
-    public int position2page(int position, int size) {
-        return position / size + 1;
-    }
 
 
     protected static String buildCommentOnTable(String table, String comment) {

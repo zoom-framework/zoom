@@ -38,10 +38,6 @@ public interface SqlDriver extends StatementAdapterFactory {
     StringBuilder buildLimit(StringBuilder sql, List<Object> values, int position, int size);
 
 
-    int position2page(int position, int size);
-
-    int page2position(int page, int size);
-
     String formatColumnType(ColumnMeta column);
 
     void insertOrUpdate(StringBuilder sb, List<Object> values, String tableName, Map<String, Object> data, String... unikeys);

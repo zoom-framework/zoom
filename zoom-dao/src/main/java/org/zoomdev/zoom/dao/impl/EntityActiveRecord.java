@@ -120,11 +120,14 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
                 remove2(builder.values);
                 //最后两个参数要移除掉
                 int total = EntitySqlUtils.getValue(connection, builder, DaoUtils.SELECT_COUNT, int.class,output);
-                int page = builder.position2page(position, size);
+                int page = DaoUtils.position2page(position,size);
                 return new Page<T>(list, page, size, total);
             }
         });
     }
+
+
+
 
     @Override
     public Page<T> page(int page, int size) {

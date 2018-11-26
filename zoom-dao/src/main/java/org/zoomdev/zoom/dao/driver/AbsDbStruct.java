@@ -165,4 +165,18 @@ public abstract class AbsDbStruct implements DbStructFactory {
         return list.toArray(new Validator[list.size()]);
     }
 
+
+    /**
+     * 快照一份
+     * @return
+     */
+    @Override
+    public Snapshot takeSnapshot() {
+
+        //查询全部
+
+
+        return null;
+    }
+
 }

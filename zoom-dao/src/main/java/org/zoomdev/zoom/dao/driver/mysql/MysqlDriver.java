@@ -253,11 +253,6 @@ public class MysqlDriver extends AbsDriver {
 
 
     @Override
-    public int page2position(int page, int size) {
-        return 0;
-    }
-
-    @Override
     public String formatColumnType(ColumnMeta columnMeta) {
         int type = columnMeta.getType();
         switch (type) {

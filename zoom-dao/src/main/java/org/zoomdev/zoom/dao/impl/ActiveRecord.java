@@ -126,7 +126,7 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Ar
                 builder.clear(false);
                 remove2(builder.values);
                 int total = EntitySqlUtils.getValue(connection, builder, DaoUtils.SELECT_COUNT, int.class,output);
-                int page = builder.position2page(position, size);
+                int page = DaoUtils.position2page(position,size);
                 return new Page<Record>(list, page, size, total);
             }
         });

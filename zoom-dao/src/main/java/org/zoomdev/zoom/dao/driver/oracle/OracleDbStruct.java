@@ -2,11 +2,19 @@ package org.zoomdev.zoom.dao.driver.oracle;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.zoomdev.zoom.common.designpattern.SingletonUtils;
+import org.zoomdev.zoom.common.utils.CollectionUtils;
+import org.zoomdev.zoom.common.utils.Converter;
+import org.zoomdev.zoom.common.utils.MapUtils;
+import org.zoomdev.zoom.dao.Ar;
 import org.zoomdev.zoom.dao.Dao;
+import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.Record;
 import org.zoomdev.zoom.dao.alias.impl.EmptyNameAdapter;
 import org.zoomdev.zoom.dao.driver.AbsDbStruct;
 import org.zoomdev.zoom.dao.driver.DbStructFactory;
+import org.zoomdev.zoom.dao.driver.Snapshot;
+import org.zoomdev.zoom.dao.driver.impl.ZoomSnapshot;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.meta.ColumnMeta.KeyType;
 import org.zoomdev.zoom.dao.meta.TableMeta;
@@ -37,34 +45,99 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
         return result;
     }
 
+
+    private String getRecordKey(Record record) {
+        return new StringBuilder().append(record.getString("TABLE_NAME"))
+                .append(record.getString("COLUMN_NAME")).toString();
+    }
+
+
+    private Ar getAllKeyTypes(Ar ar){
+        return ar.nameAdapter(EmptyNameAdapter.DEFAULT).table("user_cons_columns")
+                .select("user_cons_columns.constraint_name,user_cons_columns.table_name, user_cons_columns.column_name,user_constraints.constraint_type")
+                .join("user_constraints","user_cons_columns.constraint_name = user_constraints.constraint_name")
+                .join("user_tables", " user_tables.table_name=user_cons_columns.table_name");
+    }
+
     protected Map<String, String> getKeyTypes(String table) {
-        List<Record> consts = dao.ar()
-                .nameAdapter(EmptyNameAdapter.DEFAULT)
-                .executeQuery("select user_cons_columns.constraint_name,user_cons_columns.table_name, user_cons_columns.column_name,user_constraints.constraint_type from user_cons_columns "
-                        + "join user_constraints on user_cons_columns.constraint_name = user_constraints.constraint_name "
-                        + "where user_cons_columns.table_name=?", table);
+        List<Record> consts = getAllKeyTypes(dao.ar()).where("user_cons_columns.table_name",table.toUpperCase()).find();
+        return getKeyTypesMap(consts);
+    }
+
+
+    private Map<String,String> getKeyTypesMap(List<Record> consts ){
         Map<String, String> keyTypes = new HashMap<String, String>();
         for (Record record : consts) {
-
-            String key = record.getString("CONSTRAINT_TYPE");
-            keyTypes.put(new StringBuilder().append(record.getString("TABLE_NAME"))
-                    .append(record.getString("COLUMN_NAME")).toString(), key);
+            String keyType = record.getString("CONSTRAINT_TYPE");
+            keyTypes.put(getRecordKey(record), keyType);
         }
         return keyTypes;
     }
 
-    Map<String, String> getIndexType(String tableName)
+    private Ar getAllIndexes(Ar ar){
+        return ar.nameAdapter(EmptyNameAdapter.DEFAULT).table("user_ind_columns")
+                .select("user_ind_columns.table_name,user_ind_columns.column_name,user_indexes.index_type")
+                .join("user_indexes","user_ind_columns.index_name = user_indexes.index_name");
+    }
 
-    {
-        List<Record> indexs = dao.ar().executeQuery("select user_ind_columns.table_name,user_ind_columns.column_name,user_indexes.index_type from user_ind_columns "
-                + "join user_indexes on user_ind_columns.index_name = user_indexes.index_name "
-                + "where user_ind_columns.table_name=?", tableName);
-        Map<String, String> indexTypes = new HashMap<String, String>(indexs.size());
+    private Set<String> getAllIndexes(List<Record> indexs){
+        Set<String> indexes = new HashSet<String>();
         for (Record record : indexs) {
-            indexTypes.put(new StringBuilder().append(record.getString("TABLE_NAME"))
-                    .append(record.getString("COLUMN_NAME")).toString(), "I");
+            indexes.add(getRecordKey(record));
         }
-        return indexTypes;
+        return indexes;
+    }
+
+    private Set<String> getIndexType(String tableName)
+    {
+        List<Record> indexes = getAllIndexes(dao.ar())
+                .where("user_ind_columns.table_name",tableName.toUpperCase()).find();
+        return getAllIndexes(indexes);
+    }
+
+    private String getRecordKey(String table, ColumnMeta columnMeta) {
+        return new StringBuilder()
+                .append(table.toUpperCase()).append(columnMeta.getName()).toString();
+    }
+
+    protected void fill(String table, ColumnMeta columnMeta, Record record, Map<String, String> keyTypes,Set<String> indexes) {
+        columnMeta.setName(record.getString("COLUMN_NAME"));
+        columnMeta.setComment(record.getString("COMMENTS"));
+
+        String keyType = keyTypes.get(getRecordKey(table, columnMeta));
+        if (keyType != null) {
+            if (keyType.equals("P")) {
+                columnMeta.setKeyType(KeyType.PRIMARY);
+                //auto 另外计算
+            } else if (keyType.equals("U")) {
+                columnMeta.setKeyType(KeyType.UNIQUE);
+            }
+        }
+
+
+
+        columnMeta.setDefaultValue(record.getString("DATA_DEFAULT"));
+        columnMeta.setNullable(record.getString("NULLABLE").equals("Y"));
+        columnMeta.setMaxLen(record.getInt("DATA_LENGTH"));
+        columnMeta.setRawType(record.getString("DATA_TYPE"));
+
+    }
+
+
+    protected Ar getAllColumns(Ar ar) {
+        return ar.table("cols").nameAdapter(EmptyNameAdapter.DEFAULT)
+                .select("cols.table_name,cols.column_name,cols.DATA_PRECISION,cols.NULLABLE,cols.DATA_DEFAULT,cols.DATA_TYPE,cols.DATA_LENGTH,COMMENTS")
+                .join("user_tables", " user_tables.table_name=cols.table_name")
+                .join("user_col_comments", "cols.COLUMN_NAME=user_col_comments.column_name and cols.TABLE_name=user_col_comments.TABLE_name","left");
+    }
+
+
+    private void fillWithAuto(TableMeta tableMeta) {
+        for (ColumnMeta columnMeta : tableMeta.getColumns()) {
+            OracleDriver oracleDriver = (OracleDriver) dao.getDriver();
+            columnMeta.setAuto(oracleDriver.isAuto(dao, tableMeta, columnMeta));
+        }
+
     }
 
     @Override
@@ -79,14 +152,16 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
             meta.setComment("");
         }
 
+        Set<String> indexTypes = getIndexType(meta.getName().toUpperCase());
         Map<String, String> keyTypes = getKeyTypes(meta.getName().toUpperCase());
 
-        List<Record> columns = dao.ar()
-                .nameAdapter(EmptyNameAdapter.DEFAULT)
-                .executeQuery("SELECT cols.table_name,cols.column_name,cols.DATA_PRECISION,cols.NULLABLE,cols.DATA_DEFAULT,cols.DATA_TYPE,cols.DATA_LENGTH,COMMENTS FROM cols "
-                        + "join user_tables on user_tables.table_name=cols.table_name "
-                        + "left join user_col_comments on cols.COLUMN_NAME=user_col_comments.column_name and cols.TABLE_name=user_col_comments.TABLE_name"
-                        + " where cols.table_name=?", meta.getName().toUpperCase());
+        List<Record> columns = getAllColumns(dao.ar()).where("cols.table_name", meta.getName().toUpperCase()).find();
+//        List<Record> columns = dao.ar()
+//                .nameAdapter(EmptyNameAdapter.DEFAULT)
+//                .executeQuery("SELECT cols.table_name,cols.column_name,cols.DATA_PRECISION,cols.NULLABLE,cols.DATA_DEFAULT,cols.DATA_TYPE,cols.DATA_LENGTH,COMMENTS FROM cols "
+//                        + "join user_tables on user_tables.table_name=cols.table_name "
+//                        + "left join user_col_comments on cols.COLUMN_NAME=user_col_comments.column_name and cols.TABLE_name=user_col_comments.TABLE_name"
+//                        + " where cols.table_name=?", meta.getName().toUpperCase());
         for (Record record : columns) {
             String column = record.getString("COLUMN_NAME");
             ColumnMeta columnMeta = meta.getColumn(column);
@@ -96,36 +171,10 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
                 continue;
             }
 
-            columnMeta.setComment(record.getString("COMMENTS"));
-
-            //key type
-            //columnMeta.setAuto(record.getString("EXTRA").equals("auto_increment"));
-
-            String keyType = keyTypes.get(new StringBuilder()
-                    .append(meta.getName().toUpperCase()).append(column).toString());
-            if (keyType != null) {
-                if (keyType.equals("P")) {
-                    columnMeta.setKeyType(KeyType.PRIMARY);
-                    //auto 另外计算
-                } else if (keyType.equals("U")) {
-                    columnMeta.setKeyType(KeyType.UNIQUE);
-                } else if (keyType.equals("I")) {
-                    columnMeta.setKeyType(KeyType.INDEX);
-                }
-            }
-
-            columnMeta.setDefaultValue(record.getString("DATA_DEFAULT"));
-            columnMeta.setNullable(record.getString("NULLABLE").equals("Y"));
-            columnMeta.setMaxLen(record.getInt("DATA_LENGTH"));
-            columnMeta.setRawType(record.getString("DATA_TYPE"));
-
+            fill(meta.getName(), columnMeta, record, keyTypes,indexTypes);
         }
 
-
-        for(ColumnMeta columnMeta : meta.getColumns()){
-            OracleDriver oracleDriver = (OracleDriver) dao.getDriver();
-            columnMeta.setAuto( oracleDriver.isAuto(dao, meta,columnMeta ) );
-        }
+        fillWithAuto(meta);
 
 
     }
@@ -188,4 +237,72 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
         return sequences;
     }
 
+
+    private Map<String,List<ColumnMeta>> toTreeMap(List<ColumnMeta> columnMetas){
+
+        Map<String,List<ColumnMeta>> map = new HashMap<String, List<ColumnMeta>>();
+        for(ColumnMeta columnMeta : columnMetas){
+            List<ColumnMeta> list = map.get(columnMeta.getTable());
+            if(list==null){
+                list = new ArrayList<ColumnMeta>();
+                map.put(columnMeta.getTable(),list);
+            }
+            list.add(columnMeta);
+        }
+
+        return map;
+
+    }
+
+
+    @Override
+    public Snapshot takeSnapshot() {
+
+        List<TableNameAndComment> nameAndComments = getNameAndComments();
+        List<Record> allColumns = getAllColumns(dao.ar()).find();
+        final Map<String,String> keyTypes =getKeyTypesMap(getAllKeyTypes(dao.ar()).find()) ;
+        final Set<String> indexes = getAllIndexes(getAllKeyTypes(dao.ar()).find());
+        List<ColumnMeta> columnMetas = CollectionUtils.map(allColumns, new Converter<Record, ColumnMeta>() {
+            @Override
+            public ColumnMeta convert(Record record) {
+                ColumnMeta columnMeta = new ColumnMeta();
+                String table = record.getString("TABLE_NAME");
+                columnMeta.setTable(table.toLowerCase());
+                fill(table,columnMeta,record,keyTypes,indexes);
+                return columnMeta;
+            }
+        });
+
+
+        final Map<String,List<ColumnMeta>> treeMap = toTreeMap(columnMetas);
+
+        ///tables
+        List<TableMeta> tableMetas =  CollectionUtils.map(nameAndComments, new Converter<TableNameAndComment, TableMeta>() {
+            @Override
+            public TableMeta convert(TableNameAndComment data) {
+
+
+                List<ColumnMeta> children = treeMap.get(data.getName());
+                if(children==null){
+                    throw new DaoException("找不到对应的表"+data.getName());
+                }
+                TableMeta tableMeta = new TableMeta();
+                tableMeta.setName(data.getName());
+                tableMeta.setComment(data.getComment());
+                //Comment
+                tableMeta.setColumns(children.toArray(new ColumnMeta[children.size()]));
+
+                fillWithAuto(tableMeta);
+                return tableMeta;
+            }
+        });
+
+
+
+        ZoomSnapshot snapshot= new ZoomSnapshot();
+        snapshot.setTables(tableMetas);
+
+
+        return snapshot;
+    }
 }

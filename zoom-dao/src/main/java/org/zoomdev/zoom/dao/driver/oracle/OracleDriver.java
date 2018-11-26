@@ -46,23 +46,7 @@ public class OracleDriver extends AbsDriver implements AutoGenerateProvider {
         this.autoGenerateProvider = autoGenerateProvider;
     }
 
-    @Override
-    public int position2page(int position, int size) {
-        ++position;
-        if (position % size == 0) {
-            return position / size;
-        }
-        return position / size + 1;
-    }
 
-    /**
-     * 系统的position从0开始,page从1开始
-     */
-    @Override
-    public int page2position(int page, int size) {
-
-        return 0;
-    }
 
     @Override
     public String formatColumnType(ColumnMeta struct) {

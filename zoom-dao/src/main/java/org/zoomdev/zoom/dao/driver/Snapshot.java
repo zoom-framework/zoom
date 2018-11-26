@@ -14,11 +14,6 @@ import java.util.Map;
 public interface Snapshot {
 
     /**
-     * 转成json string
-     * @return
-     */
-    String toJson();
-    /**
      * 比较两个版本，并得出对应的sql语句
      * @param snapshot
      * @return

@@ -88,7 +88,11 @@ public interface DbStructFactory {
     void clearCache();
 
 
-
+    /**
+     * 快照一份
+     * @return
+     */
+    Snapshot takeSnapshot();
     
 
 

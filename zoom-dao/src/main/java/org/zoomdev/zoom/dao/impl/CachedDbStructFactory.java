@@ -4,6 +4,7 @@ import org.zoomdev.zoom.common.Destroyable;
 import org.zoomdev.zoom.common.designpattern.SingletonUtils;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.dao.driver.DbStructFactory;
+import org.zoomdev.zoom.dao.driver.Snapshot;
 import org.zoomdev.zoom.dao.meta.TableMeta;
 
 import java.util.ArrayList;
@@ -96,6 +97,11 @@ public class CachedDbStructFactory implements DbStructFactory, Destroyable {
     @Override
     public void clearCache() {
         pool.clear();
+    }
+
+    @Override
+    public Snapshot takeSnapshot() {
+        return factory.takeSnapshot();
     }
 
     @Override

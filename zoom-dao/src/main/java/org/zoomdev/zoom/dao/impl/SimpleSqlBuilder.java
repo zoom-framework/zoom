@@ -315,9 +315,7 @@ public class SimpleSqlBuilder implements SqlBuilder {
     }
 
 
-    public int position2page(int position, int size) {
-        return driver.position2page(position, size);
-    }
+
 
 
     @Override

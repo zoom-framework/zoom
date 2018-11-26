@@ -7,6 +7,7 @@ import org.zoomdev.zoom.dao.Record;
 import org.zoomdev.zoom.dao.alias.impl.EmptyNameAdapter;
 import org.zoomdev.zoom.dao.driver.AbsDbStruct;
 import org.zoomdev.zoom.dao.driver.DbStructFactory;
+import org.zoomdev.zoom.dao.driver.Snapshot;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.meta.ColumnMeta.KeyType;
 import org.zoomdev.zoom.dao.meta.TableMeta;
@@ -108,5 +109,6 @@ public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
 
 
     }
+
 
 }

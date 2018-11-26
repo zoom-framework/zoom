@@ -2,7 +2,9 @@ package org.zoomdev.zoom.dao.meta;
 
 import org.zoomdev.zoom.dao.SqlBuilder;
 
-public class JoinMeta {
+import java.io.Serializable;
+
+public class JoinMeta implements Serializable {
     public static JoinMeta create(String table, String on, String type) {
         return new JoinMeta(table, on, type);
     }

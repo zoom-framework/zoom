@@ -132,6 +132,12 @@ public class TestDatabase extends AbstractDaoTest {
                 .add("TP_TITLE").comment("标题").string(100).keyIndex().notNull()
 
                 .build();
+
+
+        //takesnapshot
+
+        dao.getDbStructFactory().takeSnapshot();
+
     }
 
     static {
