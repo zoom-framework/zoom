@@ -36,6 +36,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
 
     protected boolean ignoreNull = defaultIgnoreNull;
     protected boolean strict = defaultStrict;
+    protected boolean output;
 
     protected static Map<String, Filter<EntityField>> patterFilterCache = new ConcurrentHashMap<String, Filter<EntityField>>();
     /**
@@ -56,11 +57,12 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
                 });
     }
 
-    public EntityActiveRecord(Dao dao, Entity entity) {
+    public EntityActiveRecord(Dao dao, Entity entity,boolean output) {
         super(dao.getDataSource(), new SimpleSqlBuilder(dao.getDriver()));
         this.entity = entity;
         this.dao = dao;
         this.entityFields = new ArrayList<EntityField>();
+        this.output = output;
     }
 
     @Override
@@ -85,7 +87,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
                 entity.setQuerySource(builder);
                 EntitySqlUtils.buildSelect(builder, entity, filter, entityFields);
                 builder.buildSelect();
-                return EntitySqlUtils.executeQuery(connection, builder, entityFields, entity);
+                return EntitySqlUtils.executeQuery(connection, builder, entityFields, entity,output);
             }
         });
     }
@@ -99,7 +101,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
                 entity.setQuerySource(builder);
                 EntitySqlUtils.buildSelect(builder, entity, filter, entityFields);
                 builder.buildLimit(position, size);
-                return EntitySqlUtils.executeQuery(connection, builder, entityFields, entity);
+                return EntitySqlUtils.executeQuery(connection, builder, entityFields, entity,output);
             }
         });
     }
@@ -113,11 +115,11 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
                 entity.setQuerySource(builder);
                 EntitySqlUtils.buildSelect(builder, entity, filter, entityFields);
                 builder.buildLimit(position, size);
-                List<T> list = EntitySqlUtils.executeQuery(connection, builder, entityFields, entity);
+                List<T> list = EntitySqlUtils.executeQuery(connection, builder, entityFields, entity,output);
                 builder.clear(false);
                 remove2(builder.values);
                 //最后两个参数要移除掉
-                int total = EntitySqlUtils.getValue(connection, builder, DaoUtils.SELECT_COUNT, int.class);
+                int total = EntitySqlUtils.getValue(connection, builder, DaoUtils.SELECT_COUNT, int.class,output);
                 int page = builder.position2page(position, size);
                 return new Page<T>(list, page, size, total);
             }
@@ -156,7 +158,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
             public Integer execute(Connection connection) throws SQLException {
                 builder.table(entity.getTable());
                 builder.buildDelete();
-                return BuilderKit.executeUpdate(connection, builder);
+                return BuilderKit.executeUpdate(connection, builder,output);
             }
         });
     }
@@ -243,7 +245,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
         entity.setQuerySource(builder);
         EntitySqlUtils.buildSelect(builder, entity, filter, entityFields);
         builder.buildSelect();
-        return EntitySqlUtils.executeGet(connection, builder, entity, entityFields);
+        return EntitySqlUtils.executeGet(connection, builder, entity, entityFields,output);
     }
 
     @Override
@@ -438,7 +440,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
                 } else {
                     field = key;
                 }
-                return EntitySqlUtils.getValue(connection, builder, field, typeOfE);
+                return EntitySqlUtils.getValue(connection, builder, field, typeOfE,output);
             }
         });
     }

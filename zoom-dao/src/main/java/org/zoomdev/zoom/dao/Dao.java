@@ -75,5 +75,17 @@ public interface Dao extends StatementAdapterFactory {
 
     void release();
 
+
+    /**
+     * 这是改名策略 {@link NameAdapter}
+     * @param aDefault
+     */
     void setNameAdapter(NameAdapter aDefault);
+
+
+    /**
+     * 是否输出sql
+     * @param output
+     */
+    void setOutput(boolean output);
 }

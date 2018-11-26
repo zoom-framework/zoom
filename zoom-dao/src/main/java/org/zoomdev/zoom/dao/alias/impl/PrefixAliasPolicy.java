@@ -1,5 +1,13 @@
 package org.zoomdev.zoom.dao.alias.impl;
 
+
+/**
+ * 使用前缀来修改名称的策略
+ *
+ * PrefixAliasPolicy policy = new PrefixAliasPolicy("NAME_");
+ * assertTrue(policy.getAlias("NAME_ID").equals("id"));
+ *
+ */
 public class PrefixAliasPolicy extends CamelAliasPolicy {
 
     private String prefix;

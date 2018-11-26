@@ -60,6 +60,8 @@ public class ZoomDao implements Dao, Destroyable {
 
     private String url;
 
+    private boolean output;
+
     public ZoomDao(DataSource dataSource) {
         this(dataSource, false);
     }
@@ -90,6 +92,11 @@ public class ZoomDao implements Dao, Destroyable {
     @Override
     public void setNameAdapter(NameAdapter nameAdapter) {
         this.nameAdapter = nameAdapter;
+    }
+
+    @Override
+    public void setOutput(boolean output) {
+        this.output = output;
     }
 
     public static void executeTrans(Runnable runnable) {
@@ -217,7 +224,7 @@ public class ZoomDao implements Dao, Destroyable {
         Entity entity = entityFactory.getEntity(type);
         if (ar == null) {
             lazyLoad();
-            ar = new EntityActiveRecord<T>(this, entity);
+            ar = new EntityActiveRecord<T>(this, entity,output);
             earHolder.set(ar);
         } else {
             ar.setEntity(entity);
@@ -231,7 +238,7 @@ public class ZoomDao implements Dao, Destroyable {
         Entity entity = entityFactory.getEntity(tables);
         if (ar == null) {
             lazyLoad();
-            ar = new EntityActiveRecord<Record>(this, entity);
+            ar = new EntityActiveRecord<Record>(this, entity,output);
             earHolder.set(ar);
         } else {
             ar.setEntity(entity);
@@ -252,7 +259,7 @@ public class ZoomDao implements Dao, Destroyable {
 
     private Ar createAr() {
         lazyLoad();
-        return new ActiveRecord(this, nameAdapter);
+        return new ActiveRecord(this, nameAdapter,output);
     }
 
 

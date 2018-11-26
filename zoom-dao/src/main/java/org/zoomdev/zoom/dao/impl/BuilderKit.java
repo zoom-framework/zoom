@@ -79,10 +79,12 @@ public class BuilderKit {
             Connection connection,
             String sql,
             List<Object> values,
-            String[] generatedKeys) throws SQLException {
+            String[] generatedKeys,boolean output) throws SQLException {
+        if(output){
+            log.info(String.format(sql.replace("?", "'%s'"),
+                    values.toArray(new Object[values.size()])));
+        }
 
-        log.info(String.format(sql.replace("?", "'%s'"),
-                values.toArray(new Object[values.size()])));
 
         PreparedStatement ps = connection.prepareStatement(sql, generatedKeys);
         for (int index = 1, c = values.size(); index <= c; ++index) {
@@ -95,10 +97,12 @@ public class BuilderKit {
     public static PreparedStatement prepareStatement(
             Connection connection,
             String sql,
-            List<Object> values) throws SQLException {
+            List<Object> values,boolean output) throws SQLException {
+        if(output){
+            log.info(String.format(sql.replace("?", "'%s'"),
+                    values.toArray(new Object[values.size()])));
+        }
 
-        log.info(String.format(sql.replace("?", "'%s'"),
-                values.toArray(new Object[values.size()])));
 
         PreparedStatement ps = connection.prepareStatement(sql);
         for (int index = 1, c = values.size(); index <= c; ++index) {
@@ -156,12 +160,13 @@ public class BuilderKit {
 
     public static List<Record> executeQuery(Connection connection,
                                             SimpleSqlBuilder builder,
-                                            NameAdapter nameAdapter) throws SQLException {
+                                            NameAdapter nameAdapter,
+                                            boolean output) throws SQLException {
 
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = BuilderKit.prepareStatement(connection, builder.sql.toString(), builder.values);
+            ps = BuilderKit.prepareStatement(connection, builder.sql.toString(), builder.values,output);
             rs = ps.executeQuery();
             return BuilderKit.build(rs, nameAdapter);
         } finally {
@@ -243,10 +248,10 @@ public class BuilderKit {
 
 
     public static Integer executeUpdate(Connection connection,
-                                        SimpleSqlBuilder builder) throws SQLException {
+                                        SimpleSqlBuilder builder,boolean output) throws SQLException {
         PreparedStatement ps = null;
         try {
-            ps = BuilderKit.prepareStatement(connection, builder.sql.toString(), builder.values);
+            ps = BuilderKit.prepareStatement(connection, builder.sql.toString(), builder.values,output);
             return ps.executeUpdate();
         } finally {
             DaoUtils.close(ps);
@@ -256,11 +261,12 @@ public class BuilderKit {
     public static Integer executeInsert(Connection connection,
                                         SimpleSqlBuilder builder,
                                         String[] generatedKeys,
-                                        Map<String, Object> record) throws SQLException {
+                                        Map<String, Object> record,
+                                        boolean output) throws SQLException {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = BuilderKit.prepareStatement(connection, builder.sql.toString(), builder.values, generatedKeys);
+            ps = BuilderKit.prepareStatement(connection, builder.sql.toString(), builder.values, generatedKeys,output);
             int ret = ps.executeUpdate();
             if (ret > 0) {
                 rs = ps.getGeneratedKeys();

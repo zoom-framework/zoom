@@ -20,12 +20,15 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Ar
 
     private NameAdapter nameAdapter;
 
+    private boolean output;
+
     private NameAdapter defaultNameAdapter;
 
-    public ActiveRecord(Dao dao, NameAdapter nameAdapter) {
+    public ActiveRecord(Dao dao, NameAdapter nameAdapter,boolean output) {
         super(dao.getDataSource(), new SimpleSqlBuilder(dao.getDriver()));
         this.nameAdapter = nameAdapter;
         this.defaultNameAdapter = nameAdapter;
+        this.output = output;
     }
 
     public List<Record> query() {
@@ -33,7 +36,7 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Ar
         return execute(new ConnectionExecutor() {
             @Override
             public List<Record> execute(Connection connection) throws SQLException {
-                return BuilderKit.executeQuery(connection, builder, nameAdapter);
+                return BuilderKit.executeQuery(connection, builder, nameAdapter,output);
             }
         });
     }
@@ -46,7 +49,7 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Ar
                 PreparedStatement ps = null;
                 ResultSet rs = null;
                 try {
-                    ps = BuilderKit.prepareStatement(connection, sql, values);
+                    ps = BuilderKit.prepareStatement(connection, sql, values,output);
                     rs = ps.executeQuery();
                     if (rs.next()) {
                         return BuilderKit.buildOne(rs, nameAdapter);
@@ -73,7 +76,7 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Ar
                 PreparedStatement ps = null;
                 try {
                     connection = getConnection();
-                    ps = BuilderKit.prepareStatement(connection, sql, values);
+                    ps = BuilderKit.prepareStatement(connection, sql, values,output);
                     rs = ps.executeQuery();
                     return rs;
                 } finally {
@@ -119,10 +122,10 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Ar
             @Override
             public Page<Record> execute(Connection connection) throws SQLException {
                 builder.buildLimit(position, size);
-                List<Record> list = BuilderKit.executeQuery(connection, builder, nameAdapter);
+                List<Record> list = BuilderKit.executeQuery(connection, builder, nameAdapter,output);
                 builder.clear(false);
                 remove2(builder.values);
-                int total = EntitySqlUtils.getValue(connection, builder, DaoUtils.SELECT_COUNT, int.class);
+                int total = EntitySqlUtils.getValue(connection, builder, DaoUtils.SELECT_COUNT, int.class,output);
                 int page = builder.position2page(position, size);
                 return new Page<Record>(list, page, size, total);
             }
@@ -353,6 +356,9 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Ar
 
     @Override
     public int execute(final String sql) {
+        if(output){
+            log.info(sql);
+        }
         return execute(new ConnectionExecutor() {
             @Override
             public Integer execute(Connection connection) throws SQLException {
@@ -373,7 +379,7 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Ar
             @Override
             public Integer execute(Connection connection) throws SQLException {
                 return BuilderKit.executeUpdate(
-                        connection, builder
+                        connection, builder,output
                 );
             }
         });
@@ -386,7 +392,7 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Ar
                 return BuilderKit.executeInsert(
                         connection, builder,
                         generatedKeys,
-                        data
+                        data,output
                 );
             }
         });
@@ -403,7 +409,7 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Ar
         return execute(new ConnectionExecutor() {
             @Override
             public E execute(Connection connection) throws SQLException {
-                return EntitySqlUtils.getValue(connection, builder, key, typeOfE);
+                return EntitySqlUtils.getValue(connection, builder, key, typeOfE,output);
             }
         });
     }

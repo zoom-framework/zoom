@@ -26,10 +26,10 @@ public class EntitySqlUtils {
     static final Pattern TABLE_AND_COLUMN_PATTERN = Pattern.compile("[a-zA-Z0-9_]+[\\s]*\\.[\\s]*[a-zA-Z0-9_]+|[a-zA-Z0-9_]+");
 
 
-    public static <E> E getValue(Connection connection, SimpleSqlBuilder builder, String key, Class<E> typeOfE) throws SQLException {
+    public static <E> E getValue(Connection connection, SimpleSqlBuilder builder, String key, Class<E> typeOfE,boolean output) throws SQLException {
         builder.selectRaw(key);
         builder.buildSelect();
-        return Caster.to(EntitySqlUtils.executeGetValue(connection, builder), typeOfE);
+        return Caster.to(EntitySqlUtils.executeGetValue(connection, builder,output), typeOfE);
     }
 
     static class PatterFilter implements Filter<EntityField> {
@@ -389,11 +389,12 @@ public class EntitySqlUtils {
             Connection connection,
             SimpleSqlBuilder builder,
             Entity entity,
-            List<EntityField> entityFields) throws SQLException {
+            List<EntityField> entityFields,
+            boolean output) throws SQLException {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = BuilderKit.prepareStatement(connection, builder.sql.toString(), builder.values);
+            ps = BuilderKit.prepareStatement(connection, builder.sql.toString(), builder.values,output);
             rs = ps.executeQuery();
             if (rs.next()) {
                 return EntitySqlUtils.buildRecord(rs, entity, entityFields);
@@ -409,14 +410,16 @@ public class EntitySqlUtils {
             Connection connection,
             SimpleSqlBuilder builder,
             List<EntityField> entityFields,
-            Entity entity) throws SQLException {
+            Entity entity,
+            boolean output) throws SQLException {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             ps = BuilderKit.prepareStatement(
                     connection,
                     builder.sql.toString(),
-                    builder.values);
+                    builder.values,
+                    output);
             rs = ps.executeQuery();
             return buildList(rs, entity, entityFields);
         } finally {
@@ -428,14 +431,15 @@ public class EntitySqlUtils {
 
     static Object executeGetValue(
             Connection connection,
-            final SimpleSqlBuilder builder) throws SQLException {
+            final SimpleSqlBuilder builder,
+            boolean output) throws SQLException {
 
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             ps = BuilderKit.prepareStatement(connection,
                     builder.sql.toString(),
-                    builder.values);
+                    builder.values,output);
             rs = ps.executeQuery();
             if (rs.next()) {
                 Object r = rs.getObject(1);
