@@ -62,6 +62,12 @@ public class ZoomDao implements Dao, Destroyable {
 
     private boolean output;
 
+    public String getProductName() {
+        return productName;
+    }
+
+    private String productName;
+
     public ZoomDao(DataSource dataSource) {
         this(dataSource, false);
     }
@@ -164,9 +170,10 @@ public class ZoomDao implements Dao, Destroyable {
             this.url = metaData.getURL();
             this.sqlDriver = createDriver(name);
             String tableCat = sqlDriver.getTableCatFromUrl(url);
+            this.productName = metaData.getDatabaseProductName();
             this.dbStructFactory =
                     new CachedDbStructFactory(createDbStructFactory(
-                            metaData.getDatabaseProductName(), tableCat));
+                            productName, tableCat));
 
         } catch (SQLException e) {
             throw new DaoException("创建Dao失败,连接数据库错误", e);

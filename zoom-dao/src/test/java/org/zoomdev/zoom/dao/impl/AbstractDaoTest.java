@@ -6,6 +6,7 @@ import org.zoomdev.zoom.common.annotations.Inject;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.common.utils.PathUtils;
 import org.zoomdev.zoom.dao.Dao;
+import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.DataSourceProvider;
 import org.zoomdev.zoom.dao.driver.mysql.MysqlConnDescription;
 import org.zoomdev.zoom.dao.driver.oracle.OracleConnDescription;
@@ -117,11 +118,14 @@ public abstract class AbstractDaoTest {
             try {
                 runWithDao.run(dao);
             } catch (Exception e) {
+
+                System.err.println(dao.getURL());
                 e.printStackTrace();
-                if(e instanceof RuntimeException){
-                    throw (RuntimeException)e;
+
+                if(e instanceof DaoException){
+                    throw (DaoException)e;
                 }
-                throw new RuntimeException(e);
+                throw new DaoException(e);
             }
 
             Classes.destroy(dao);

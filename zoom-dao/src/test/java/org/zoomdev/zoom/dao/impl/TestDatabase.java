@@ -466,9 +466,7 @@ public class TestDatabase extends AbstractDaoTest {
                 ZoomDao.executeTrans(new Runnable() {
                     @Override
                     public void run() {
-
                         insert(dao, 3);
-
                     }
                 });
 

@@ -49,7 +49,7 @@ public abstract class AbsDbStruct implements DbStructFactory {
                         column.setName(data.getColumnName(i));
                         column.setType(data.getColumnType(i));
                         column.setRawType(data.getColumnTypeName(i));
-                        column.setValidators(createValidators(column));
+
                         columnMetas.add(column);
                     }
 
@@ -68,10 +68,15 @@ public abstract class AbsDbStruct implements DbStructFactory {
 
         if (tableMeta.getComment() == null) {
             fill(tableMeta);
+            for(ColumnMeta column : tableMeta.getColumns()){
+                column.setValidators(createValidators(column));
+            }
             if (tableMeta.getComment() == null) {
                 tableMeta.setComment("");
             }
         }
+
+
 
 
         return tableMeta;
@@ -133,11 +138,15 @@ public abstract class AbsDbStruct implements DbStructFactory {
 
     protected Validator[] createValidators(ColumnMeta columnMeta) {
         List<Validator> list = new ArrayList<Validator>();
-        if (!columnMeta.isNullable() && !columnMeta.isAuto()) {
-            if (columnMeta.getDefaultValue() == null) {
-                list.add(new NotNullValidator());
+
+        if(!columnMeta.isAuto()){
+            if (!columnMeta.isNullable() ) {
+                if (columnMeta.getDefaultValue() == null) {
+                    list.add(new NotNullValidator());
+                }
             }
         }
+
 
         Validator validator = createLengthValidator(columnMeta);
         if (validator != null) {

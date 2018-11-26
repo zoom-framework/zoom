@@ -70,6 +70,10 @@ public interface Dao extends StatementAdapterFactory {
     <T> T execute(ConnectionExecutor connectionExecutor);
 
 
+    /**
+     * 获取到数据库连接字符串
+     * @return
+     */
     String getURL();
 
 
@@ -88,4 +92,12 @@ public interface Dao extends StatementAdapterFactory {
      * @param output
      */
     void setOutput(boolean output);
+
+
+
+    /**
+     * 数据库产品名称
+     * @return
+     */
+    String getProductName();
 }
