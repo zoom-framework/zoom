@@ -260,9 +260,13 @@ public class Caster {
         Caster.register(String.class, double.class, new String2Double());
         Caster.register(String.class, float.class, new String2Float());
 
-        //boolean 到 Integer
+        //boolean
         Caster.register(boolean.class,int.class,new Boolean2Int());
-
+        Caster.register(boolean.class,long.class,new Boolean2Long());
+        Caster.register(boolean.class,byte.class,new Boolean2Byte());
+        Caster.register(boolean.class,float.class,new Boolean2Float());
+        Caster.register(boolean.class,double.class,new Boolean2Double());
+        Caster.register(boolean.class,char.class,new Boolean2Char());
         //database
 
 
@@ -1802,6 +1806,42 @@ public class Caster {
         @Override
         public Object to(Object src) {
             return ((Boolean)src) ? 1 : 0;
+        }
+    }
+
+    private static class Boolean2Char implements ValueCaster {
+        @Override
+        public Object to(Object src) {
+            return ((Boolean)src)?'1':'\0';
+        }
+    }
+
+    private static class Boolean2Long implements ValueCaster {
+        @Override
+        public Object to(Object src) {
+            return ((Boolean)src) ? 1L : 0L;
+        }
+    }
+
+    private static class Boolean2Byte implements ValueCaster {
+        @Override
+        public Object to(Object src) {
+            return ((Boolean)src) ? (byte)1 : (byte)0;
+        }
+    }
+
+    private static class Boolean2Float implements ValueCaster {
+        @Override
+        public Object to(Object src) {
+            return ((Boolean)src) ? (float)1 : (float)0;
+
+        }
+    }
+
+    private static class Boolean2Double implements ValueCaster {
+        @Override
+        public Object to(Object src) {
+            return ((Boolean)src) ? (double)1 : (double)0;
         }
     }
 }
