@@ -17,8 +17,30 @@ import java.util.List;
 public interface AutoGenerateProvider {
 
 
+    /**
+     * 创建自增长的sql语句，比如利用trigger
+     * @param table
+     * @param autoColumn
+     * @param sqlList
+     */
     void buildAutoIncrease(TableBuildInfo table, ColumnMeta autoColumn, List<String> sqlList);
 
 
+    /**
+     * 创建自增长字段
+     * @param dao
+     * @param tableMeta
+     * @param columnMeta
+     * @return
+     */
     AutoField createAutoField(Dao dao, TableMeta tableMeta, ColumnMeta columnMeta);
+
+    /**
+     * 本字段是否是自动的
+     * @param dao
+     * @param tableMeta
+     * @param columnMeta
+     * @return
+     */
+    boolean isAuto(Dao dao, TableMeta tableMeta, ColumnMeta columnMeta);
 }

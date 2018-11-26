@@ -47,21 +47,65 @@ public class SimpleOracleAutoIncreaseProvider implements AutoGenerateProvider {
     @Override
     public AutoField createAutoField(Dao dao, TableMeta tableMeta, ColumnMeta columnMeta) {
         //寻找一下是否有 table_increase的trigger
-        Map<String, Collection<String>> triggers = dao.getDbStructFactory().getTriggers();
-        String triggerName = (tableMeta.getName() + "_increase").toUpperCase();
-        Collection<String> tableTriggers = triggers.get(tableMeta.getName().toUpperCase());
-        if (tableTriggers != null && tableTriggers.contains(triggerName)) {
+
+        if(!(tableMeta.getPrimaryKeys().length == 1 && columnMeta.isPrimary()) ){
+            return null;
+        }
+
+        if(containsSpecialTrigger(dao,tableMeta.getName())){
             return new DatabaseAutoGenerateKey();
         }
 
         //看下sequence是否存在
-        String sequenceName = (tableMeta.getName() + "_sequence").toUpperCase();
-        if (dao.getDbStructFactory().getSequences().contains(sequenceName)) {
-            return new SequenceAutoGenerateKey(sequenceName);
+
+        if(containSpecialSequence(dao,tableMeta.getName())){
+            return new SequenceAutoGenerateKey(getSepcialSequenceName(tableMeta.getName()));
         }
 
-
         return null;
+    }
+
+    private boolean containsSpecialTrigger(Dao dao,String table){
+        Map<String,Collection<String>> map = dao.getDbStructFactory().getTriggers();
+        Collection<String> triggers = map.get(table.toUpperCase());
+        if(triggers!=null && triggers.contains(getSepcialTriggerName(table))){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean containSpecialSequence(Dao dao,String table){
+
+        if(dao.getDbStructFactory().getSequences().contains(getSepcialSequenceName(table))){
+            return true;
+        }
+
+        return false;
+    }
+
+
+    private String getSepcialTriggerName(String table){
+        return (table + "_increase").toUpperCase();
+    }
+
+    private String getSepcialSequenceName(String table){
+        return (table + "_sequence").toUpperCase();
+    }
+
+    /**
+     * 本表是否包含有特殊命名的trigger?
+     * 数据库中是否包含有特殊命名的sequence?
+     * @param dao
+     * @param tableMeta
+     * @param columnMeta
+     * @return
+     */
+    @Override
+    public boolean isAuto(Dao dao, TableMeta tableMeta, ColumnMeta columnMeta) {
+
+
+        return (tableMeta.getPrimaryKeys().length == 1 && columnMeta.isPrimary()) && (containsSpecialTrigger(dao,tableMeta.getName())
+                || containSpecialSequence(dao,columnMeta.getName()));
     }
 
 

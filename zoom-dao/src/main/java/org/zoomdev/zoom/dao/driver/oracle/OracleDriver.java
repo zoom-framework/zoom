@@ -342,6 +342,14 @@ public class OracleDriver extends AbsDriver implements AutoGenerateProvider {
         return null;
     }
 
+    @Override
+    public boolean isAuto(Dao dao, TableMeta tableMeta, ColumnMeta columnMeta) {
+        if (autoGenerateProvider != null) {
+            return autoGenerateProvider.isAuto(dao, tableMeta, columnMeta);
+        }
+        return false;
+    }
+
     static {
         //注意这里需要适配一下oracle的奇葩类型
         // 还得看下这个类有没有

@@ -122,6 +122,12 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
         }
 
 
+        for(ColumnMeta columnMeta : meta.getColumns()){
+            OracleDriver oracleDriver = (OracleDriver) dao.getDriver();
+            columnMeta.setAuto( oracleDriver.isAuto(dao, meta,columnMeta ) );
+        }
+
+
     }
 
     @Override
