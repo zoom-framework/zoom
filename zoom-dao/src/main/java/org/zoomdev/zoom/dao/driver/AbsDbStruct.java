@@ -14,6 +14,8 @@ import java.util.List;
 
 public abstract class AbsDbStruct implements DbStructFactory {
 
+    public static final Validator[] EMPTY = new Validator[0];
+
     protected final Dao dao;
 
     public AbsDbStruct(Dao dao) {
@@ -131,7 +133,7 @@ public abstract class AbsDbStruct implements DbStructFactory {
 
     protected Validator[] createValidators(ColumnMeta columnMeta) {
         List<Validator> list = new ArrayList<Validator>();
-        if (!columnMeta.isNullable()) {
+        if (!columnMeta.isNullable() && !columnMeta.isAuto()) {
             if (columnMeta.getDefaultValue() == null) {
                 list.add(new NotNullValidator());
             }
@@ -147,7 +149,9 @@ public abstract class AbsDbStruct implements DbStructFactory {
             list.add(validator);
         }
 
-
+        if(list.size()==0){
+            return EMPTY;
+        }
 
         return list.toArray(new Validator[list.size()]);
     }

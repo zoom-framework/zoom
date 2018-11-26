@@ -1,3 +1,3 @@
-mvn clean
-mvn install
-mvn deploy
+#!/usr/bin/env bash
+
+mvn clean install deploy

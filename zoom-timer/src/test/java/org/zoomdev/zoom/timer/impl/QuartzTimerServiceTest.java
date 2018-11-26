@@ -3,6 +3,7 @@ package org.zoomdev.zoom.timer.impl;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.junit.Before;
 import org.junit.Test;
+import org.quartz.SchedulerException;
 import org.zoomdev.zoom.timer.TimerJob;
 
 import static org.junit.Assert.assertEquals;
@@ -25,7 +26,7 @@ public class QuartzTimerServiceTest {
     }
 
     @Test
-    public void test() {
+    public void test() throws SchedulerException {
         QuartzTimerService service = new QuartzTimerService();
         Object lock = new Object();
         MutableInt value = new MutableInt(0);
@@ -46,7 +47,7 @@ public class QuartzTimerServiceTest {
 
 
     @Test
-    public void test1() {
+    public void test1() throws SchedulerException {
         QuartzTimerService service = new QuartzTimerService();
         Object lock = new Object();
         MutableInt value = new MutableInt(0);

@@ -42,7 +42,7 @@ public class TestCache extends TestCase {
 
 
 
-        @Cache
+        @Cache(format = "getWithoutFormat")
         public String getWithoutFormat(){
             ++count;
             return "TestWithoutFormat";

@@ -1,6 +1,7 @@
 package org.zoomdev.zoom.common.utils;
 
 import java.io.File;
+import java.net.URL;
 
 
 public class PathUtils {
@@ -16,7 +17,12 @@ public class PathUtils {
     public static String getWebRootPath() {
         if (webRootPath == null) {
             try {
+                URL url = PathUtils.class.getResource("/");
+                if(url==null){
+                    return null;
+                }
                 String path = PathUtils.class.getResource("/").toURI().getPath();
+                System.out.println("path:"+path);
                 webRootPath = new File(path).getParentFile().getParentFile().getCanonicalPath();
                 if (!webRootPath.endsWith(File.separator)) {
                     webRootPath = new StringBuilder(webRootPath).append(File.separator).toString();
