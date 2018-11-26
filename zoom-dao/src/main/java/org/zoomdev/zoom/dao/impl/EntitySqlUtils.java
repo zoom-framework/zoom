@@ -2,6 +2,7 @@ package org.zoomdev.zoom.dao.impl;
 
 import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.common.filter.Filter;
+import org.zoomdev.zoom.common.utils.CollectionUtils;
 import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.Entity;
 import org.zoomdev.zoom.dao.adapters.EntityField;
@@ -18,6 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public class EntitySqlUtils {
@@ -145,7 +147,20 @@ public class EntitySqlUtils {
 
         //在insert的时候，需要判断一下null值是否可以入库
 
-        //
+
+        //是否有多余的
+        Set<EntityField> set = CollectionUtils.asSet(entity.getEntityFields());
+        for (Object entityField : builder.adapters) {
+            set.remove(entityField);
+        }
+        if(set.size() > 0){
+
+            for(EntityField entityField : set){
+                validateValue(entityField,null);
+            }
+
+        }
+
 
     }
 
@@ -210,7 +225,7 @@ public class EntitySqlUtils {
                     message = String.format("数据%s长度过长", value);
                     break;
                 case ValidatorException.NULL:
-                    message = String.format("%s不能为空", field.getColumnMeta().getComment());
+                    message = String.format("%s不能为空", field.getColumnMeta().getDescription());
                     break;
             }
             e.setMessage(message);
@@ -252,7 +267,7 @@ public class EntitySqlUtils {
                                     SqlDriver driver) {
         validateValue(entityField, value);
         values.add(value);
-        insertFields.add(entityField.getStatementAdapter());
+        insertFields.add(entityField);
         driver.protectColumn(sql, entityField.getColumnName());
         specialValues[index] = "?";
     }

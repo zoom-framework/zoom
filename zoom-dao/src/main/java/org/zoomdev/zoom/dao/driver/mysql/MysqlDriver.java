@@ -251,11 +251,6 @@ public class MysqlDriver extends AbsDriver {
         buildUnique(table, sqlList);
     }
 
-    @Override
-    protected void buildComment(TableBuildInfo table, List<String> sqlList) {
-
-
-    }
 
     @Override
     public int page2position(int page, int size) {

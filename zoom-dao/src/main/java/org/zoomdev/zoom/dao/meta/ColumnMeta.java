@@ -1,5 +1,6 @@
 package org.zoomdev.zoom.dao.meta;
 
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.zoomdev.zoom.dao.validator.*;
 
@@ -161,6 +162,12 @@ public class ColumnMeta implements Serializable {
 
     public String getComment() {
         return comment;
+    }
+
+
+    @JsonIgnore
+    public String getDescription(){
+        return StringUtils.isEmpty(comment) ? name : comment;
     }
 
     public KeyType getKeyType() {

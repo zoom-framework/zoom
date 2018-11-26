@@ -6,16 +6,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 必须的参数
+ *
+ * 表示一个参数必须有值,否则将出现BadRequest错误
+ *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
+@Target({ElementType.PARAMETER})
 public @interface Required {
 
-    /**
-     * 如果为null，则出现的提示
-     *
-     * @return
-     */
     String value() default "";
 }
