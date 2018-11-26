@@ -153,8 +153,33 @@ public class CollectionUtilsTest extends TestCase {
                 return value==4;
             }
         }),null);
+
+
+
     }
 
+    public void testGetWithIteratable(){
+
+        List<Integer> data = Arrays.asList(new Integer[]{1,2,3});
+
+        assertEquals( (Integer)CollectionUtils.get(data, new Filter<Integer>() {
+            @Override
+            public boolean accept(Integer value) {
+                return value==1;
+            }
+        }),(Integer)1);
+
+
+        assertEquals( (Integer)CollectionUtils.get(data, new Filter<Integer>() {
+            @Override
+            public boolean accept(Integer value) {
+                return value==4;
+            }
+        }),null);
+
+
+
+    }
 
     public void testEnu(){
 

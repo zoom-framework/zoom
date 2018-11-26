@@ -310,4 +310,14 @@ public class CollectionUtils {
         }
         return null;
     }
-}
+
+
+    public static <T> T get(Iterable<T> values,Filter<T> filter){
+        for(T data : values){
+            if(filter.accept(data)){
+                return data;
+            }
+        }
+        return null;
+    }
+ }

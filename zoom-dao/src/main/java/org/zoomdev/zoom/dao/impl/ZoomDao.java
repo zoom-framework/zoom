@@ -372,6 +372,7 @@ public class ZoomDao implements Dao, Destroyable {
 
     @Override
     public DatabaseBuilder builder() {
+        lazyLoad();
         return new ZoomDatabaseBuilder(this);
     }
 
