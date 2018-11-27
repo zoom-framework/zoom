@@ -156,7 +156,7 @@ public class H2DbStruct extends AbsDbStruct {
             @Override
             public ColumnMeta convert(Record record) {
                 ColumnMeta columnMeta = new ColumnMeta();
-                String table = record.getString("table_name");
+                String table = record.getString("table_name").toLowerCase();
                 columnMeta.setTable(table);
                 fill(columnMeta,record,indexesMap);
                 return columnMeta;
