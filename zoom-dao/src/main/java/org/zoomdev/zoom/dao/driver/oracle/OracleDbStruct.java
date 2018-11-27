@@ -2,10 +2,8 @@ package org.zoomdev.zoom.dao.driver.oracle;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.zoomdev.zoom.common.designpattern.SingletonUtils;
 import org.zoomdev.zoom.common.utils.CollectionUtils;
 import org.zoomdev.zoom.common.utils.Converter;
-import org.zoomdev.zoom.common.utils.MapUtils;
 import org.zoomdev.zoom.dao.Ar;
 import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.DaoException;
@@ -88,7 +86,7 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
         return indexes;
     }
 
-    private Set<String> getIndexType(String tableName)
+    private Set<String> getIndexes(String tableName)
     {
         List<Record> indexes = getAllIndexes(dao.ar())
                 .where("user_ind_columns.table_name",tableName.toUpperCase()).find();
@@ -111,6 +109,8 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
                 //auto 另外计算
             } else if (keyType.equals("U")) {
                 columnMeta.setKeyType(KeyType.UNIQUE);
+            }else if(indexes.contains(getRecordKey(table, columnMeta))){
+                columnMeta.setKeyType(KeyType.INDEX);
             }
         }
 
@@ -152,7 +152,7 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
             meta.setComment("");
         }
 
-        Set<String> indexTypes = getIndexType(meta.getName().toUpperCase());
+        Set<String> indexTypes = getIndexes(meta.getName().toUpperCase());
         Map<String, String> keyTypes = getKeyTypes(meta.getName().toUpperCase());
 
         List<Record> columns = getAllColumns(dao.ar()).where("cols.table_name", meta.getName().toUpperCase()).find();
@@ -238,21 +238,7 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
     }
 
 
-    private Map<String,List<ColumnMeta>> toTreeMap(List<ColumnMeta> columnMetas){
 
-        Map<String,List<ColumnMeta>> map = new HashMap<String, List<ColumnMeta>>();
-        for(ColumnMeta columnMeta : columnMetas){
-            List<ColumnMeta> list = map.get(columnMeta.getTable());
-            if(list==null){
-                list = new ArrayList<ColumnMeta>();
-                map.put(columnMeta.getTable(),list);
-            }
-            list.add(columnMeta);
-        }
-
-        return map;
-
-    }
 
 
     @Override
@@ -261,7 +247,7 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
         List<TableNameAndComment> nameAndComments = getNameAndComments();
         List<Record> allColumns = getAllColumns(dao.ar()).find();
         final Map<String,String> keyTypes =getKeyTypesMap(getAllKeyTypes(dao.ar()).find()) ;
-        final Set<String> indexes = getAllIndexes(getAllKeyTypes(dao.ar()).find());
+        final Set<String> indexes = getAllIndexes(getAllIndexes(dao.ar()).find());
         List<ColumnMeta> columnMetas = CollectionUtils.map(allColumns, new Converter<Record, ColumnMeta>() {
             @Override
             public ColumnMeta convert(Record record) {
@@ -282,7 +268,7 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
             public TableMeta convert(TableNameAndComment data) {
 
 
-                List<ColumnMeta> children = treeMap.get(data.getName());
+                List<ColumnMeta> children = treeMap.get(data.getName().toLowerCase());
                 if(children==null){
                     throw new DaoException("找不到对应的表"+data.getName());
                 }

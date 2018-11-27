@@ -10,7 +10,9 @@ import org.zoomdev.zoom.dao.validator.*;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class AbsDbStruct implements DbStructFactory {
 
@@ -25,6 +27,22 @@ public abstract class AbsDbStruct implements DbStructFactory {
 
     protected String getQueryTableMetaStatement(String table) {
         return "select * from " + dao.getDriver().protectTable(table) + " where 1=2";
+    }
+
+    protected Map<String,List<ColumnMeta>> toTreeMap(List<ColumnMeta> columnMetas){
+
+        Map<String,List<ColumnMeta>> map = new HashMap<String, List<ColumnMeta>>();
+        for(ColumnMeta columnMeta : columnMetas){
+            List<ColumnMeta> list = map.get(columnMeta.getTable());
+            if(list==null){
+                list = new ArrayList<ColumnMeta>();
+                map.put(columnMeta.getTable().toLowerCase(),list);
+            }
+            list.add(columnMeta);
+        }
+
+        return map;
+
     }
 
     @Override
@@ -166,17 +184,6 @@ public abstract class AbsDbStruct implements DbStructFactory {
     }
 
 
-    /**
-     * 快照一份
-     * @return
-     */
     @Override
-    public Snapshot takeSnapshot() {
-
-        //查询全部
-
-
-        return null;
-    }
-
+    public abstract Snapshot takeSnapshot();
 }

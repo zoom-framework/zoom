@@ -22,8 +22,19 @@ public class ColumnMeta implements Serializable {
     }
 
     public static enum KeyType {
+        /**
+         * 主键
+         */
         PRIMARY,
+
+        /**
+         * 唯一键（唯一约束）
+         */
         UNIQUE,
+
+        /**
+         * 一般索引（不含有唯一索引）
+         */
         INDEX
     }
 
