@@ -1333,7 +1333,16 @@ public class Caster {
 
     /// 一定是Array类型
     private static ValueCaster getWithArray(Class<?> toType) {
-        return new Array2Array(toType.getComponentType());
+
+        Class<?> componentType = toType.getComponentType();
+        if(componentType.isPrimitive()){
+
+            return new Array2Primitive(componentType);
+
+        }else{
+            return new Array2Array(componentType);
+        }
+
     }
 
     private static Collection newCollection(Class<?> type){
@@ -1374,7 +1383,27 @@ public class Caster {
             return collection;
         }
     }
+    private static class Array2Primitive implements ValueCaster {
 
+        private Class<?> toType;
+
+        public Array2Primitive(Class<?> toType) {
+            this.toType = toType;
+        }
+
+        @Override
+        public Object to(Object src) {
+            Object[] iterable = (Object[]) src;
+            Object array = java.lang.reflect.Array.newInstance(toType, iterable.length);
+            int i = 0;
+            for (Object data : iterable) {
+                java.lang.reflect.Array.set(array, i++,Caster.toType(data, toType));
+            }
+            //array
+
+            return array;
+        }
+    }
     private static class Array2Array implements ValueCaster {
 
         private Class<?> toType;
@@ -1386,9 +1415,10 @@ public class Caster {
         @Override
         public Object to(Object src) {
             Object[] iterable = (Object[]) src;
-            Object array = java.lang.reflect.Array.newInstance(toType, iterable.length);
+            Object[] array = (Object[])java.lang.reflect.Array.newInstance(toType, iterable.length);
+            int i = 0;
             for (Object data : iterable) {
-                Caster.toType(data, toType);
+                array[i++]= Caster.toType(data, toType);
             }
             //array
 
