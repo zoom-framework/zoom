@@ -9,6 +9,26 @@
         <version>0.2.3-SNAPSHOT</version>
     </parent>
 
+
+    <build>
+        <plugins>
+            <!-- Source attach plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+
     <groupId>org.zoomdev.zoom</groupId>
     <artifactId>zoom-timer</artifactId>
     <packaging>jar</packaging>

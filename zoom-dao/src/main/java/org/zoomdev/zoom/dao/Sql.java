@@ -98,6 +98,8 @@ public interface Sql<T extends Sql> {
     T orWhere(String key, Object value);
 
 
+    T orLike(String name, SqlBuilder.Like like, Object value);
+
     /**
      * orderBy("id",Sort.DESC)=> order by id desc
      * orderBy("id",Sort.DESC).orderBy("name",Sort.ASC)=> order by id desc,name asc

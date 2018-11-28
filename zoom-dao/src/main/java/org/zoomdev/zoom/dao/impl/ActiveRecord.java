@@ -298,6 +298,12 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Ar
     }
 
     @Override
+    public Ar orLike(String name, SqlBuilder.Like like, Object value) {
+        builder.orLike(name,like,value);
+        return this;
+    }
+
+    @Override
     public Ar whereNotNull(String name) {
         builder.whereNotNull(name);
         return this;

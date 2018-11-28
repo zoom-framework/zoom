@@ -7,6 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.common.expression.Symbol;
 import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.Record;
+import org.zoomdev.zoom.dao.Sql;
 import org.zoomdev.zoom.dao.SqlBuilder;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 import org.zoomdev.zoom.dao.driver.SqlDriver;
@@ -470,10 +471,10 @@ public class SimpleSqlBuilder implements SqlBuilder {
     }
 
 
-    void conditionWhere(Condition condition) {
+    void conditionWhere(Sql sql,Condition condition) {
         where.append("(");
         this.condition = true;
-        condition.where(this);
+        condition.where(sql);
         if (this.condition) {
             throw new DaoException("Condition下至少需要一个条件");
         }
@@ -482,15 +483,25 @@ public class SimpleSqlBuilder implements SqlBuilder {
 
     @Override
     public SqlBuilder where(Condition condition) {
-        whereRelation(where, AND);
-        conditionWhere(condition);
-        return this;
+        return where(this,condition);
     }
 
     @Override
     public SqlBuilder orWhere(Condition condition) {
+        return orWhere(this,condition);
+
+    }
+
+
+    public SqlBuilder where(Sql sql,Condition condition) {
+        whereRelation(where, AND);
+        conditionWhere(sql,condition);
+        return this;
+    }
+
+    public SqlBuilder orWhere(Sql sql,Condition condition) {
         whereRelation(where, OR);
-        conditionWhere(condition);
+        conditionWhere(this,condition);
         return this;
 
     }

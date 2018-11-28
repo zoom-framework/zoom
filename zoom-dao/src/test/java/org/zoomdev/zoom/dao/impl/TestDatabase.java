@@ -337,6 +337,13 @@ public class TestDatabase extends AbstractDaoTest {
         /// 删除商品
         dao.ar(Product.class).delete(record);
 
+        Product product = dao.ar(Product.class).where(new SqlBuilder.Condition() {
+            @Override
+            public void where(Sql where) {
+                where.where("id",1);
+            }
+        }).get();
+
     }
 
 
@@ -766,7 +773,7 @@ public class TestDatabase extends AbstractDaoTest {
                 List<Record> orders = dao.table("shp_order")
                         .where(new SqlBuilder.Condition() {
                             @Override
-                            public void where(SqlBuilder where) {
+                            public void where(Sql where) {
                                 where.where("ord_status", 0)
                                         .orWhere("ord_status", 1);
                             }
@@ -802,7 +809,7 @@ public class TestDatabase extends AbstractDaoTest {
                         .whereCondition("ord_status=?", 0)
                         .orWhere(new SqlBuilder.Condition() {
                             @Override
-                            public void where(SqlBuilder where) {
+                            public void where(Sql where) {
                                 where.where("ord_status", 1)
                                         .where("ord_count", Symbol.GT, 100);
                             }
@@ -822,7 +829,7 @@ public class TestDatabase extends AbstractDaoTest {
                         .whereCondition("ord_status", 0)
                         .orWhere(new SqlBuilder.Condition() {
                             @Override
-                            public void where(SqlBuilder where) {
+                            public void where(Sql where) {
                                 where.where("ord_status", 1)
                                         .where("ord_count", Symbol.GT, 100);
                             }
@@ -1192,7 +1199,7 @@ public class TestDatabase extends AbstractDaoTest {
                         .strict(false)
                         .orWhere(new SqlBuilder.Condition() {
                             @Override
-                            public void where(SqlBuilder where) {
+                            public void where(Sql where) {
                                 where.where("title", "测试");
                             }
                         })
@@ -1200,7 +1207,7 @@ public class TestDatabase extends AbstractDaoTest {
                         .where("id", Symbol.EQ, "testBusiness")
                         .where(new SqlBuilder.Condition() {
                             @Override
-                            public void where(SqlBuilder where) {
+                            public void where(Sql where) {
                                 where.like("title", SqlBuilder.Like.MATCH_BOTH, "测试");
                             }
                         })

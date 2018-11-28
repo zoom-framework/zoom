@@ -5,7 +5,7 @@ import org.zoomdev.zoom.common.expression.Symbol;
 import java.util.List;
 import java.util.Map;
 
-public interface SqlBuilder {
+public interface SqlBuilder extends Sql<SqlBuilder> {
 
     String INNER = "INNER";
     String LEFT = "LEFT";
@@ -83,7 +83,7 @@ public interface SqlBuilder {
 
 
     public interface Condition {
-        void where(SqlBuilder where);
+        void where(Sql where);
     }
 
     /**

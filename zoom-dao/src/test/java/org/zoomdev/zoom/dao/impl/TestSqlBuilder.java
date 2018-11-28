@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.zoomdev.zoom.common.expression.Symbol;
 import org.zoomdev.zoom.common.utils.MapUtils;
 import org.zoomdev.zoom.dao.DaoException;
+import org.zoomdev.zoom.dao.Sql;
 import org.zoomdev.zoom.dao.SqlBuilder;
 import org.zoomdev.zoom.dao.driver.SqlDriver;
 import org.zoomdev.zoom.dao.driver.mysql.MysqlDriver;
@@ -53,7 +54,7 @@ public class TestSqlBuilder {
 
         sqlBuilder.where(new SqlBuilder.Condition() {
             @Override
-            public void where(SqlBuilder where) {
+            public void where(Sql where) {
                 where.where("id", 1)
                         .orLike("name", SqlBuilder.Like.MATCH_BOTH, "张");
             }
@@ -66,7 +67,7 @@ public class TestSqlBuilder {
 
         sqlBuilder.where(new SqlBuilder.Condition() {
             @Override
-            public void where(SqlBuilder where) {
+            public void where(Sql where) {
                 where.where("table1.id", 1)
                         .orLike("table1.name", SqlBuilder.Like.MATCH_BOTH, "张");
             }
@@ -79,13 +80,13 @@ public class TestSqlBuilder {
 
         sqlBuilder.where(new SqlBuilder.Condition() {
             @Override
-            public void where(SqlBuilder where) {
+            public void where(Sql where) {
                 where.where("table1.id", 1)
                         .orLike("table1.name", SqlBuilder.Like.MATCH_BOTH, "张");
             }
         }).orWhere(new SqlBuilder.Condition() {
             @Override
-            public void where(SqlBuilder where) {
+            public void where(Sql where) {
                 where.where("table2.id2", 1)
                         .whereIn("table2.name2", "1", "2");
             }
@@ -106,12 +107,12 @@ public class TestSqlBuilder {
 
         sqlBuilder.where(new SqlBuilder.Condition() {
             @Override
-            public void where(SqlBuilder where) {
+            public void where(Sql where) {
 
             }
         }).orWhere(new SqlBuilder.Condition() {
             @Override
-            public void where(SqlBuilder where) {
+            public void where(Sql where) {
 
             }
         });

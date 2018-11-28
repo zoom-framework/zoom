@@ -312,7 +312,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
 
     @Override
     public EAr<T> orWhere(SqlBuilder.Condition condition) {
-        builder.orWhere(condition);
+        builder.orWhere(this,condition);
         return this;
     }
 
@@ -392,6 +392,12 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
     }
 
     @Override
+    public EAr<T> orLike(String name, SqlBuilder.Like like, Object value) {
+        builder.orLike(name,like,value);
+        return this;
+    }
+
+    @Override
     public EAr<T> whereNotNull(String name) {
         builder.whereNotNull(entity.getColumnName(name));
         return this;
@@ -418,7 +424,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
 
     @Override
     public EAr<T> where(SqlBuilder.Condition condition) {
-        builder.where(condition);
+        builder.where(this,condition);
         return this;
     }
 
