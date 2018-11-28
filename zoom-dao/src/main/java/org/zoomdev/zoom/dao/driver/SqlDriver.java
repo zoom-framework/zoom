@@ -4,7 +4,7 @@ package org.zoomdev.zoom.dao.driver;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 import org.zoomdev.zoom.dao.adapters.StatementAdapterFactory;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
-import org.zoomdev.zoom.dao.migrations.TableBuildInfo;
+import org.zoomdev.zoom.dao.impl.TableBuildInfo;
 
 import java.util.List;
 import java.util.Map;

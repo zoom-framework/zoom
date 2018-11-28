@@ -7,7 +7,7 @@ import org.zoomdev.zoom.dao.auto.SequenceAutoGenerateKey;
 import org.zoomdev.zoom.dao.driver.AutoGenerateProvider;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.meta.TableMeta;
-import org.zoomdev.zoom.dao.migrations.TableBuildInfo;
+import org.zoomdev.zoom.dao.impl.TableBuildInfo;
 
 import java.util.Collection;
 import java.util.List;

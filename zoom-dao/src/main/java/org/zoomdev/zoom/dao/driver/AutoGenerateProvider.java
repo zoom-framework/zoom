@@ -4,7 +4,7 @@ import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.auto.AutoField;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.meta.TableMeta;
-import org.zoomdev.zoom.dao.migrations.TableBuildInfo;
+import org.zoomdev.zoom.dao.impl.TableBuildInfo;
 
 import java.util.List;
 

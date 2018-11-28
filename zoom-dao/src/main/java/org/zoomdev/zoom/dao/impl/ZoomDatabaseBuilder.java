@@ -1,13 +1,25 @@
-package org.zoomdev.zoom.dao.migrations;
+package org.zoomdev.zoom.dao.impl;
 
+import org.zoomdev.zoom.common.utils.CachedClasses;
+import org.zoomdev.zoom.common.utils.Classes;
+import org.zoomdev.zoom.common.utils.StrKit;
+import org.zoomdev.zoom.dao.BeanTableInfo;
 import org.zoomdev.zoom.dao.Dao;
+import org.zoomdev.zoom.dao.alias.AliasPolicy;
+import org.zoomdev.zoom.dao.annotations.AutoGenerate;
+import org.zoomdev.zoom.dao.annotations.ColumnIgnore;
+import org.zoomdev.zoom.dao.annotations.PrimaryKey;
+import org.zoomdev.zoom.dao.annotations.UniqueKey;
 import org.zoomdev.zoom.dao.driver.SqlDriver;
-import org.zoomdev.zoom.dao.impl.ZoomDao;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
+import org.zoomdev.zoom.dao.migrations.DatabaseBuilder;
 
+import java.io.File;
+import java.lang.reflect.Field;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ZoomDatabaseBuilder implements DatabaseBuilder {
 
@@ -248,9 +260,62 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
     public void build(Class<?> type, boolean dropIfExists) {
         assert (type != null);
 
-        //dao.getEntityFactory();
+        CachedEntityFactory cachedEntityFactory = (CachedEntityFactory)dao.getEntityFactory();
+        BeanTableInfo beanTableInfo = cachedEntityFactory.getBeanEntityFactory().getTableAdapter().getTableInfo(type);
+        //build this table
+        createTable(beanTableInfo.getTableNames()[0]);
+
+        //fields
+
+        Field[] fields = CachedClasses.getFields(type);
+        for(Field field : fields){
+
+            if(field.isAnnotationPresent(ColumnIgnore.class)){
+                continue;
+            }
+            String columnName = StrKit.toUnderLine(field.getName());
+            add(columnName);
+            Class<?> fieldType= field.getType();
+            if(Classes.isString(fieldType)){
+                string(200);
+            }else if(Classes.isBoolean(fieldType)){
+                integer();
+            }else if(Classes.isInteger(fieldType)){
+                integer();
+            }else if(Classes.isNumber(fieldType)){
+                number();
+            }else if(Classes.isDateTime(fieldType)){
+                date();
+            }else if(Classes.isEnum(fieldType)){
+                string(30);
+            }else if(Map.class.isAssignableFrom(fieldType)){
+                clob();
+            }else if(Iterable.class.isAssignableFrom(fieldType)){
+                clob();
+            }else if(byte[].class.isAssignableFrom(fieldType)){
+                blob();
+            }else if(File.class.isAssignableFrom(fieldType)){
+                blob();
+            }else {
+                clob();
+            }
+
+            if(field.isAnnotationPresent(PrimaryKey.class)){
+                keyPrimary();
+            }
+
+            if(field.isAnnotationPresent(AutoGenerate.class)){
+                autoIncement();
+            }
+
+            if(field.isAnnotationPresent(UniqueKey.class)){
+                keyUnique();
+            }
+
+        }
 
 
+        build();
     }
 
     @Override

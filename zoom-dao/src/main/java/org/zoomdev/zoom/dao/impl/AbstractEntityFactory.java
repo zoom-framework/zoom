@@ -1,6 +1,7 @@
 package org.zoomdev.zoom.dao.impl;
 
 import org.zoomdev.zoom.common.caster.ValueCaster;
+import org.zoomdev.zoom.dao.BeanTableAdapter;
 import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
@@ -14,6 +15,7 @@ import java.util.List;
 public abstract class AbstractEntityFactory {
 
     protected final Dao dao;
+
 
 
     interface ContextHandler<CONTEXT> {

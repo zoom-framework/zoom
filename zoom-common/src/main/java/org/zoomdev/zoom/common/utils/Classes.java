@@ -220,7 +220,18 @@ public class Classes {
     }
 
     public static boolean isNumber(Class<?> src) {
-        return Number.class.isAssignableFrom(src) || src == int.class || src == double.class || src == float.class
+        return Number.class.isAssignableFrom(src)
+                || src == int.class
+                || src == double.class
+                || src == float.class
+                || src == byte.class
+                || src == short.class
+                || src == long.class;
+    }
+
+    public static boolean isInteger(Class<?> src){
+        return Integer.class.isAssignableFrom(src)
+                || src == int.class || src==long.class
                 || src == byte.class || src == short.class;
     }
 

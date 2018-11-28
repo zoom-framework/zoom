@@ -2,7 +2,7 @@ package org.zoomdev.zoom.dao.driver;
 
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
-import org.zoomdev.zoom.dao.migrations.TableBuildInfo;
+import org.zoomdev.zoom.dao.impl.TableBuildInfo;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

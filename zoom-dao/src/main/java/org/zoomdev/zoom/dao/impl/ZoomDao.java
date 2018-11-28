@@ -22,7 +22,6 @@ import org.zoomdev.zoom.dao.driver.oracle.OracleDriver;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.meta.TableMeta;
 import org.zoomdev.zoom.dao.migrations.DatabaseBuilder;
-import org.zoomdev.zoom.dao.migrations.ZoomDatabaseBuilder;
 import org.zoomdev.zoom.dao.transaction.Trans;
 import org.zoomdev.zoom.dao.transaction.Transactions;
 import org.zoomdev.zoom.dao.utils.DaoUtils;
@@ -44,7 +43,7 @@ public class ZoomDao implements Dao, Destroyable {
 
     private SqlDriver sqlDriver;
     private DataSource dataSource;
-    private EntityFactory entityFactory;
+    private CachedEntityFactory entityFactory;
 
 
     private DbStructFactory dbStructFactory;
@@ -64,6 +63,16 @@ public class ZoomDao implements Dao, Destroyable {
 
     public String getProductName() {
         return productName;
+    }
+
+    @Override
+    public EntityFactory getEntityFactory() {
+        return this.entityFactory;
+    }
+
+    @Override
+    public void addBeanTableAdapter(BeanTableAdapter beanTableAdapter) {
+        this.entityFactory.getBeanEntityFactory().addBeanTableAdapter(beanTableAdapter);
     }
 
     private String productName;

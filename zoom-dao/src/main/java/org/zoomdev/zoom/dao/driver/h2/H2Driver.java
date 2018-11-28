@@ -2,7 +2,7 @@ package org.zoomdev.zoom.dao.driver.h2;
 
 import org.zoomdev.zoom.dao.driver.mysql.MysqlDriver;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
-import org.zoomdev.zoom.dao.migrations.TableBuildInfo;
+import org.zoomdev.zoom.dao.impl.TableBuildInfo;
 
 import java.util.List;
 import java.util.Map;

@@ -7,10 +7,7 @@ import org.zoomdev.zoom.common.utils.CachedClasses;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.common.utils.Converter;
 import org.zoomdev.zoom.common.utils.MapUtils;
-import org.zoomdev.zoom.dao.AutoGenerateValue;
-import org.zoomdev.zoom.dao.Dao;
-import org.zoomdev.zoom.dao.DaoException;
-import org.zoomdev.zoom.dao.Entity;
+import org.zoomdev.zoom.dao.*;
 import org.zoomdev.zoom.dao.adapters.DataAdapter;
 import org.zoomdev.zoom.dao.adapters.EntityField;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
@@ -36,7 +33,30 @@ class BeanEntityFactory extends AbstractEntityFactory {
 
     private List<ContextHandler> handlers;
 
-    protected BeanEntityFactory(Dao dao) {
+    public BeanTableAdapter getTableAdapter() {
+        return tableAdapter;
+    }
+
+    public void setTableAdapter(BeanTableAdapter tableAdapter) {
+        this.tableAdapter = tableAdapter;
+    }
+
+    private BeanTableAdapter tableAdapter;
+
+
+    public void addBeanTableAdapter(BeanTableAdapter beanTableAdapter){
+        if(tableAdapter instanceof GroupBeanTableAdapter){
+            ((GroupBeanTableAdapter)tableAdapter).addBeanTableAdapter(beanTableAdapter);
+        }else{
+            tableAdapter = new GroupBeanTableAdapter(this.tableAdapter,beanTableAdapter);
+        }
+    }
+
+    protected BeanEntityFactory(Dao dao){
+        this(dao, new ZoomBeanTableAdapter() );
+    }
+
+    protected BeanEntityFactory(Dao dao,BeanTableAdapter tableAdapter) {
         super(dao);
         handlers = new ArrayList<ContextHandler>();
 
@@ -56,6 +76,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
 
         handlers.add(new FillContextHandldr());
 
+        this.tableAdapter = tableAdapter;
 
     }
 
@@ -297,26 +318,13 @@ class BeanEntityFactory extends AbstractEntityFactory {
 
 
     public Entity getEntity(final Class<?> type) {
-        Table table = type.getAnnotation(Table.class);
-        if (table == null) {
-            throw new DaoException("找不到Table标注，不能使用本方法绑定实体");
-        }
-        String tableName = table.value();
-        assert (!tableName.isEmpty());
-        Link link = type.getAnnotation(Link.class);
+
+        BeanTableInfo tableInfo = tableAdapter.getTableInfo(type);
         Map<String, RenameUtils.ColumnRenameConfig> map;
-        Join[] joins = null;
-        if (link != null) {
-            joins = link.value();
-            //表
-            String[] tables = new String[joins.length + 1];
-            tables[0] = tableName;
-            int index = 1;
-            for (Join join : joins) {
-                tables[index++] = join.table();
-            }
-            map = RenameUtils.rename(dao, tables);
-        } else {
+        String tableName = tableInfo.getTableNames()[0];
+        if(tableInfo.getJoins()!=null){
+            map = RenameUtils.rename(dao, tableInfo.getTableNames());
+        }else{
             map = RenameUtils.rename(dao, tableName);
         }
 
@@ -355,7 +363,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
                 if (e instanceof DaoException) {
                     throw (DaoException) e;
                 }
-                throw new DaoException("绑定Entity失败，发生异常: 实体类:" + type + " 表:" + table , e);
+                throw new DaoException("绑定Entity失败，发生异常: 实体类:" + type + " 表:" + tableName , e);
             }
         }
 
@@ -366,7 +374,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
                 findAutoGenerateFields(entityFields, tableMeta.getColumns(), fields),
                 type,
                 getNamesMap(map, fields),
-                getJoinConfigs(joins));
+                tableInfo.getJoins());
 
     }
 
@@ -393,21 +401,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
     }
 
 
-    private JoinMeta[] getJoinConfigs(Join[] joins) {
-        if (joins == null) return null;
-        JoinMeta[] joinMetas = new JoinMeta[joins.length];
-        for (int i = 0; i < joins.length; ++i) {
-            Join join = joins[i];
-            //
-            JoinMeta joinMeta = new JoinMeta();
-            joinMeta.setOn(join.on());
-            joinMeta.setTable(join.table());
-            joinMeta.setType(join.type());
 
-            joinMetas[i] = joinMeta;
-        }
-        return joinMetas;
-    }
 
 
     private AutoEntity findAutoGenerateFields(

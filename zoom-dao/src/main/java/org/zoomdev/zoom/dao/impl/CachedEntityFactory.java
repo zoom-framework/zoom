@@ -55,6 +55,22 @@ public class CachedEntityFactory implements EntityFactory {
         }
     }
 
+    public BeanEntityFactory getBeanEntityFactory() {
+        return beanEntityFactory;
+    }
+
+    public void setBeanEntityFactory(BeanEntityFactory beanEntityFactory) {
+        this.beanEntityFactory = beanEntityFactory;
+    }
+
+    public RecordEntityFactory getRecordEntityFactory() {
+        return recordEntityFactory;
+    }
+
+    public void setRecordEntityFactory(RecordEntityFactory recordEntityFactory) {
+        this.recordEntityFactory = recordEntityFactory;
+    }
+
     private BeanEntityFactory beanEntityFactory;
     private RecordEntityFactory recordEntityFactory;
 

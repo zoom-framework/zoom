@@ -8,8 +8,8 @@ import org.zoomdev.zoom.dao.driver.AbsDriver;
 import org.zoomdev.zoom.dao.driver.AutoGenerateProvider;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.meta.TableMeta;
-import org.zoomdev.zoom.dao.migrations.TableBuildInfo;
-import org.zoomdev.zoom.dao.migrations.ZoomDatabaseBuilder;
+import org.zoomdev.zoom.dao.impl.TableBuildInfo;
+import org.zoomdev.zoom.dao.impl.ZoomDatabaseBuilder;
 
 import java.sql.SQLException;
 import java.sql.Types;

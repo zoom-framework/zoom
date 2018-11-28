@@ -1,4 +1,4 @@
-package org.zoomdev.zoom.dao.migrations;
+package org.zoomdev.zoom.dao.impl;
 
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 

@@ -100,4 +100,9 @@ public interface Dao extends StatementAdapterFactory {
      * @return
      */
     String getProductName();
+
+
+    EntityFactory getEntityFactory();
+
+    void addBeanTableAdapter(BeanTableAdapter beanTableAdapter);
 }
