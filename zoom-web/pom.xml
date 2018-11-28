@@ -76,14 +76,6 @@
         </dependency>
         <dependency>
             <groupId>org.zoomdev.zoom</groupId>
-            <artifactId>zoom-aop</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.zoomdev.zoom</groupId>
-            <artifactId>zoom-timer</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.zoomdev.zoom</groupId>
             <artifactId>zoom-async</artifactId>
         </dependency>
         <dependency>
