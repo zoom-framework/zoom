@@ -115,7 +115,8 @@ public class ZoomRouter implements Router, Destroyable {
     }
 
     public ActionHandler match(HttpServletRequest request) {
-        String url = request.getServletPath();
+        String contextPath  = request.getContextPath();
+        String url = request.getServletPath().substring(contextPath.length());
         return match(url, request);
     }
 
