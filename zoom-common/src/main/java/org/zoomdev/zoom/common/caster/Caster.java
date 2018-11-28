@@ -9,6 +9,7 @@ import org.zoomdev.zoom.common.io.Io;
 import org.zoomdev.zoom.common.json.JSON;
 import org.zoomdev.zoom.common.utils.BeanUtils;
 import org.zoomdev.zoom.common.utils.Classes;
+import org.zoomdev.zoom.common.utils.DataObject;
 
 import java.io.*;
 import java.lang.reflect.ParameterizedType;
@@ -389,6 +390,8 @@ public class Caster {
         Caster.register(Timestamp.class, Date.class, new Timestamp2Date());
 
         Caster.register(long.class,Timestamp.class,new Long2Timestamp());
+
+        Caster.register(Map.class,DataObject.class,new Map2DataObject());
 
     }
 
@@ -1842,6 +1845,14 @@ public class Caster {
         @Override
         public Object to(Object src) {
             return ((Boolean)src) ? (double)1 : (double)0;
+        }
+    }
+
+    private static class Map2DataObject implements ValueCaster {
+        @Override
+        public Object to(Object src) {
+
+            return DataObject.wrap((Map)src);
         }
     }
 }
