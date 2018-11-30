@@ -8,9 +8,12 @@ import org.zoomdev.zoom.aop.MethodInterceptorFactory;
 import org.zoomdev.zoom.aop.impl.AstractMethodInterceptorFactory;
 import org.zoomdev.zoom.aop.impl.ReflectMethodCaller;
 import org.zoomdev.zoom.aop.utils.JavassistUtils;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.utils.Classes;
+import org.zoomdev.zoom.common.utils.StrKit;
 
 import java.lang.reflect.Method;
+import java.util.regex.Pattern;
 
 
 /**
@@ -156,6 +159,8 @@ public class JavassistAopFactory extends AstractMethodInterceptorFactory {
         return clazz.getName();
     }
 
+    static Pattern pattern = Pattern.compile("[a-zA-Z0-9_\\.]+");
+
     private void parseParamTypes(Method method, StringBuilder sb) {
         boolean first = true;
         int index = 0;
@@ -165,7 +170,13 @@ public class JavassistAopFactory extends AstractMethodInterceptorFactory {
             } else {
                 sb.append(",");
             }
-            sb.append(type.getName());
+            String name = type.getName();
+            if(type.isArray()){
+                name = type.getComponentType().getName() + "[]";
+            }
+
+
+            sb.append(name);
             sb.append(" p");
             sb.append(index++);
         }
