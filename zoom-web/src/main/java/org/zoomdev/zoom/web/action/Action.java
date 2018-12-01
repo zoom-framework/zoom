@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 
 
-public class Action implements ActionHandler, Destroyable {
+public class Action implements Destroyable {
 
 
     /**
@@ -101,7 +101,6 @@ public class Action implements ActionHandler, Destroyable {
 
     }
 
-    @Override
     public String getMapping() {
         return url;
     }
@@ -439,7 +438,6 @@ public class Action implements ActionHandler, Destroyable {
     }
 
 
-    @Override
     public boolean handle(HttpServletRequest request, HttpServletResponse response) {
 
         ActionContext context = new ActionContext(request, response, this);
@@ -472,39 +470,8 @@ public class Action implements ActionHandler, Destroyable {
         return new StringBuilder().append("Action: url:").append(url).toString();
     }
 
-    private String[] methods;
-
-    public void setHttpMethods(String[] methods) {
-        this.methods = methods;
-    }
-
-    public boolean supportsHttpMethod(String method) {
-        if (this.methods != null) {
-            for (String m : methods) {
-                if (m.equals(method)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        return true;
-    }
 
 
-    @Override
-    public String[] getMethods() {
-        return methods;
-    }
-
-    public void setPathVariableNames(String[] pathVariableNames) {
-        this.pathVariableNames = pathVariableNames;
-    }
-
-    private String[] pathVariableNames;
-
-    public String[] getPathVariableNames() {
-        return pathVariableNames;
-    }
 
 
 }

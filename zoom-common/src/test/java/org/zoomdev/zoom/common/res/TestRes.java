@@ -103,46 +103,9 @@ public class TestRes extends TestCase {
 
         ClassResolvers resolvers = new ClassResolvers(
                 new ClassResolver() {
-
                     @Override
-                    public void endResolve() {
-                        super.endResolve();
-                    }
+                    public void resolve(ResScanner scanner) {
 
-
-                    @Override
-                    public void visitClass(Class<?> clazz) {
-                        super.visitClass(clazz);
-                    }
-
-                    @Override
-                    public void visitField(Field field) {
-                        super.visitField(field);
-                    }
-
-                    @Override
-                    public void visitMethod(Method method) {
-                        super.visitMethod(method);
-                    }
-
-                    @Override
-                    public boolean acceptClass(Class<?> clazz) {
-                        return !clazz.isInterface();
-                    }
-
-                    @Override
-                    public boolean acceptClassName(String className) {
-                        return !className.contains("demo");
-                    }
-
-                    @Override
-                    public boolean resolveFields() {
-                        return true;
-                    }
-
-                    @Override
-                    public boolean resolveMethods() {
-                        return true;
                     }
                 }
         );

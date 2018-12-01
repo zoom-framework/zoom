@@ -5,14 +5,19 @@ import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.common.filter.impl.ClassAnnotationFilter;
 import org.zoomdev.zoom.common.filter.pattern.PatternFilterFactory;
 import org.zoomdev.zoom.common.res.ClassResolver;
+import org.zoomdev.zoom.common.res.ResScanner;
+import org.zoomdev.zoom.common.utils.CachedClasses;
 import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.web.action.Action;
 import org.zoomdev.zoom.web.action.ActionFactory;
+import org.zoomdev.zoom.web.action.ActionHandler;
 import org.zoomdev.zoom.web.action.ActionInterceptorFactory;
 import org.zoomdev.zoom.web.annotations.Controller;
 import org.zoomdev.zoom.web.annotations.Mapping;
 import org.zoomdev.zoom.web.router.Router;
 
+import javax.naming.ldap.Control;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -25,15 +30,6 @@ public class SimpleActionBuilder extends ClassResolver {
 
     private Router router;
 
-    private ActionFactory actionFactory;
-
-
-    private Class<?> clazz;
-    private Controller controller;
-    private Object target;
-    private String key;
-
-    ActionInterceptorFactory actionInterceptorFactory;
 
     public List<Router.RemoveToken> getRemoveTokenList() {
         return removeTokenList;
@@ -51,30 +47,49 @@ public class SimpleActionBuilder extends ClassResolver {
             IocContainer ioc,
             Router router,
             List<Router.RemoveToken> removeTokenList) {
-        setClassFilter(new ClassAnnotationFilter(Controller.class));
-        setClassNameFilter(PatternFilterFactory.createFilter("*.controllers.*"));
 
         this.ioc = ioc;
         this.router = router;
         this.removeTokenList = removeTokenList;
     }
 
-
     @Override
-    public void clear() {
-        target = null;
-        clazz = null;
-        key = null;
-        controller = null;
+    public void resolve(ResScanner scanner) {
+        List<ResScanner.ClassRes> classes= scanner.findClass("*.controllers.*");
+        for(ResScanner.ClassRes res : classes){
+            Class<?> controllerType = res.getType();
+            Controller controller = controllerType.getAnnotation(Controller.class);
+            if(controller==null)continue;
+            String controllerKey = controller.key();
+            Method[] methods = CachedClasses.getPublicMethods(controllerType);
+
+            for(Method method : methods){
+                appendMethod(controllerType,method,controllerKey);
+            }
+
+        }
     }
 
-    @Override
-    public void visitClass(Class<?> clazz) {
-        this.clazz = clazz;
-        target = ioc.fetch(clazz);
-        controller = clazz.getAnnotation(Controller.class);
-        key = controller.key();
+    protected void appendMethod(Class<?> controllerType,Method method,String controllerKey){
+        Mapping mapping = method.getAnnotation(Mapping.class);
+        String[] methods;
+        if (mapping != null) {
+            methods = mapping.method();
+        } else {
+            methods = null;
+        }
+        String key = getKey(controllerKey, method, mapping);
+
+        ActionInfoHandler handler = new ActionInfoHandler(
+                controllerType,method,ioc,key);
+        handler.setHttpMethods(methods);
+        Router.RemoveToken removeToken = router.register(key,handler);
+        if (removeTokenList != null) {
+            removeTokenList.add(removeToken);
+        }
     }
+
+
 
     protected String getKey(String key, Method method, Mapping mapping) {
         if (mapping != null) {
@@ -99,45 +114,6 @@ public class SimpleActionBuilder extends ClassResolver {
     }
 
 
-    @Override
-    public void visitMethod(Method method) {
-        ActionFactory actionFactory = ioc.fetch(ActionFactory.class);
-        ActionInterceptorFactory actionInterceptorFactory = ioc.fetch(ActionInterceptorFactory.class);
-
-        Action action = actionFactory
-                .createAction(target, clazz, method, actionInterceptorFactory);
-        Mapping mapping = method.getAnnotation(Mapping.class);
-        String key = getKey(this.key, method, mapping);
-        action.setUrl(key);
-        String[] methods;
-        if (mapping != null) {
-            methods = mapping.method();
-        } else {
-            methods = null;
-        }
-        action.setHttpMethods(methods);
-        //模板路径
-        action.setPath(key.substring(1));
-        if (log.isInfoEnabled()) {
-            log.info(String.format("注册Action成功:key:[%s] class:[%s] method:[%s] loader:[%s]", key, clazz, method.getName(), clazz.getClassLoader()));
-        }
-        Router.RemoveToken removeToken = router.register(key, action);
-        if (removeTokenList != null) {
-            removeTokenList.add(removeToken);
-        }
-
-
-    }
-
-    @Override
-    public boolean resolveFields() {
-        return false;
-    }
-
-    @Override
-    public boolean resolveMethods() {
-        return true;
-    }
 
 
 }

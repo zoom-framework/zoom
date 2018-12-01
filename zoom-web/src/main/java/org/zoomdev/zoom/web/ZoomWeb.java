@@ -53,7 +53,7 @@ public class ZoomWeb {
 
         printLogo();
         /// 加载整个项目的主配置
-        loadApplicationConfig();
+       // loadApplicationConfig();
         // 扫描整个资源, .class .jar 其他配置文件等
         scanResources();
         createRouter();

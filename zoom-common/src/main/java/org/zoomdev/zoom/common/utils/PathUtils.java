@@ -22,7 +22,7 @@ public class PathUtils {
                     return null;
                 }
                 String path = PathUtils.class.getResource("/").toURI().getPath();
-                System.out.println("path:"+path);
+               // System.out.println("path:"+path);
                 webRootPath = new File(path).getParentFile().getParentFile().getCanonicalPath();
                 if (!webRootPath.endsWith(File.separator)) {
                     webRootPath = new StringBuilder(webRootPath).append(File.separator).toString();

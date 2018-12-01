@@ -70,7 +70,8 @@ public class ZoomIocClassLoader extends IocBase implements IocClassLoader, Destr
 
     @Override
     public List<IocClass> appendModule(Class moduleClass) {
-        log.info(String.format("初始化Module [%s]", moduleClass));
+        if(log.isDebugEnabled())
+            log.debug(String.format("初始化Module [%s]", moduleClass));
         Object module = Classes.newInstance(moduleClass);
         append(moduleClass, module,false,IocBean.SYSTEM);
         List<IocClass> list = new ArrayList<IocClass>();

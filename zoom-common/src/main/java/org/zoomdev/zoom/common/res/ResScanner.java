@@ -279,8 +279,8 @@ public class ResScanner implements Destroyable {
 
 
         for (String path : pathes) {
-            if (log.isInfoEnabled())
-                log.info("正在扫描目录" + path);
+            if (log.isDebugEnabled())
+                log.debug("正在扫描目录" + path);
             scanFoler(path, classLoader, new File(path));
         }
 

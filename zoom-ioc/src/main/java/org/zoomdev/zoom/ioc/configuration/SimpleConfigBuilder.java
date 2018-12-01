@@ -6,6 +6,8 @@ import org.zoomdev.zoom.common.annotations.Module;
 import org.zoomdev.zoom.common.filter.impl.ClassAnnotationFilter;
 import org.zoomdev.zoom.common.filter.pattern.PatternFilterFactory;
 import org.zoomdev.zoom.common.res.ClassResolver;
+import org.zoomdev.zoom.common.res.ResScanner;
+import org.zoomdev.zoom.common.utils.CachedClasses;
 import org.zoomdev.zoom.ioc.*;
 import org.zoomdev.zoom.ioc.impl.ZoomIocKey;
 
@@ -25,39 +27,23 @@ public class SimpleConfigBuilder extends ClassResolver {
 
     public SimpleConfigBuilder(IocContainer ioc) {
         this.ioc = ioc;
-        setClassNameFilter(PatternFilterFactory.createFilter("*.modules.*"));
-        setClassFilter(new ClassAnnotationFilter<Class<?>>(Module.class));
         list = new ArrayList<Class<?>>();
     }
 
-
     @Override
-    public void visitClass(Class<?> clazz) {
-        this.clazz = clazz;
-        list.add(clazz);
-    }
+    public void resolve(ResScanner scanner) {
+        List<ResScanner.ClassRes> classes= scanner.findClass("*.modules.*");
+        for(ResScanner.ClassRes res : classes){
+            Class<?> type = res.getType();
+            Module module = type.getAnnotation(Module.class);
+            if(module==null)continue;
+            list.add(type);
+        }
 
-    @Override
-    public void clear() {
-
-    }
-
-
-    @Override
-    public void visitMethod(Method method) {
-
-    }
-
-    @Override
-    public boolean resolveFields() {
-        return false;
+        endResolve();
     }
 
 
-    @Override
-    public boolean resolveMethods() {
-        return false;
-    }
 
     private Class<?> findApplication() {
         for (Class<?> type : list) {
@@ -69,8 +55,6 @@ public class SimpleConfigBuilder extends ClassResolver {
         //throw new RuntimeException("必须有一个ZoomApplication标注的Module");
     }
 
-
-    @Override
     public void endResolve() {
         //初始化application
         Class<?> app = findApplication();
@@ -85,10 +69,15 @@ public class SimpleConfigBuilder extends ClassResolver {
                     || (app != null && app.getAnnotation(annotationClass) != null)) {
                 types.add(type);
             } else {
-                log.info("没有找到对应的标注:" + annotationClass + " 模块" + type + "未启用," +
+                if(log.isDebugEnabled())
+                    log.debug("没有找到对应的标注:" + annotationClass + " 模块" + type + "未启用," +
                         "若要启用本模块，请使用ApplicationModule标注主模块，并使用对应的【" + annotationClass.getName() + "】标注");
             }
         }
+
+
+        long time = System.currentTimeMillis();
+
         if (app != null) {
             types.add(app);
         }
@@ -122,6 +111,8 @@ public class SimpleConfigBuilder extends ClassResolver {
             ioc.fetch(type);
         }
 
+
+       // System.out.println("==========config build 成功"+(System.currentTimeMillis()-time)+"==========");
 
         list.clear();
 

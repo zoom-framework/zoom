@@ -14,7 +14,7 @@ import java.util.List;
 
 ;
 
-public class ClassResolvers implements Destroyable {
+public class ClassResolvers  {
 
     List<ClassResolver> resolvers;
 
@@ -29,49 +29,12 @@ public class ClassResolvers implements Destroyable {
 
 
     public void visit(ResScanner scanner) {
-        final List<ResScanner.ClassRes> classes = new ArrayList<ResScanner.ClassRes>();
-        scanner.visitClass(new Visitor<ClassRes>() {
 
-            @Override
-            public void visit(ResScanner.ClassRes data) {
-                for (ClassResolver resolver : resolvers) {
-                    if (resolver.acceptClassName(data.getName())) {
-                        classes.add(data);
-                    }
-                }
-            }
-
-        });
-
-
-        for (ClassResolver classResolver : resolvers) {
-            for (ResScanner.ClassRes res : classes) {
-                if (classResolver.acceptClass(res.getType())) {
-                    classResolver.visitClass(res.getType());
-
-                    if (classResolver.resolveFields()) {
-                        for (Field field : res.getFields()) {
-                            classResolver.visitField(field);
-                        }
-                    }
-
-                    if (classResolver.resolveMethods()) {
-                        for (Method method : res.getPubMethods()) {
-                            classResolver.visitMethod(method);
-                        }
-                    }
-
-                    classResolver.clear();
-                }
-            }
-
-            classResolver.endResolve();
+        for(ClassResolver resolver : resolvers){
+            resolver.resolve(scanner);
         }
 
     }
 
-    @Override
-    public void destroy() {
-        Classes.destroy(this.resolvers);
-    }
+
 }

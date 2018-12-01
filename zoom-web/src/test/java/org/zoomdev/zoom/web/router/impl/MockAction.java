@@ -41,16 +41,6 @@ public class MockAction implements ActionHandler {
         return true;
     }
 
-    @Override
-    public String getMapping() {
-        return name;
-    }
-
-    @Override
-    public String[] getMethods() {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
     @Override
     public String[] getPathVariableNames() {

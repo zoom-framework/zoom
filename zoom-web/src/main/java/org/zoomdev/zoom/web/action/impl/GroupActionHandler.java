@@ -116,23 +116,6 @@ public class GroupActionHandler implements ActionHandler {
         );
     }
 
-    @Override
-    public String getMapping() {
-
-        return this.actionHandlers[0].getMapping();
-    }
-
-    @Override
-    public String[] getMethods() {
-        Set<String> methods = new LinkedHashSet<String>();
-        for (ActionHandler actionHandler : actionHandlers) {
-            for (String string : actionHandler.getMethods()) {
-                methods.add(string);
-            }
-
-        }
-        return methods.toArray(new String[methods.size()]);
-    }
 
     @Override
     public String[] getPathVariableNames() {
