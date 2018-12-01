@@ -486,8 +486,8 @@ public class ResScanner implements Destroyable {
      * @throws IOException
      */
     public void parseJar(File file, ClassLoader classLoader) throws IOException {
-        if (log.isInfoEnabled()) {
-            log.info("正在解析jar文件:" + file.getAbsolutePath());
+        if (log.isDebugEnabled()) {
+            log.debug("正在解析jar文件:" + file.getAbsolutePath());
         }
         if (!file.exists()) {
             log.error("文件不存在:" + file.getAbsolutePath());

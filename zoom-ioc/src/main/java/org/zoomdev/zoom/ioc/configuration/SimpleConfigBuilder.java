@@ -86,9 +86,7 @@ public class SimpleConfigBuilder extends ClassResolver {
             ioc.getIocClassLoader().appendModule(type);
         }
 
-        long now = System.currentTimeMillis();
 
-        System.out.println("======"+(now - time));
         time = System.currentTimeMillis();
 
         for(Class<?> type : types){
@@ -111,17 +109,12 @@ public class SimpleConfigBuilder extends ClassResolver {
                 ++index;
             }
         }
-        now = System.currentTimeMillis();
 
-        System.out.println("======"+(now - time));
         time = System.currentTimeMillis();
         for(Class<?> type : types){
             ioc.fetch(type);
         }
 
-        now = System.currentTimeMillis();
-
-        System.out.println("======"+(now - time));
         time = System.currentTimeMillis();
         // System.out.println("==========config build 成功"+(System.currentTimeMillis()-time)+"==========");
 
