@@ -3,7 +3,6 @@ package org.zoomdev.zoom.web.action.impl;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.impl.Log4JLogger;
 import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.common.utils.CollectionUtils;
 import org.zoomdev.zoom.ioc.IocContainer;
@@ -15,7 +14,6 @@ import org.zoomdev.zoom.web.action.ActionHandler;
 import org.zoomdev.zoom.web.action.ActionInterceptorFactory;
 import org.zoomdev.zoom.web.annotations.Mapping;
 import org.zoomdev.zoom.web.annotations.Param;
-import org.zoomdev.zoom.web.router.Router;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,9 +22,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActionInfoHandler implements ActionHandler {
+public class ActionHolder implements ActionHandler {
 
-    public ActionInfoHandler(Class<?> controllerClass, Method method, IocContainer ioc, String key) {
+    public ActionHolder(Class<?> controllerClass, Method method, IocContainer ioc, String key) {
         this.controllerClass = controllerClass;
         this.method = method;
         this.ioc = ioc;
@@ -37,13 +35,14 @@ public class ActionInfoHandler implements ActionHandler {
     private Method method;
     private IocContainer ioc;
     private String key;
-    private static  final Log log = LogFactory.getLog(ActionInfoHandler.class);
+    private static  final Log log = LogFactory.getLog(ActionHolder.class);
 
     /// lazyload
     private Action action;
 
 
     public void visitMethod() {
+        ioc.waitFor();
         IocObject target = ioc.fetch(new ZoomIocKey(controllerClass));
         ActionFactory actionFactory = ioc.fetch(ActionFactory.class);
         ActionInterceptorFactory actionInterceptorFactory = ioc.fetch(ActionInterceptorFactory.class);

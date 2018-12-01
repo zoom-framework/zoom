@@ -35,6 +35,7 @@ public class TestIoc extends TestCase {
         );
         resolvers.visit(scanner);
 
+        ioc.waitFor();
 
         ShopService shopService = ioc.fetch(ShopService.class);
 

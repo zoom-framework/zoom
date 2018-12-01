@@ -127,6 +127,8 @@ public class SimpleConfigBuilder extends ClassResolver {
 
         list.clear();
 
+        ioc.setLoadComplete();
+
     }
 
     private boolean hasSystemOrder(IocMethod method){

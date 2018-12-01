@@ -37,6 +37,7 @@ public class ClassResolvers  {
                     resolver.resolve(scanner);
                 }
             }).start();
+
         }
 
     }

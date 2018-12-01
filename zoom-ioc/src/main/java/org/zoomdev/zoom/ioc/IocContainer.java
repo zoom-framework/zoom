@@ -103,6 +103,10 @@ public interface IocContainer extends Destroyable {
 
     IocScope getScope(Scope scope);
 
+    /**
+     * wait for async load complete
+     */
+    void waitFor();
 
-
+    void setLoadComplete();
 }

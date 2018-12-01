@@ -42,8 +42,8 @@ public class ShopService implements Initializeable, Destroyable {
     public void editProduct(String info) {
         String user = userService.getAdmin();
         productService.editProduct(user, info);
-
         method.invoke(target);
+
     }
 
 

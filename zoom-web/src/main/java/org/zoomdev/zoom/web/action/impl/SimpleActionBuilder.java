@@ -2,22 +2,14 @@ package org.zoomdev.zoom.web.action.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.zoomdev.zoom.common.filter.impl.ClassAnnotationFilter;
-import org.zoomdev.zoom.common.filter.pattern.PatternFilterFactory;
 import org.zoomdev.zoom.common.res.ClassResolver;
 import org.zoomdev.zoom.common.res.ResScanner;
 import org.zoomdev.zoom.common.utils.CachedClasses;
 import org.zoomdev.zoom.ioc.IocContainer;
-import org.zoomdev.zoom.web.action.Action;
-import org.zoomdev.zoom.web.action.ActionFactory;
-import org.zoomdev.zoom.web.action.ActionHandler;
-import org.zoomdev.zoom.web.action.ActionInterceptorFactory;
 import org.zoomdev.zoom.web.annotations.Controller;
 import org.zoomdev.zoom.web.annotations.Mapping;
 import org.zoomdev.zoom.web.router.Router;
 
-import javax.naming.ldap.Control;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -80,7 +72,7 @@ public class SimpleActionBuilder extends ClassResolver {
         }
         String key = getKey(controllerKey, method, mapping);
 
-        ActionInfoHandler handler = new ActionInfoHandler(
+        ActionHolder handler = new ActionHolder(
                 controllerType,method,ioc,key);
         handler.setHttpMethods(methods);
         Router.RemoveToken removeToken = router.register(key,handler);
