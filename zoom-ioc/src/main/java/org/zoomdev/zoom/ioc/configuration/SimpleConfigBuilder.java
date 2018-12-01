@@ -58,7 +58,7 @@ public class SimpleConfigBuilder extends ClassResolver {
     public void endResolve() {
         //初始化application
         Class<?> app = findApplication();
-        List<Class<?>> types = new ArrayList<Class<?>>();
+        final List<Class<?>> types = new ArrayList<Class<?>>();
         for (Class<?> type : list) {
             if (type.isAnnotationPresent(ApplicationModule.class)) {
                 continue;
@@ -76,15 +76,20 @@ public class SimpleConfigBuilder extends ClassResolver {
         }
 
 
-        long time = System.currentTimeMillis();
-
         if (app != null) {
             types.add(app);
         }
 
+        long time = System.currentTimeMillis();
+
         for (Class<?> type : types) {
             ioc.getIocClassLoader().appendModule(type);
         }
+
+        long now = System.currentTimeMillis();
+
+        System.out.println("======"+(now - time));
+        time = System.currentTimeMillis();
 
         for(Class<?> type : types){
             IocObject module = ioc.get(new ZoomIocKey(type));
@@ -106,13 +111,19 @@ public class SimpleConfigBuilder extends ClassResolver {
                 ++index;
             }
         }
+        now = System.currentTimeMillis();
 
+        System.out.println("======"+(now - time));
+        time = System.currentTimeMillis();
         for(Class<?> type : types){
             ioc.fetch(type);
         }
 
+        now = System.currentTimeMillis();
 
-       // System.out.println("==========config build 成功"+(System.currentTimeMillis()-time)+"==========");
+        System.out.println("======"+(now - time));
+        time = System.currentTimeMillis();
+        // System.out.println("==========config build 成功"+(System.currentTimeMillis()-time)+"==========");
 
         list.clear();
 

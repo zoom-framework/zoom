@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ZoomIocClassLoader extends IocBase implements IocClassLoader, Destroyable {
 
-    private Map<IocKey, IocClass> pool = new ConcurrentHashMap<IocKey, IocClass>();
+    private Map<IocKey, IocClass> pool = new ConcurrentHashMap<IocKey, IocClass>(64);
 
     private ClassEnhancer classEnhancer;
 

@@ -28,10 +28,15 @@ public class ClassResolvers  {
     }
 
 
-    public void visit(ResScanner scanner) {
+    public void visit(final ResScanner scanner) {
 
-        for(ClassResolver resolver : resolvers){
-            resolver.resolve(scanner);
+        for(final ClassResolver resolver : resolvers){
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    resolver.resolve(scanner);
+                }
+            }).start();
         }
 
     }

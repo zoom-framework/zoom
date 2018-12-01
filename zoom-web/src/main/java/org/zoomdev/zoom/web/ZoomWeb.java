@@ -131,6 +131,7 @@ public class ZoomWeb {
             jarFilter = ResScanner.fastFilter;
         }
 
+        long time = System.currentTimeMillis();
         try {
             scanner = new ResScanner();
             ioc.getIocClassLoader().append(ResScanner.class,scanner,true,IocBean.SYSTEM);
@@ -138,6 +139,7 @@ public class ZoomWeb {
         } catch (IOException e) {
             throw new RuntimeException("扫描解析文件出错", e);
         }
+        System.out.println("======Scan time :" + (System.currentTimeMillis()-time));
 
     }
 
