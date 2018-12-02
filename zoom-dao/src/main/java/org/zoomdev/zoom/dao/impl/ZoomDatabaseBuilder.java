@@ -266,8 +266,11 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
         String table = beanTableInfo.getTableNames()[0];
         if(dropIfExists){
             this.dropIfExists(table);
+            createTable(table);
+        }else{
+            createIfNotExists(table);
         }
-        createTable(table);
+
 
 
         //fields

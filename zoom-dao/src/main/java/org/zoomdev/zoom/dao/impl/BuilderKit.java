@@ -6,6 +6,7 @@ import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.common.caster.ValueCaster;
 import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.Record;
+import org.zoomdev.zoom.dao.Sql;
 import org.zoomdev.zoom.dao.alias.NameAdapter;
 import org.zoomdev.zoom.dao.driver.SqlDriver;
 import org.zoomdev.zoom.dao.utils.DaoUtils;
@@ -72,7 +73,7 @@ public class BuilderKit {
         return sql;
     }
 
-    private static final Log log = LogFactory.getLog(BuilderKit.class);
+    private static final Log log = LogFactory.getLog(Sql.class);
 
 
     public static PreparedStatement prepareStatement(

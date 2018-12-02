@@ -175,7 +175,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
                 EntitySqlUtils.entityCondition(builder, entity, data);
                 builder.table(entity.getTable());
                 builder.buildDelete();
-                return EntitySqlUtils.executeUpdate(connection, builder);
+                return EntitySqlUtils.executeUpdate(connection, builder,output);
             }
         });
     }
@@ -204,7 +204,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
             public Integer execute(Connection connection) throws SQLException {
                 return EntitySqlUtils.executeUpdate(
                         connection,
-                        builder
+                        builder,output
                 );
             }
         });
@@ -285,7 +285,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
                         connection,
                         entity,
                         data,
-                        builder
+                        builder,output
                 );
             }
         });

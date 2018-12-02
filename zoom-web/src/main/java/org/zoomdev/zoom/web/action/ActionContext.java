@@ -2,6 +2,7 @@ package org.zoomdev.zoom.web.action;
 
 import org.zoomdev.zoom.common.Destroyable;
 import org.zoomdev.zoom.common.caster.Caster;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.utils.Classes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -246,5 +247,22 @@ public class ActionContext implements Destroyable {
         }
 
         local.remove();
+    }
+
+
+    public ActionContext setSession(String key,Object value){
+        if(request==null){
+            throw new ZoomException("Request is null");
+        }
+        request.getSession().setAttribute(key,value);
+        return this;
+    }
+
+
+    public Object getSession(String key){
+        if(request==null){
+            throw new ZoomException("Request is null");
+        }
+        return request.getSession().getAttribute(key);
     }
 }

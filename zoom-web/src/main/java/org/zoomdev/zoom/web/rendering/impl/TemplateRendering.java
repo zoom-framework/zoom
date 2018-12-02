@@ -88,7 +88,7 @@ public abstract class TemplateRendering implements Rendering {
             }
             path = webConfig.getErrorPage();
             data = new HashMap<String, Object>();
-            Throwable error = (Throwable) result;
+            Throwable error = Classes.getCause((Throwable) result);
             data.put("exception",error);
             data.put("message", error.getMessage());
             data.put("error", Classes.formatStackTrace(error));

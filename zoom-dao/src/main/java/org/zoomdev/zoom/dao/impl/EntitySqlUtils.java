@@ -1,10 +1,13 @@
 package org.zoomdev.zoom.dao.impl;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.common.utils.CollectionUtils;
 import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.Entity;
+import org.zoomdev.zoom.dao.Sql;
 import org.zoomdev.zoom.dao.adapters.EntityField;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 import org.zoomdev.zoom.dao.auto.AutoField;
@@ -24,6 +27,7 @@ import java.util.regex.Pattern;
 
 public class EntitySqlUtils {
 
+    private static final Log log = LogFactory.getLog(Sql.class);
 
     static final Pattern TABLE_AND_COLUMN_PATTERN = Pattern.compile("[a-zA-Z0-9_]+[\\s]*\\.[\\s]*[a-zA-Z0-9_]+|[a-zA-Z0-9_]+");
 
@@ -65,10 +69,11 @@ public class EntitySqlUtils {
 
     public static int executeUpdate(
             final Connection connection,
-            final SimpleSqlBuilder builder) throws SQLException {
+            final SimpleSqlBuilder builder,
+            boolean output) throws SQLException {
         PreparedStatement ps = null;
         try {
-            ps = prepareStatement(connection, builder);
+            ps = prepareStatement(connection, builder,output);
             return ps.executeUpdate();
         } finally {
             DaoUtils.close(ps);
@@ -277,12 +282,10 @@ public class EntitySqlUtils {
             Connection connection,
             final Entity entity,
             final Object data,
-            final SimpleSqlBuilder builder) throws SQLException {
+            final SimpleSqlBuilder builder,boolean output) throws SQLException {
         PreparedStatement ps = null;
-        ResultSet rs = null;
         try {
-            ps = entity.prepareInsert(connection, builder.sql.toString());
-            prepareStatement(ps, builder.values, builder.adapters);
+            ps = prepareStatement(connection, builder,output);
             int ret = ps.executeUpdate();
             if (ret > 0) {
                 entity.afterInsert(data, ps);
@@ -294,40 +297,13 @@ public class EntitySqlUtils {
 
     }
 
-    static PreparedStatement prepareStatement(
-            Connection connection,
-            SimpleSqlBuilder builder) throws SQLException {
-
-        return prepareStatement(
-                connection,
-                builder.sql.toString(),
-                builder.values,
-                builder.adapters);
-    }
-
-    static void prepareStatement(
-            PreparedStatement ps,
-            List<Object> values,
-            List<StatementAdapter> adapters) throws SQLException {
-
-        for (int index = 0, c = values.size(); index < c; ++index) {
-            StatementAdapter adapter = adapters.get(index);
-            adapter.adapt(ps, index + 1, values.get(index));
-        }
-    }
-
-    static PreparedStatement prepareStatement(
-            Connection connection,
-            String sql,
-            List<Object> values,
-            List<StatementAdapter> adapters) throws SQLException {
-
-        PreparedStatement ps = connection.prepareStatement(sql);
+    static PreparedStatement prepareStatement(PreparedStatement ps,
+                                              SimpleSqlBuilder builder,boolean output) throws SQLException {
+        List<Object> values = builder.values;
+        List<StatementAdapter> adapters = builder.adapters;
         for (int index = 0, c = values.size(), m = adapters.size(); index < c; ++index) {
             if (index >= m) {
-
                 ps.setObject(index + 1, values.get(index));
-
             } else {
                 StatementAdapter adapter = adapters.get(index);
                 adapter.adapt(ps, index + 1, values.get(index));
@@ -336,6 +312,19 @@ public class EntitySqlUtils {
         }
         return ps;
     }
+
+    static PreparedStatement prepareStatement(
+            Connection connection,
+            SimpleSqlBuilder builder,
+            boolean output) throws SQLException {
+
+        String sql = builder.sql.toString();
+        PreparedStatement ps = connection.prepareStatement(sql);
+
+        return prepareStatement(ps,builder,output);
+    }
+
+
 
 
     static <T> List<T> buildList(
