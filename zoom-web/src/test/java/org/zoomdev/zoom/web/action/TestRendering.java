@@ -30,7 +30,7 @@ public class TestRendering extends TestCase {
         PreParameterParserManager preParameterParserManager = modules.getPreParameterParserManager();
         WebConfig config = modules.getWebConfig();
 
-        TemplateEngineManager templateEngineManager = modules.getTemplateEngineManager();
+        TemplateEngineManager templateEngineManager = modules.getTemplateEngineManager(config);
         TemplateEngineRendering templateEngineRendering = modules.getTemplateEngineRendering(templateEngineManager,config);
         RenderingFactory renderingFactoryManager =  modules.getRenderingFactoryManager(templateEngineRendering);
 

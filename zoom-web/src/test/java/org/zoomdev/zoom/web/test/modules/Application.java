@@ -70,8 +70,8 @@ public class Application {
 
 
 
-        public TestRendering(WebConfig webConfig) {
-            super(webConfig);
+        public TestRendering() {
+            super();
         }
 
         @Override
@@ -103,7 +103,7 @@ public class Application {
     public void config(TemplateEngineManager manager,
                        WebConfig webConfig){
 
-        manager.register("html",new TestRendering(webConfig) );
+        manager.register("html",new TestRendering() );
 
 
         WebUtils.runAfterAsync(new Runnable() {

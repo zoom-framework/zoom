@@ -9,10 +9,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SimpleTemplateEngineManager implements TemplateEngineManager {
 
 
+    private WebConfig webConfig;
+
     private Map<String,TemplateRendering> pool = new ConcurrentHashMap<String, TemplateRendering>();
 
-    public SimpleTemplateEngineManager(){
-
+    public SimpleTemplateEngineManager(WebConfig webConfig){
+        this.webConfig = webConfig;
     }
 
     @Override
@@ -28,6 +30,7 @@ public class SimpleTemplateEngineManager implements TemplateEngineManager {
         if(!name.startsWith(".")){
             name = "." + name;
         }
+        rendering.setWebConfig(webConfig);
         pool.put(name,rendering);
     }
 

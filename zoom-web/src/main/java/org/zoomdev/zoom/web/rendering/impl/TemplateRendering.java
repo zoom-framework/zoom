@@ -28,10 +28,17 @@ public abstract class TemplateRendering implements Rendering {
     private String ext;
 
 
+    public WebConfig getWebConfig() {
+        return webConfig;
+    }
+
+    public void setWebConfig(WebConfig webConfig) {
+        this.webConfig = webConfig;
+    }
+
     private WebConfig webConfig;
 
-    public TemplateRendering(WebConfig webConfig){
-        this.webConfig = webConfig;
+    public TemplateRendering(){
     }
 
     /**
@@ -60,10 +67,9 @@ public abstract class TemplateRendering implements Rendering {
     public boolean render(ActionContext context) throws Exception {
         Object result = context.getRenderObject();
         HttpServletResponse response = context.getResponse();
-
-
         HttpServletRequest request = context.getRequest();
         String path = context.getAction().getPath();
+
         Map<String, Object> data = null;
         if (result instanceof Map) {
             data = (Map<String, Object>) result;

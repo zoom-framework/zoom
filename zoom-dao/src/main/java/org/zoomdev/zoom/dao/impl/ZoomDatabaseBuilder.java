@@ -263,7 +263,12 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
         CachedEntityFactory cachedEntityFactory = (CachedEntityFactory)dao.getEntityFactory();
         BeanTableInfo beanTableInfo = cachedEntityFactory.getBeanEntityFactory().getTableAdapter().getTableInfo(type);
         //build this table
-        createTable(beanTableInfo.getTableNames()[0]);
+        String table = beanTableInfo.getTableNames()[0];
+        if(dropIfExists){
+            this.dropIfExists(table);
+        }
+        createTable(table);
+
 
         //fields
 
@@ -305,6 +310,7 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
             }
 
             if(field.isAnnotationPresent(AutoGenerate.class)){
+                keyPrimary();
                 autoIncement();
             }
 

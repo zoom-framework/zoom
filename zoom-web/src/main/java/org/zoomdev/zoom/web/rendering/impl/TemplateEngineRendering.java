@@ -29,15 +29,15 @@ public class TemplateEngineRendering implements Rendering {
     public boolean render(ActionContext context) throws Exception {
         Object data = context.getRenderObject();
         String ext;
+        String path;
         if(data instanceof String){
-            String path  = (String)data;
+            path  = (String)data;
             int n;
             if((n=path.lastIndexOf('.')) > 0){
                 ext = path.substring(n+1);
-                path = path.substring(0,n);
-                context.setRenderObject(path);
             }else{
                 ext = webConfig.getTemplateExt();
+                context.setRenderObject(path + ext);
             }
         }else{
             ext = webConfig.getTemplateExt();
@@ -45,7 +45,7 @@ public class TemplateEngineRendering implements Rendering {
 
         TemplateRendering rendering = templateEngineManager.getEngine(ext);
         if(rendering==null){
-            throw new ZoomException("找不到渲染引擎"+ext);
+            throw new ZoomException("Cannot find template engine for extension "+ext);
         }
         return rendering.render(context);
     }

@@ -10,8 +10,8 @@ import java.util.Map;
 
 public class MockTemplateRendering extends TemplateRendering {
 
-    public MockTemplateRendering(WebConfig webConfig) {
-        super(webConfig);
+    public MockTemplateRendering() {
+        super();
     }
 
     @Override

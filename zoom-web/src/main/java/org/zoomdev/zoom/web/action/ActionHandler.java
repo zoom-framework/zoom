@@ -1,5 +1,6 @@
 package org.zoomdev.zoom.web.action;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,7 +19,7 @@ public interface ActionHandler {
      * @param response
      * @return
      */
-    boolean handle(HttpServletRequest request, HttpServletResponse response);
+    boolean handle(HttpServletRequest request, HttpServletResponse response) throws ServletException;
 
     /**
      * 是否支持某个方法

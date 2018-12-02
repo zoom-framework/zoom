@@ -17,11 +17,14 @@ public class WebConfig {
     }
 
     public void setTemplateExt(String templateExt) {
+        if(!templateExt.startsWith(".")){
+            templateExt = "." + templateExt;
+        }
         this.templateExt = templateExt;
     }
 
     public String getErrorPage() {
-        return errorPage;
+        return new StringBuilder().append(errorPage).append(templateExt).toString();
     }
 
     public void setErrorPage(String errorPage) {

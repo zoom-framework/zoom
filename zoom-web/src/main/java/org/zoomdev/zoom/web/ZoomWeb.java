@@ -139,7 +139,7 @@ public class ZoomWeb {
         } catch (IOException e) {
             throw new RuntimeException("扫描解析文件出错", e);
         }
-        System.out.println("======Scan time :" + (System.currentTimeMillis()-time));
+       // System.out.println("======Scan time :" + (System.currentTimeMillis()-time));
 
     }
 

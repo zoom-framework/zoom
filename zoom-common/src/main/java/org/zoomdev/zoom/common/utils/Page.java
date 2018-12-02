@@ -1,5 +1,7 @@
 package org.zoomdev.zoom.common.utils;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import java.util.List;
 
 public class Page<T> {
@@ -19,6 +21,15 @@ public class Page<T> {
         this.page = page;
         this.size = size;
         this.total = total;
+    }
+
+    @JsonIgnore
+    public int getLast(){
+        if(size==0)return 1;
+        if(total % size == 0){
+            return total / size ;
+        }
+        return total / size + 1;
     }
 
     public List<T> getList() {

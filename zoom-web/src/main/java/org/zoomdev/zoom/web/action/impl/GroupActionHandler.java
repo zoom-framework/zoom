@@ -2,6 +2,7 @@ package org.zoomdev.zoom.web.action.impl;
 
 import org.zoomdev.zoom.web.action.ActionHandler;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
@@ -57,7 +58,7 @@ public class GroupActionHandler implements ActionHandler {
 
 
     @Override
-    public boolean handle(HttpServletRequest request, HttpServletResponse response) {
+    public boolean handle(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         for (ActionHandler actionHandler : actionHandlers) {
             if (actionHandler.supportsHttpMethod(request.getMethod())) {
                 actionHandler.handle(request, response);

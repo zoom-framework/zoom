@@ -52,7 +52,10 @@ public class ZoomIocObject implements IocObject, Destroyable {
     public void destroy() {
         if (obj == null)
             return;
-        log.info("正在销毁" + obj);
+        if(log.isDebugEnabled()){
+            log.debug("正在销毁" + obj);
+        }
+
         try {
             if (destroy != null) {
                 destroy.call(obj);

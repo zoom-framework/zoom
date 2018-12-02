@@ -60,8 +60,8 @@ public class WebModules {
     }
 
     @IocBean
-    public TemplateEngineManager getTemplateEngineManager(){
-        return new SimpleTemplateEngineManager();
+    public TemplateEngineManager getTemplateEngineManager(WebConfig webConfig){
+        return new SimpleTemplateEngineManager(webConfig);
     }
 
     @IocBean

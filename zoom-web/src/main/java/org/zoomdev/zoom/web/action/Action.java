@@ -11,6 +11,7 @@ import org.zoomdev.zoom.web.parameter.PreParameterParserManager;
 import org.zoomdev.zoom.web.rendering.Rendering;
 import org.zoomdev.zoom.web.rendering.RenderingChain;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
@@ -148,7 +149,7 @@ public class Action implements Destroyable {
     }
 
 
-    public void handle(ActionContext context) {
+    public void handle(ActionContext context) throws ServletException {
         try {
             process(context);
         } catch (Throwable e) {
@@ -183,7 +184,7 @@ public class Action implements Destroyable {
      *
      * @param context
      */
-    public void handlerError(ActionContext context) {
+    public void handlerError(ActionContext context) throws ServletException {
         context.setState(ActionContext.STATE_BEFORE_RENDER);
         if (this.actionInterceptors != null) {
             for (ActionInterceptor actionInterceptor : actionInterceptors) {
@@ -199,7 +200,7 @@ public class Action implements Destroyable {
         try {
             errorRendering.render(context);
         } catch (Exception e) {
-            throw new RuntimeException("渲染错误发生异常", e);
+            throw new ServletException(e);
         }
     }
 
@@ -438,7 +439,7 @@ public class Action implements Destroyable {
     }
 
 
-    public boolean handle(HttpServletRequest request, HttpServletResponse response) {
+    public boolean handle(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 
         ActionContext context = new ActionContext(request, response, this);
         context.setTarget(target);

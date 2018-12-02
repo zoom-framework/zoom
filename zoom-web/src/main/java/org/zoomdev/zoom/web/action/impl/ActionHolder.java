@@ -15,6 +15,7 @@ import org.zoomdev.zoom.web.action.ActionInterceptorFactory;
 import org.zoomdev.zoom.web.annotations.Mapping;
 import org.zoomdev.zoom.web.annotations.Param;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.annotation.Annotation;
@@ -110,7 +111,7 @@ public class ActionHolder implements ActionHandler {
     }
 
     @Override
-    public boolean handle(HttpServletRequest request, HttpServletResponse response) {
+    public boolean handle(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         Action action = this.action;
         if(action==null){
             action = lazyLoad();
