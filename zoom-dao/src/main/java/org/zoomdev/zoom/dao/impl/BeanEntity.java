@@ -75,7 +75,7 @@ class BeanEntity extends AbstractEntity {
         builder.table(table);
         if (joins != null) {
             for (JoinMeta joinMeta : joins) {
-                builder.join(joinMeta.getTable(), joinMeta.getOn());
+                builder.join(joinMeta.getTable(), joinMeta.getOn(),joinMeta.getType());
             }
         }
 

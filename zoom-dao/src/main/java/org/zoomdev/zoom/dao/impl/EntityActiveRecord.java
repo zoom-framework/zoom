@@ -368,6 +368,11 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
     }
 
     @Override
+    public EAr<T> join(String table, String on, SqlBuilder.JoinType type) {
+        return join(table,on,type.value());
+    }
+
+    @Override
     public EAr<T> select(String select) {
         return select(Arrays.asList(select.split(",")));
     }

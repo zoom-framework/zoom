@@ -284,6 +284,11 @@ public class SimpleSqlBuilder implements SqlBuilder {
         return this;
     }
 
+    @Override
+    public SqlBuilder join(String table, String on, JoinType type) {
+        return join(table,on,type.value());
+    }
+
 
     private void addValue(String name, Object value) {
 

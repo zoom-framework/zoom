@@ -171,6 +171,17 @@ public interface Sql<T extends Sql> {
 
 
     /**
+     *
+     * {@link SqlBuilder.JoinType}
+     *join("order","order.id=product.id",JoinType.LEFT)=> left join order on order.id=product.id
+     * @param table
+     * @param on
+     * @param type
+     * @return
+     */
+    T join(String table, String on, SqlBuilder.JoinType type);
+
+    /**
      * select("id,name")=> select id,name
      *
      * @param select

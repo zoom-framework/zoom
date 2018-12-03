@@ -12,6 +12,37 @@ public interface SqlBuilder extends Sql<SqlBuilder> {
     String RIGHT = "RIGHT";
 
 
+    enum JoinType{
+        INNER(SqlBuilder.INNER),
+        LEFT(SqlBuilder.LEFT),
+        RIGHT(SqlBuilder.RIGHT);
+
+        private String value;
+
+        JoinType(String value) {
+            this.value = value;
+        }
+
+        public String value() {
+            return value;
+        }
+
+        public static JoinType parse(String type) {
+            if (type == null)
+                return INNER;
+
+            type = type.toUpperCase();
+
+            for (JoinType s : values()) {
+                if (s.value.equals(type)) {
+                    return s;
+                }
+            }
+
+            return INNER;
+        }
+    }
+
     enum Sort {
         ASC("ASC"),
         DESC("DESC");
@@ -195,6 +226,9 @@ public interface SqlBuilder extends Sql<SqlBuilder> {
     SqlBuilder join(String otherTable, String on);
 
     SqlBuilder join(String table, String on, String type);
+
+    SqlBuilder join(String table, String on, JoinType type);
+
 
 
     SqlBuilder union(SqlBuilder builder);

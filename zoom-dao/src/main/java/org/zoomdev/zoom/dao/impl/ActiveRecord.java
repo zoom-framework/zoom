@@ -292,6 +292,11 @@ public class ActiveRecord extends AbstractRecord implements ConnectionHolder, Ar
     }
 
     @Override
+    public Ar join(String table, String on, SqlBuilder.JoinType type) {
+        return join(table,on,type.value());
+    }
+
+    @Override
     public Ar orWhere(String key, Object value) {
         builder.orWhere(key, value);
         return this;
