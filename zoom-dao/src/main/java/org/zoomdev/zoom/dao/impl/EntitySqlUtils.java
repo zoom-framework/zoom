@@ -32,10 +32,10 @@ public class EntitySqlUtils {
     static final Pattern TABLE_AND_COLUMN_PATTERN = Pattern.compile("[a-zA-Z0-9_]+[\\s]*\\.[\\s]*[a-zA-Z0-9_]+|[a-zA-Z0-9_]+");
 
 
-    public static <E> E getValue(Connection connection, SimpleSqlBuilder builder, String key, Class<E> typeOfE,boolean output) throws SQLException {
+    public static <E> E getValue(Connection connection, SimpleSqlBuilder builder, String key, Class<E> typeOfE, boolean output) throws SQLException {
         builder.selectRaw(key);
         builder.buildSelect();
-        return Caster.to(EntitySqlUtils.executeGetValue(connection, builder,output), typeOfE);
+        return Caster.to(EntitySqlUtils.executeGetValue(connection, builder, output), typeOfE);
     }
 
     static class PatterFilter implements Filter<EntityField> {
@@ -73,7 +73,7 @@ public class EntitySqlUtils {
             boolean output) throws SQLException {
         PreparedStatement ps = null;
         try {
-            ps = prepareStatement(connection, builder,output);
+            ps = prepareStatement(connection, builder, output);
             return ps.executeUpdate();
         } finally {
             DaoUtils.close(ps);
@@ -158,10 +158,10 @@ public class EntitySqlUtils {
         for (Object entityField : builder.adapters) {
             set.remove(entityField);
         }
-        if(set.size() > 0){
+        if (set.size() > 0) {
 
-            for(EntityField entityField : set){
-                validateValue(entityField,null);
+            for (EntityField entityField : set) {
+                validateValue(entityField, null);
             }
 
         }
@@ -282,10 +282,11 @@ public class EntitySqlUtils {
             Connection connection,
             final Entity entity,
             final Object data,
-            final SimpleSqlBuilder builder,boolean output) throws SQLException {
+            final SimpleSqlBuilder builder, boolean output) throws SQLException {
         PreparedStatement ps = null;
         try {
-            ps = prepareStatement(connection, builder,output);
+            ps = entity.prepareInsert(connection, builder.sql.toString());
+            prepareStatement(ps, builder, output);
             int ret = ps.executeUpdate();
             if (ret > 0) {
                 entity.afterInsert(data, ps);
@@ -298,9 +299,9 @@ public class EntitySqlUtils {
     }
 
     static PreparedStatement prepareStatement(PreparedStatement ps,
-                                              SimpleSqlBuilder builder,boolean output) throws SQLException {
+                                              SimpleSqlBuilder builder, boolean output) throws SQLException {
 
-        if(output){
+        if (output) {
             log.info(builder.printSql());
         }
 
@@ -326,10 +327,8 @@ public class EntitySqlUtils {
         String sql = builder.sql.toString();
         PreparedStatement ps = connection.prepareStatement(sql);
 
-        return prepareStatement(ps,builder,output);
+        return prepareStatement(ps, builder, output);
     }
-
-
 
 
     static <T> List<T> buildList(
@@ -403,7 +402,7 @@ public class EntitySqlUtils {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = BuilderKit.prepareStatement(connection, builder.sql.toString(), builder.values,output);
+            ps = BuilderKit.prepareStatement(connection, builder.sql.toString(), builder.values, output);
             rs = ps.executeQuery();
             if (rs.next()) {
                 return EntitySqlUtils.buildRecord(rs, entity, entityFields);
@@ -448,7 +447,7 @@ public class EntitySqlUtils {
         try {
             ps = BuilderKit.prepareStatement(connection,
                     builder.sql.toString(),
-                    builder.values,output);
+                    builder.values, output);
             rs = ps.executeQuery();
             if (rs.next()) {
                 Object r = rs.getObject(1);
