@@ -12,6 +12,7 @@ import org.zoomdev.zoom.web.rendering.Rendering;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -81,17 +82,19 @@ public abstract class TemplateRendering implements Rendering {
             path = (String) result;
             data = merge(data, context);
         } else if (result instanceof Throwable) {
-            if (result instanceof StatusException) {
-                response.setStatus(((StatusException) result).getStatus());
+            Throwable error = Classes.getCause((Throwable) result);
+            if (error instanceof StatusException) {
+                response.setStatus(((StatusException) error).getStatus());
             } else {
                 response.setStatus(500);
             }
             path = webConfig.getErrorPage();
             data = new HashMap<String, Object>();
-            Throwable error = Classes.getCause((Throwable) result);
-            data.put("exception",error);
+
+            data.put("error",error);
             data.put("message", error.getMessage());
-            data.put("error", Classes.formatStackTrace(error));
+            data.put("stackTrace", Classes.formatStackTrace(error));
+            data.put("status",response.getStatus());
         }
 
         render(request, response, path, data);
@@ -133,6 +136,17 @@ public abstract class TemplateRendering implements Rendering {
         }
 
         return data;
+    }
+
+    @Override
+    public boolean shouldHandle(Class<?> targetClass, Method method) {
+        return true;
+    }
+
+
+    @Override
+    public String getUid() {
+        return getClass().getName();
     }
 
     /**

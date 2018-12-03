@@ -259,6 +259,15 @@ public class ActionContext implements Destroyable {
     }
 
 
+    public ActionContext removeSession(String key){
+        if(request==null){
+            throw new ZoomException("Request is null");
+        }
+        request.getSession().removeAttribute(key);
+        return this;
+    }
+
+
     public Object getSession(String key){
         if(request==null){
             throw new ZoomException("Request is null");

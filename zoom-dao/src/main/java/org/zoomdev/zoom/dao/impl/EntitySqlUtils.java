@@ -299,6 +299,11 @@ public class EntitySqlUtils {
 
     static PreparedStatement prepareStatement(PreparedStatement ps,
                                               SimpleSqlBuilder builder,boolean output) throws SQLException {
+
+        if(output){
+            log.info(builder.printSql());
+        }
+
         List<Object> values = builder.values;
         List<StatementAdapter> adapters = builder.adapters;
         for (int index = 0, c = values.size(), m = adapters.size(); index < c; ++index) {

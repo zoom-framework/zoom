@@ -64,8 +64,8 @@ public class DaoUtils {
 
     public static int position2page(int position, int size) {
         if (position % size == 0) {
-            return position / size;
+            return position / size + 1;
         }
-        return position / size + 1;
+        return position / size + 2;
     }
 }
