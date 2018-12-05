@@ -45,8 +45,8 @@ public class WebModules {
      */
     @Inject
     public void configCaster() {
-        Caster.register(HttpServletRequest.class, Map.class, new Request2Map());
         Caster.register(HttpServletRequest.class, DataObject.class, new Request2DataObject());
+        Caster.register(HttpServletRequest.class, Map.class, new Request2Map());
         Caster.registerCastProvider(new Request2BeanProvider());
     }
 

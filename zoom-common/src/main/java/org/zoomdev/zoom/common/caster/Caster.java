@@ -1100,7 +1100,7 @@ public class Caster {
      * @return
      */
     private static String[] extraClass(Class<?> src) {
-        Set<Class<?>> set = new LinkedHashSet<Class<?>>();
+        List<Class<?>> set = new ArrayList<Class<?>>();
 
         extraClass(set, src);
 
@@ -1112,7 +1112,7 @@ public class Caster {
         return result;
     }
 
-    private static void extraClass(Set<Class<?>> set, Class<?> src) {
+    private static void extraClass(List<Class<?>> set, Class<?> src) {
         if (src == null) {
             return;
         }
@@ -1123,19 +1123,18 @@ public class Caster {
                 set.add(Object.class);
                 return;
             }
-
+            set.add(src);
             Class<?>[] interfaces = src.getInterfaces();
             for (Class<?> inter : interfaces) {
                 extraInterface(set, inter);
             }
-
             extraClass(set, src.getSuperclass());
-            set.add(src);
+
         }
 
     }
 
-    private static void extraInterface(Set<Class<?>> set, Class<?> src) {
+    private static void extraInterface(List<Class<?>> set, Class<?> src) {
         set.add(src);
         src = src.getSuperclass();
         if (src == null)
