@@ -52,8 +52,9 @@ public class ZoomWeb {
     public void init() {
 
         printLogo();
-        /// 加载整个项目的主配置
-       // loadApplicationConfig();
+        /// 加载整个项目的主配置,这个改成在Module加载
+        ioc.getIocClassLoader().append(ConfigReader.class,ConfigReader.getDefault(),true,IocBean.SYSTEM);
+        //loadApplicationConfig();
         // 扫描整个资源, .class .jar 其他配置文件等
         scanResources();
         createRouter();
