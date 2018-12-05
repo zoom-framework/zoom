@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
 public @interface IocBean {
 
     /// order = SYSTEM , 表示依赖本IocBean指定Bean的方法将会优先执行。
-    int SYSTEM = 0;
+    int SYSTEM = Integer.MIN_VALUE;
 
     /// order = USER, 表示会对方法或者字段注入无要求。
     int USER = 1;

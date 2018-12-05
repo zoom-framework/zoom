@@ -24,6 +24,7 @@ public interface IocClassLoader {
      * @param baseType
      * @param instance
      * @param initialized
+     * @param order {@link IocBean#SYSTEM} {@link IocBean#USER}
      * @return
      */
     <T> IocClass append(Class<T> baseType, T instance, boolean initialized,int order);

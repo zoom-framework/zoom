@@ -11,6 +11,7 @@ import org.zoomdev.zoom.common.res.ClassResolvers;
 import org.zoomdev.zoom.common.res.ResScanner;
 import org.zoomdev.zoom.common.utils.CachedClasses;
 import org.zoomdev.zoom.common.utils.Classes;
+import org.zoomdev.zoom.common.utils.DataObject;
 import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.web.WebConfig;
 import org.zoomdev.zoom.web.action.ActionFactory;
@@ -45,6 +46,7 @@ public class WebModules {
     @Inject
     public void configCaster() {
         Caster.register(HttpServletRequest.class, Map.class, new Request2Map());
+        Caster.register(HttpServletRequest.class, DataObject.class, new Request2DataObject());
         Caster.registerCastProvider(new Request2BeanProvider());
     }
 
@@ -172,7 +174,28 @@ public class WebModules {
         }
 
     }
+    /**
+     * 将request转成map
+     *
+     * @param request
+     * @return
+     */
+    public static Map<String, Object> getParameters(HttpServletRequest request) {
+        Map<String, String[]> params = request.getParameterMap();
+        Map<String, Object> data = new HashMap<String, Object>();
+        for (Map.Entry<String, String[]> entry : params.entrySet()) {
+            data.put(entry.getKey(), entry.getValue()[0]);
+        }
+        return data;
+    }
+    static class Request2DataObject implements ValueCaster {
 
+        @Override
+        public Object to(Object src) {
+            HttpServletRequest request = (HttpServletRequest) src;
+            return DataObject.wrap(getParameters(request));
+        }
+    }
     static class Request2Map implements ValueCaster {
 
         @Override
@@ -181,20 +204,6 @@ public class WebModules {
             return getParameters(request);
         }
 
-        /**
-         * 将request转成map
-         *
-         * @param request
-         * @return
-         */
-        public static Map<String, Object> getParameters(HttpServletRequest request) {
-            Map<String, String[]> params = request.getParameterMap();
-            Map<String, Object> data = new HashMap<String, Object>();
-            for (Map.Entry<String, String[]> entry : params.entrySet()) {
-                data.put(entry.getKey(), entry.getValue()[0]);
-            }
-            return data;
-        }
     }
 
 
