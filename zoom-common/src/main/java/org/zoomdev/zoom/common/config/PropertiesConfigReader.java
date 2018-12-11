@@ -3,8 +3,10 @@ package org.zoomdev.zoom.common.config;
 import org.apache.commons.lang3.StringUtils;
 import org.zoomdev.zoom.common.io.Io;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -58,7 +60,7 @@ class PropertiesConfigReader implements ConfigLoader {
     public Map<String, Object> load(InputStream in) throws IOException {
         try {
             Properties p = new Properties();
-            p.load(in);
+            p.load(new InputStreamReader(in,"utf-8"));
             Map<String, Object> map = new HashMap<String, Object>();
             Enumeration<Object> keys = p.keys();
             while (keys.hasMoreElements()) {
