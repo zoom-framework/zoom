@@ -99,7 +99,7 @@ public class CollectionUtilsTest extends TestCase {
             assertTrue(!str.isEmpty());
         }
 
-        CollectionUtils.toMap(files,"status");
+    //    CollectionUtils.toMap(files,"status");
 
     }
 

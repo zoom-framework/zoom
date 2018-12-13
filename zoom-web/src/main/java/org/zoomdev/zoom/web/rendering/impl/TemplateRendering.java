@@ -82,19 +82,24 @@ public abstract class TemplateRendering implements Rendering {
             path = (String) result;
             data = merge(data, context);
         } else if (result instanceof Throwable) {
-            Throwable error = Classes.getCause((Throwable) result);
-            if (error instanceof StatusException) {
-                response.setStatus(((StatusException) error).getStatus());
+            Throwable exeption = Classes.getCause((Throwable) result);
+            if (exeption instanceof StatusException) {
+                response.setStatus(((StatusException) exeption).getStatus());
             } else {
                 response.setStatus(500);
             }
             path = webConfig.getErrorPage();
             data = new HashMap<String, Object>();
 
-            data.put("error",error);
-            data.put("message", error.getMessage());
-            data.put("stackTrace", Classes.formatStackTrace(error));
+            //注意这个时候仍然需要merge
+            merge(data,context);
+            /// 注意不要命名冲突
+            data.put("exception",exeption);
+            data.put("message", exeption.getMessage());
+            data.put("stackTrace", Classes.formatStackTrace(exeption));
             data.put("status",response.getStatus());
+
+
         }
 
         render(request, response, path, data);

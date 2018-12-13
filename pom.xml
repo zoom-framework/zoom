@@ -12,6 +12,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- 编译时的编码 -->
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+        <maven.compiler.source>1.6</maven.compiler.source>
+        <maven.compiler.target>1.6</maven.compiler.target>
     </properties>
     <distributionManagement>
         <repository>
@@ -248,4 +250,6 @@
 
         </dependencies>
     </dependencyManagement>
+
+
 </project>

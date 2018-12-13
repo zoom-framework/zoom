@@ -2,7 +2,6 @@ package org.zoomdev.zoom.ioc.modules;
 
 import junit.framework.TestCase;
 import org.zoomdev.zoom.common.config.ConfigReader;
-import org.zoomdev.zoom.common.res.ClassResolvers;
 import org.zoomdev.zoom.common.res.ResScanner;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.ioc.IocClassLoader;
@@ -24,16 +23,8 @@ public class TestIoc extends TestCase {
 
 
         IocClassLoader classLoader = ioc.getIocClassLoader();
-        ResScanner scanner = new ResScanner();
-        scanner.scan();
 
-
-        ConfigReader.getDefault().load(scanner.getFile("app.properties").getFile());
-
-        ClassResolvers resolvers = new ClassResolvers(
-                new SimpleConfigBuilder(ioc)
-        );
-        resolvers.visit(scanner);
+        ioc.getIocClassLoader().appendModule(ShopModule.class);
 
         ioc.waitFor();
 

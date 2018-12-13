@@ -1,7 +1,7 @@
 package org.zoomdev.zoom.plugin.impl;
 
 import org.zoomdev.zoom.common.io.Io;
-import org.zoomdev.zoom.common.res.ClassResolvers;
+import org.zoomdev.zoom.web.utils.ClassResolvers;
 import org.zoomdev.zoom.common.res.ResScanner;
 import org.zoomdev.zoom.common.res.ResScanner.ClassRes;
 import org.zoomdev.zoom.ioc.IocContainer;
@@ -10,8 +10,6 @@ import org.zoomdev.zoom.plugin.Plugin;
 import org.zoomdev.zoom.plugin.PluginException;
 import org.zoomdev.zoom.plugin.PluginHolder;
 import org.zoomdev.zoom.plugin.PluginHost;
-import org.zoomdev.zoom.web.action.ActionFactory;
-import org.zoomdev.zoom.web.action.ActionInterceptorFactory;
 import org.zoomdev.zoom.web.action.impl.SimpleActionBuilder;
 import org.zoomdev.zoom.web.router.Router;
 

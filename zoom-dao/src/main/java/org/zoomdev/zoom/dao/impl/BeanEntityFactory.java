@@ -13,7 +13,6 @@ import org.zoomdev.zoom.dao.adapters.EntityField;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 import org.zoomdev.zoom.dao.annotations.*;
 import org.zoomdev.zoom.dao.auto.AutoField;
-import org.zoomdev.zoom.dao.auto.AutoGenerateValueUsingFactory;
 import org.zoomdev.zoom.dao.auto.DatabaseAutoGenerateKey;
 import org.zoomdev.zoom.dao.auto.SequenceAutoGenerateKey;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
@@ -480,18 +479,6 @@ class BeanEntityFactory extends AbstractEntityFactory {
     private AutoField checkAutoField(Field field, AbstractEntityField entityField) {
         AutoGenerate autoGenerate = field.getAnnotation(AutoGenerate.class);
         if (autoGenerate != null) {
-            if (autoGenerate.factory() != AutoGenerateValue.class) {
-                //有factory
-                try {
-                    return new AutoGenerateValueUsingFactory(
-                            // 显示直接初始化，后期在加入ioc容器
-                            autoGenerate.factory().newInstance()
-                    );
-                } catch (Exception e) {
-                    throw new DaoException("不能初始化" + autoGenerate.factory());
-                }
-            }
-
 
             if (!autoGenerate.sequence().isEmpty()) {
                 return new SequenceAutoGenerateKey(autoGenerate.sequence());

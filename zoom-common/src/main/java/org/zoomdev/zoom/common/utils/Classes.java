@@ -413,19 +413,11 @@ public class Classes {
     }
 
     public static int getParameterCount(Constructor<?> constructor) {
-        if (supportParamterCount) {
-            return constructor.getParameterCount();
-        } else {
-            return constructor.getParameterTypes().length;
-        }
+        return constructor.getParameterTypes().length;
     }
 
     public static int getParameterCount(Method method) {
-        if (supportParamterCount) {
-            return method.getParameterCount();
-        } else {
-            return method.getParameterTypes().length;
-        }
+        return method.getParameterTypes().length;
     }
 
 

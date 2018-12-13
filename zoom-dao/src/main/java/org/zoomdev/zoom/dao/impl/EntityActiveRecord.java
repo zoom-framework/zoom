@@ -261,7 +261,34 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
             }
         });
     }
+    @Override
+    public int insertIgnoreDuplicated(final T data, final String... keys) {
+        assert (data != null);
 
+        if (data instanceof Record && strict) {
+            validateRecord((Record) data);
+        }
+
+        return execute(new ConnectionExecutor() {
+            @Override
+            public Integer execute(Connection connection) throws SQLException {
+                EntitySqlUtils.buildInsertIgnoreDuplicated(
+                        builder,
+                        dao.getDriver(),
+                        entity,
+                        data,
+                        filter,
+                        ignoreNull,
+                        keys);
+                return EntitySqlUtils.executeInsert(
+                        connection,
+                        entity,
+                        data,
+                        builder,output
+                );
+            }
+        });
+    }
 
     @Override
     public int insert(final T data) {
@@ -474,6 +501,8 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
 
         return result.getValue();
     }
+
+
 
     @Override
     public int update(final Iterable<T> it) {

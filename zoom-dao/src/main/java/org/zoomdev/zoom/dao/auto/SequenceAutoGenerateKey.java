@@ -11,7 +11,7 @@ public class SequenceAutoGenerateKey extends DatabaseAutoGenerateKey {
     }
 
     @Override
-    public String getSqlInsert(Object entity, EntityField entityField) {
+    public String getInsertPlaceHolder(Object entity, EntityField entityField) {
         return String.format("(SELECT %s.NEXTVAL FROM DUAL)", sequenceName);
     }
 }

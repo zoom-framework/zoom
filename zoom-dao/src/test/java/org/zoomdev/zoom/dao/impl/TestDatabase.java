@@ -1014,6 +1014,7 @@ public class TestDatabase extends AbstractDaoTest {
 
 
                 shop = new SimpleShop();
+                shop.setId(String.valueOf(System.currentTimeMillis()));
                 shop.setTitle("测试商店");
                 shop.setAddress("地理位置");
                 dao.ar(SimpleShop.class).insert(shop);
@@ -1052,6 +1053,7 @@ public class TestDatabase extends AbstractDaoTest {
             public void run(Dao dao) {
 
                 SimpleShop shop = new SimpleShop();
+                shop.setId(String.valueOf(Math.random()));
                 shop.setAddress("测试地址");
                 shop.setId("testBusiness");
                 dao.ar(SimpleShop.class).insert(shop);

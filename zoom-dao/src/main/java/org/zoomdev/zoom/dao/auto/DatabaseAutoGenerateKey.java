@@ -20,12 +20,12 @@ public class DatabaseAutoGenerateKey implements AutoField {
     }
 
     @Override
-    public String getSqlInsert(Object entity, EntityField entityField) {
+    public String getInsertPlaceHolder(Object entity, EntityField entityField) {
         return null;
     }
 
-    @Override
-    public Object generateValue(Object entity, EntityField entityField) {
-        return null;
-    }
+//    @Override
+//    public Object generateValue(Object entity, EntityField entityField) {
+//        return null;
+//    }
 }

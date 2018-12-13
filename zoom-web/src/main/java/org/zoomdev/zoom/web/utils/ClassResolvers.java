@@ -1,7 +1,9 @@
-package org.zoomdev.zoom.common.res;
+package org.zoomdev.zoom.web.utils;
 
 
 import org.zoomdev.zoom.common.Destroyable;
+import org.zoomdev.zoom.common.res.ClassResolver;
+import org.zoomdev.zoom.common.res.ResScanner;
 import org.zoomdev.zoom.common.res.ResScanner.ClassRes;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.common.utils.Visitor;
@@ -28,18 +30,9 @@ public class ClassResolvers  {
         this.resolvers.add(classResolver);
     }
 
-
     public void visit(final ResScanner scanner) {
-
         for(final ClassResolver resolver : resolvers){
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    resolver.resolve(scanner);
-                }
-            }).start();
-
+            resolver.resolve(scanner);
         }
 
     }

@@ -25,10 +25,5 @@ public @interface AutoGenerate {
      */
     String sequence() default "";
 
-    /**
-     * 如果有的话 , 相当于自己提供一个本字段的生成方法。
-     *
-     * @return
-     */
-    Class<? extends AutoGenerateValue> factory() default AutoGenerateValue.class;
+
 }

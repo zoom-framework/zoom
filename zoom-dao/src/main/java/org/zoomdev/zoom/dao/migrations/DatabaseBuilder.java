@@ -1,5 +1,7 @@
 package org.zoomdev.zoom.dao.migrations;
 
+import javax.xml.crypto.Data;
+
 /**
  * dao.newBuilder()
  * .create("user)
@@ -41,6 +43,8 @@ public interface DatabaseBuilder {
 
     // Column start
     DatabaseBuilder string(int len);
+
+    DatabaseBuilder nstring(int len);
 
     DatabaseBuilder text();
 

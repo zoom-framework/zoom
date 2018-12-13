@@ -33,7 +33,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
             String serverPath,
             String method,
             Object data
-    ) {
+    ) throws UnsupportedEncodingException {
         return json(serverPath, method, data, new HashMap<String, String>());
     }
 
@@ -65,10 +65,10 @@ public class MockHttpServletRequest implements HttpServletRequest {
             String method,
             Object data,
             Map<String, String> headers
-    ) {
+    ) throws UnsupportedEncodingException {
         return new MockHttpServletRequest(
                 serverPath, method, "application/json;charset=utf-8",
-                JSON.stringify(data).getBytes(),
+                JSON.stringify(data).getBytes("UTF-8"),
                 headers,
                 new HashMap<String, String[]>()
         );

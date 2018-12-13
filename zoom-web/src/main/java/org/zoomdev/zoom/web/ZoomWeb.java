@@ -9,7 +9,7 @@ import org.zoomdev.zoom.common.config.ConfigReader;
 import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.common.filter.OrFilter;
 import org.zoomdev.zoom.common.filter.pattern.PatternFilterFactory;
-import org.zoomdev.zoom.common.res.ClassResolvers;
+import org.zoomdev.zoom.web.utils.ClassResolvers;
 import org.zoomdev.zoom.common.res.ResLoader;
 import org.zoomdev.zoom.common.res.ResScanner;
 import org.zoomdev.zoom.common.utils.CachedClasses;
@@ -20,7 +20,6 @@ import org.zoomdev.zoom.web.action.ActionFactory;
 import org.zoomdev.zoom.web.action.ActionHandler;
 import org.zoomdev.zoom.web.action.impl.SimpleActionBuilder;
 import org.zoomdev.zoom.web.router.Router;
-import org.zoomdev.zoom.web.router.impl.BracesRouterParamRule;
 import org.zoomdev.zoom.web.router.impl.ZoomRouter;
 import org.zoomdev.zoom.web.utils.WebUtils;
 

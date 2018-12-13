@@ -96,21 +96,5 @@ public class TestRes extends TestCase {
     }
 
 
-    public void testScanInputStream() throws IOException {
 
-        ResScanner scanner = new ResScanner();
-        scanner.scan();
-
-        ClassResolvers resolvers = new ClassResolvers(
-                new ClassResolver() {
-                    @Override
-                    public void resolve(ResScanner scanner) {
-
-                    }
-                }
-        );
-
-
-        resolvers.visit(scanner);
-    }
 }

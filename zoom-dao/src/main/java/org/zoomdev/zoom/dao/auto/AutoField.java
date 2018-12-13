@@ -24,16 +24,16 @@ public interface AutoField {
 
 
     /**
-     * 用于insert，比如 select xxx.next_val() from dual
+     * 用于insert，比如 select xxx.next_val() from dual,占位符
      *
      * @return
      */
-    String getSqlInsert(Object entity, EntityField entityField);
+    String getInsertPlaceHolder(Object entity, EntityField entityField);
 
     /**
-     * 某些情况下可以直接使用程序自动生成值
+     * 某些情况下可以直接使用程序自动生成值,不建议
      *
      * @return
      */
-    Object generateValue(Object entity, EntityField entityField);
+    //Object generateValue(Object entity, EntityField entityField);
 }

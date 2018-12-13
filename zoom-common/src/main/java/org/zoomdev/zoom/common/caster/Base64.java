@@ -1,6 +1,8 @@
 package org.zoomdev.zoom.common.caster;
 
 
+import org.zoomdev.zoom.common.exceptions.ZoomException;
+
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
@@ -444,7 +446,11 @@ public class Base64 {
     }
 
     public final static String encodeToString(String input) {
-        return encodeToString(input.getBytes(), false);
+        try {
+            return encodeToString(input.getBytes("utf-8"), false);
+        } catch (UnsupportedEncodingException e) {
+            throw new ZoomException(e);
+        }
     }
 
     // ****************************************************************************************

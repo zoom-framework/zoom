@@ -265,7 +265,7 @@ public class MysqlDriver extends AbsDriver {
             case Types.VARCHAR:
                 return new StringBuilder().append("varchar(").append(columnMeta.getMaxLen()).append(")").toString();
             case Types.NVARCHAR:
-                return new StringBuilder().append("varchar(").append(columnMeta.getMaxLen()).append(")").toString();
+                return new StringBuilder().append("nvarchar(").append(columnMeta.getMaxLen()).append(")").toString();
             case Types.DATE:
                 return "date";
             case Types.TIME:

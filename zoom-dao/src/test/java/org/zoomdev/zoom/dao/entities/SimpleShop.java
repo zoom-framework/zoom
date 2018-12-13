@@ -23,8 +23,6 @@ public class SimpleShop {
         this.title = title;
     }
 
-    // 模拟的next,并模拟数据适配
-    @AutoGenerate(factory = MockAutoGenerateValue.class)
     private String id;
 
     private String title;

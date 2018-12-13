@@ -26,7 +26,7 @@ public class ActionTest extends TestCase {
 
     ZoomFilter filter = new ZoomFilter();
 
-    public void test() throws ServletException, IOException {
+    public void test1() throws ServletException, IOException {
         FilterConfig config = mock(FilterConfig.class);
         when(config.getInitParameter("exclusions")).thenReturn("*.js|*.gif|*.jpg|*.png|*.css|*.ico|*.jar");
 
@@ -47,7 +47,7 @@ public class ActionTest extends TestCase {
                 "id", "1",  //passs different type
                 "age", 20,
                 "date", "2017-08-12",
-                "name", "韩贝贝"
+                "name", "韩梅梅"
         ));
         assertEquals(monitor.count(), ++count);
         assertEquals(monitor.arguments()[0], 1);
@@ -358,6 +358,10 @@ public class ActionTest extends TestCase {
                 data,
                 new HashMap<String, String>()
         );
+    }
+
+    public void test(){
+
     }
 
 }

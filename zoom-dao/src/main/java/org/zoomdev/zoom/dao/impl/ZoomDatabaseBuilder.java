@@ -139,6 +139,13 @@ public class ZoomDatabaseBuilder implements DatabaseBuilder {
         return this;
     }
 
+    @Override
+    public DatabaseBuilder nstring(int len) {
+        columnMeta.setType(Types.NVARCHAR);
+        columnMeta.setMaxLen(len);
+        return this;
+    }
+
 
     @Override
     public DatabaseBuilder text() {

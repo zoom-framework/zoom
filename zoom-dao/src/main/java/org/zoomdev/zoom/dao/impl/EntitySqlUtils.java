@@ -7,6 +7,7 @@ import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.common.utils.CollectionUtils;
 import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.Entity;
+import org.zoomdev.zoom.dao.EntityFactory;
 import org.zoomdev.zoom.dao.Sql;
 import org.zoomdev.zoom.dao.adapters.EntityField;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
@@ -37,6 +38,7 @@ public class EntitySqlUtils {
         builder.buildSelect();
         return Caster.to(EntitySqlUtils.executeGetValue(connection, builder, output), typeOfE);
     }
+
 
     static class PatterFilter implements Filter<EntityField> {
 
@@ -80,6 +82,89 @@ public class EntitySqlUtils {
         }
     }
 
+    public static <T> void buildInsertIgnoreDuplicated(
+            SimpleSqlBuilder builder,
+            SqlDriver driver,
+            Entity entity,
+            T data,
+            Filter<EntityField> filter,
+            boolean ignoreNull,
+            String[] keys) {
+        StringBuilder sql = builder.sql;
+        List<StatementAdapter> insertFields = builder.adapters;
+        List<Object> values = builder.values;
+        EntityField[] fields = entity.getEntityFields();
+        sql.append("INSERT INTO ").append(
+                driver.protectTable(entity.getTable())
+        ).append(" (");
+        boolean first = true;
+        int index = 0;
+        String[] placeHolder = new String[fields.length];
+        // 计算占位符是什么，有可能是? ,也有可能是如 TO_DATE('YYYYMMDD',?)之类的函数调用
+        // 也有可能直接是一个值，不需要占位符，如XXX.nextval(),有占位符，则需要值，没有占位符，则不需要值
+        for (EntityField entityField : fields) {
+            //插入数据,如果有忽略掉其他判断
+            AutoField autoField = entityField.getAutoField();
+            Object value;
+            if (autoField != null) {
+                String placeHolderValue;
+                if ((placeHolderValue = autoField.getInsertPlaceHolder(data, entityField)) != null) {
+                    placeHolder[index] = placeHolderValue;
+                } else {
+                    // 都没有？ 不需要处理
+                    continue;
+                }
+            } else {
+                if (filter == null || filter.accept(entityField)) {
+                    value = entityField.get(data);
+                    if (value == null && ignoreNull) {
+                        continue;
+                    }
+                    if (first) {
+                        first = false;
+                    } else {
+                        sql.append(COMMA);
+                    }
+                    appendValue(values, value, insertFields, entityField, sql, placeHolder, index, driver);
+                }
+            }
+            ++index;
+        }
+
+        sql.append(") SELECT ");
+        first = true;
+        for (int i = 0; i < index; ++i) {
+            String value = placeHolder[i];
+            if (value == null)
+                continue;
+            if(first){
+                first = false;
+            }else{
+                sql.append(",");
+            }
+            sql.append("?");
+        }
+        sql.append(" FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM ").append(entity.getTable()).append(" WHERE ");
+        first = true;
+        for (String key : keys) {
+            if(first){
+                first = false;
+            }else{
+                sql.append(" AND ");
+            }
+
+            EntityField field = entity.getFieldByFieldName(key);
+            sql.append(field.getColumnName()).append("=?");
+            values.add(field.get(data));
+        }
+        sql.append(")");
+
+        //在insert的时候，需要判断一下null值是否可以入库
+        validateValues(entity, builder);
+
+
+    }
+
     public static void buildInsert(
             SimpleSqlBuilder builder,
             SqlDriver driver,
@@ -92,34 +177,27 @@ public class EntitySqlUtils {
         StringBuilder sql = builder.sql;
         List<StatementAdapter> insertFields = builder.adapters;
         List<Object> values = builder.values;
-
         EntityField[] fields = entity.getEntityFields();
         sql.append("INSERT INTO ").append(
                 driver.protectTable(entity.getTable())
         ).append(" (");
         boolean first = true;
         int index = 0;
-        String[] specialValues = new String[fields.length];
+        String[] placeHolder = new String[fields.length];
+        // 计算占位符是什么，有可能是? ,也有可能是如 TO_DATE('YYYYMMDD',?)之类的函数调用
+        // 也有可能直接是一个值，不需要占位符，如XXX.nextval(),有占位符，则需要值，没有占位符，则不需要值
         for (EntityField entityField : fields) {
             //插入数据,如果有忽略掉其他判断
             AutoField autoField = entityField.getAutoField();
             Object value;
             if (autoField != null) {
-                String specialValue;
-                if ((specialValue = autoField.getSqlInsert(data, entityField)) != null) {
-                    specialValues[index] = specialValue;
-                } else if ((value = autoField.generateValue(data, entityField)) != null) {
-                    if (first) {
-                        first = false;
-                    } else {
-                        sql.append(COMMA);
-                    }
-                    appendValue(values, value, insertFields, entityField, sql, specialValues, index, driver);
+                String placeHolderValue;
+                if ((placeHolderValue = autoField.getInsertPlaceHolder(data, entityField)) != null) {
+                    placeHolder[index] = placeHolderValue;
                 } else {
                     // 都没有？ 不需要处理
                     continue;
                 }
-
             } else {
                 if (filter == null || filter.accept(entityField)) {
                     value = entityField.get(data);
@@ -131,7 +209,7 @@ public class EntitySqlUtils {
                     } else {
                         sql.append(COMMA);
                     }
-                    appendValue(values, value, insertFields, entityField, sql, specialValues, index, driver);
+                    appendValue(values, value, insertFields, entityField, sql, placeHolder, index, driver);
                 }
             }
             ++index;
@@ -139,8 +217,9 @@ public class EntitySqlUtils {
         sql.append(") VALUES (");
         first = true;
         for (int i = 0; i < index; ++i) {
-            String value = specialValues[i];
-            if (value == null) continue;
+            String value = placeHolder[i];
+            if (value == null)
+                continue;
             if (first) {
                 first = false;
             } else {
@@ -151,9 +230,11 @@ public class EntitySqlUtils {
         sql.append(')');
 
         //在insert的时候，需要判断一下null值是否可以入库
+        validateValues(entity, builder);
 
+    }
 
-        //是否有多余的
+    private static void validateValues(Entity entity, SimpleSqlBuilder builder) {
         Set<EntityField> set = CollectionUtils.asSet(entity.getEntityFields());
         for (Object entityField : builder.adapters) {
             set.remove(entityField);
@@ -163,11 +244,9 @@ public class EntitySqlUtils {
             for (EntityField entityField : set) {
                 validateValue(entityField, null);
             }
-
         }
-
-
     }
+
 
     public static void buildUpdate(
             SimpleSqlBuilder builder,
@@ -267,14 +346,14 @@ public class EntitySqlUtils {
                                     List<StatementAdapter> insertFields,
                                     EntityField entityField,
                                     StringBuilder sql,
-                                    String[] specialValues,
+                                    String[] placeHolder,
                                     int index,
                                     SqlDriver driver) {
         validateValue(entityField, value);
         values.add(value);
         insertFields.add(entityField);
         driver.protectColumn(sql, entityField.getColumnName());
-        specialValues[index] = "?";
+        placeHolder[index] = "?";
     }
 
 
