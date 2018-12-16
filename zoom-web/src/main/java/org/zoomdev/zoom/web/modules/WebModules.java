@@ -1,5 +1,6 @@
 package org.zoomdev.zoom.web.modules;
 
+import org.zoomdev.zoom.aop.AopFactory;
 import org.zoomdev.zoom.common.ConfigurationConstants;
 import org.zoomdev.zoom.common.annotations.Inject;
 import org.zoomdev.zoom.common.annotations.IocBean;
@@ -10,11 +11,13 @@ import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.utils.CachedClasses;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.common.utils.DataObject;
+import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.web.WebConfig;
 import org.zoomdev.zoom.web.action.ActionFactory;
 import org.zoomdev.zoom.web.action.ActionInterceptorFactory;
 import org.zoomdev.zoom.web.action.impl.SimpleActionFactory;
 import org.zoomdev.zoom.web.action.impl.SimpleActionInterceptorFactory;
+import org.zoomdev.zoom.web.aop.factory.AopMethodInterceptorFactory;
 import org.zoomdev.zoom.web.parameter.ParameterParserFactory;
 import org.zoomdev.zoom.web.parameter.PreParameterParserManager;
 import org.zoomdev.zoom.web.parameter.parser.impl.SimpleParameterParserFactory;
@@ -67,6 +70,10 @@ public class WebModules {
         return new TemplateEngineRendering(manager,config);
     }
 
+    @Inject
+    public void config(AopFactory aopFactory, IocContainer ioc){
+        aopFactory.addMethodInterceptorFactory(new AopMethodInterceptorFactory(ioc),0);
+    }
 
     /**
      * 涉及拦截器都是系统级别

@@ -154,6 +154,9 @@ public class EntitySqlUtils {
             }
 
             EntityField field = entity.getFieldByFieldName(key);
+            if(field==null){
+                throw new DaoException("找不到"+key+"对应的字段，所有可能的字段:"+entity.getAvailableFields());
+            }
             sql.append(field.getColumnName()).append("=?");
             values.add(field.get(data));
         }

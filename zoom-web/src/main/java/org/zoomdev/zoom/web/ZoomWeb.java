@@ -76,8 +76,6 @@ public class ZoomWeb {
 
         ClassResolvers classResolvers = new ClassResolvers(configBuilder,actionBuilder);
         classResolvers.visit(scanner);
-
-        WebUtils.setStartupSuccess();
     }
 
     private void createRouter() {

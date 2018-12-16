@@ -45,7 +45,7 @@ class ZoomBeanTableAdapter implements BeanTableAdapter {
     public BeanTableInfo getTableInfo(Class<?> type) {
         Table table = type.getAnnotation(Table.class);
         if (table == null) {
-            throw new DaoException("找不到Table标注，不能使用本方法绑定实体");
+            throw new DaoException("找不到"+type+"的Table标注，不能使用本方法绑定实体");
         }
         String tableName = table.value();
         if(StringUtils.isEmpty(tableName)){
