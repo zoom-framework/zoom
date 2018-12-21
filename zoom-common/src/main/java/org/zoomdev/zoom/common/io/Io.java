@@ -137,4 +137,17 @@ public class Io {
             outputStream.write(bytes,0,len);
         }
     }
+
+
+    public static void copyAndClose(
+            InputStream inputStream,
+            OutputStream outputStream) throws IOException{
+        try{
+            copy(inputStream,outputStream);
+        }finally {
+            close(inputStream);
+            close(outputStream);
+        }
+
+    }
 }
