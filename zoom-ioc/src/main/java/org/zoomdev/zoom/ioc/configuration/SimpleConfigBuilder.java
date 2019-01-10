@@ -8,8 +8,10 @@ import org.zoomdev.zoom.common.filter.pattern.PatternFilterFactory;
 import org.zoomdev.zoom.common.res.ClassResolver;
 import org.zoomdev.zoom.common.res.ResScanner;
 import org.zoomdev.zoom.common.utils.CachedClasses;
+import org.zoomdev.zoom.common.utils.OrderedList;
 import org.zoomdev.zoom.ioc.*;
 import org.zoomdev.zoom.ioc.impl.ZoomIocKey;
+import org.zoomdev.zoom.ioc.modules.IocModule;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -89,33 +91,40 @@ public class SimpleConfigBuilder extends ClassResolver {
 
         time = System.currentTimeMillis();
 
+        //Injectors
+
+
+        OrderedList<Pair> injectors = new OrderedList<Pair>();
         for(Class<?> type : types){
             IocObject module = ioc.get(new ZoomIocKey(type));
+
             IocClass iocClass = module.getIocClass();
+
+            IocField[] fields = iocClass.getIocFields();
+            if(fields!=null && fields.length >0){
+                for(IocInjector injector : fields){
+                    Pair pair = new Pair(module,injector);
+                    injectors.add(pair,injector.getOrder());
+                }
+            }
+
             IocMethod[] methods = iocClass.getIocMethods();
-            if(methods==null || methods.length ==0){
-                continue;
-            }
-            int index = 0;
-            for(IocMethod method : methods){
-                if(method==null){
-                    continue;
+            if(methods!=null && methods.length>0){
+                for(IocInjector injector : methods){
+                    Pair pair = new Pair(module,injector);
+                    injectors.add(pair,injector.getOrder());
                 }
-                if(hasSystemOrder(method)){
-                    //inject
-                    method.inject(module);
-                    methods[index] = null;
-                }
-                ++index;
             }
+
         }
 
-        time = System.currentTimeMillis();
-        for(Class<?> type : types){
-            ioc.fetch(type);
+        //首先执行order<=2的
+        for(Pair pair :  injectors.toList()){
+            pair.injector.inject(pair.obj);
         }
 
-        time = System.currentTimeMillis();
+
+       // time = System.currentTimeMillis();
         // System.out.println("==========config build 成功"+(System.currentTimeMillis()-time)+"==========");
 
         list.clear();
@@ -124,17 +133,15 @@ public class SimpleConfigBuilder extends ClassResolver {
 
     }
 
-    private boolean hasSystemOrder(IocMethod method){
-        IocKey[] keys = method.getParameterKeys();
-        for(IocKey key : keys){
-            IocClass iocClass = ioc.getIocClassLoader().get(key);
-            if(iocClass==null){
-                throw new IocException("未找到指定的IocClass:"+key);
-            }
-            if(iocClass.getOrder() == IocBean.SYSTEM){
-                return true;
-            }
+
+    static class Pair{
+        IocInjector injector;
+        IocObject obj;
+
+        public Pair( IocObject obj,IocInjector injector) {
+            this.injector = injector;
+            this.obj = obj;
         }
-        return false;
     }
+
 }

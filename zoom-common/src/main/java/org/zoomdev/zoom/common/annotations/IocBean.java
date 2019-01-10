@@ -14,13 +14,32 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 public @interface IocBean {
 
+    /**
+     * field=>config
+     * field=>system
+     *
+     *
+     * method=>config
+     * method=>system
+     *
+     *
+     *
+     * field=>user
+     * method=>user
+     * method=>no parameter
+     *
+     */
+
+    /// 配重最先执行
+    int CONFIG = 1;
+
     /// order = SYSTEM , 表示依赖本IocBean指定Bean的方法将会优先执行。
-    int SYSTEM = Integer.MIN_VALUE;
+    int SYSTEM = 2;
 
     /// order = USER, 表示会对方法或者字段注入无要求。
-    int USER = 1;
+    int USER = 999999;
 
-
+    int MAX = Integer.MAX_VALUE;
     /**
      * ioc容器中的名称
      *

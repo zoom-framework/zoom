@@ -1,5 +1,6 @@
 package org.zoomdev.zoom.ioc.impl;
 
+import org.zoomdev.zoom.common.annotations.IocBean;
 import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.common.config.ConfigReader;
 import org.zoomdev.zoom.ioc.IocContainer;
@@ -25,4 +26,8 @@ public class ZoomConfigIocField extends ZoomIocField {
         }
     }
 
+    @Override
+    public int getOrder() {
+        return IocBean.CONFIG-10;
+    }
 }

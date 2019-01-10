@@ -148,6 +148,17 @@ public class Io {
             close(inputStream);
             close(outputStream);
         }
+    }
+
+    public static void writeBytes(File file,byte[] bytes) throws IOException {
+        OutputStream outputStream =null;
+        try{
+            outputStream = new FileOutputStream(file);
+            outputStream.write(bytes);
+            outputStream.flush();
+        }finally {
+            close(outputStream);
+        }
 
     }
 }

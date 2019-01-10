@@ -1,5 +1,6 @@
 package org.zoomdev.zoom.ioc.impl;
 
+import org.zoomdev.zoom.common.annotations.IocBean;
 import org.zoomdev.zoom.ioc.*;
 
 import java.lang.annotation.Annotation;
@@ -88,5 +89,31 @@ public class ZoomIocMethod extends IocBase implements IocMethod {
     @Override
     public void inject(IocObject target) {
         invoke(target);
+    }
+
+    int order = -1;
+
+    @Override
+    public int getOrder() {
+        //如果没有参数，那么就直接执行
+        if(order == -1){
+            if(parameterKeys==null || parameterKeys.length==0){
+                order = IocBean.MAX;
+            }else{
+                //评估下顺序，往后面推
+                int order = 0;
+                for(IocKey key : parameterKeys){
+                    IocClass iocClass = ioc.getIocClassLoader().get(key);
+                    if(iocClass==null){
+                        throw new IocException("未找到指定的IocClass:"+key);
+                    }
+                    order += iocClass.getOrder();
+                }
+                //最后取一个平均值
+                this.order = order / parameterKeys.length;
+            }
+
+        }
+        return order;
     }
 }

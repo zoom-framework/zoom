@@ -24,9 +24,12 @@ public class TestIoc extends TestCase {
 
         IocClassLoader classLoader = ioc.getIocClassLoader();
 
+        ioc.getIocClassLoader().appendModule(IocModule.class);
         ioc.getIocClassLoader().appendModule(ShopModule.class);
 
-        ioc.waitFor();
+        ioc.fetch(IocModule.class);
+        ioc.fetch(ShopModule.class);
+
 
         ShopService shopService = ioc.fetch(ShopService.class);
 

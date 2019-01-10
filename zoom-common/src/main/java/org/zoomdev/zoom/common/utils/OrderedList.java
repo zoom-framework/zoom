@@ -56,23 +56,37 @@ public class OrderedList<E> {
         list.clear();
     }
 
+
+    public List<E> toList() {
+        final List<OrderInfo> list = this.list;
+        Collections.sort(list, comparator);
+        return Collections.unmodifiableList(CollectionUtils.map(list, new Converter<OrderInfo, E>() {
+            @Override
+            public E convert(OrderInfo data) {
+                return data.element;
+            }
+        }));
+    }
+
+    private Comparator comparator = new Comparator<OrderInfo>() {
+
+        @Override
+        public int compare(OrderInfo arg0, OrderInfo arg1) {
+            if (arg0.order > arg1.order) {
+                return 1;
+            }
+            if (arg0.order == arg1.order) {
+                return 0;
+            }
+            return -1;
+        }
+    };
+
     public E[] toArray(E[] array) {
         assert (array != null && array.length == list.size());
         final List<OrderInfo> list = this.list;
         int c = list.size();
-        Collections.sort(list, new Comparator<OrderInfo>() {
-
-            @Override
-            public int compare(OrderInfo arg0, OrderInfo arg1) {
-                if (arg0.order > arg1.order) {
-                    return 1;
-                }
-                if (arg0.order == arg1.order) {
-                    return 0;
-                }
-                return -1;
-            }
-        });
+        Collections.sort(list, comparator);
 
         for (int i = 0; i < c; ++i) {
             OrderInfo info = list.get(i);

@@ -13,7 +13,7 @@ import org.zoomdev.zoom.ioc.IocContainer;
 public class AopModule {
 
 
-    @IocBean
+    @IocBean(order = IocBean.SYSTEM)
     public AopFactory getAopFactory() {
         return new JavassistAopFactory();
     }

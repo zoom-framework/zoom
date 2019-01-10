@@ -321,6 +321,15 @@ public class EntitySqlUtils {
 
     }
 
+    /**
+     * 在update的时候进行值的判断需要注意的是：
+     * 只有在有值，并且这个值为null的情况下才会判断空
+     * @param values
+     * @param adapters
+     * @param field
+     * @param index
+     * @param value
+     */
     protected static void appendValue(
             List<Object> values,
             List<StatementAdapter> adapters,
@@ -471,7 +480,6 @@ public class EntitySqlUtils {
         if (entityFields.size() == 0) {
             throw new DaoException("必须指定至少一个selet字段");
         }
-
     }
 
 

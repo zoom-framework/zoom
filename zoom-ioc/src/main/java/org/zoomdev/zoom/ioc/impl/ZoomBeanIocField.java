@@ -1,5 +1,6 @@
 package org.zoomdev.zoom.ioc.impl;
 
+import org.zoomdev.zoom.common.annotations.IocBean;
 import org.zoomdev.zoom.ioc.*;
 
 import java.lang.reflect.Field;
@@ -22,5 +23,18 @@ public class ZoomBeanIocField extends ZoomIocField implements IocField {
         }
     }
 
+    private int order=-1 ;
 
+    ///根据Type的Order
+    @Override
+    public int getOrder() {
+        if(order==-1){
+            IocClass iocClass = ioc.getIocClassLoader().get(key);
+            if(iocClass==null){
+                throw new IocException("未找到指定的IocClass:"+key);
+            }
+            order = iocClass.getOrder() - 10;
+        }
+        return order;
+    }
 }
