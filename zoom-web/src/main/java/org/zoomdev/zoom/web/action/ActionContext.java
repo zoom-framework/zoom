@@ -5,8 +5,10 @@ import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.utils.Classes;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -251,27 +253,68 @@ public class ActionContext implements Destroyable {
 
 
     public ActionContext setSession(String key,Object value){
-        if(request==null){
-            throw new ZoomException("Request is null");
+        HttpSession session = null;
+        if(request!=null  && ( (session = request.getSession()) != null)  ){
+            try{
+                session.setAttribute(key,value);
+            }catch (Throwable t){
+
+            }
         }
-        request.getSession().setAttribute(key,value);
         return this;
     }
 
 
     public ActionContext removeSession(String key){
-        if(request==null){
-            throw new ZoomException("Request is null");
+        HttpSession session = null;
+        if(request!=null  && ( (session = request.getSession()) != null)  ){
+            try{
+                session.removeAttribute(key);
+            }catch (Throwable t){
+
+            }
         }
-        request.getSession().removeAttribute(key);
         return this;
     }
 
 
-    public Object getSession(String key){
-        if(request==null){
-            throw new ZoomException("Request is null");
+    /**
+     * 有可能获取到null
+     * @return
+     */
+    public Cookie[] getCookies(){
+        if(request!=null){
+            return request.getCookies();
         }
-        return request.getSession().getAttribute(key);
+        return null;
+    }
+
+
+    /**
+     * 有可能获取到null
+     * @return
+     */
+    public String getSessionId(){
+        HttpSession session = null;
+        if(request!=null  && ( (session = request.getSession()) != null)  ){
+            try{
+                return session.getId();
+            }catch (Throwable t){
+
+            }
+        }
+        return null;
+    }
+
+    public Object getSession(String key){
+        HttpSession session = null;
+        if(request!=null  && ( (session = request.getSession()) != null)  ){
+            try{
+                return session.getAttribute(key);
+            }catch (Throwable t){
+
+            }
+        }
+        return null;
     }
 }

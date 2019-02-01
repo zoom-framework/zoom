@@ -56,7 +56,7 @@ public class ClassResolvers  {
                     try {
                         future.get();
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        return;
                     } catch (ExecutionException e) {
                         throw new ZoomException(e);
                     }
