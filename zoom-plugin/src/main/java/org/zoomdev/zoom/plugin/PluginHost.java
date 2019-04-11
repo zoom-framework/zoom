@@ -20,7 +20,7 @@ public interface PluginHost {
 
     PluginHolder getPluginById(String id);
 
-    PluginHolder load(URL url) throws PluginException;
+    PluginHolder load(String url) throws PluginException;
 
 
 

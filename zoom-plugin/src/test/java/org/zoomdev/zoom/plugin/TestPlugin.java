@@ -50,7 +50,7 @@ public class TestPlugin {
         List<ResScanner.Res> list= scanner.findFile("*demo*.jar");
         assertTrue(list.size()>0);
         ResScanner.Res res = list.get(0);
-        PluginHolder holder = host.load(new URL("file://"+res.getFile().getAbsolutePath()));
+        PluginHolder holder = host.load("file://"+res.getFile().getAbsolutePath());
 
         host.install(holder);
 
@@ -91,7 +91,7 @@ public class TestPlugin {
         List<ResScanner.Res> list= scanner.findFile("*demo*.jar");
         assertTrue(list.size()>0);
         ResScanner.Res res = list.get(0);
-        PluginHolder holder = host.load(new URL("file://"+res.getFile().getAbsolutePath()));
+        PluginHolder holder = host.load("file://"+res.getFile().getAbsolutePath());
 
 
 
@@ -143,7 +143,7 @@ public class TestPlugin {
         List<ResScanner.Res> list= scanner.findFile("*.class");
         assertTrue(list.size()>0);
         ResScanner.Res res = list.get(0);
-        PluginHolder holder = host.load(new URL("file://"+res.getFile().getAbsolutePath()));
+        PluginHolder holder = host.load("file://"+res.getFile().getAbsolutePath());
 
 
     }

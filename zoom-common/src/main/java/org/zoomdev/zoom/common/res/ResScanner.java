@@ -64,6 +64,10 @@ public class ResScanner implements Destroyable {
 
     };
 
+    public void appendRes(ClassRes res) {
+        classes.add(res);
+    }
+
 
     /**
      * 为了将来可能的扩展，这里将Class、jar、文件进行抽象
@@ -132,7 +136,18 @@ public class ResScanner implements Destroyable {
 
     }
 
-    public class ClassRes extends FileRes {
+    public static class BytesClassRes extends  ClassRes{
+
+        public BytesClassRes(String className, byte[] file, ClassLoader classLoader) {
+            super(className, null, classLoader);
+        }
+
+
+
+    }
+
+
+    public static class ClassRes extends FileRes {
 
         private String className;
         private ClassLoader classLoader;

@@ -1,14 +1,16 @@
 package org.zoomdev.zoom.plugin.impl;
 
-import org.zoomdev.zoom.common.HttpUtil;
 import org.zoomdev.zoom.common.io.Io;
+import org.zoomdev.zoom.http.HttpUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -20,27 +22,27 @@ public class JarClassLoader extends ClassLoader {
     }
 
 
+    public Set<String> getAllClassNames(){
+        return bytesMap.keySet();
+    }
+
+    public byte[] getBytes(String key){
+        return bytesMap.get(key);
+    }
+
+
 
     public static JarClassLoader fromUrls(String[] urls) throws IOException {
         Map<String,byte[]> bytesMap = new HashMap<String, byte[]>();
         for(String url : urls){
-            HttpURLConnection connection =null;
             InputStream is = null;
+            URL uri = new URL(url);
             try{
-                connection = HttpUtil.createGet(url);
-                is = connection.getInputStream();
+                is = uri.openStream();
                 fromInputStream(bytesMap,is);
             }finally {
-                try{
-                    if(connection!=null){
-                        connection.disconnect();
-                    }
-                }catch (Throwable e){
-
-                }
                 Io.close(is);
             }
-
         }
         return new JarClassLoader(bytesMap);
 

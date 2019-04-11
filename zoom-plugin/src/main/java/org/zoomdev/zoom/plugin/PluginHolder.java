@@ -31,7 +31,7 @@ public interface PluginHolder {
 
     String getUid();
 
-    URL getUrl();
+    String getUrl();
 
     String getTitle();
 

@@ -9,6 +9,7 @@ import org.zoomdev.zoom.plugin.PluginHolder;
 import org.zoomdev.zoom.plugin.PluginHost;
 import org.zoomdev.zoom.web.router.Router;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,11 +35,13 @@ public class ZoomPluginHost implements PluginHost {
         this.router = router;
     }
 
-    public synchronized PluginHolder load(URL plugin) throws PluginException {
-        PluginHolder holder = new SimplePluginHolder(plugin);
+    public synchronized PluginHolder load(String plugin) throws PluginException {
+        PluginHolder holder = null;
+        holder = new SimplePluginHolder(plugin);
         holder.load();
         holders.add(holder);
         return holder;
+
     }
 
     public synchronized PluginHolder getPluginById(String id) {

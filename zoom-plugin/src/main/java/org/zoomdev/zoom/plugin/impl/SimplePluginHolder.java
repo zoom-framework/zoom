@@ -13,31 +13,41 @@ import org.zoomdev.zoom.plugin.PluginHost;
 import org.zoomdev.zoom.web.action.impl.SimpleActionBuilder;
 import org.zoomdev.zoom.web.router.Router;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class SimplePluginHolder implements PluginHolder {
 
-    private URL url;
-    private URLClassLoader classLoader;
+    private String url;
+    private JarClassLoader classLoader;
     private Plugin plugin;
     private boolean running;
     ResScanner scanner = new ResScanner();
 
-    public SimplePluginHolder(URL url) {
+    public SimplePluginHolder(String url){
         this.url = url;
-        classLoader = new URLClassLoader(new URL[]{url}, getClass().getClassLoader());
+
     }
 
     @Override
     public void load() throws PluginException {
-        InputStream is = null;
+
         try {
-            is = url.openStream();
-            scanner.scan(is, classLoader);
+
+            classLoader =JarClassLoader.fromUrls(new String[]{url});
+
+            Set<String> keys = classLoader.getAllClassNames();
+            for(String key : keys){
+                scanner.appendRes(new ResScanner.BytesClassRes(
+                        key,classLoader.getBytes(key),classLoader
+                ));
+            }
+
 
             List<ClassRes> plugnEntrys = scanner.findClass("*PluginEntry");
             if (plugnEntrys.size() != 1) {
@@ -56,8 +66,6 @@ public class SimplePluginHolder implements PluginHolder {
                 throw (PluginException) e;
             }
             throw new PluginException(e);
-        } finally {
-            Io.close(is);
         }
 
     }
@@ -157,7 +165,7 @@ public class SimplePluginHolder implements PluginHolder {
     }
 
     @Override
-    public URL getUrl() {
+    public String getUrl() {
         return url;
     }
 

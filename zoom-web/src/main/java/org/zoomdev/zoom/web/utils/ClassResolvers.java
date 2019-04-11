@@ -29,31 +29,14 @@ public class ClassResolvers  {
     }
 
     public void visit(final ResScanner scanner) {
-        final List<Future> list = new ArrayList<Future>(resolvers.size());
-        for(final ClassResolver resolver : resolvers){
-            Future future = Asyncs.defaultJobQueue().submit(new Callable<Object>() {
-                @Override
-                public Object call() throws Exception {
-                    resolver.resolve(scanner);
-                    return null;
-                }
 
-            });
-            list.add(future);
-        }
 
 
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                for(Future future : list){
-                    try {
-                        future.get();
-                    } catch (InterruptedException e) {
-                        return;
-                    } catch (ExecutionException e) {
-                        throw new ZoomException(e);
-                    }
+                for(final ClassResolver resolver : resolvers){
+                    resolver.resolve(scanner);
                 }
 
                 WebUtils.setStartupSuccess();

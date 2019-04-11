@@ -1,4 +1,4 @@
-package org.zoomdev.zoom.common;
+package org.zoomdev.zoom.http;
 
 import javax.net.ssl.*;
 import java.io.IOException;
@@ -48,6 +48,10 @@ public class HttpUtil {
 
     public static HttpURLConnection createGet(String url) throws IOException {
         return createConnection(url,"GET","UTF-8",null,0);
+    }
+
+    public static HttpURLConnection createPost(String url,byte[] content,String contentType) throws IOException {
+        return createConnection(url,"POST","UTF-8",contentType,content.length);
     }
 
     public static HttpURLConnection createConnection(

@@ -22,7 +22,7 @@ public abstract class AbstractDaoTest {
     private static final int H2 = 0;
     private static final int MYSQL = 1;
     private static final int ORACLE = 2;
-    private static final int MAX = 2;
+    private static final int MAX = 1;
     @Inject(config = "zoom.h2")
     private static String dbFile;
 
