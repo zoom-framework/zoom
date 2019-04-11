@@ -1,7 +1,7 @@
 package org.zoomdev.zoom.plugin.impl;
 
-import org.zoomdev.zoom.common.annotations.ApplicationModule;
-import org.zoomdev.zoom.common.annotations.Module;
+import org.zoomdev.zoom.http.annotations.ApplicationModule;
+import org.zoomdev.zoom.http.annotations.Module;
 import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.ioc.configuration.SimpleConfigBuilder;
 

@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.dao.impl;
 
-import org.zoomdev.zoom.common.caster.Caster;
+import org.zoomdev.zoom.http.caster.Caster;
 import org.zoomdev.zoom.dao.adapters.EntityField;
 import org.zoomdev.zoom.dao.utils.DaoUtils;
 

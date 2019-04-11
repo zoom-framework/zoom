@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.dao.validator;
 
-import org.zoomdev.zoom.common.utils.PatternUtils;
+import org.zoomdev.zoom.http.utils.PatternUtils;
 
 public class IntegerValidator implements Validator {
 

@@ -1,10 +1,10 @@
 package org.zoomdev.zoom.web.action;
 
 
-import org.zoomdev.zoom.common.json.JSON;
-import org.zoomdev.zoom.common.utils.CollectionUtils;
-import org.zoomdev.zoom.common.utils.Converter;
-import org.zoomdev.zoom.common.utils.MapUtils;
+import org.zoomdev.zoom.http.json.JSON;
+import org.zoomdev.zoom.http.utils.CollectionUtils;
+import org.zoomdev.zoom.http.utils.Converter;
+import org.zoomdev.zoom.http.utils.MapUtils;
 
 import javax.servlet.*;
 import javax.servlet.http.*;

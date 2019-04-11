@@ -1,12 +1,12 @@
 package org.zoomdev.zoom.dao.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import org.zoomdev.zoom.common.caster.Caster;
-import org.zoomdev.zoom.common.caster.ValueCaster;
-import org.zoomdev.zoom.common.utils.CachedClasses;
-import org.zoomdev.zoom.common.utils.Classes;
-import org.zoomdev.zoom.common.utils.Converter;
-import org.zoomdev.zoom.common.utils.MapUtils;
+import org.zoomdev.zoom.http.caster.Caster;
+import org.zoomdev.zoom.http.caster.ValueCaster;
+import org.zoomdev.zoom.http.utils.CachedClasses;
+import org.zoomdev.zoom.http.utils.Classes;
+import org.zoomdev.zoom.http.utils.Converter;
+import org.zoomdev.zoom.http.utils.MapUtils;
 import org.zoomdev.zoom.dao.*;
 import org.zoomdev.zoom.dao.adapters.DataAdapter;
 import org.zoomdev.zoom.dao.adapters.EntityField;
@@ -16,7 +16,6 @@ import org.zoomdev.zoom.dao.auto.AutoField;
 import org.zoomdev.zoom.dao.auto.DatabaseAutoGenerateKey;
 import org.zoomdev.zoom.dao.auto.SequenceAutoGenerateKey;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
-import org.zoomdev.zoom.dao.meta.JoinMeta;
 import org.zoomdev.zoom.dao.meta.TableMeta;
 
 import java.lang.reflect.Field;

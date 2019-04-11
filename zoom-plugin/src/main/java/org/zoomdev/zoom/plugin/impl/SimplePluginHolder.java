@@ -1,9 +1,9 @@
 package org.zoomdev.zoom.plugin.impl;
 
-import org.zoomdev.zoom.common.io.Io;
+import org.zoomdev.zoom.http.io.Io;
 import org.zoomdev.zoom.web.utils.ClassResolvers;
-import org.zoomdev.zoom.common.res.ResScanner;
-import org.zoomdev.zoom.common.res.ResScanner.ClassRes;
+import org.zoomdev.zoom.http.res.ResScanner;
+import org.zoomdev.zoom.http.res.ResScanner.ClassRes;
 import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.ioc.impl.ZoomIocContainer;
 import org.zoomdev.zoom.plugin.Plugin;

@@ -1,19 +1,16 @@
 package org.zoomdev.zoom.dao.impl;
 
-import org.zoomdev.zoom.common.caster.Caster;
-import org.zoomdev.zoom.common.caster.ValueCaster;
-import org.zoomdev.zoom.common.io.Io;
+import org.zoomdev.zoom.http.caster.Caster;
+import org.zoomdev.zoom.http.caster.ValueCaster;
+import org.zoomdev.zoom.http.io.Io;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.StringReader;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

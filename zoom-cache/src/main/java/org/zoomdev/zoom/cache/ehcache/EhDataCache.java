@@ -7,9 +7,9 @@ import net.sf.ehcache.Element;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.cache.DataCache;
-import org.zoomdev.zoom.common.annotations.Inject;
-import org.zoomdev.zoom.common.res.ResScanner;
-import org.zoomdev.zoom.common.res.ResScanner.Res;
+import org.zoomdev.zoom.http.annotations.Inject;
+import org.zoomdev.zoom.http.res.ResScanner;
+import org.zoomdev.zoom.http.res.ResScanner.Res;
 
 import java.util.concurrent.TimeUnit;
 

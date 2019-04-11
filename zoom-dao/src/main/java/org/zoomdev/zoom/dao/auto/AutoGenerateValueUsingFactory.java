@@ -1,9 +1,5 @@
 package org.zoomdev.zoom.dao.auto;
 
-import org.zoomdev.zoom.common.caster.Caster;
-import org.zoomdev.zoom.dao.AutoGenerateValue;
-import org.zoomdev.zoom.dao.adapters.EntityField;
-
 public class AutoGenerateValueUsingFactory extends DatabaseAutoGenerateKey {
 
 //    private AutoGenerateValue factory;

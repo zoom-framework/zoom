@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.ioc.modules;
 
-import org.zoomdev.zoom.common.utils.CachedClasses;
+import org.zoomdev.zoom.http.utils.CachedClasses;
 import org.zoomdev.zoom.ioc.*;
 
 import java.lang.reflect.Method;

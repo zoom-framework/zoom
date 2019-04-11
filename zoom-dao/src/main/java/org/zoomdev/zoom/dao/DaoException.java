@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.dao;
 
-import org.zoomdev.zoom.common.exceptions.ZoomException;
+import org.zoomdev.zoom.http.exceptions.ZoomException;
 
 public class DaoException extends ZoomException {
 

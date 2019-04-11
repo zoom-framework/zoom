@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.dao.driver;
 
-import org.zoomdev.zoom.common.utils.Classes;
+import org.zoomdev.zoom.http.utils.Classes;
 import org.zoomdev.zoom.dao.ConnectionExecutor;
 import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;

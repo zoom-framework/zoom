@@ -1,7 +1,6 @@
 package org.zoomdev.zoom.web.utils;
 
 import org.zoomdev.zoom.async.impl.Asyncs;
-import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.ioc.IocContainer;
 
 import java.util.ArrayList;

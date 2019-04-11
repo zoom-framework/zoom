@@ -1,9 +1,8 @@
 package org.zoomdev.zoom.web.action;
 
-import org.zoomdev.zoom.common.Destroyable;
-import org.zoomdev.zoom.common.caster.Caster;
-import org.zoomdev.zoom.common.exceptions.ZoomException;
-import org.zoomdev.zoom.common.utils.Classes;
+import org.zoomdev.zoom.http.Destroyable;
+import org.zoomdev.zoom.http.caster.Caster;
+import org.zoomdev.zoom.http.utils.Classes;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;

@@ -1,16 +1,9 @@
 package org.zoomdev.zoom.dao.impl;
 
-import org.zoomdev.zoom.common.caster.ValueCaster;
-import org.zoomdev.zoom.dao.BeanTableAdapter;
+import org.zoomdev.zoom.http.caster.ValueCaster;
 import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
-import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.meta.TableMeta;
-import org.zoomdev.zoom.dao.validator.*;
-
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class AbstractEntityFactory {
 

@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.dao;
 
-import org.zoomdev.zoom.common.expression.Symbol;
+import org.zoomdev.zoom.http.expression.Symbol;
 
 /**
  * 与SQL语句相关的方法

@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.web.action;
 
-import org.zoomdev.zoom.common.utils.CollectionUtils;
+import org.zoomdev.zoom.http.utils.CollectionUtils;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;

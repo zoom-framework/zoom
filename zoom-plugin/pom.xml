@@ -56,7 +56,10 @@
             <groupId>org.zoomdev.zoom</groupId>
             <artifactId>zoom-aop</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.zoomdev.zoom</groupId>
+            <artifactId>zoom-http</artifactId>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
         <dependency>

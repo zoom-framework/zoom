@@ -5,8 +5,8 @@ import org.apache.commons.logging.LogFactory;
 import org.quartz.*;
 import org.quartz.core.jmx.JobDataMapSupport;
 import org.quartz.impl.StdSchedulerFactory;
-import org.zoomdev.zoom.common.Destroyable;
-import org.zoomdev.zoom.common.utils.MapUtils;
+import org.zoomdev.zoom.http.Destroyable;
+import org.zoomdev.zoom.http.utils.MapUtils;
 import org.zoomdev.zoom.timer.TimerJob;
 import org.zoomdev.zoom.timer.TimerService;
 

@@ -3,10 +3,10 @@ package org.zoomdev.zoom.web.action.impl;
 import org.apache.commons.lang3.StringUtils;
 import org.zoomdev.zoom.aop.impl.ReflectMethodCaller;
 import org.zoomdev.zoom.aop.reflect.ClassInfo;
-import org.zoomdev.zoom.common.ConfigurationConstants;
-import org.zoomdev.zoom.common.annotations.Inject;
-import org.zoomdev.zoom.common.filter.Filter;
-import org.zoomdev.zoom.common.utils.CollectionUtils;
+import org.zoomdev.zoom.http.ConfigurationConstants;
+import org.zoomdev.zoom.http.annotations.Inject;
+import org.zoomdev.zoom.http.filter.Filter;
+import org.zoomdev.zoom.http.utils.CollectionUtils;
 import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.web.action.Action;
 import org.zoomdev.zoom.web.action.ActionFactory;
@@ -15,14 +15,11 @@ import org.zoomdev.zoom.web.annotations.Param;
 import org.zoomdev.zoom.web.parameter.ParameterParser;
 import org.zoomdev.zoom.web.parameter.ParameterParserFactory;
 import org.zoomdev.zoom.web.parameter.PreParameterParserManager;
-import org.zoomdev.zoom.web.rendering.Rendering;
 import org.zoomdev.zoom.web.rendering.RenderingChain;
 import org.zoomdev.zoom.web.rendering.RenderingFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SimpleActionFactory implements ActionFactory {
 

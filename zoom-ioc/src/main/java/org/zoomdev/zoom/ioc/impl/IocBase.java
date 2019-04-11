@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.ioc.impl;
 
-import org.zoomdev.zoom.common.Destroyable;
+import org.zoomdev.zoom.http.Destroyable;
 import org.zoomdev.zoom.ioc.IocContainer;
 
 public class IocBase implements Destroyable {

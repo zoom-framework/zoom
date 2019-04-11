@@ -1,8 +1,8 @@
 package org.zoomdev.zoom.dao.impl;
 
-import org.zoomdev.zoom.common.Destroyable;
-import org.zoomdev.zoom.common.designpattern.SingletonUtils;
-import org.zoomdev.zoom.common.utils.Classes;
+import org.zoomdev.zoom.http.Destroyable;
+import org.zoomdev.zoom.http.designpattern.SingletonUtils;
+import org.zoomdev.zoom.http.utils.Classes;
 import org.zoomdev.zoom.dao.driver.DbStructFactory;
 import org.zoomdev.zoom.dao.driver.Snapshot;
 import org.zoomdev.zoom.dao.meta.TableMeta;

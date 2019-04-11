@@ -2,8 +2,8 @@ package org.zoomdev.zoom.web.utils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.zoomdev.zoom.common.io.Io;
-import org.zoomdev.zoom.common.json.JSON;
+import org.zoomdev.zoom.http.io.Io;
+import org.zoomdev.zoom.http.json.JSON;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -34,6 +34,7 @@ public class ResponseUtils {
     public static void json(HttpServletResponse response, Object data) {
         OutputStream writer = null;
         try {
+            response.setContentType("application/json");
             writer = response.getOutputStream();
             JSON.write(writer, data);
         } catch (IOException e) {

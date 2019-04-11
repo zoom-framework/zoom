@@ -1,16 +1,11 @@
 package org.zoomdev.zoom.dao.impl;
 
-import com.sun.xml.internal.fastinfoset.util.CharArrayArray;
 import org.apache.commons.lang3.StringUtils;
-import org.zoomdev.zoom.common.designpattern.SingletonUtils;
 import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.Record;
 import org.zoomdev.zoom.dao.SqlBuilder;
 import org.zoomdev.zoom.dao.adapters.EntityField;
-import org.zoomdev.zoom.dao.utils.DaoUtils;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

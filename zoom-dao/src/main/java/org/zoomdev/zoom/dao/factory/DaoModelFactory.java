@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.dao.factory;
 
-import org.zoomdev.zoom.common.utils.CachedClasses;
+import org.zoomdev.zoom.http.utils.CachedClasses;
 import org.zoomdev.zoom.dao.DaoException;
 
 import java.lang.annotation.Annotation;

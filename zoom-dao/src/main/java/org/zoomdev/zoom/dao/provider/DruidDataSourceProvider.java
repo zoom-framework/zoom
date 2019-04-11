@@ -2,7 +2,7 @@ package org.zoomdev.zoom.dao.provider;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import org.apache.commons.lang3.StringUtils;
-import org.zoomdev.zoom.common.Destroyable;
+import org.zoomdev.zoom.http.Destroyable;
 import org.zoomdev.zoom.dao.ConnectionDescriptor;
 import org.zoomdev.zoom.dao.DataSourceProvider;
 

@@ -3,7 +3,7 @@ package org.zoomdev.zoom.aop;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.aop.impl.AstractMethodInterceptorFactory;
-import org.zoomdev.zoom.common.utils.Classes;
+import org.zoomdev.zoom.http.utils.Classes;
 
 import java.lang.reflect.Method;
 import java.security.InvalidParameterException;

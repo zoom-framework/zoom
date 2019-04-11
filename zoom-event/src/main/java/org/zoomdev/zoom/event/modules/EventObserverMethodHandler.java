@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.event.modules;
 
-import org.zoomdev.zoom.common.exceptions.ZoomException;
+import org.zoomdev.zoom.http.exceptions.ZoomException;
 import org.zoomdev.zoom.event.Event;
 import org.zoomdev.zoom.event.EventListener;
 import org.zoomdev.zoom.event.EventService;

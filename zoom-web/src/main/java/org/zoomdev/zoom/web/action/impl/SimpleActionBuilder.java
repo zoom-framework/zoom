@@ -2,9 +2,9 @@ package org.zoomdev.zoom.web.action.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.zoomdev.zoom.common.res.ClassResolver;
-import org.zoomdev.zoom.common.res.ResScanner;
-import org.zoomdev.zoom.common.utils.CachedClasses;
+import org.zoomdev.zoom.http.res.ClassResolver;
+import org.zoomdev.zoom.http.res.ResScanner;
+import org.zoomdev.zoom.http.utils.CachedClasses;
 import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.web.annotations.Controller;
 import org.zoomdev.zoom.web.annotations.Mapping;

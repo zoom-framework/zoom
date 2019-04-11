@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.dao;
 
-import org.zoomdev.zoom.common.utils.DataObject;
+import org.zoomdev.zoom.http.utils.DataObject;
 
 import java.util.Map;
 

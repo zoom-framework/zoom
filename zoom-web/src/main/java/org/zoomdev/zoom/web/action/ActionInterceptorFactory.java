@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.web.action;
 
-import org.zoomdev.zoom.common.filter.ClassAndMethodFilter;
+import org.zoomdev.zoom.http.filter.ClassAndMethodFilter;
 
 import java.lang.reflect.Method;
 
@@ -10,7 +10,7 @@ public interface ActionInterceptorFactory {
      * 注册interception
      *
      * @param interceptor
-     * @param pattern     类、方法过滤，形式{@code *} {@code *#*} {@code com.xx.*#*Test} {@link org.zoomdev.zoom.common.filter.impl#ClassAndMethodFilter }
+     * @param pattern     类、方法过滤，形式{@code *} {@code *#*} {@code com.xx.*#*Test} {@link org.zoomdev.zoom.http.filter.impl#ClassAndMethodFilter }
      */
     void add(ActionInterceptor interceptor, String pattern, int order);
 

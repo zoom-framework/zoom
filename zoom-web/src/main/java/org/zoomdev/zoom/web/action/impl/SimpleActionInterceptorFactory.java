@@ -1,8 +1,8 @@
 package org.zoomdev.zoom.web.action.impl;
 
-import org.zoomdev.zoom.common.filter.ClassAndMethodFilter;
-import org.zoomdev.zoom.common.filter.impl.PatternClassAndMethodFilter;
-import org.zoomdev.zoom.common.utils.OrderedList;
+import org.zoomdev.zoom.http.filter.ClassAndMethodFilter;
+import org.zoomdev.zoom.http.filter.impl.PatternClassAndMethodFilter;
+import org.zoomdev.zoom.http.utils.OrderedList;
 import org.zoomdev.zoom.web.action.ActionInterceptor;
 import org.zoomdev.zoom.web.action.ActionInterceptorFactory;
 

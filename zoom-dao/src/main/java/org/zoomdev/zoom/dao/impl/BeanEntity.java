@@ -1,7 +1,7 @@
 package org.zoomdev.zoom.dao.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import org.zoomdev.zoom.common.utils.Classes;
+import org.zoomdev.zoom.http.utils.Classes;
 import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.SqlBuilder;
 import org.zoomdev.zoom.dao.adapters.EntityField;

@@ -2,8 +2,8 @@ package org.zoomdev.zoom.aop.factory;
 
 import org.zoomdev.zoom.aop.MethodInterceptor;
 import org.zoomdev.zoom.aop.MethodInterceptorFactory;
-import org.zoomdev.zoom.common.filter.ClassAndMethodFilter;
-import org.zoomdev.zoom.common.filter.impl.PatternClassAndMethodFilter;
+import org.zoomdev.zoom.http.filter.ClassAndMethodFilter;
+import org.zoomdev.zoom.http.filter.impl.PatternClassAndMethodFilter;
 
 import java.lang.reflect.Method;
 import java.util.List;

@@ -1,7 +1,7 @@
 package org.zoomdev.zoom.dao.adapters;
 
 import com.sun.istack.internal.Nullable;
-import org.zoomdev.zoom.common.caster.Caster;
+import org.zoomdev.zoom.http.caster.Caster;
 
 public interface StatementAdapterFactory {
     /**

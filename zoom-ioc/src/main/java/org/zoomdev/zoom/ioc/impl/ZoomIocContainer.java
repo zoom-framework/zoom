@@ -1,9 +1,9 @@
 package org.zoomdev.zoom.ioc.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import org.zoomdev.zoom.common.annotations.Inject;
-import org.zoomdev.zoom.common.annotations.IocBean;
-import org.zoomdev.zoom.common.utils.CachedClasses;
+import org.zoomdev.zoom.http.annotations.Inject;
+import org.zoomdev.zoom.http.annotations.IocBean;
+import org.zoomdev.zoom.http.utils.CachedClasses;
 import org.zoomdev.zoom.ioc.*;
 
 import java.lang.annotation.Annotation;

@@ -1,8 +1,8 @@
 package org.zoomdev.zoom.dao.modules;
 
 import org.zoomdev.zoom.aop.AopFactory;
-import org.zoomdev.zoom.common.annotations.Inject;
-import org.zoomdev.zoom.common.annotations.Module;
+import org.zoomdev.zoom.http.annotations.Inject;
+import org.zoomdev.zoom.http.annotations.Module;
 import org.zoomdev.zoom.dao.transaction.TransMethodInterceptorMaker;
 
 @Module

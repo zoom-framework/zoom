@@ -3,7 +3,7 @@ package org.zoomdev.zoom.web;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.zoomdev.zoom.common.filter.pattern.PatternFilterFactory;
+import org.zoomdev.zoom.http.filter.pattern.PatternFilterFactory;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -76,7 +76,7 @@ public class ZoomFilter implements Filter {
     private ZoomWeb web;
     private static final Log log = LogFactory.getLog(ZoomFilter.class);
 
-    org.zoomdev.zoom.common.filter.Filter<String> filter;
+    org.zoomdev.zoom.http.filter.Filter<String> filter;
 
     public ZoomFilter() {
         web = new ZoomWeb();

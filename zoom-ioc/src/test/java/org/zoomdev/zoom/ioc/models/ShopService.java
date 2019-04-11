@@ -1,8 +1,8 @@
 package org.zoomdev.zoom.ioc.models;
 
-import org.zoomdev.zoom.common.Destroyable;
-import org.zoomdev.zoom.common.Initializeable;
-import org.zoomdev.zoom.common.annotations.Inject;
+import org.zoomdev.zoom.http.Destroyable;
+import org.zoomdev.zoom.http.Initializeable;
+import org.zoomdev.zoom.http.annotations.Inject;
 import org.zoomdev.zoom.ioc.IocMethodProxy;
 import org.zoomdev.zoom.ioc.IocObject;
 

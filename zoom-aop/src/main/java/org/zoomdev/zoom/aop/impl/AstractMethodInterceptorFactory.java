@@ -5,11 +5,11 @@ import org.zoomdev.zoom.aop.MethodCaller;
 import org.zoomdev.zoom.aop.MethodInterceptor;
 import org.zoomdev.zoom.aop.MethodInterceptorFactory;
 import org.zoomdev.zoom.aop.factory.ClassAndMethodFilterMethodInterceptorFactory;
-import org.zoomdev.zoom.common.Destroyable;
-import org.zoomdev.zoom.common.filter.ClassAndMethodFilter;
-import org.zoomdev.zoom.common.utils.CachedClasses;
-import org.zoomdev.zoom.common.utils.Classes;
-import org.zoomdev.zoom.common.utils.OrderedList;
+import org.zoomdev.zoom.http.Destroyable;
+import org.zoomdev.zoom.http.filter.ClassAndMethodFilter;
+import org.zoomdev.zoom.http.utils.CachedClasses;
+import org.zoomdev.zoom.http.utils.Classes;
+import org.zoomdev.zoom.http.utils.OrderedList;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

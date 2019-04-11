@@ -1,13 +1,9 @@
 package org.zoomdev.zoom.ioc.modules;
 
 import junit.framework.TestCase;
-import org.zoomdev.zoom.common.config.ConfigReader;
-import org.zoomdev.zoom.common.res.ResScanner;
-import org.zoomdev.zoom.common.utils.Classes;
+import org.zoomdev.zoom.http.utils.Classes;
 import org.zoomdev.zoom.ioc.IocClassLoader;
 import org.zoomdev.zoom.ioc.IocContainer;
-import org.zoomdev.zoom.ioc.IocMethod;
-import org.zoomdev.zoom.ioc.configuration.SimpleConfigBuilder;
 import org.zoomdev.zoom.ioc.impl.ZoomIocContainer;
 import org.zoomdev.zoom.ioc.models.PushService;
 import org.zoomdev.zoom.ioc.models.ShopService;

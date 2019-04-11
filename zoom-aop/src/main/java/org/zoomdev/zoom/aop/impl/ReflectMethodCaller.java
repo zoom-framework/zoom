@@ -1,7 +1,7 @@
 package org.zoomdev.zoom.aop.impl;
 
 import org.zoomdev.zoom.aop.MethodCaller;
-import org.zoomdev.zoom.common.Destroyable;
+import org.zoomdev.zoom.http.Destroyable;
 
 import java.lang.reflect.Method;
 

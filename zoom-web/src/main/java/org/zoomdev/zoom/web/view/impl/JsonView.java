@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.web.view.impl;
 
-import org.zoomdev.zoom.common.json.JSON;
+import org.zoomdev.zoom.http.json.JSON;
 import org.zoomdev.zoom.web.utils.ResponseUtils;
 import org.zoomdev.zoom.web.view.View;
 

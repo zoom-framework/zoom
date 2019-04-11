@@ -1,7 +1,7 @@
 package org.zoomdev.zoom.aop;
 
 
-import org.zoomdev.zoom.common.filter.ClassAndMethodFilter;
+import org.zoomdev.zoom.http.filter.ClassAndMethodFilter;
 import org.zoomdev.zoom.ioc.ClassEnhancer;
 
 /**
@@ -50,9 +50,9 @@ public interface AopFactory extends ClassEnhancer {
      * 为模式pattern增加方法拦截器
      *
      * @param interceptor
-     * @param pattern     {@link org.zoomdev.zoom.common.filter.ClassAndMethodFilter}
-     *                    {@link org.zoomdev.zoom.common.filter.pattern.PatternFilter}
-     *                    {@link org.zoomdev.zoom.common.filter.pattern.PatternFilterFactory}
+     * @param pattern     {@link org.zoomdev.zoom.http.filter.ClassAndMethodFilter}
+     *                    {@link org.zoomdev.zoom.http.filter.pattern.PatternFilter}
+     *                    {@link org.zoomdev.zoom.http.filter.pattern.PatternFilterFactory}
      * @return
      */
     AopFactory addFilter(MethodInterceptor interceptor, String pattern, int order);
@@ -61,7 +61,7 @@ public interface AopFactory extends ClassEnhancer {
      * 为模式ClassAndMethodFilter增加方法拦截器
      *
      * @param interceptor
-     * @param filter      {@link org.zoomdev.zoom.common.filter.ClassAndMethodFilter}
+     * @param filter      {@link org.zoomdev.zoom.http.filter.ClassAndMethodFilter}
      * @param order
      * @return
      */

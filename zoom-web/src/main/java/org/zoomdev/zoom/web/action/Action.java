@@ -3,12 +3,11 @@ package org.zoomdev.zoom.web.action;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.aop.MethodCaller;
-import org.zoomdev.zoom.common.Destroyable;
-import org.zoomdev.zoom.common.utils.Classes;
+import org.zoomdev.zoom.http.Destroyable;
+import org.zoomdev.zoom.http.utils.Classes;
 import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.web.parameter.ParameterParser;
 import org.zoomdev.zoom.web.parameter.PreParameterParserManager;
-import org.zoomdev.zoom.web.rendering.Rendering;
 import org.zoomdev.zoom.web.rendering.RenderingChain;
 
 import javax.servlet.ServletException;

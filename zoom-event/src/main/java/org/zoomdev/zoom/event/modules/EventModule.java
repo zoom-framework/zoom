@@ -1,9 +1,9 @@
 package org.zoomdev.zoom.event.modules;
 
 import org.zoomdev.zoom.aop.AopFactory;
-import org.zoomdev.zoom.common.annotations.Inject;
-import org.zoomdev.zoom.common.annotations.IocBean;
-import org.zoomdev.zoom.common.annotations.Module;
+import org.zoomdev.zoom.http.annotations.Inject;
+import org.zoomdev.zoom.http.annotations.IocBean;
+import org.zoomdev.zoom.http.annotations.Module;
 import org.zoomdev.zoom.event.EventService;
 import org.zoomdev.zoom.ioc.IocMethodVisitor;
 

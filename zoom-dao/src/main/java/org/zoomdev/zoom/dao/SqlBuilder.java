@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.dao;
 
-import org.zoomdev.zoom.common.expression.Symbol;
+import org.zoomdev.zoom.http.expression.Symbol;
 
 import java.util.List;
 import java.util.Map;

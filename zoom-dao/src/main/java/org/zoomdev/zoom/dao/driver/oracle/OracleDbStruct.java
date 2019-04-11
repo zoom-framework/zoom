@@ -2,8 +2,8 @@ package org.zoomdev.zoom.dao.driver.oracle;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.zoomdev.zoom.common.utils.CollectionUtils;
-import org.zoomdev.zoom.common.utils.Converter;
+import org.zoomdev.zoom.http.utils.CollectionUtils;
+import org.zoomdev.zoom.http.utils.Converter;
 import org.zoomdev.zoom.dao.Ar;
 import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.DaoException;

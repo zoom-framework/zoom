@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.web.view.impl;
 
-import org.zoomdev.zoom.common.io.Io;
+import org.zoomdev.zoom.http.io.Io;
 import org.zoomdev.zoom.web.view.View;
 
 import javax.servlet.http.HttpServletResponse;

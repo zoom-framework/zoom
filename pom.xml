@@ -54,6 +54,7 @@
         <module>zoom-cache</module>
         <module>zoom-plugin</module>
         <module>zoom-event</module>
+        <module>zoom-http</module>
     </modules>
 
     <reporting>
@@ -247,7 +248,11 @@
                 <version>0.3.0-SNAPSHOT</version>
             </dependency>
 
-
+            <dependency>
+                <groupId>org.zoomdev.zoom</groupId>
+                <artifactId>zoom-http</artifactId>
+                <version>0.3.0-SNAPSHOT</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

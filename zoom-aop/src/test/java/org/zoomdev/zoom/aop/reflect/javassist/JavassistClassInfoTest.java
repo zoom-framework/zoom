@@ -2,7 +2,7 @@ package org.zoomdev.zoom.aop.reflect.javassist;
 
 import org.junit.Test;
 import org.zoomdev.zoom.aop.javassist.JavassistClassInfo;
-import org.zoomdev.zoom.common.utils.CachedClasses;
+import org.zoomdev.zoom.http.utils.CachedClasses;
 
 import java.lang.reflect.Method;
 

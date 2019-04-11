@@ -2,23 +2,16 @@ package org.zoomdev.zoom.web.utils;
 
 
 import org.zoomdev.zoom.async.impl.Asyncs;
-import org.zoomdev.zoom.common.Destroyable;
-import org.zoomdev.zoom.common.exceptions.ZoomException;
-import org.zoomdev.zoom.common.res.ClassResolver;
-import org.zoomdev.zoom.common.res.ResScanner;
-import org.zoomdev.zoom.common.res.ResScanner.ClassRes;
-import org.zoomdev.zoom.common.utils.Classes;
-import org.zoomdev.zoom.common.utils.Visitor;
+import org.zoomdev.zoom.http.exceptions.ZoomException;
+import org.zoomdev.zoom.http.res.ClassResolver;
+import org.zoomdev.zoom.http.res.ResScanner;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 
 ;
 
@@ -49,7 +42,8 @@ public class ClassResolvers  {
             list.add(future);
         }
 
-        Asyncs.defaultJobQueue().run(new Runnable() {
+
+        Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 for(Future future : list){
@@ -65,6 +59,9 @@ public class ClassResolvers  {
                 WebUtils.setStartupSuccess();
             }
         });
+        thread.setDaemon(true);
+        thread.setName("Startup Thread");
+        thread.start();
 
     }
 

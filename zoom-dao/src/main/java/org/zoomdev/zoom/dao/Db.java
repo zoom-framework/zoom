@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.dao;
 
-import org.zoomdev.zoom.common.utils.Visitor;
+import org.zoomdev.zoom.http.utils.Visitor;
 
 import java.util.Arrays;
 

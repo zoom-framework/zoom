@@ -1,7 +1,7 @@
 package org.zoomdev.zoom.dao.driver.oracle;
 
-import org.zoomdev.zoom.common.caster.Caster;
-import org.zoomdev.zoom.common.caster.ValueCaster;
+import org.zoomdev.zoom.http.caster.Caster;
+import org.zoomdev.zoom.http.caster.ValueCaster;
 import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.auto.AutoField;
 import org.zoomdev.zoom.dao.driver.AbsDriver;

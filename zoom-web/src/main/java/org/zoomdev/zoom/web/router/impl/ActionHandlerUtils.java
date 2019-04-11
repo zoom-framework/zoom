@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.web.router.impl;
 
-import org.zoomdev.zoom.common.utils.Classes;
+import org.zoomdev.zoom.http.utils.Classes;
 import org.zoomdev.zoom.web.action.ActionHandler;
 import org.zoomdev.zoom.web.action.impl.GroupActionHandler;
 import org.zoomdev.zoom.web.router.Router;

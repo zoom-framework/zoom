@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.ioc;
 
-import org.zoomdev.zoom.common.annotations.IocBean;
+import org.zoomdev.zoom.http.annotations.IocBean;
 
 import java.lang.reflect.Method;
 import java.util.List;

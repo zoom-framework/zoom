@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.dao.impl;
 
-import org.zoomdev.zoom.common.caster.ValueCaster;
+import org.zoomdev.zoom.http.caster.ValueCaster;
 import org.zoomdev.zoom.dao.adapters.EntityField;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 import org.zoomdev.zoom.dao.auto.AutoField;
@@ -9,7 +9,6 @@ import org.zoomdev.zoom.dao.validator.Validator;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 
 abstract class AbstractEntityField implements EntityField , Cloneable {
     /// 数据从数据库取出来之后转化成实体类的字段类型

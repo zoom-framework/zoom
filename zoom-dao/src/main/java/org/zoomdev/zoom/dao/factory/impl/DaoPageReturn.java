@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.dao.factory.impl;
 
-import org.zoomdev.zoom.common.utils.Page;
+import org.zoomdev.zoom.http.utils.Page;
 import org.zoomdev.zoom.dao.EAr;
 import org.zoomdev.zoom.dao.factory.DaoReturn;
 

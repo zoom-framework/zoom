@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.dao.impl;
 
-import org.zoomdev.zoom.common.designpattern.SingletonUtils;
+import org.zoomdev.zoom.http.designpattern.SingletonUtils;
 import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.Entity;
 import org.zoomdev.zoom.dao.EntityFactory;

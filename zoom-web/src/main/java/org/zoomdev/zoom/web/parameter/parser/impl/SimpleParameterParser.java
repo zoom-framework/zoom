@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.web.parameter.parser.impl;
 
-import org.zoomdev.zoom.common.Destroyable;
+import org.zoomdev.zoom.http.Destroyable;
 import org.zoomdev.zoom.web.action.ActionContext;
 import org.zoomdev.zoom.web.parameter.ParameterParser;
 import org.zoomdev.zoom.web.parameter.ParameterParserContainer;

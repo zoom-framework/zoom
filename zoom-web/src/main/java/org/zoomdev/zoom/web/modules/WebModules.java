@@ -1,16 +1,16 @@
 package org.zoomdev.zoom.web.modules;
 
 import org.zoomdev.zoom.aop.AopFactory;
-import org.zoomdev.zoom.common.ConfigurationConstants;
-import org.zoomdev.zoom.common.annotations.Inject;
-import org.zoomdev.zoom.common.annotations.IocBean;
-import org.zoomdev.zoom.common.annotations.Module;
-import org.zoomdev.zoom.common.caster.Caster;
-import org.zoomdev.zoom.common.caster.ValueCaster;
-import org.zoomdev.zoom.common.exceptions.ZoomException;
-import org.zoomdev.zoom.common.utils.CachedClasses;
-import org.zoomdev.zoom.common.utils.Classes;
-import org.zoomdev.zoom.common.utils.DataObject;
+import org.zoomdev.zoom.http.ConfigurationConstants;
+import org.zoomdev.zoom.http.annotations.Inject;
+import org.zoomdev.zoom.http.annotations.IocBean;
+import org.zoomdev.zoom.http.annotations.Module;
+import org.zoomdev.zoom.http.caster.Caster;
+import org.zoomdev.zoom.http.caster.ValueCaster;
+import org.zoomdev.zoom.http.exceptions.ZoomException;
+import org.zoomdev.zoom.http.utils.CachedClasses;
+import org.zoomdev.zoom.http.utils.Classes;
+import org.zoomdev.zoom.http.utils.DataObject;
 import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.web.WebConfig;
 import org.zoomdev.zoom.web.action.ActionFactory;

@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.dao.alias.impl;
 
-import org.zoomdev.zoom.common.utils.StrKit;
+import org.zoomdev.zoom.http.utils.StrKit;
 import org.zoomdev.zoom.dao.alias.AliasPolicy;
 
 public class CamelAliasPolicy implements AliasPolicy {

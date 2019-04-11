@@ -2,7 +2,6 @@ package org.zoomdev.zoom.plugin.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.zoomdev.zoom.common.annotations.Inject;
 import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.plugin.NotSupportException;
 import org.zoomdev.zoom.plugin.PluginException;

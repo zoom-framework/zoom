@@ -1,12 +1,12 @@
 package org.zoomdev.zoom.timer.modules;
 
 import org.apache.commons.lang3.StringUtils;
-import org.zoomdev.zoom.common.Destroyable;
-import org.zoomdev.zoom.common.annotations.Inject;
-import org.zoomdev.zoom.common.annotations.IocBean;
-import org.zoomdev.zoom.common.annotations.Module;
-import org.zoomdev.zoom.common.config.ConfigReader;
-import org.zoomdev.zoom.common.exceptions.ZoomException;
+import org.zoomdev.zoom.http.Destroyable;
+import org.zoomdev.zoom.http.annotations.Inject;
+import org.zoomdev.zoom.http.annotations.IocBean;
+import org.zoomdev.zoom.http.annotations.Module;
+import org.zoomdev.zoom.http.config.ConfigReader;
+import org.zoomdev.zoom.http.exceptions.ZoomException;
 import org.zoomdev.zoom.ioc.IocMethodHandler;
 import org.zoomdev.zoom.ioc.IocMethodProxy;
 import org.zoomdev.zoom.ioc.IocMethodVisitor;
