@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.dao.impl;
 
-import org.zoomdev.zoom.http.utils.StrKit;
+import org.zoomdev.zoom.common.utils.StrKit;
 import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.alias.AliasPolicy;
 import org.zoomdev.zoom.dao.alias.AliasPolicyFactory;

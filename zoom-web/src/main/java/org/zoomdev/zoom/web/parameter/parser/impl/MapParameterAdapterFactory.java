@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.web.parameter.parser.impl;
 
-import org.zoomdev.zoom.http.caster.Caster;
+import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.web.action.ActionContext;
 import org.zoomdev.zoom.web.parameter.ParameterAdapter;
 

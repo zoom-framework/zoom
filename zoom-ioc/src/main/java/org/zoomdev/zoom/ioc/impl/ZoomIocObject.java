@@ -2,8 +2,8 @@ package org.zoomdev.zoom.ioc.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.zoomdev.zoom.http.Destroyable;
-import org.zoomdev.zoom.http.Initializeable;
+import org.zoomdev.zoom.common.Destroyable;
+import org.zoomdev.zoom.common.Initializeable;
 import org.zoomdev.zoom.ioc.IocClass;
 import org.zoomdev.zoom.ioc.IocEvent;
 import org.zoomdev.zoom.ioc.IocObject;

@@ -1,7 +1,7 @@
 package org.zoomdev.zoom.web.exception;
 
 
-import org.zoomdev.zoom.http.exceptions.ZoomException;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 
 public class StatusException extends ZoomException implements RestException {
     /**

@@ -1,10 +1,10 @@
 package org.zoomdev.zoom.ioc.configuration;
 
-import org.zoomdev.zoom.http.annotations.ApplicationModule;
-import org.zoomdev.zoom.http.annotations.Module;
-import org.zoomdev.zoom.http.res.ClassResolver;
-import org.zoomdev.zoom.http.res.ResScanner;
-import org.zoomdev.zoom.http.utils.OrderedList;
+import org.zoomdev.zoom.common.annotations.ApplicationModule;
+import org.zoomdev.zoom.common.annotations.Module;
+import org.zoomdev.zoom.common.res.ClassResolver;
+import org.zoomdev.zoom.common.res.ResScanner;
+import org.zoomdev.zoom.common.utils.OrderedList;
 import org.zoomdev.zoom.ioc.*;
 import org.zoomdev.zoom.ioc.impl.ZoomIocKey;
 

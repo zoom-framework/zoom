@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.ioc.models.impl;
 
-import org.zoomdev.zoom.http.annotations.Inject;
+import org.zoomdev.zoom.common.annotations.Inject;
 import org.zoomdev.zoom.ioc.annotations.TestListener;
 import org.zoomdev.zoom.ioc.models.PushService;
 import org.zoomdev.zoom.ioc.models.ShopService;

@@ -2,8 +2,8 @@ package org.zoomdev.zoom.dao.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.zoomdev.zoom.http.expression.Symbol;
-import org.zoomdev.zoom.http.utils.Page;
+import org.zoomdev.zoom.common.expression.Symbol;
+import org.zoomdev.zoom.common.utils.Page;
 import org.zoomdev.zoom.dao.*;
 import org.zoomdev.zoom.dao.alias.NameAdapter;
 import org.zoomdev.zoom.dao.utils.DaoUtils;

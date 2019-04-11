@@ -1,8 +1,8 @@
 package org.zoomdev.zoom.web.rendering.impl;
 
-import org.zoomdev.zoom.http.exceptions.ZoomException;
-import org.zoomdev.zoom.http.utils.Classes;
-import org.zoomdev.zoom.http.utils.PathUtils;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
+import org.zoomdev.zoom.common.utils.Classes;
+import org.zoomdev.zoom.common.utils.PathUtils;
 import org.zoomdev.zoom.web.WebConfig;
 import org.zoomdev.zoom.web.action.ActionContext;
 import org.zoomdev.zoom.web.exception.StatusException;

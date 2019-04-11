@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.web.test.controllers;
 
-import org.zoomdev.zoom.http.annotations.Inject;
+import org.zoomdev.zoom.common.annotations.Inject;
 import org.zoomdev.zoom.web.action.ActionContext;
 import org.zoomdev.zoom.web.action.Monitor;
 import org.zoomdev.zoom.web.annotations.Controller;

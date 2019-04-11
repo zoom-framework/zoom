@@ -6,7 +6,7 @@ import org.zoomdev.zoom.async.JobExecutor;
 import org.zoomdev.zoom.async.JobHandler;
 import org.zoomdev.zoom.async.JobQueue;
 import org.zoomdev.zoom.async.JobResult;
-import org.zoomdev.zoom.http.utils.Classes;
+import org.zoomdev.zoom.common.utils.Classes;
 
 import java.util.Arrays;
 import java.util.List;

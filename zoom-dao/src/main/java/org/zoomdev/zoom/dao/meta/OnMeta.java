@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.dao.meta;
 
-import org.zoomdev.zoom.http.expression.Symbol;
+import org.zoomdev.zoom.common.expression.Symbol;
 
 public class OnMeta {
     public String getFirst() {

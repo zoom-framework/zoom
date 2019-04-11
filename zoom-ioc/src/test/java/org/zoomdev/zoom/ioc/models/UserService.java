@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.ioc.models;
 
-import org.zoomdev.zoom.http.annotations.Inject;
+import org.zoomdev.zoom.common.annotations.Inject;
 
 public class UserService {
 

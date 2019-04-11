@@ -2,8 +2,8 @@ package org.zoomdev.zoom.web.rendering.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.zoomdev.zoom.http.utils.Classes;
-import org.zoomdev.zoom.http.utils.MapUtils;
+import org.zoomdev.zoom.common.utils.Classes;
+import org.zoomdev.zoom.common.utils.MapUtils;
 import org.zoomdev.zoom.web.action.ActionContext;
 import org.zoomdev.zoom.web.annotations.JsonResponse;
 import org.zoomdev.zoom.web.exception.StatusException;

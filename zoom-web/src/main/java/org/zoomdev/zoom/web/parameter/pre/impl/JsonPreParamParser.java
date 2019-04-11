@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.web.parameter.pre.impl;
 
-import org.zoomdev.zoom.http.json.JSON;
+import org.zoomdev.zoom.common.json.JSON;
 import org.zoomdev.zoom.web.action.ActionContext;
 import org.zoomdev.zoom.web.parameter.PreParameterParser;
 

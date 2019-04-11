@@ -1,9 +1,9 @@
 package org.zoomdev.zoom.web.action;
 
 import junit.framework.TestCase;
-import org.zoomdev.zoom.http.annotations.IocBean;
-import org.zoomdev.zoom.http.json.JSON;
-import org.zoomdev.zoom.http.utils.DataObject;
+import org.zoomdev.zoom.common.annotations.IocBean;
+import org.zoomdev.zoom.common.json.JSON;
+import org.zoomdev.zoom.common.utils.DataObject;
 import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.web.ZoomFilter;
 import org.zoomdev.zoom.web.test.controllers.UserController;

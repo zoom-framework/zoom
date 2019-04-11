@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.dao;
 
-import org.zoomdev.zoom.http.utils.Page;
+import org.zoomdev.zoom.common.utils.Page;
 
 import java.util.List;
 

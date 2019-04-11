@@ -1,8 +1,8 @@
 package org.zoomdev.zoom.dao.impl;
 
 import org.junit.Test;
-import org.zoomdev.zoom.http.expression.Symbol;
-import org.zoomdev.zoom.http.utils.MapUtils;
+import org.zoomdev.zoom.common.expression.Symbol;
+import org.zoomdev.zoom.common.utils.MapUtils;
 import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.Sql;
 import org.zoomdev.zoom.dao.SqlBuilder;

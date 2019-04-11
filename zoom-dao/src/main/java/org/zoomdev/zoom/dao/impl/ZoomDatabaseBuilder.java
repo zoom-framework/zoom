@@ -1,8 +1,8 @@
 package org.zoomdev.zoom.dao.impl;
 
-import org.zoomdev.zoom.http.utils.CachedClasses;
-import org.zoomdev.zoom.http.utils.Classes;
-import org.zoomdev.zoom.http.utils.StrKit;
+import org.zoomdev.zoom.common.utils.CachedClasses;
+import org.zoomdev.zoom.common.utils.Classes;
+import org.zoomdev.zoom.common.utils.StrKit;
 import org.zoomdev.zoom.dao.BeanTableInfo;
 import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.annotations.AutoGenerate;

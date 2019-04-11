@@ -1,8 +1,8 @@
 package org.zoomdev.zoom.ioc.modules;
 
-import org.zoomdev.zoom.http.annotations.Inject;
-import org.zoomdev.zoom.http.annotations.IocBean;
-import org.zoomdev.zoom.http.annotations.Module;
+import org.zoomdev.zoom.common.annotations.Inject;
+import org.zoomdev.zoom.common.annotations.IocBean;
+import org.zoomdev.zoom.common.annotations.Module;
 import org.zoomdev.zoom.ioc.IocMethodProxy;
 import org.zoomdev.zoom.ioc.IocMethodVisitor;
 import org.zoomdev.zoom.ioc.IocObject;

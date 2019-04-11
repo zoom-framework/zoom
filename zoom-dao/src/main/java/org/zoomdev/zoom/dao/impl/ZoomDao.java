@@ -2,9 +2,9 @@ package org.zoomdev.zoom.dao.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.zoomdev.zoom.http.Destroyable;
-import org.zoomdev.zoom.http.io.Io;
-import org.zoomdev.zoom.http.utils.Classes;
+import org.zoomdev.zoom.common.Destroyable;
+import org.zoomdev.zoom.common.io.Io;
+import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.dao.*;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 import org.zoomdev.zoom.dao.alias.AliasPolicyFactory;

@@ -2,9 +2,9 @@ package org.zoomdev.zoom.dao.impl;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import org.junit.Test;
-import org.zoomdev.zoom.http.annotations.Inject;
-import org.zoomdev.zoom.http.utils.Classes;
-import org.zoomdev.zoom.http.utils.PathUtils;
+import org.zoomdev.zoom.common.annotations.Inject;
+import org.zoomdev.zoom.common.utils.Classes;
+import org.zoomdev.zoom.common.utils.PathUtils;
 import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.DataSourceProvider;

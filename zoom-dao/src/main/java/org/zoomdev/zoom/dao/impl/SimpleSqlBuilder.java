@@ -4,7 +4,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.zoomdev.zoom.http.expression.Symbol;
+import org.zoomdev.zoom.common.expression.Symbol;
 import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.Record;
 import org.zoomdev.zoom.dao.Sql;

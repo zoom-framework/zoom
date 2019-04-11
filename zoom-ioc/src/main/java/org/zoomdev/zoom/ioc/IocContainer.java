@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.ioc;
 
-import org.zoomdev.zoom.http.Destroyable;
+import org.zoomdev.zoom.common.Destroyable;
 
 import java.lang.reflect.Method;
 import java.util.List;

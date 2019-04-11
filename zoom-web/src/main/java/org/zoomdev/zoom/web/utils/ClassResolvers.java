@@ -2,9 +2,9 @@ package org.zoomdev.zoom.web.utils;
 
 
 import org.zoomdev.zoom.async.impl.Asyncs;
-import org.zoomdev.zoom.http.exceptions.ZoomException;
-import org.zoomdev.zoom.http.res.ClassResolver;
-import org.zoomdev.zoom.http.res.ResScanner;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
+import org.zoomdev.zoom.common.res.ClassResolver;
+import org.zoomdev.zoom.common.res.ResScanner;
 
 import java.util.ArrayList;
 import java.util.Arrays;

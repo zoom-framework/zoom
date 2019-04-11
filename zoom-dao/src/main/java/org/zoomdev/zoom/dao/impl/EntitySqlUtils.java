@@ -2,9 +2,9 @@ package org.zoomdev.zoom.dao.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.zoomdev.zoom.http.caster.Caster;
-import org.zoomdev.zoom.http.filter.Filter;
-import org.zoomdev.zoom.http.utils.CollectionUtils;
+import org.zoomdev.zoom.common.caster.Caster;
+import org.zoomdev.zoom.common.filter.Filter;
+import org.zoomdev.zoom.common.utils.CollectionUtils;
 import org.zoomdev.zoom.dao.DaoException;
 import org.zoomdev.zoom.dao.Entity;
 import org.zoomdev.zoom.dao.Sql;

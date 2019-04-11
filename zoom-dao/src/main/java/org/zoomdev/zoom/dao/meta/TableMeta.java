@@ -1,7 +1,7 @@
 package org.zoomdev.zoom.dao.meta;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.zoomdev.zoom.http.json.JSON;
+import org.zoomdev.zoom.common.json.JSON;
 
 import java.io.Serializable;
 import java.util.ArrayList;

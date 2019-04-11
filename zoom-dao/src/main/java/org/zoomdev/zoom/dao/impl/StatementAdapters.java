@@ -1,8 +1,8 @@
 package org.zoomdev.zoom.dao.impl;
 
-import org.zoomdev.zoom.http.caster.Caster;
-import org.zoomdev.zoom.http.caster.ValueCaster;
-import org.zoomdev.zoom.http.io.Io;
+import org.zoomdev.zoom.common.caster.Caster;
+import org.zoomdev.zoom.common.caster.ValueCaster;
+import org.zoomdev.zoom.common.io.Io;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 
 import java.io.ByteArrayInputStream;

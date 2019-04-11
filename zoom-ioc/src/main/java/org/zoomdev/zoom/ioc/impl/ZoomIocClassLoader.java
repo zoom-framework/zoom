@@ -2,11 +2,11 @@ package org.zoomdev.zoom.ioc.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.zoomdev.zoom.http.Destroyable;
-import org.zoomdev.zoom.http.annotations.IocBean;
-import org.zoomdev.zoom.http.designpattern.SingletonUtils;
-import org.zoomdev.zoom.http.utils.CachedClasses;
-import org.zoomdev.zoom.http.utils.Classes;
+import org.zoomdev.zoom.common.Destroyable;
+import org.zoomdev.zoom.common.annotations.IocBean;
+import org.zoomdev.zoom.common.designpattern.SingletonUtils;
+import org.zoomdev.zoom.common.utils.CachedClasses;
+import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.ioc.*;
 
 import java.lang.reflect.Method;

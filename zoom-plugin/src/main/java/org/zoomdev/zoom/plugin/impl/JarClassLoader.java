@@ -1,7 +1,7 @@
 package org.zoomdev.zoom.plugin.impl;
 
-import org.zoomdev.zoom.http.HttpUtil;
-import org.zoomdev.zoom.http.io.Io;
+import org.zoomdev.zoom.common.HttpUtil;
+import org.zoomdev.zoom.common.io.Io;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

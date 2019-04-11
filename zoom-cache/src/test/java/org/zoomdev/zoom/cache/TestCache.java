@@ -7,9 +7,9 @@ import org.zoomdev.zoom.cache.annotations.Cache;
 import org.zoomdev.zoom.cache.annotations.CacheRemove;
 import org.zoomdev.zoom.cache.ehcache.EhDataCache;
 import org.zoomdev.zoom.cache.modules.CacheModule;
-import org.zoomdev.zoom.http.filter.MethodFilter;
-import org.zoomdev.zoom.http.res.ResScanner;
-import org.zoomdev.zoom.http.utils.CachedClasses;
+import org.zoomdev.zoom.common.filter.MethodFilter;
+import org.zoomdev.zoom.common.res.ResScanner;
+import org.zoomdev.zoom.common.utils.CachedClasses;
 
 import java.io.IOException;
 import java.lang.reflect.Method;

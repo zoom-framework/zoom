@@ -4,7 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.aop.MethodInterceptor;
 import org.zoomdev.zoom.aop.MethodInvoker;
-import org.zoomdev.zoom.http.lock.LockUtils;
+import org.zoomdev.zoom.common.lock.LockUtils;
 
 import java.util.Arrays;
 

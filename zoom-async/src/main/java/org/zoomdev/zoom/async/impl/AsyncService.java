@@ -6,7 +6,7 @@ import org.zoomdev.zoom.async.JobExecutor;
 import org.zoomdev.zoom.async.JobHandler;
 import org.zoomdev.zoom.async.JobQueue;
 import org.zoomdev.zoom.async.JobResult;
-import org.zoomdev.zoom.http.Destroyable;
+import org.zoomdev.zoom.common.Destroyable;
 
 import java.util.ArrayList;
 import java.util.Iterator;

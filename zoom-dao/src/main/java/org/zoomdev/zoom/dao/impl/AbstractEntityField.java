@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.dao.impl;
 
-import org.zoomdev.zoom.http.caster.ValueCaster;
+import org.zoomdev.zoom.common.caster.ValueCaster;
 import org.zoomdev.zoom.dao.adapters.EntityField;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 import org.zoomdev.zoom.dao.auto.AutoField;

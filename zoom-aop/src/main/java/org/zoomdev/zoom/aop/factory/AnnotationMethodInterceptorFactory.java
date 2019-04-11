@@ -2,8 +2,8 @@ package org.zoomdev.zoom.aop.factory;
 
 import org.zoomdev.zoom.aop.MethodInterceptor;
 import org.zoomdev.zoom.aop.MethodInterceptorFactory;
-import org.zoomdev.zoom.http.Destroyable;
-import org.zoomdev.zoom.http.utils.Classes;
+import org.zoomdev.zoom.common.Destroyable;
+import org.zoomdev.zoom.common.utils.Classes;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

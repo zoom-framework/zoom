@@ -2,11 +2,11 @@ package org.zoomdev.zoom.web.test.modules;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.zoomdev.zoom.http.annotations.ApplicationModule;
-import org.zoomdev.zoom.http.annotations.Inject;
-import org.zoomdev.zoom.http.annotations.IocBean;
-import org.zoomdev.zoom.http.annotations.Module;
-import org.zoomdev.zoom.http.exceptions.ZoomException;
+import org.zoomdev.zoom.common.annotations.ApplicationModule;
+import org.zoomdev.zoom.common.annotations.Inject;
+import org.zoomdev.zoom.common.annotations.IocBean;
+import org.zoomdev.zoom.common.annotations.Module;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.web.WebConfig;
 import org.zoomdev.zoom.web.action.*;
 import org.zoomdev.zoom.web.rendering.TemplateEngineManager;

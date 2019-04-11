@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.dao.validator;
 
-import org.zoomdev.zoom.http.exceptions.ZoomException;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.dao.adapters.EntityField;
 
 public class ValidatorException extends ZoomException {

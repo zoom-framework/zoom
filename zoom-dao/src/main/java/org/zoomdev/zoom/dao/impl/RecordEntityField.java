@@ -1,6 +1,6 @@
 package org.zoomdev.zoom.dao.impl;
 
-import org.zoomdev.zoom.http.utils.DataObject;
+import org.zoomdev.zoom.common.utils.DataObject;
 
 import java.lang.reflect.Type;
 

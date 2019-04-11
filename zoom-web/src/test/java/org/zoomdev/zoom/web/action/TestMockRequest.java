@@ -1,9 +1,9 @@
 package org.zoomdev.zoom.web.action;
 
 import junit.framework.TestCase;
-import org.zoomdev.zoom.http.io.Io;
-import org.zoomdev.zoom.http.json.JSON;
-import org.zoomdev.zoom.http.utils.DataObject;
+import org.zoomdev.zoom.common.io.Io;
+import org.zoomdev.zoom.common.json.JSON;
+import org.zoomdev.zoom.common.utils.DataObject;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;

@@ -1,7 +1,7 @@
 package org.zoomdev.zoom.ioc.modules;
 
 import junit.framework.TestCase;
-import org.zoomdev.zoom.http.utils.Classes;
+import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.ioc.IocClassLoader;
 import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.ioc.impl.ZoomIocContainer;

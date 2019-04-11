@@ -6,9 +6,9 @@ import org.zoomdev.zoom.cache.CacheRemoveInterceptorFactory;
 import org.zoomdev.zoom.cache.DataCache;
 import org.zoomdev.zoom.cache.annotations.CacheEnable;
 import org.zoomdev.zoom.cache.ehcache.EhDataCache;
-import org.zoomdev.zoom.http.annotations.Inject;
-import org.zoomdev.zoom.http.annotations.IocBean;
-import org.zoomdev.zoom.http.annotations.Module;
+import org.zoomdev.zoom.common.annotations.Inject;
+import org.zoomdev.zoom.common.annotations.IocBean;
+import org.zoomdev.zoom.common.annotations.Module;
 
 @Module(CacheEnable.class)
 public class CacheModule {

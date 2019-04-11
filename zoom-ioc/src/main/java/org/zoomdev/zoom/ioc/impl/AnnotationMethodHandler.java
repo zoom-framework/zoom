@@ -1,7 +1,7 @@
 package org.zoomdev.zoom.ioc.impl;
 
 
-import org.zoomdev.zoom.http.utils.Classes;
+import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.ioc.IocMethodHandler;
 import org.zoomdev.zoom.ioc.IocMethodProxy;
 import org.zoomdev.zoom.ioc.IocObject;

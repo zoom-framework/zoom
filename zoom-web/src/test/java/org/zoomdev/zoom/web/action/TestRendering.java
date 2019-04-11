@@ -1,7 +1,7 @@
 package org.zoomdev.zoom.web.action;
 
 import junit.framework.TestCase;
-import org.zoomdev.zoom.http.utils.CachedClasses;
+import org.zoomdev.zoom.common.utils.CachedClasses;
 import org.zoomdev.zoom.web.WebConfig;
 import org.zoomdev.zoom.web.modules.WebModules;
 import org.zoomdev.zoom.web.parameter.ParameterParserFactory;

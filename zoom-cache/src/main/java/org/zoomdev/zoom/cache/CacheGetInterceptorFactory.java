@@ -4,8 +4,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.zoomdev.zoom.aop.MethodInterceptor;
 import org.zoomdev.zoom.aop.factory.AnnotationMethodInterceptorFactory;
 import org.zoomdev.zoom.cache.annotations.Cache;
-import org.zoomdev.zoom.http.exceptions.ZoomException;
-import org.zoomdev.zoom.http.utils.Classes;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
+import org.zoomdev.zoom.common.utils.Classes;
 
 import java.lang.reflect.Method;
 import java.util.List;

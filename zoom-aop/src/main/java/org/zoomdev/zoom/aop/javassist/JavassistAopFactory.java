@@ -8,7 +8,7 @@ import org.zoomdev.zoom.aop.MethodInterceptorFactory;
 import org.zoomdev.zoom.aop.impl.AstractMethodInterceptorFactory;
 import org.zoomdev.zoom.aop.impl.ReflectMethodCaller;
 import org.zoomdev.zoom.aop.utils.JavassistUtils;
-import org.zoomdev.zoom.http.utils.Classes;
+import org.zoomdev.zoom.common.utils.Classes;
 
 import java.lang.reflect.Method;
 import java.util.regex.Pattern;
