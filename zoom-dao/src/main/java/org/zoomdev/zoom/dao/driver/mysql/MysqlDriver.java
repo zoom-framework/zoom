@@ -1,8 +1,13 @@
 package org.zoomdev.zoom.dao.driver.mysql;
 
 import org.apache.commons.lang3.StringUtils;
+import org.zoomdev.zoom.common.filter.Filter;
+import org.zoomdev.zoom.dao.Entity;
+import org.zoomdev.zoom.dao.adapters.EntityField;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 import org.zoomdev.zoom.dao.driver.AbsDriver;
+import org.zoomdev.zoom.dao.impl.EntitySqlUtils;
+import org.zoomdev.zoom.dao.impl.SimpleSqlBuilder;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.impl.TableBuildInfo;
 import org.zoomdev.zoom.dao.impl.ZoomDatabaseBuilder;
@@ -52,6 +57,18 @@ public class MysqlDriver extends AbsDriver {
         }
 
         return url.substring(url.lastIndexOf("/") + 1);
+    }
+
+    @Override
+    public <T> void buildInsertOrUpdate(SimpleSqlBuilder builder, Entity entity, T data, Filter<EntityField> filter, boolean ignoreNull, String[] unikeys) {
+        EntitySqlUtils.buildInsertOrUpdateForMysql(
+                builder,
+               this,
+                entity,
+                data,
+                filter,
+                ignoreNull,
+                unikeys);
     }
 
     protected String protectName(String name) {

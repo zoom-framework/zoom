@@ -1,8 +1,12 @@
 package org.zoomdev.zoom.dao.driver;
 
 
+import org.zoomdev.zoom.common.filter.Filter;
+import org.zoomdev.zoom.dao.Entity;
+import org.zoomdev.zoom.dao.adapters.EntityField;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 import org.zoomdev.zoom.dao.adapters.StatementAdapterFactory;
+import org.zoomdev.zoom.dao.impl.SimpleSqlBuilder;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.impl.TableBuildInfo;
 
@@ -57,4 +61,10 @@ public interface SqlDriver extends StatementAdapterFactory {
      */
     String getTableCatFromUrl(String url);
 
+    <T> void buildInsertOrUpdate(  SimpleSqlBuilder builder,
+                               Entity entity,
+                               T data,
+                               Filter<EntityField> filter,
+                               boolean ignoreNull,
+                               String[] unikeys);
 }

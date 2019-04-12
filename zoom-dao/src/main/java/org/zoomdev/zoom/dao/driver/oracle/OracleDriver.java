@@ -2,10 +2,14 @@ package org.zoomdev.zoom.dao.driver.oracle;
 
 import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.common.caster.ValueCaster;
+import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.dao.Dao;
+import org.zoomdev.zoom.dao.Entity;
+import org.zoomdev.zoom.dao.adapters.EntityField;
 import org.zoomdev.zoom.dao.auto.AutoField;
 import org.zoomdev.zoom.dao.driver.AbsDriver;
 import org.zoomdev.zoom.dao.driver.AutoGenerateProvider;
+import org.zoomdev.zoom.dao.impl.SimpleSqlBuilder;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.meta.TableMeta;
 import org.zoomdev.zoom.dao.impl.TableBuildInfo;
@@ -308,6 +312,11 @@ public class OracleDriver extends AbsDriver implements AutoGenerateProvider {
     public String getTableCatFromUrl(String url) {
         //jdbc:oracle:thin:@SERVER:PORT:DB
         return url.substring(url.lastIndexOf(":") + 1).toUpperCase();
+    }
+
+    @Override
+    public <T> void buildInsertOrUpdate(SimpleSqlBuilder builder, Entity entity, T data, Filter<EntityField> filter, boolean ignoreNull, String[] unikeys) {
+        throw new RuntimeException();
     }
 
 

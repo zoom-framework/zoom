@@ -60,7 +60,7 @@ public class Transactions {
             try {
                 transaction.rollback();
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
 
         }

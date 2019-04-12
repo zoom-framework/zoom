@@ -1,5 +1,7 @@
 package org.zoomdev.zoom.dao.impl;
 
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.common.caster.Caster;
@@ -20,9 +22,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class EntitySqlUtils {
@@ -79,6 +79,83 @@ public class EntitySqlUtils {
         } finally {
             DaoUtils.close(ps);
         }
+    }
+
+    public static <T> void buildInsertOrUpdateForMysql(
+            SimpleSqlBuilder builder,
+            SqlDriver driver,
+            Entity entity,
+            T data,
+            Filter<EntityField> filter,
+            boolean ignoreNull,
+            String[] unikeys
+
+    ){
+
+
+        StringBuilder sql = builder.sql;
+        StringBuilder signs = new StringBuilder();
+        sql.append("INSERT INTO ")
+                .append(entity.getTable())
+                .append(" (");
+        List<Object> values = builder.values;
+        boolean first = true;
+        EntityField[] fields = entity.getEntityFields();
+        List<StatementAdapter> insertFields = builder.adapters;
+        int index = 0;
+        Object value;
+        String[] placeHolder = new String[fields.length*2];
+        for (EntityField entityField : fields) {
+            //插入数据,如果有忽略掉其他判断
+
+            if (filter == null || filter.accept(entityField)) {
+                value = entityField.get(data);
+                if (value == null && ignoreNull) {
+                    continue;
+                }
+                if (first) {
+                    first = false;
+                } else {
+                    sql.append(COMMA);
+                }
+                appendValue(values, value, insertFields, entityField, sql,
+                        placeHolder, index, driver);
+                ++index;
+            }
+
+        }
+
+        sql.append(") VALUES (").append(StringUtils.repeat("?",",",index)).append(") ON DUPLICATE KEY UPDATE ");
+        first = true;
+        Set<String> keySet = new HashSet<String>();
+        for (String string : unikeys) {
+            keySet.add(string);
+        }
+
+        for (EntityField entityField : fields) {
+            String key = entityField.getFieldName();
+            //插入数据,如果有忽略掉其他判断
+            if(keySet.contains(key)){
+                continue;
+            }
+            if (filter == null || filter.accept(entityField)) {
+                if(first){
+                    first = false;
+                }else{
+                    sql.append(',');
+                }
+                sql.append(entityField.getColumnName()).append("=?");
+                value =  entityField.get(data);
+                insertFields.add(entityField);
+                values.add(value);
+
+                ++index;
+            }
+
+        }
+
+
+
     }
 
     public static <T> void buildInsertIgnoreDuplicated(
@@ -143,7 +220,9 @@ public class EntitySqlUtils {
             }
             sql.append("?");
         }
-        sql.append(" FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM ").append(entity.getTable()).append(" WHERE ");
+        sql.append(" FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM ")
+                .append(entity.getTable())
+                .append(" WHERE ");
         first = true;
         for (String key : keys) {
             if(first){

@@ -291,6 +291,33 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
     }
 
     @Override
+    public void insertOrUpdate(final T data, final String... keys) {
+        assert (data != null);
+
+        if (data instanceof Record && strict) {
+            validateRecord((Record) data);
+        }
+
+        execute(new ConnectionExecutor() {
+            @Override
+            public Integer execute(Connection connection) throws SQLException {
+                dao.getDriver().buildInsertOrUpdate( builder,
+
+                        entity,
+                        data,
+                        filter,
+                        ignoreNull,
+                        keys);
+
+                return EntitySqlUtils.executeUpdate(
+                        connection,
+                        builder,output
+                );
+            }
+        });
+    }
+
+    @Override
     public int insert(final T data) {
         assert (data != null);
 

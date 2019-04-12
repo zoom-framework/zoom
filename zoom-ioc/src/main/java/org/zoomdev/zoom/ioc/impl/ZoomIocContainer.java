@@ -263,19 +263,20 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
         return globalScope;
     }
 
-    private boolean loaded;
+    private volatile boolean loaded;
 
     private Object lock = new Object();
 
     @Override
     public void waitFor() {
-        if(loaded)return;
-        try{
-            synchronized (lock){
-                lock.wait();
+        while(!loaded){
+            try{
+                synchronized (lock){
+                    lock.wait(200);
+                }
+            }catch (InterruptedException e){
+                return;
             }
-        }catch (InterruptedException e){
-            return;
         }
     }
 

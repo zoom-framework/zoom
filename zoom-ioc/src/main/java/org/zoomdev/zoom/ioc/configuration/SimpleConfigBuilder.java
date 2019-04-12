@@ -87,6 +87,7 @@ public class SimpleConfigBuilder extends ClassResolver {
 
         //Injectors
 
+        log.debug("正在进行注入...");
 
         OrderedList<Pair> injectors = new OrderedList<Pair>();
         for(Class<?> type : types){
@@ -122,7 +123,7 @@ public class SimpleConfigBuilder extends ClassResolver {
         // System.out.println("==========config build 成功"+(System.currentTimeMillis()-time)+"==========");
 
         list.clear();
-
+        log.debug("注入完成，正在设置完成");
         ioc.setLoadComplete();
 
     }
