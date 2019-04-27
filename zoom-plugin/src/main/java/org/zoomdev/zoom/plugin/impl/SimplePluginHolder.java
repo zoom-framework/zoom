@@ -94,7 +94,7 @@ public class SimplePluginHolder implements PluginHolder {
         assert (plugin != null);
         try {
             IocContainer mainIoc = host.getIoc();
-            ioc = new ZoomIocContainer(mainIoc);
+            ioc = new ZoomIocContainer(mainIoc,classLoader);
             tokens = new ArrayList<Router.RemoveToken>();;
 
             ClassResolvers classResolvers = new ClassResolvers(

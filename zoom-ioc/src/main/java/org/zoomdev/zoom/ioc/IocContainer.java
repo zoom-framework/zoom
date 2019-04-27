@@ -109,4 +109,7 @@ public interface IocContainer extends Destroyable {
     void waitFor();
 
     void setLoadComplete();
+
+
+    ClassLoader getClassLoader();
 }

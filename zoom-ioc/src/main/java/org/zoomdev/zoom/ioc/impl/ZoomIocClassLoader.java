@@ -65,6 +65,11 @@ public class ZoomIocClassLoader extends IocBase implements IocClassLoader, Destr
         this.classEnhancer = enhancer;
     }
 
+    @Override
+    public ClassLoader getClassLoader() {
+        return ioc.getClassLoader();
+    }
+
 
     private static final Log log = LogFactory.getLog(ZoomIocClassLoader.class);
 

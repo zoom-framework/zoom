@@ -42,7 +42,7 @@ public class TestIoc extends TestCase {
 
 
         IocContainer subIoc = new ZoomIocContainer(
-                ioc
+                ioc,ioc.getClassLoader()
         );
 
 
@@ -82,7 +82,7 @@ public class TestIoc extends TestCase {
 
 
         IocContainer container = new ZoomIocContainer(
-                ioc
+                ioc,ioc.getClassLoader()
         );
 
         container.getIocClassLoader().append(A.class);

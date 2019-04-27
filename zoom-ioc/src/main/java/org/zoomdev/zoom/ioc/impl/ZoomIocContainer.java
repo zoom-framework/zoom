@@ -3,6 +3,7 @@ package org.zoomdev.zoom.ioc.impl;
 import org.apache.commons.lang3.StringUtils;
 import org.zoomdev.zoom.common.annotations.Inject;
 import org.zoomdev.zoom.common.annotations.IocBean;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.utils.CachedClasses;
 import org.zoomdev.zoom.ioc.*;
 
@@ -23,15 +24,23 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
             Collections.synchronizedList(new ArrayList<IocEventListener>());
 
 
+    private final ClassLoader classLoader;
+
     public ZoomIocContainer() {
+        this(ZoomIocContainer.class.getClassLoader());
+    }
+
+    public ZoomIocContainer(ClassLoader classLoader) {
+        this.classLoader = classLoader;
         globalScope = new GlobalScope(this, this);
         this.iocClassLoader = new ZoomIocClassLoader(this);
         this.iocClassLoader.setClassEnhancer(new NoneEnhancer());
         getIocClassLoader().append(IocContainer.class, this, true,IocBean.SYSTEM);
+
     }
 
-    public ZoomIocContainer(IocContainer parent) {
-
+    public ZoomIocContainer(IocContainer parent,ClassLoader classLoader) {
+        this.classLoader = classLoader;
         IocScope parentScope = parent.getScope(Scope.APPLICATION);
         IocClassLoader parentClassLoader = parent.getIocClassLoader();
         List<IocEventListener> eventListeners = parent.getEventListeners();
@@ -41,6 +50,12 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
         this.iocClassLoader.setClassEnhancer(new NoneEnhancer());
         this.eventListeners.addAll(eventListeners);
         getIocClassLoader().append(IocContainer.class, this, true,IocBean.SYSTEM);
+    }
+
+
+    @Override
+    public ClassLoader getClassLoader() {
+        return classLoader;
     }
 
 
@@ -289,6 +304,7 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
 
     }
 
+
     /**
      * 将来改成可配置的
      *
@@ -333,6 +349,15 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
             IocClass iocClass,
             Class<?> type,
             IocClassLoader classLoader) {
+        if(type.getSimpleName().endsWith("$Enhance")){
+            try {
+                String className = type.getName();
+                className = className.substring(0,className.length()-8);
+                type = Class.forName(className,false,classLoader.getClassLoader());
+            } catch (ClassNotFoundException e) {
+               throw new ZoomException();
+            }
+        }
         Method[] methods = CachedClasses.getPublicMethods(type);
         if (methods == null || methods.length == 0) return null;
         List<IocMethod> iocMethods = new ArrayList<IocMethod>();

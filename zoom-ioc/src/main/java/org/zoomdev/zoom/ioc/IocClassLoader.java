@@ -41,4 +41,6 @@ public interface IocClassLoader {
     void setClassEnhancer(ClassEnhancer enhancer);
 
     List<IocClass> appendModule(Class<?> moduleClass);
+
+    ClassLoader getClassLoader();
 }

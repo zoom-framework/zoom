@@ -12,10 +12,7 @@ import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.common.utils.PathUtils;
 import org.zoomdev.zoom.common.utils.Visitor;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -176,6 +173,11 @@ public class ResScanner implements Destroyable {
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException("找不到对应的类" + className, e);
             }
+        }
+
+
+        public ClassLoader getClassLoader() {
+            return classLoader;
         }
 
         public Class<?> getType() {
@@ -647,9 +649,20 @@ public class ResScanner implements Destroyable {
             return name;
         }
 
-        /// jar中的classinputstream
+        /// jar中的classinputstream,使用完毕必须要关闭
         @Override
         public InputStream getInputStream() throws IOException {
+            ZipInputStream inputStream = new ZipInputStream(new FileInputStream(this.file));
+            ZipEntry entry = null;
+            while ( (entry = inputStream.getNextEntry()) != null ) {
+                if (entry.isDirectory()) {
+                    continue;
+                }
+                String name = entry.getName();
+                if(StringUtils.endsWith(name,this.name)){
+                    return inputStream;
+                }
+            }
             return null;
         }
     }
