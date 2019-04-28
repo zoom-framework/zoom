@@ -5,7 +5,7 @@ import org.zoomdev.zoom.aop.AopFactory;
 import org.zoomdev.zoom.aop.javassist.JavassistAopFactory;
 import org.zoomdev.zoom.cache.annotations.Cache;
 import org.zoomdev.zoom.cache.annotations.CacheRemove;
-import org.zoomdev.zoom.cache.ehcache.EhDataCache;
+import org.zoomdev.zoom.cache.impl.DefaultCache;
 import org.zoomdev.zoom.cache.modules.CacheModule;
 import org.zoomdev.zoom.common.filter.MethodFilter;
 import org.zoomdev.zoom.common.res.ResScanner;
@@ -62,8 +62,7 @@ public class TestCache extends TestCase {
         resScanner.scan();
 
         CacheModule cacheModule = new CacheModule();
-        EhDataCache cache = (EhDataCache) cacheModule.getCache();
-        cache.init(resScanner);
+        DataCache cache = new DefaultCache();
 
         cacheModule.init(aopFactory, cache);
 

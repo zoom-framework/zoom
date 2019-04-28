@@ -43,7 +43,7 @@ public interface DataCache {
      * @param value     值
      * @param timeoutMs 超时毫秒
      */
-    Object set(String key, Object value, int timeoutMs);
+    Object set(String key, Object value, long timeoutMs);
 
     /**
      * 移除key
