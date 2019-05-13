@@ -21,7 +21,7 @@ import java.util.Set;
  *
  * @author jzoom
  */
-public interface Entity {
+public interface Entity<T> {
 
     /**
      * 所有绑定字段
@@ -57,7 +57,7 @@ public interface Entity {
      *
      * @return
      */
-    Class<?> getType();
+    Class<T> getType();
 
 
     /**

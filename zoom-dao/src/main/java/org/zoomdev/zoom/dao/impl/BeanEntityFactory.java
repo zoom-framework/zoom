@@ -315,9 +315,12 @@ class BeanEntityFactory extends AbstractEntityFactory {
     }
 
 
-    public Entity getEntity(final Class<?> type) {
+    public Entity bindEndity(Class<?> type,String table){
+        BeanTableInfo tableInfo = tableAdapter.getTableInfo(type,table);
+        return createEntity(type,tableInfo);
+    }
 
-        BeanTableInfo tableInfo = tableAdapter.getTableInfo(type);
+    private Entity createEntity(Class<?> type,BeanTableInfo tableInfo){
         Map<String, RenameUtils.ColumnRenameConfig> map;
         String tableName = tableInfo.getTableNames()[0];
         if(tableInfo.getJoins()!=null){
@@ -373,7 +376,13 @@ class BeanEntityFactory extends AbstractEntityFactory {
                 type,
                 getNamesMap(map, fields),
                 tableInfo.getJoins());
+    }
 
+    public Entity getEntity(final Class<?> type) {
+
+        BeanTableInfo tableInfo = tableAdapter.getTableInfo(type);
+
+        return createEntity(type,tableInfo);
     }
 
 

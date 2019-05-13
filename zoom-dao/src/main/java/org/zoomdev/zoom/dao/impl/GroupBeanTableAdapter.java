@@ -30,4 +30,15 @@ public class GroupBeanTableAdapter implements BeanTableAdapter {
         }
         return null;
     }
+
+    @Override
+    public BeanTableInfo getTableInfo(Class<?> type, String table) {
+        for(BeanTableAdapter adapter : adapters){
+            BeanTableInfo info = adapter.getTableInfo(type,table);
+            if(info!=null){
+                return info;
+            }
+        }
+        return null;
+    }
 }

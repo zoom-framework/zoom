@@ -515,6 +515,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
 
     @Override
     public int insert(final Iterable<T> it) {
+        assert (it!=null);
         final MutableInt result = new MutableInt(0);
         ZoomDao.executeTrans(
                 new Runnable() {

@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 
-public class RecordEntity extends AbstractEntity {
+public class RecordEntity extends AbstractEntity<Record> {
 
 
 
@@ -25,7 +25,7 @@ public class RecordEntity extends AbstractEntity {
     }
 
     @Override
-    public Class<?> getType() {
+    public Class<Record> getType() {
         return Record.class;
     }
 

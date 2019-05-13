@@ -106,6 +106,13 @@ public class CachedEntityFactory implements EntityFactory {
     }
 
     @Override
+    public <T> Entity<T> bindEntity(Class<T> type, String table, Map<String, String> field2column) {
+
+
+        return beanEntityFactory.bindEndity(type,table);
+    }
+
+    @Override
     public void clearCache() {
         map.clear();
     }

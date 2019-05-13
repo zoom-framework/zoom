@@ -68,6 +68,11 @@ class ZoomBeanTableAdapter implements BeanTableAdapter {
         return new ZoomBeanTableInfo(tableName);
     }
 
+    @Override
+    public BeanTableInfo getTableInfo(Class<?> type, String table) {
+        return new ZoomBeanTableInfo(table);
+    }
+
     private JoinMeta[] getJoinConfigs(Join[] joins) {
         if (joins == null) return null;
         JoinMeta[] joinMetas = new JoinMeta[joins.length];

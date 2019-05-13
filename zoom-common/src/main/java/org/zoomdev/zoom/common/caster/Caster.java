@@ -515,7 +515,7 @@ public class Caster {
         }
     }
 
-    private static void registerParameterizedType(ParameterizedTypeCasterfactory... factory) {
+    public static void registerParameterizedType(ParameterizedTypeCasterfactory... factory) {
         Collections.addAll(typeCanbeConvertToParameterizedType, factory);
     }
 
@@ -1538,7 +1538,7 @@ public class Caster {
 
     }
 
-    private static abstract class ParameterizedTypeCasterfactory<SRC, DEST> {
+    public static abstract class ParameterizedTypeCasterfactory<SRC, DEST> {
         private Class<?> src;
         private Class<?> dest;
 

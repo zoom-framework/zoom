@@ -11,9 +11,9 @@ import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
 
-class BeanEntity extends AbstractEntity {
+class BeanEntity<T> extends AbstractEntity<T> {
 
-    Class<?> type;
+    Class<T> type;
 
     Constructor<?> constructor;
 
@@ -24,7 +24,7 @@ class BeanEntity extends AbstractEntity {
                EntityField[] entityFields,
                EntityField[] primaryKeys,
                AutoEntity autoEntity,
-               Class<?> type,
+               Class<T> type,
                Map<String, String> namesMap,
                JoinMeta[] joins) {
         super(table, entityFields, primaryKeys, autoEntity, namesMap);
@@ -57,7 +57,7 @@ class BeanEntity extends AbstractEntity {
     }
 
     @Override
-    public Class<?> getType() {
+    public Class<T> getType() {
         return type;
     }
 

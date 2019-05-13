@@ -31,6 +31,8 @@ public interface Dao extends StatementAdapterFactory {
      */
     <T> EAr<T> ar(Class<T> type);
 
+    <T> EAr<T> ar(Entity<T> entity);
+
 
     /**
      * @param tables

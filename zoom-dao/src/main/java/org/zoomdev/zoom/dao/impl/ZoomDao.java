@@ -249,6 +249,19 @@ public class ZoomDao implements Dao, Destroyable {
     }
 
     @Override
+    public <T> EAr<T> ar(Entity<T> entity) {
+        EAr<T> ar = (EAr<T>) earHolder.get();
+        if (ar == null) {
+            lazyLoad();
+            ar = new EntityActiveRecord<T>(this, entity,output);
+            earHolder.set(ar);
+        } else {
+            ar.setEntity(entity);
+        }
+        return ar;
+    }
+
+    @Override
     public EAr<Record> ar(String... tables) {
         EAr<Record> ar = (EAr<Record>) earHolder.get();
         Entity entity = entityFactory.getEntity(tables);

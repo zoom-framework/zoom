@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 /**
  * {@link Entity} 抽象基类
  */
-public abstract class AbstractEntity implements Entity {
+public abstract class AbstractEntity<T> implements Entity<T> {
     EntityField[] entityFields;
     EntityField[] primaryKeys;
     String table;

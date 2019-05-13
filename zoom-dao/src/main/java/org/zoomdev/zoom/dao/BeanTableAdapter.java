@@ -14,4 +14,7 @@ public interface BeanTableAdapter {
      */
     BeanTableInfo getTableInfo(Class<?> type);
 
+
+    BeanTableInfo getTableInfo(Class<?> type,String table);
+
 }
