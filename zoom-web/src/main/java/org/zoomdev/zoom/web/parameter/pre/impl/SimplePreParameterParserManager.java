@@ -14,11 +14,19 @@ public class SimplePreParameterParserManager implements PreParameterParserManage
 
 
     public SimplePreParameterParserManager() {
-        parsers = new PreParameterParser[]{
-                new JsonPreParamParser(),
-                new UploadPreParamParser(),
-                new FormPreParamParser()
-        };
+        try{
+            parsers = new PreParameterParser[]{
+                    new JsonPreParamParser(),
+                    new UploadPreParamParser(),
+                    new FormPreParamParser()
+            };
+        }catch (Throwable t){
+            parsers = new PreParameterParser[]{
+                    new JsonPreParamParser(),
+                    new FormPreParamParser()
+            };
+        }
+
     }
 
     @Override

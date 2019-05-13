@@ -28,6 +28,7 @@ import org.zoomdev.zoom.web.rendering.impl.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,14 +38,25 @@ public class WebModules {
     @Inject(config = ConfigurationConstants.SERVER_ENCODING)
     private String encoding;
 
+
+    static class Request2MapCasterFactory extends Caster.ParameterizedTypeCasterfactory<HttpServletRequest,Map> {
+
+        @Override
+        protected ValueCaster create(ParameterizedType targetType) {
+            return new Request2Map();
+        }
+    }
+
     /**
      * 对caster进行配置，增加参数解析的部分
      */
     @Inject
     public void configCaster() {
         Caster.register(HttpServletRequest.class, DataObject.class, new Request2DataObject());
+        /// 因为已经改成了泛型匹配，所以这里就无效了
         Caster.register(HttpServletRequest.class, Map.class, new Request2Map());
         Caster.registerCastProvider(new Request2BeanProvider());
+        Caster.registerParameterizedType(new Request2MapCasterFactory());
     }
 
     @IocBean
