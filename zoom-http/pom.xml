@@ -75,5 +75,14 @@
         </dependency>
 
 
+        <dependency>
+            <groupId>org.zoomdev.zoom</groupId>
+            <artifactId>zoom-common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.zoomdev.zoom</groupId>
+            <artifactId>zoom-ioc</artifactId>
+        </dependency>
     </dependencies>
 </project>
