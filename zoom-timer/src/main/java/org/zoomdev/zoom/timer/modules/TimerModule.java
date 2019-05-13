@@ -1,6 +1,8 @@
 package org.zoomdev.zoom.timer.modules;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.common.Destroyable;
 import org.zoomdev.zoom.common.annotations.Inject;
 import org.zoomdev.zoom.common.annotations.IocBean;
@@ -22,6 +24,8 @@ import java.lang.reflect.Method;
 @Module(TimerEnable.class)
 public class TimerModule implements Destroyable {
 
+
+    private final Log log = LogFactory.getLog(TimerModule.class);
 
     @IocBean
     public TimerService getTimerService() {
@@ -53,11 +57,13 @@ public class TimerModule implements Destroyable {
 
             @Override
             public void create(IocObject target, IocMethodProxy method) {
+
                 Timer timer = method.getAnnotation(Timer.class);
                 String cron = (String) ConfigReader.parseValue(getCron(timer));
                 if (StringUtils.isEmpty(cron)){
                     throw new ZoomException("cron is empty!");
                 }
+                log.info(String.format("启动定时器,方法[%s],时间段[%s]",method.getMethod(),cron));
                 timerService.startTimer(method.getUid(), IocTimerJob.class, new TimerData(
                         target,
                         method
@@ -67,6 +73,7 @@ public class TimerModule implements Destroyable {
 
             @Override
             public void destroy(IocObject target, IocMethodProxy method) {
+                log.info(String.format("关闭定时器,方法[%s]",method.getMethod()));
                 timerService.stopTimer(method.getUid());
             }
 
