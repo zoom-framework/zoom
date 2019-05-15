@@ -49,7 +49,7 @@ public class HttpUtil {
 
 
 
-    public Response execute(Request request) throws IOException {
+    public static Response execute(Request request) throws IOException {
         HttpURLConnection connection = null;
         try {
             connection = createConnection(request.url, request.method, request.contentType, request.body == null ? 0 : request.body.length);

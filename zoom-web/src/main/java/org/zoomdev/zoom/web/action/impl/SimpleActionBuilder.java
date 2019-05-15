@@ -83,7 +83,7 @@ public class SimpleActionBuilder extends ClassResolver {
 
 
 
-    protected String getKey(String key, Method method, Mapping mapping) {
+    public static String getKey(String key, Method method, Mapping mapping) {
         if (mapping != null) {
             if (!mapping.value().startsWith("/") && !key.endsWith("/") && !mapping.value().isEmpty()) {
                 key += "/" + mapping.value();

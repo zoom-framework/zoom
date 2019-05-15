@@ -28,6 +28,13 @@ public class StatusException extends ZoomException implements RestException {
     }
 
 
+    public static class ServiceUnavaliableException extends StatusException{
+
+        public ServiceUnavaliableException() {
+            super(504);
+        }
+    }
+
 
     /**
      * 401 未授权

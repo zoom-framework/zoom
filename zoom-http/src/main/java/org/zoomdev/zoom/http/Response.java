@@ -1,11 +1,15 @@
 package org.zoomdev.zoom.http;
 
 import org.zoomdev.zoom.common.io.Io;
+import org.zoomdev.zoom.common.utils.MapUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Response {
 
@@ -64,4 +68,16 @@ public class Response {
         }
     }
 
+    public Map<String,String> headers() {
+        Map<String, List<String>> data = connection.getHeaderFields();
+        Map<String,String> headers = new HashMap<String, String>();
+        for(Map.Entry<String,List<String>> entry : data.entrySet()){
+            List<String> list = entry.getValue();
+            if(list.size()>0){
+                headers.put(entry.getKey(),list.get(0));
+            }
+
+        }
+        return headers;
+    }
 }

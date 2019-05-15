@@ -29,6 +29,8 @@ public class Request {
     }
 
 
+
+
     public static Request get(String url,String contentType){
         return new Request("GET",contentType,null).url(url);
     }
@@ -60,7 +62,7 @@ public class Request {
         return this;
     }
 
-    private Request url(String url) {
+    public Request url(String url) {
         this.url = url;
         return this;
     }
