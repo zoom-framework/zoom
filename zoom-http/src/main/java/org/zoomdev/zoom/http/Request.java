@@ -28,6 +28,15 @@ public class Request {
                 .url(url);
     }
 
+    public Request headers(Map<String,String> headers){
+        if(this.headers!=null){
+            this.headers.putAll(headers);
+        }else {
+            this.headers = headers;
+        }
+
+        return this;
+    }
 
 
 

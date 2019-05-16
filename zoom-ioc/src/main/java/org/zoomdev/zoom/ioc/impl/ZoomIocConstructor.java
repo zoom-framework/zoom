@@ -20,7 +20,7 @@ abstract class ZoomIocConstructor implements IocConstructor {
             String destroy = iocBean.destroy();
             IocKey key = new ZoomIocKey(name, method.getReturnType());
             return new IocBeanConstructor(key,
-                    ZoomIocContainer.parseParameterKeys(target, method, classLoader), target, method,
+                    ZoomIocContainer.parseParameterValues(target, method, classLoader), target, method,
                     initialize, destroy);
         }catch (Exception e){
             throw new IocException("不能创建IocBean:["+target+"] "+method,e);
@@ -85,7 +85,6 @@ abstract class ZoomIocConstructor implements IocConstructor {
         Constructor<?> constructor;
         if (constructors.length == 1) {
             constructor = constructors[0];
-
         }else{
             //如果有多个构造函数，那么寻找无参数的
             constructor = Classes.findNoneParameterConstructor(type);
@@ -98,7 +97,7 @@ abstract class ZoomIocConstructor implements IocConstructor {
 
 
         return new IocConstructorContructor(key,
-                ZoomIocContainer.parseParameterKeys(
+                ZoomIocContainer.parseParameterValues(
                         type.getClassLoader(),
                         constructor.getParameterAnnotations(),
                         constructor.getParameterTypes(),
@@ -111,7 +110,7 @@ abstract class ZoomIocConstructor implements IocConstructor {
         private boolean inited;
 
         public IocInstanceConstructor(Class<?> type, Object instance, boolean inited) {
-            super(new ZoomIocKey(type), ZoomIocContainer.EMPTY_KEYS);
+            super(new ZoomIocKey(type), ZoomIocContainer.EMPTY_VALUES);
             assert (instance != null);
             this.inited = inited;
             this.instance = instance;
@@ -128,7 +127,7 @@ abstract class ZoomIocConstructor implements IocConstructor {
         private Constructor<?> constructor;
 
 
-        public IocConstructorContructor(IocKey key, IocKey[] parameterKeys, Constructor<?> constructor) {
+        public IocConstructorContructor(IocKey key, IocValue[] parameterKeys, Constructor<?> constructor) {
             super(key, parameterKeys);
             this.constructor = constructor;
         }
@@ -136,10 +135,9 @@ abstract class ZoomIocConstructor implements IocConstructor {
         @Override
         public IocObject newInstance() {
             try {
-                IocObject[] values = iocClass.getValues(parameterKeys);
-                return ZoomIocObject.wrap(iocClass, constructor.newInstance(ZoomIocContainer.getValues(
-                        values
-                )));
+               // IocObject[] values = iocClass.getValues(parameterKeys);
+                Object[] param = ZoomIocContainer.getValues(iocClass.getIoc(),parameterKeys);
+                return ZoomIocObject.wrap(iocClass, constructor.newInstance(param));
             } catch (Exception e) {
                 throw new IocException(e);
             }
@@ -161,7 +159,7 @@ abstract class ZoomIocConstructor implements IocConstructor {
         private String destroy;
 
         public IocBeanConstructor(IocKey key,
-                                  IocKey[] parameterKeys,
+                                  IocValue[] parameterKeys,
                                   Object target, Method method, String init, String destroy) {
             super(key, parameterKeys);
             assert (target != null && method != null);
@@ -174,8 +172,9 @@ abstract class ZoomIocConstructor implements IocConstructor {
         @Override
         public IocObject newInstance() {
             try {
-                IocObject[] values = iocClass.getIoc().fetchValues(parameterKeys);
-                Object bean = method.invoke(target, ZoomIocContainer.getValues(values));
+                Object[] values = ZoomIocContainer.getValues(iocClass.getIoc(),parameterKeys);
+                //IocObject[] values = iocClass.getIoc().fetchValues(parameterKeys);
+                Object bean = method.invoke(target, values);
 
                 IocEvent iocDestroy = null;
                 IocEvent iocInit = null;
@@ -197,16 +196,21 @@ abstract class ZoomIocConstructor implements IocConstructor {
 
     protected IocKey key;
 
-    protected IocKey[] parameterKeys;
+    protected IocValue[] parameterKeys;
 
 
     protected IocClass iocClass;
 
-    ZoomIocConstructor(IocKey key, IocKey[] parameterKeys) {
+    ZoomIocConstructor(IocKey key, IocValue[] parameterKeys) {
         assert (key != null && parameterKeys != null);
         this.key = key;
         this.parameterKeys = parameterKeys;
 
+    }
+
+    @Override
+    public IocValue[] getParameterValues() {
+        return parameterKeys;
     }
 
     public void setIocClass(IocClass iocClass) {
@@ -218,9 +222,9 @@ abstract class ZoomIocConstructor implements IocConstructor {
         return key;
     }
 
-    @Override
-    public IocKey[] getParameterKeys() {
-        return parameterKeys;
-    }
+//    @Override
+//    public IocKey[] getParameterKeys() {
+//        return parameterKeys;
+//    }
 
 }

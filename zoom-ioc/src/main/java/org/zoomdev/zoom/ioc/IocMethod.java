@@ -13,7 +13,7 @@ public interface IocMethod extends IocInjector {
      * 参宿对应的key
      * @return
      */
-    IocKey[] getParameterKeys();
+   // IocKey[] getParameterKeys();
 
     /**
      * 本方法可以直接自动识别依赖并执行方法

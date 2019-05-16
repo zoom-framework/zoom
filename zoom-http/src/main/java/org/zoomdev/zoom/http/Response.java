@@ -59,7 +59,7 @@ public class Response {
         }
     }
 
-    public int getStatusCode() throws IOException {
+    public int statusCode() throws IOException {
         try {
             return connection.getResponseCode();
         } catch (IOException e) {

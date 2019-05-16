@@ -23,6 +23,7 @@ public class ZoomIocObject implements IocObject, Destroyable {
 
     private IocEvent init;
 
+
     public ZoomIocObject(IocClass iocClass, Object obj, boolean inited, IocEvent iocInit, IocEvent iocDestroy) {
         this.iocClass = iocClass;
         this.obj = obj;
@@ -46,6 +47,9 @@ public class ZoomIocObject implements IocObject, Destroyable {
     public static IocObject wrap(IocClass iocClass, Object obj, boolean inited) {
         return new ZoomIocObject(iocClass, obj, inited);
     }
+
+
+
 
 
     @Override

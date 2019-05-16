@@ -112,9 +112,12 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
         IocConstructor iocConstructor = iocClass.getIocConstructor();
 
 
-        for (IocKey key : iocConstructor.getParameterKeys()) {
-            ZoomIocObject childObject = (ZoomIocObject) scope.get(key);
-            initObject(childObject, scope);
+        for (IocValue value : iocConstructor.getParameterValues()) {
+            if(value instanceof ZoomIocKeyValue){
+                ZoomIocObject childObject = (ZoomIocObject) scope.get( ((ZoomIocKeyValue)value) .getKey() );
+                initObject(childObject, scope);
+            }
+
         }
 
 
@@ -170,6 +173,18 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
     static final Object[] EMPTY = new Object[0];
     static final IocKey[] EMPTY_KEYS = new IocKey[0];
 
+    static final IocValue[] EMPTY_VALUES = new IocValue[0];
+    public static Object[] getValues( IocContainer ioc, IocValue...objects){
+
+        if (objects.length == 0) {
+            return EMPTY;
+        }
+        Object[] values = new Object[objects.length];
+        for (int i = 0, c = objects.length; i < c; ++i) {
+            values[i] = objects[i].getValue(ioc).get();
+        }
+        return values;
+    }
 
     public static Object[] getValues(IocObject... objects) {
         if (objects.length == 0) {
@@ -182,14 +197,18 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
         return values;
     }
 
-    public static IocKey[] parseParameterKeys(
+        public static IocValue[] parseParameterValues(Object target, Method method, IocClassLoader classLoader) {
+        return parseParameterValues(target.getClass().getClassLoader(), method.getParameterAnnotations(),
+                method.getParameterTypes(), classLoader);
+    }
+    public static IocValue[] parseParameterValues(
             ClassLoader classLoader,
             Annotation[][] methodAnnotations,
             Class<?>[] types,
             IocClassLoader iocClassLoader) {
         int index = 0;
-        IocKey[] args = new IocKey[types.length];
-        IocKey arg;
+        IocValue[] args = new IocValue[types.length];
+        IocValue arg;
         for (Class<?> type : types) {
             Inject paramInject = null;
             Annotation[] annotations = methodAnnotations[index];
@@ -198,10 +217,19 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
                     paramInject = (Inject) annotation;
                 }
             }
-            if (paramInject != null && !StringUtils.isEmpty(paramInject.value())) {
-                arg = new ZoomIocKey(paramInject.value(), type);
+            if (paramInject != null) {
+                if(!StringUtils.isEmpty(paramInject.value())){
+                    arg = new ZoomIocKeyValue(new ZoomIocKey(paramInject.value(), type));
+                }else if(!StringUtils.isEmpty(paramInject.config())){
+                    arg = new ZoomConfigValue(paramInject.config(),type);
+                }else{
+                    arg = new ZoomIocKeyValue(new ZoomIocKey(type));
+                    if(!type.isInterface()){
+                        iocClassLoader.append(type);
+                    }
+                }
             } else {
-                arg = new ZoomIocKey(type);
+                arg = new ZoomIocKeyValue(new ZoomIocKey(type));
                 if(!type.isInterface()){
                     iocClassLoader.append(type);
                 }
@@ -210,11 +238,39 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
         }
         return args;
     }
+//    public static IocKey[] parseParameterKeys(
+//            ClassLoader classLoader,
+//            Annotation[][] methodAnnotations,
+//            Class<?>[] types,
+//            IocClassLoader iocClassLoader) {
+//        int index = 0;
+//        IocKey[] args = new IocKey[types.length];
+//        IocKey arg;
+//        for (Class<?> type : types) {
+//            Inject paramInject = null;
+//            Annotation[] annotations = methodAnnotations[index];
+//            for (Annotation annotation : annotations) {
+//                if (annotation instanceof Inject) {
+//                    paramInject = (Inject) annotation;
+//                }
+//            }
+//            if (paramInject != null && !StringUtils.isEmpty(paramInject.value())) {
+//                arg = new ZoomIocKey(paramInject.value(), type);
+//            } else {
+//                arg = new ZoomIocKey(type);
+//                if(!type.isInterface()){
+//                    iocClassLoader.append(type);
+//                }
+//            }
+//            args[index++] = arg;
+//        }
+//        return args;
+//    }
 
-    public static IocKey[] parseParameterKeys(Object target, Method method, IocClassLoader classLoader) {
-        return parseParameterKeys(target.getClass().getClassLoader(), method.getParameterAnnotations(),
-                method.getParameterTypes(), classLoader);
-    }
+//    public static IocKey[] parseParameterKeys(Object target, Method method, IocClassLoader classLoader) {
+//        return parseParameterKeys(target.getClass().getClassLoader(), method.getParameterAnnotations(),
+//                method.getParameterTypes(), classLoader);
+//    }
 
     /**
      * 解析fields
@@ -384,11 +440,11 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
             Class<?> type,
             Method method) {
         try {
-            IocKey[] keys = parseParameterKeys(
+            IocValue[] values = parseParameterValues(
                     type.getClassLoader(),
                     method.getParameterAnnotations(),
                     method.getParameterTypes(), iocClass.getIocClassLoader());
-            return new ZoomIocMethod(ioc, iocClass, keys, method);
+            return new ZoomIocMethod(ioc, iocClass, values, method);
         } catch (Throwable t) {
             throw new IocException("注入方法失败" + method, t);
         }

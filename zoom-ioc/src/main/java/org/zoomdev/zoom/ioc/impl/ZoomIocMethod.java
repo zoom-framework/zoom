@@ -9,7 +9,8 @@ import java.lang.reflect.Method;
 public class ZoomIocMethod extends IocBase implements IocMethod {
 
 
-    private IocKey[] parameterKeys;
+    private IocValue[] parameterValues;
+  //  private IocKey[] parameterKeys;
 
     private final Method method;
 
@@ -20,10 +21,10 @@ public class ZoomIocMethod extends IocBase implements IocMethod {
     private IocClass iocClass;
 
 
-    public ZoomIocMethod(IocContainer ioc, IocClass iocClass, IocKey[] parameterKeys, Method method) {
+    public ZoomIocMethod(IocContainer ioc, IocClass iocClass, IocValue[] parameterValues, Method method) {
         super(ioc);
-        assert (parameterKeys != null && method != null && iocClass != null);
-        this.parameterKeys = parameterKeys;
+        assert (parameterValues != null && method != null && iocClass != null);
+        this.parameterValues = parameterValues;
         this.iocClass = iocClass;
         this.method = method;
     }
@@ -34,7 +35,7 @@ public class ZoomIocMethod extends IocBase implements IocMethod {
         sb.append(iocClass.getKey().toString())
                 .append(method.getName());
 
-        for (IocKey key : parameterKeys) {
+        for (IocValue key : parameterValues) {
             sb.append(key.toString());
         }
 
@@ -53,17 +54,15 @@ public class ZoomIocMethod extends IocBase implements IocMethod {
         ) : uid;
     }
 
-    @Override
-    public IocKey[] getParameterKeys() {
-        return parameterKeys;
-    }
+
 
 
     @Override
     public Object invoke(IocObject obj) {
         try {
-            IocObject[] values = ioc.fetchValues(parameterKeys);
-            return method.invoke(obj.get(), ZoomIocContainer.getValues(values));
+
+
+            return method.invoke(obj.get(), ZoomIocContainer.getValues(ioc,parameterValues));
         } catch (Exception e) {
             throw new IocException("调用ioc注入函数失败" + method, e);
         }
@@ -97,20 +96,25 @@ public class ZoomIocMethod extends IocBase implements IocMethod {
     public int getOrder() {
         //如果没有参数，那么就直接执行
         if(order == -1){
-            if(parameterKeys==null || parameterKeys.length==0){
+            if(parameterValues==null || parameterValues.length==0){
                 order = IocBean.MAX;
             }else{
                 //评估下顺序，往后面推
                 int order = 0;
-                for(IocKey key : parameterKeys){
-                    IocClass iocClass = ioc.getIocClassLoader().get(key);
-                    if(iocClass==null){
-                        throw new IocException("未找到指定的IocClass:"+key);
+                for(IocValue key : parameterValues){
+                    if(key instanceof ZoomIocKeyValue){
+                        IocClass iocClass = ioc.getIocClassLoader().get(  ((ZoomIocKeyValue)key).getKey()  );
+                        if(iocClass==null){
+                            throw new IocException("未找到指定的IocClass:"+key);
+                        }
+                        order += iocClass.getOrder();
+                    }else{
+                        order += IocBean.CONFIG;
                     }
-                    order += iocClass.getOrder();
+
                 }
                 //最后取一个平均值
-                this.order = order / parameterKeys.length;
+                this.order = order / parameterValues.length;
             }
 
         }

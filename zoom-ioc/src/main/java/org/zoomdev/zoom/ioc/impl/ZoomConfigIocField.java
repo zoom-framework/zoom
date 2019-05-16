@@ -3,6 +3,7 @@ package org.zoomdev.zoom.ioc.impl;
 import org.zoomdev.zoom.common.annotations.IocBean;
 import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.common.config.ConfigReader;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.ioc.IocObject;
 
@@ -22,7 +23,7 @@ public class ZoomConfigIocField extends ZoomIocField {
         try {
             field.set(obj.get(), Caster.toType(ConfigReader.getDefault().get(config), field.getGenericType()));
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            throw new ZoomException(e);
         }
     }
 

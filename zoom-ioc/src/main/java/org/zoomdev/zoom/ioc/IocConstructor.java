@@ -12,7 +12,7 @@ public interface IocConstructor {
      */
     IocKey getKey();
 
-    IocKey[] getParameterKeys();
+    IocValue[] getParameterValues();
 
     IocObject newInstance();
 
