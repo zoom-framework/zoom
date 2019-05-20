@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.zoomdev.zoom</groupId>
     <artifactId>zoom-parent</artifactId>
-    <version>0.3.0-SNAPSHOT</version>
+    <version>0.3.1-RELEASE</version>
     <packaging>pom</packaging>
     <name>zoom-parent</name>
     <properties>
@@ -197,61 +197,61 @@
             <dependency>
                 <groupId>org.zoomdev.zoom</groupId>
                 <artifactId>zoom-async</artifactId>
-                <version>0.3.0-SNAPSHOT</version>
+                <version>0.3.1-RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.zoomdev.zoom</groupId>
                 <artifactId>zoom-dao</artifactId>
-                <version>0.3.0-SNAPSHOT</version>
+                <version>0.3.1-RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.zoomdev.zoom</groupId>
                 <artifactId>zoom-ioc</artifactId>
-                <version>0.3.0-SNAPSHOT</version>
+                <version>0.3.1-RELEASE</version>
             </dependency>
 
             <dependency>
                 <groupId>org.zoomdev.zoom</groupId>
                 <artifactId>zoom-common</artifactId>
-                <version>0.3.0-SNAPSHOT</version>
+                <version>0.3.1-RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.zoomdev.zoom</groupId>
                 <artifactId>zoom-aop</artifactId>
-                <version>0.3.0-SNAPSHOT</version>
+                <version>0.3.1-RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.zoomdev.zoom</groupId>
                 <artifactId>zoom-timer</artifactId>
-                <version>0.3.0-SNAPSHOT</version>
+                <version>0.3.1-RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.zoomdev.zoom</groupId>
                 <artifactId>zoom-plugin</artifactId>
-                <version>0.3.0-SNAPSHOT</version>
+                <version>0.3.1-RELEASE</version>
             </dependency>
 
             <dependency>
                 <groupId>org.zoomdev.zoom</groupId>
                 <artifactId>zoom-web</artifactId>
-                <version>0.3.0-SNAPSHOT</version>
+                <version>0.3.1-RELEASE</version>
             </dependency>
 
             <dependency>
                 <groupId>org.zoomdev.zoom</groupId>
                 <artifactId>zoom-cache</artifactId>
-                <version>0.3.0-SNAPSHOT</version>
+                <version>0.3.1-RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.zoomdev.zoom</groupId>
                 <artifactId>zoom-event</artifactId>
-                <version>0.3.0-SNAPSHOT</version>
+                <version>0.3.1-RELEASE</version>
             </dependency>
 
             <dependency>
                 <groupId>org.zoomdev.zoom</groupId>
                 <artifactId>zoom-http</artifactId>
-                <version>0.3.0-SNAPSHOT</version>
+                <version>0.3.1-RELEASE</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
