@@ -71,7 +71,7 @@ public class SimpleActionBuilder extends ClassResolver {
             methods = null;
         }
         String key = getKey(controllerKey, method, mapping);
-
+        log.info("映射Controller:"+key+"===>"+method);
         ActionHolder handler = new ActionHolder(
                 controllerType,method,ioc,key);
         handler.setHttpMethods(methods);
