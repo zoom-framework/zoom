@@ -15,6 +15,13 @@ import java.util.concurrent.Future;
  */
 public interface JobQueue {
 
+    interface Response<R>{
+        R get();
+        Throwable error();
+        boolean isSuccess();
+    }
+
+
     /**
      * 任务队列,可将任务投递到指定的线程中执行，
      * 如订单处理等，这样，使用一些hash算法，可避免处理同步问题。
@@ -55,6 +62,20 @@ public interface JobQueue {
                            final JobExecutor<T, R> executor)
             throws ExecutionException, InterruptedException;
 
+
+    /**
+     * 异步执行队列，且保证队列的执行顺序
+     * @param <T>
+     * @param <R>
+     * @param jobs
+     * @param executor
+     * @return
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+    <T, R> Future<List<R>> sequence(Iterable<T> jobs,
+                                    final JobExecutor<T, R> executor)
+            throws ExecutionException, InterruptedException;
 
     /**
      * 使用指定的任务处理器处理任务
@@ -108,5 +129,7 @@ public interface JobQueue {
      * @param name
      */
     void unregister(String name);
+
+
 
 }
