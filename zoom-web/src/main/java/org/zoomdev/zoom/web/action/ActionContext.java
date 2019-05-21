@@ -122,6 +122,16 @@ public class ActionContext implements Destroyable {
     }
 
     /**
+     * 确定类型可以强制转化
+     * @param key
+     * @param <T>
+     * @return
+     */
+    public <T> T get(String key) {
+        return (T) checkData().get(key);
+    }
+
+    /**
      * @return
      */
     public static ActionContext get() {

@@ -125,6 +125,10 @@ public class StatusException extends ZoomException implements RestException {
             super(403);
         }
 
+        public AuthException(String code,String error){
+            super(403,code,error);
+        }
+
         /**
          *
          */
