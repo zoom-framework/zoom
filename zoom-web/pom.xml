@@ -85,6 +85,7 @@
         <dependency>
             <groupId>org.zoomdev.zoom</groupId>
             <artifactId>zoom-async</artifactId>
+            <version>0.3.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.zoomdev.zoom</groupId>
