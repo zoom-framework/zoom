@@ -103,7 +103,7 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
         if (!obj.inited) {
             obj.inited = true;
             inject(obj,scope);
-
+            onObjectInjected(scope,obj);
         }
     }
 

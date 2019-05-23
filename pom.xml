@@ -52,7 +52,6 @@
         <module>zoom-timer</module>
         <module>zoom-web</module>
         <module>zoom-cache</module>
-        <module>zoom-plugin</module>
         <module>zoom-event</module>
         <module>zoom-http</module>
     </modules>
@@ -194,16 +193,8 @@
     <!-- maven依赖 -->
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.zoomdev.zoom</groupId>
-                <artifactId>zoom-async</artifactId>
-                <version>0.3.2-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.zoomdev.zoom</groupId>
-                <artifactId>zoom-dao</artifactId>
-                <version>0.3.2-SNAPSHOT</version>
-            </dependency>
+
+
             <dependency>
                 <groupId>org.zoomdev.zoom</groupId>
                 <artifactId>zoom-ioc</artifactId>
@@ -215,44 +206,17 @@
                 <artifactId>zoom-common</artifactId>
                 <version>0.3.2-SNAPSHOT</version>
             </dependency>
+
             <dependency>
                 <groupId>org.zoomdev.zoom</groupId>
                 <artifactId>zoom-aop</artifactId>
                 <version>0.3.2-SNAPSHOT</version>
             </dependency>
-            <dependency>
-                <groupId>org.zoomdev.zoom</groupId>
-                <artifactId>zoom-timer</artifactId>
-                <version>0.3.2-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.zoomdev.zoom</groupId>
-                <artifactId>zoom-plugin</artifactId>
-                <version>0.3.2-SNAPSHOT</version>
-            </dependency>
 
-            <dependency>
-                <groupId>org.zoomdev.zoom</groupId>
-                <artifactId>zoom-web</artifactId>
-                <version>0.3.2-SNAPSHOT</version>
-            </dependency>
 
-            <dependency>
-                <groupId>org.zoomdev.zoom</groupId>
-                <artifactId>zoom-cache</artifactId>
-                <version>0.3.2-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>org.zoomdev.zoom</groupId>
-                <artifactId>zoom-event</artifactId>
-                <version>0.3.2-SNAPSHOT</version>
-            </dependency>
 
-            <dependency>
-                <groupId>org.zoomdev.zoom</groupId>
-                <artifactId>zoom-http</artifactId>
-                <version>0.3.2-SNAPSHOT</version>
-            </dependency>
+
+
         </dependencies>
     </dependencyManagement>
 
