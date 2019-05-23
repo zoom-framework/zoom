@@ -6,8 +6,12 @@ import javassist.bytecode.LocalVariableAttribute;
 import javassist.bytecode.MethodInfo;
 import org.zoomdev.zoom.aop.reflect.ClassInfo;
 import org.zoomdev.zoom.aop.utils.JavassistUtils;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
+import org.zoomdev.zoom.common.utils.StreamClassLoader;
 
+import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.net.URL;
 
 public class JavassistClassInfo implements ClassInfo {
 
@@ -21,6 +25,29 @@ public class JavassistClassInfo implements ClassInfo {
         }
     }
 
+    static class StreamClassPath implements ClassPath{
+        private StreamClassLoader classLoader;
+
+        public StreamClassPath(StreamClassLoader classLoader){
+            this.classLoader = classLoader;
+        }
+
+        @Override
+        public InputStream openClassfile(String classname) throws NotFoundException {
+            return classLoader.getStream(classname);
+        }
+
+        @Override
+        public URL find(String classname) {
+            return null;
+        }
+
+        @Override
+        public void close() {
+
+        }
+    }
+
     public String[] getParameterNames(Class<?> clazz, Method method) {
         assert (clazz != null && method != null);
         try {
@@ -29,8 +56,13 @@ public class JavassistClassInfo implements ClassInfo {
             try {
                 cc = pool.get(clazz.getName());
             } catch (NotFoundException e) {
-                pool.appendClassPath(new ClassClassPath(clazz));
-                cc = pool.get(clazz.getName());
+                if(clazz.getClassLoader() instanceof StreamClassLoader){
+                    StreamClassLoader classLoader = (StreamClassLoader)clazz.getClassLoader();
+                    pool.appendClassPath(new StreamClassPath(classLoader));
+                    cc = pool.get(clazz.getName());
+                }else{
+                    throw new ZoomException(e);
+                }
             }
             Class<?>[] paramTypes = method.getParameterTypes();
             int len = paramTypes.length;

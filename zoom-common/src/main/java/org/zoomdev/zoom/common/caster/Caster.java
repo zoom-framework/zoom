@@ -1462,6 +1462,9 @@ public class Caster {
     private static EqValueCaster eqValueCaster = new EqValueCaster();
 
     private static ValueCaster get(Class<?> srcType, Class<?> toType) {
+        if(srcType == toType){
+            return eqValueCaster;
+        }
         /**
          * 如果是int 转 Integer 或者是Integer 转 int,则可以相互转化
          */
