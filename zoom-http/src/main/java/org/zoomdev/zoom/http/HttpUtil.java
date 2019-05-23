@@ -63,6 +63,14 @@ public class HttpUtil {
                     connection.setRequestProperty(entry.getKey(), entry.getValue());
                 }
             }
+
+            if(request.body!=null){
+                connection.setDoInput(true);
+
+                connection.getOutputStream().write(request.body);
+                connection.getOutputStream().flush();
+            }
+
             connection.setConnectTimeout(request.readTimeout);
             connection.setReadTimeout(request.connectTimeout);
             Response response = new Response(connection, request);

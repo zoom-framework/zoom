@@ -1611,6 +1611,9 @@ public class Caster {
         }
 
         if (toType instanceof Class) {
+            if(srcType == toType){
+                return eqValueCaster;
+            }
             return wrap(srcType, (Class<?>) toType);
         }
 

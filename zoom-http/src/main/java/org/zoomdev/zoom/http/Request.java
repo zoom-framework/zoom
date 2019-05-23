@@ -1,5 +1,7 @@
 package org.zoomdev.zoom.http;
 
+import org.zoomdev.zoom.common.json.JSON;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,10 +25,41 @@ public class Request {
     int connectTimeout = CONNECT_TIMEOUT;
     String encoding;
 
+    /**
+     * post
+     * @param url
+     * @param contentType
+     * @param body
+     * @return
+     */
     public static Request post(String url, String contentType, byte[] body) {
         return new Request("POST", contentType, body)
                 .url(url);
     }
+
+    /**
+     * 默认post json
+     * @param url
+     * @param body
+     * @return
+     */
+    public static Request json(String url, Object body) {
+        return new Request("POST", "application/json", org.zoomdev.zoom.common.json.JSON.stringify(body).getBytes())
+                .url(url);
+    }
+
+
+    public static Request get(String url){
+        return get(url,"text/html");
+    }
+
+    public static Request get(String url,String contentType){
+        return new Request("GET",contentType,null).url(url);
+    }
+
+
+
+
 
     public Request headers(Map<String,String> headers){
         if(this.headers!=null){
@@ -40,9 +73,6 @@ public class Request {
 
 
 
-    public static Request get(String url,String contentType){
-        return new Request("GET",contentType,null).url(url);
-    }
 
     public String encoding() {
         return encoding;
