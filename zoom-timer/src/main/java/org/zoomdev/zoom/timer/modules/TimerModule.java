@@ -58,6 +58,12 @@ public class TimerModule implements Destroyable {
             @Override
             public void create(IocObject target, IocMethodProxy method) {
 
+
+
+            }
+
+            @Override
+            public void inject(IocObject target, IocMethodProxy method) {
                 Timer timer = method.getAnnotation(Timer.class);
                 String cron = (String) ConfigReader.parseValue(getCron(timer));
                 if (StringUtils.isEmpty(cron)){
@@ -68,7 +74,6 @@ public class TimerModule implements Destroyable {
                         target,
                         method
                 ), cron);
-
             }
 
             @Override

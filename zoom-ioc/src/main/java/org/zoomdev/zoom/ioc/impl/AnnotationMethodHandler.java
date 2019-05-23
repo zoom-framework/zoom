@@ -30,6 +30,11 @@ public abstract class AnnotationMethodHandler<T extends Annotation> implements I
     }
 
     @Override
+    public void inject(IocObject target, IocMethodProxy method) {
+
+    }
+
+    @Override
     public void create(IocObject target, IocMethodProxy proxy) {
         Method method = proxy.getMethod();
         T annotation = method.getAnnotation(annotationClass);
