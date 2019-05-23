@@ -1,5 +1,7 @@
 package org.zoomdev.zoom.aop.reflect;
 
+import org.zoomdev.zoom.common.utils.StreamClassLoader;
+
 import java.lang.reflect.Method;
 
 /**
@@ -17,4 +19,16 @@ public interface ClassInfo {
      * @return
      */
     String[] getParameterNames(Class<?> clazz, Method method);
+
+    /**
+     * 通过类名称获取到stream
+     * @param classLoader
+     */
+    void appendClassLoader(StreamClassLoader classLoader);
+
+    /**
+     * 移除
+     * @param classLoader
+     */
+    void removeClassLoader(StreamClassLoader classLoader);
 }

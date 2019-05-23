@@ -12,6 +12,8 @@ import org.zoomdev.zoom.common.utils.StreamClassLoader;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JavassistClassInfo implements ClassInfo {
 
@@ -39,7 +41,7 @@ public class JavassistClassInfo implements ClassInfo {
 
         @Override
         public URL find(String classname) {
-            return null;
+            return classLoader.getUrl(classname);
         }
 
         @Override
@@ -94,6 +96,30 @@ public class JavassistClassInfo implements ClassInfo {
             return names;
         } catch (Exception e) {
             throw new RuntimeException("获取方法参数名称失败" + method, e);
+        }
+    }
+
+
+    private List<StreamClassPath> paths = new ArrayList<StreamClassPath>();
+
+    @Override
+    public synchronized void appendClassLoader(StreamClassLoader classLoader) {
+        ClassPool pool = JavassistUtils.getClassPool();
+        StreamClassPath classPath = new StreamClassPath(classLoader);
+        paths.add(classPath);
+        pool.appendClassPath(classPath);
+    }
+
+    @Override
+    public synchronized void removeClassLoader(StreamClassLoader classLoader) {
+        for(int i=0,c=paths.size(); i < c; ++i){
+            StreamClassPath p = paths.get(i);
+            if(p.classLoader == classLoader){
+                paths.remove(p);
+                ClassPool pool = JavassistUtils.getClassPool();
+                pool.removeClassPath(p);
+                break;
+            }
         }
     }
 
