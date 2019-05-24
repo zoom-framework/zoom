@@ -63,7 +63,8 @@ public class JavassistClassInfo implements ClassInfo {
                     pool.appendClassPath(new StreamClassPath(classLoader));
                     cc = pool.get(clazz.getName());
                 }else{
-                    throw new ZoomException(e);
+                    pool.appendClassPath(new ClassClassPath(clazz));
+                    cc = pool.get(clazz.getName());
                 }
             }
             Class<?>[] paramTypes = method.getParameterTypes();
