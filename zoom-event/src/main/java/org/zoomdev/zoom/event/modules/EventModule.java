@@ -13,7 +13,7 @@ public class EventModule {
 
     @IocBean
     public EventService getEventService() {
-        return new EventServiceImpl();
+        return new AsyncEventService();
     }
 
     @Inject

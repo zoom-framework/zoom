@@ -24,8 +24,6 @@ public class MethodInvoker {
     private MethodCaller caller;
     private boolean invoked;
 
-    private static final Log log = LogFactory.getLog(MethodInvoker.class);
-
 
     public MethodInvoker(AstractMethodInterceptorFactory.AopConfig config, Object target, Object[] args) {
         this.target = target;

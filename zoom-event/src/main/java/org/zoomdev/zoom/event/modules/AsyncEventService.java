@@ -9,6 +9,7 @@ import org.zoomdev.zoom.event.EventService;
 import org.zoomdev.zoom.event.PayloadEvent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,30 +17,43 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * lock针对events的List对象进行保护
  */
-class EventServiceImpl implements EventService {
+class AsyncEventService implements EventService {
 
     private Map<String, List<EventListener>> events = new ConcurrentHashMap<String, List<EventListener>>();
 
-    public void addListener(String name, final EventListener listener) {
+    /**
+     *
+     * @param name
+     * @param listener
+     */
+    public void addListener(final String name, final EventListener listener) {
         SingletonUtils.modify(
-                events,
-                name,
-                new SingletonUtils.SingletonModify<List<EventListener>>() {
-                    @Override
-                    public List<EventListener> modify(List<EventListener> eventListeners) {
+            events,
+            name,
+            new SingletonUtils.SingletonModify<List<EventListener>>() {
+                @Override
+                public List<EventListener> modify(List<EventListener> eventListeners) {
+                    synchronized (LockUtils.getLock(name)){
                         eventListeners.add(listener);
-                        return eventListeners;
                     }
+                    return eventListeners;
+                }
 
-                    @Override
-                    public List<EventListener> create() {
-                        List<EventListener> listeners = new ArrayList<EventListener>();
-                        listeners.add(listener);
-                        return listeners;
-                    }
-                });
+                @Override
+                public List<EventListener> create() {
+                    List<EventListener> listeners = new ArrayList<EventListener>();
+                    listeners.add(listener);
+                    return listeners;
+                }
+            }
+        );
     }
 
+    /**
+     *
+     * @param name
+     * @param listener
+     */
     public void removeListener(String name, final EventListener listener) {
         List<EventListener> listeners = events.get(name);
         synchronized (LockUtils.getLock(name)) {
@@ -47,13 +61,22 @@ class EventServiceImpl implements EventService {
         }
     }
 
+    /**
+     *
+     * @param name
+     * @param data
+     * @param error
+     */
     public void notifyObservers(final String name, final Object data, final Throwable error) {
         notifyObservers(new PayloadEvent(name, data, error));
     }
 
+    /**
+     *
+     * @param event
+     */
     public void notifyObservers(final Event event) {
         List<EventListener> listeners = events.get(event.getName());
-
         List<EventListener> eventListeners = new ArrayList<EventListener>();
         synchronized (LockUtils.getLock(event.getName())) {
             eventListeners.addAll(listeners);
