@@ -1,5 +1,6 @@
 package org.zoomdev.zoom.aop.javassist;
 
+import javassist.ClassPool;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 import org.zoomdev.zoom.aop.AopFactory;
@@ -134,7 +135,7 @@ public class JavassistAopFactoryTest {
 
     @Test()
     public void testJavassistAopFactory() {
-        JavassistAopFactory factory = new JavassistAopFactory();
+        JavassistAopFactory factory = new JavassistAopFactory(new ClassPool(ClassPool.getDefault()));
         assertNotNull(factory);
         factory.destroy();
     }
@@ -172,7 +173,7 @@ public class JavassistAopFactoryTest {
 
     @Test(expected = Exception.class)
     public void testAddMaker() throws Exception {
-        AopFactory factory = new JavassistAopFactory();
+        AopFactory factory = new JavassistAopFactory(new ClassPool(ClassPool.getDefault()));
         factory.addFilter(new LogMethodCallback(), "*", 0);
 
         factory.addFilter(new MethodInterceptor() {

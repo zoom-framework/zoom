@@ -29,9 +29,9 @@ public class JavassistAopFactory extends AstractMethodInterceptorFactory {
     private ClassPool classPool;
 
 
-    public JavassistAopFactory(MethodInterceptorFactory... makers) {
+    public JavassistAopFactory(ClassPool classPool,MethodInterceptorFactory... makers) {
         super(makers);
-        this.classPool = JavassistUtils.getClassPool();
+        this.classPool = classPool;
     }
 
 
@@ -40,8 +40,6 @@ public class JavassistAopFactory extends AstractMethodInterceptorFactory {
         super.destroy();
 
         this.classPool = null;
-
-        JavassistUtils.destroy();
     }
 
     @Override

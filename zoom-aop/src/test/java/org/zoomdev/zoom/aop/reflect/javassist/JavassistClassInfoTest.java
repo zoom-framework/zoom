@@ -1,5 +1,6 @@
 package org.zoomdev.zoom.aop.reflect.javassist;
 
+import javassist.ClassPool;
 import org.junit.Test;
 import org.zoomdev.zoom.aop.javassist.JavassistClassInfo;
 import org.zoomdev.zoom.common.utils.CachedClasses;
@@ -24,7 +25,7 @@ public class JavassistClassInfoTest {
 
     @Test
     public void testClassInfo() {
-        JavassistClassInfo info = new JavassistClassInfo();
+        JavassistClassInfo info = new JavassistClassInfo(new ClassPool(ClassPool.getDefault()));
         Method[] methods = CachedClasses.getPublicMethods(Test1.class);
         for (Method method : methods) {
 

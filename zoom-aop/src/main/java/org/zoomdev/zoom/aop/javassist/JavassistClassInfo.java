@@ -18,6 +18,12 @@ import java.util.List;
 public class JavassistClassInfo implements ClassInfo {
 
     static final CtClass objectType;
+    private final ClassPool classPool;
+
+
+    public JavassistClassInfo(ClassPool classPool){
+        this.classPool = classPool;
+    }
 
     static {
         try {
@@ -53,19 +59,13 @@ public class JavassistClassInfo implements ClassInfo {
     public String[] getParameterNames(Class<?> clazz, Method method) {
         assert (clazz != null && method != null);
         try {
-            ClassPool pool = JavassistUtils.getClassPool();
+            ClassPool pool = classPool;
             CtClass cc;
             try {
                 cc = pool.get(clazz.getName());
             } catch (NotFoundException e) {
-                if(clazz.getClassLoader() instanceof StreamClassLoader){
-                    StreamClassLoader classLoader = (StreamClassLoader)clazz.getClassLoader();
-                    pool.appendClassPath(new StreamClassPath(classLoader));
-                    cc = pool.get(clazz.getName());
-                }else{
-                    pool.appendClassPath(new ClassClassPath(clazz));
-                    cc = pool.get(clazz.getName());
-                }
+                pool.appendClassPath(new ClassClassPath(clazz));
+                cc = pool.get(clazz.getName());
             }
             Class<?>[] paramTypes = method.getParameterTypes();
             int len = paramTypes.length;
@@ -105,10 +105,10 @@ public class JavassistClassInfo implements ClassInfo {
 
     @Override
     public synchronized void appendClassLoader(StreamClassLoader classLoader) {
-        ClassPool pool = JavassistUtils.getClassPool();
+        ClassPool pool = classPool;
         StreamClassPath classPath = new StreamClassPath(classLoader);
         paths.add(classPath);
-        pool.appendClassPath(classPath);
+        pool.insertClassPath(classPath);
     }
 
     @Override
@@ -117,7 +117,7 @@ public class JavassistClassInfo implements ClassInfo {
             StreamClassPath p = paths.get(i);
             if(p.classLoader == classLoader){
                 paths.remove(p);
-                ClassPool pool = JavassistUtils.getClassPool();
+                ClassPool pool = classPool;
                 pool.removeClassPath(p);
                 break;
             }

@@ -1,6 +1,7 @@
 package org.zoomdev.zoom.dao.impl.module;
 
 
+import javassist.ClassPool;
 import org.junit.Test;
 import org.zoomdev.zoom.aop.AopFactory;
 import org.zoomdev.zoom.aop.javassist.JavassistAopFactory;
@@ -25,7 +26,7 @@ public class TestModule {
     @Test
     public void test() throws IllegalAccessException, InstantiationException {
 
-        AopFactory factory = new JavassistAopFactory();
+        AopFactory factory = new JavassistAopFactory(new ClassPool(ClassPool.getDefault()));
 
         DaoModule module = new DaoModule();
         module.config(factory);

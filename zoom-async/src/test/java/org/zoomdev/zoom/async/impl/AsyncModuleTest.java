@@ -1,5 +1,6 @@
 package org.zoomdev.zoom.async.impl;
 
+import javassist.ClassPool;
 import junit.framework.TestCase;
 import org.zoomdev.zoom.aop.AopFactory;
 import org.zoomdev.zoom.aop.javassist.JavassistAopFactory;
@@ -14,7 +15,7 @@ public class AsyncModuleTest extends TestCase {
 
     public void test() throws IllegalAccessException, InstantiationException, InterruptedException, ExecutionException {
         AsyncModule module = new AsyncModule();
-        AopFactory factory = new JavassistAopFactory();
+        AopFactory factory = new JavassistAopFactory(new ClassPool(ClassPool.getDefault()));
         module.config(factory);
 
         JobQueue jobQueue = module.getJobQueue();

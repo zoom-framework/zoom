@@ -1,5 +1,6 @@
 package org.zoomdev.zoom.cache;
 
+import javassist.ClassPool;
 import junit.framework.TestCase;
 import org.zoomdev.zoom.aop.AopFactory;
 import org.zoomdev.zoom.aop.javassist.JavassistAopFactory;
@@ -55,7 +56,7 @@ public class TestCache extends TestCase {
 
     public void test() throws IllegalAccessException, InstantiationException, IOException {
 
-        final AopFactory aopFactory = new JavassistAopFactory();
+        final AopFactory aopFactory = new JavassistAopFactory(new ClassPool(ClassPool.getDefault()));
 
 
         ResScanner resScanner = new ResScanner();
