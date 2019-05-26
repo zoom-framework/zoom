@@ -1,5 +1,7 @@
 package org.zoomdev.zoom.web.action;
 
+import org.zoomdev.zoom.web.action.impl.ActionHolder;
+
 import java.lang.reflect.Method;
 
 /**
@@ -9,8 +11,5 @@ import java.lang.reflect.Method;
  */
 public interface ActionFactory {
 
-    Action createAction(Object target,
-                        Class<?> controllerClass,
-                        Method method,
-                        ActionInterceptorFactory factory);
+    Action createAction(ActionHolder holder);
 }

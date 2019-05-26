@@ -2,6 +2,7 @@ package org.zoomdev.zoom.web.action.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.zoomdev.zoom.aop.reflect.ClassInfo;
 import org.zoomdev.zoom.common.res.ClassResolver;
 import org.zoomdev.zoom.common.res.ResScanner;
 import org.zoomdev.zoom.common.utils.CachedClasses;
@@ -29,8 +30,10 @@ public class SimpleActionBuilder extends ClassResolver {
 
     private List<Router.RemoveToken> removeTokenList;
 
-    public SimpleActionBuilder(IocContainer ioc, Router router) {
-        this(ioc, router, null);
+    private ClassInfo classInfo;
+
+    public SimpleActionBuilder(IocContainer ioc, Router router,ClassInfo classInfo) {
+        this(ioc, router, null,classInfo);
     }
 
 
@@ -38,11 +41,12 @@ public class SimpleActionBuilder extends ClassResolver {
     public SimpleActionBuilder(
             IocContainer ioc,
             Router router,
-            List<Router.RemoveToken> removeTokenList) {
+            List<Router.RemoveToken> removeTokenList,ClassInfo classInfo) {
 
         this.ioc = ioc;
         this.router = router;
         this.removeTokenList = removeTokenList;
+        this.classInfo = classInfo;
     }
 
     @Override
@@ -73,7 +77,7 @@ public class SimpleActionBuilder extends ClassResolver {
         String key = getKey(controllerKey, method, mapping);
         log.info("映射Controller:"+key+"===>"+method);
         ActionHolder handler = new ActionHolder(
-                controllerType,method,ioc,key);
+                controllerType,method,ioc,key,classInfo);
         handler.setHttpMethods(methods);
         Router.RemoveToken removeToken = router.register(key,handler);
         if (removeTokenList != null) {

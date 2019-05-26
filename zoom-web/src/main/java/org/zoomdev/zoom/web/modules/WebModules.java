@@ -1,6 +1,7 @@
 package org.zoomdev.zoom.web.modules;
 
 import org.zoomdev.zoom.aop.AopFactory;
+import org.zoomdev.zoom.aop.reflect.ClassInfo;
 import org.zoomdev.zoom.common.ConfigurationConstants;
 import org.zoomdev.zoom.common.annotations.Inject;
 import org.zoomdev.zoom.common.annotations.IocBean;
@@ -8,6 +9,7 @@ import org.zoomdev.zoom.common.annotations.Module;
 import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.common.caster.ValueCaster;
 import org.zoomdev.zoom.common.exceptions.ZoomException;
+import org.zoomdev.zoom.common.res.ResScanner;
 import org.zoomdev.zoom.common.utils.CachedClasses;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.common.utils.DataObject;
@@ -15,6 +17,7 @@ import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.web.WebConfig;
 import org.zoomdev.zoom.web.action.ActionFactory;
 import org.zoomdev.zoom.web.action.ActionInterceptorFactory;
+import org.zoomdev.zoom.web.action.impl.SimpleActionBuilder;
 import org.zoomdev.zoom.web.action.impl.SimpleActionFactory;
 import org.zoomdev.zoom.web.action.impl.SimpleActionInterceptorFactory;
 import org.zoomdev.zoom.web.aop.factory.AopMethodInterceptorFactory;
@@ -25,6 +28,7 @@ import org.zoomdev.zoom.web.parameter.pre.impl.SimplePreParameterParserManager;
 import org.zoomdev.zoom.web.rendering.RenderingFactory;
 import org.zoomdev.zoom.web.rendering.TemplateEngineManager;
 import org.zoomdev.zoom.web.rendering.impl.*;
+import org.zoomdev.zoom.web.router.Router;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
@@ -219,5 +223,15 @@ public class WebModules {
 
     }
 
+
+
+
+
+    @Inject
+    public void config(IocContainer ioc, Router router, ResScanner resScanner, ClassInfo classInfo){
+
+        new SimpleActionBuilder(ioc,router,classInfo).resolve(resScanner);
+
+    }
 
 }

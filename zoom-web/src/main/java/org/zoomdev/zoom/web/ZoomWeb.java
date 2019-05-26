@@ -3,6 +3,7 @@ package org.zoomdev.zoom.web;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.zoomdev.zoom.async.impl.Asyncs;
 import org.zoomdev.zoom.common.ConfigurationConstants;
 import org.zoomdev.zoom.common.annotations.IocBean;
 import org.zoomdev.zoom.common.config.ConfigReader;
@@ -67,21 +68,28 @@ public class ZoomWeb {
     }
 
     private void resolveClasses() {
-        SimpleConfigBuilder configBuilder= new SimpleConfigBuilder(ioc);
-        SimpleActionBuilder actionBuilder= new SimpleActionBuilder(
-                ioc,
-                router,
-                null
-        );
 
-        ClassResolvers classResolvers = new ClassResolvers(configBuilder,actionBuilder);
-        classResolvers.visit(scanner);
+        Asyncs.defaultJobQueue().run(new Runnable() {
+            @Override
+            public void run() {
+                new SimpleConfigBuilder(ioc).resolve(scanner);
+            }
+        });
+
+      // SimpleConfigBuilder configBuilder= new SimpleConfigBuilder(ioc);
+//        SimpleActionBuilder actionBuilder= new SimpleActionBuilder(
+//                ioc,
+//                router,
+//                null
+//        );
+//
+//        ClassResolvers classResolvers = new ClassResolvers(configBuilder,actionBuilder);
+//        classResolvers.visit(scanner);
     }
 
     private void createRouter() {
         router = new ZoomRouter();
-        ioc.getIocClassLoader().append(Router.class,router,true,IocBean.SYSTEM);
-        router = ioc.fetch(Router.class);
+        ioc.getIocClassLoader().append(Router.class,router,true,IocBean.MAX);
     }
 
 

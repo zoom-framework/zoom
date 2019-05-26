@@ -1,6 +1,7 @@
 package org.zoomdev.zoom.web.action.impl;
 
 import org.apache.commons.lang3.StringUtils;
+import org.zoomdev.zoom.aop.MethodInterceptor;
 import org.zoomdev.zoom.aop.impl.ReflectMethodCaller;
 import org.zoomdev.zoom.aop.reflect.ClassInfo;
 import org.zoomdev.zoom.common.ConfigurationConstants;
@@ -23,14 +24,12 @@ import java.lang.reflect.Method;
 
 public class SimpleActionFactory implements ActionFactory {
 
-    @Inject
-    protected IocContainer ioc;
 
-    @Inject
-    protected ClassInfo classInfo;
 
-    @Inject(config = ConfigurationConstants.SERVER_ENCODING)
-    protected String encoding;
+    public SimpleActionFactory() {
+
+    }
+
 
     @Inject
     protected PreParameterParserManager preParameterParserManager;
@@ -43,25 +42,16 @@ public class SimpleActionFactory implements ActionFactory {
     @Inject
     private RenderingFactory renderingFactory;
 
+    @Inject
+    private ActionInterceptorFactory actionInterceptorFactory;
 
 
-    public SimpleActionFactory() {
+    @Inject(config = ConfigurationConstants.SERVER_ENCODING)
+    protected String encoding;
 
-    }
+    @Inject
+    protected IocContainer ioc;
 
-
-
-    public void setIoc(IocContainer ioc) {
-        this.ioc = ioc;
-    }
-
-    public ClassInfo getClassInfo() {
-        return classInfo;
-    }
-
-    public void setClassInfo(ClassInfo classInfo) {
-        this.classInfo = classInfo;
-    }
 
     public String getEncoding() {
         return encoding;
@@ -108,65 +98,26 @@ public class SimpleActionFactory implements ActionFactory {
         return renderingFactory.createExceptionRendering(controllerClass, method);
     }
 
-    /**
-     * 这里如果Param的配置了的话
-     *
-     * @param controllerClass
-     * @param method
-     * @return
-     */
-    private String[] getNames(Class<?> controllerClass, Method method) {
-        String[] names = classInfo.getParameterNames(controllerClass, method);
-        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-        int index = 0;
-        final Filter filter = new Filter<Annotation>() {
-            @Override
-            public boolean accept(Annotation value) {
-                return value instanceof Param;
-            }
-        };
-        for (String name : names) {
-            if (name == null) {
-                throw new RuntimeException("获取名称失败");
-            }
-            Annotation[] annotations = parameterAnnotations[index];
-            Param param = (Param)CollectionUtils.get(annotations, filter);
-            if(param!=null){
-                if (param.name().startsWith("{") && param.name().endsWith("}")) {
-                    String pathName = param.name()
-                            .substring(1, param.name().length() - 1);
-                    names[index] = pathName;
-                    break;
-                } else {
-                    if (!StringUtils.isEmpty(param.name())) {
-                        names[index] = param.name();
-                    }
-                }
-            }
-
-            ++index;
-        }
-        return names;
-    }
-
-
 
     @Override
-    public Action createAction(Object target, Class<?> controllerClass, Method method,
-                               ActionInterceptorFactory actionInterceptorFactory) {
+    public Action createAction(ActionHolder holder) {
         if (encoding == null) {
             encoding = "utf-8";
         }
         Action action = new Action();
         action.setEncoding(encoding);
         action.setIoc(getIoc());
-        action.setMethod(method);
+        action.setMethod(holder.getMethod());
 
-        String[] names = getNames(controllerClass, method);
+        String[] names = holder.getNames();
 
-        action.setCaller(new ReflectMethodCaller(method));
-        action.setTarget(target);
+        action.setCaller(new ReflectMethodCaller(holder.getMethod()));
+        action.setTarget(holder.getTarget());
         action.setParameterNames(names);
+
+
+        Class<?> controllerClass = holder.getControllerClass();
+        Method method = holder.getMethod();
 
         action.setActionInterceptors(actionInterceptorFactory.create(controllerClass, method));
         action.setPreParamParser(preParameterParserManager);

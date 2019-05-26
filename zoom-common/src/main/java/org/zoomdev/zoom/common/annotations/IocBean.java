@@ -38,7 +38,7 @@ public @interface IocBean {
     /// order = USER, 表示会对方法或者字段注入无要求。
     int USER = 999999;
 
-    int MAX = Integer.MAX_VALUE;
+    int MAX = Integer.MAX_VALUE / 2;
 
     /**
      * ioc容器中的名称

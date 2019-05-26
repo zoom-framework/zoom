@@ -3,6 +3,7 @@ package org.zoomdev.zoom.web.action.impl;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.zoomdev.zoom.aop.reflect.ClassInfo;
 import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.common.utils.CollectionUtils;
 import org.zoomdev.zoom.ioc.IocContainer;
@@ -25,29 +26,97 @@ import java.util.List;
 
 public class ActionHolder implements ActionHandler {
 
-    public ActionHolder(Class<?> controllerClass, Method method, IocContainer ioc, String key) {
-        this.controllerClass = controllerClass;
-        this.method = method;
-        this.ioc = ioc;
-        this.key = key;
-    }
+    private static  final Log log = LogFactory.getLog(ActionHolder.class);
+
+
 
     private Class<?> controllerClass;
     private Method method;
     private IocContainer ioc;
     private String key;
-    private static  final Log log = LogFactory.getLog(ActionHolder.class);
+
+
+
+    private ClassInfo classInfo;
 
     /// lazyload
     private Action action;
 
 
+    public ActionHolder(
+            Class<?> controllerClass,
+            Method method,
+            IocContainer ioc,
+            String key,
+            ClassInfo classInfo) {
+        this.controllerClass = controllerClass;
+        this.method = method;
+        this.ioc = ioc;
+        this.key = key;
+        this.classInfo = classInfo;
+    }
+
+
+    public Class<?> getControllerClass() {
+        return controllerClass;
+    }
+
+    public void setControllerClass(Class<?> controllerClass) {
+        this.controllerClass = controllerClass;
+    }
+
+    public Method getMethod() {
+        return method;
+    }
+
+    public void setMethod(Method method) {
+        this.method = method;
+    }
+
+    public IocContainer getIoc() {
+        return ioc;
+    }
+
+    public void setIoc(IocContainer ioc) {
+        this.ioc = ioc;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+
+
+    public Action getAction() {
+        return action;
+    }
+
+    public void setAction(Action action) {
+        this.action = action;
+    }
+
+    public void setMethods(String[] methods) {
+        this.methods = methods;
+    }
+
+    private String[] names;
+
+    public String[] getNames() {
+        if(names==null){
+            initNames();
+        }
+        return names;
+    }
+
+
     public void visitMethod() {
         ioc.waitFor();
-        IocObject target = ioc.fetch(new ZoomIocKey(controllerClass));
         ActionFactory actionFactory = ioc.fetch(ActionFactory.class);
-        ActionInterceptorFactory actionInterceptorFactory = ioc.fetch(ActionInterceptorFactory.class);
-        Action action = actionFactory.createAction(target.get(), controllerClass, method, actionInterceptorFactory);
+        Action action = actionFactory.createAction(this);
         Mapping mapping = method.getAnnotation(Mapping.class);
         String[] methods;
         if (mapping != null) {
@@ -74,32 +143,15 @@ public class ActionHolder implements ActionHandler {
         this.action = action;
 
     }
-    public static String[] getPathVariableNames(Method method, String[] names) {
-        Annotation[][] paramAnnotations = method.getParameterAnnotations();
-        int c = names.length;
-        List<String> pathVariableNames = new ArrayList<String>();
-        final Filter<Annotation> filter = new Filter<Annotation>() {
-            @Override
-            public boolean accept(Annotation value) {
-                return value instanceof Param;
-            }
-        };
-        for (int i = 0; i < c; ++i) {
-            Annotation[] annotations = paramAnnotations[i];
-            Param param = (Param) CollectionUtils.get(annotations, filter);
-            if (param != null) {
-                if (param.name().startsWith("{") && param.name().endsWith("}")) {
-                    String pathName = param.name()
-                            .substring(1, param.name().length() - 1);
-                    pathVariableNames.add(pathName);
-                } else if (param.pathVariable()) {
-                    pathVariableNames.add(StringUtils.isEmpty(param.name()) ? names[i] : param.name());
-                }
-            }
-        }
 
-        return CollectionUtils.toArray(pathVariableNames);
-    }
+    static final Filter<Annotation> filter = new Filter<Annotation>() {
+        @Override
+        public boolean accept(Annotation value) {
+            return value instanceof Param;
+        }
+    };
+
+
 
     private Action lazyLoad(){
         synchronized (this){
@@ -141,17 +193,45 @@ public class ActionHolder implements ActionHandler {
         return true;
     }
 
-    private String[] names;
+    private String[] pathVariableNames;
 
     @Override
     public String[] getPathVariableNames() {
-        if(names==null){
-            Action action = this.action;
-            if(action==null){
-                action = lazyLoad();
-            }
-            names = getPathVariableNames(method,action.getParameterNames());
+        if(pathVariableNames==null){
+            initNames();
         }
-        return names;
+        return pathVariableNames;
+    }
+
+    private void initNames() {
+        String[] names = classInfo.getParameterNames(controllerClass, method);
+        Annotation[][] paramAnnotations = method.getParameterAnnotations();
+        int c = names.length;
+        List<String> pathVariableNames = new ArrayList<String>();
+
+        for (int i = 0; i < c; ++i) {
+            Annotation[] annotations = paramAnnotations[i];
+            Param param = (Param) CollectionUtils.get(annotations, filter);
+            if (param != null) {
+                if (param.name().startsWith("{") && param.name().endsWith("}")) {
+                    String pathName = param.name()
+                            .substring(1, param.name().length() - 1);
+                    pathVariableNames.add(pathName);
+                    names[i] = pathName;
+                } else if (param.pathVariable()) {
+                    String pathName = StringUtils.isEmpty(param.name()) ? names[i] : param.name();
+                    pathVariableNames.add(pathName);
+                    names[i] = pathName;
+                }
+            }
+        }
+
+        this.pathVariableNames = CollectionUtils.toArray(pathVariableNames);
+        this.names = names;
+    }
+
+
+    public Object getTarget(){
+        return ioc.fetch(controllerClass);
     }
 }

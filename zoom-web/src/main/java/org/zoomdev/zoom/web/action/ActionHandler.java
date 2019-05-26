@@ -36,4 +36,5 @@ public interface ActionHandler {
      * @return
      */
     String[] getPathVariableNames();
+
 }
