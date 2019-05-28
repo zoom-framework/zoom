@@ -1231,7 +1231,7 @@ public class TestDatabase extends AbstractDaoTest {
                             }
                         })
                         .select("id,title")
-                        .get("id", "title");
+                        .get("id");
 
             }
         });
