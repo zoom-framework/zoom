@@ -118,7 +118,7 @@ public class ZoomFilter implements Filter {
     public void init(FilterConfig config) throws ServletException {
         String exts = config.getInitParameter("exclusions");
         if (StringUtils.isEmpty(exts)) {
-            exts = "*.js|*.gif|*.jpg|*.png|*.css|*.ico|*.jar";
+            exts = "*.js|*.gif|*.jpg|*.png|*.css|*.ico|*.jar|*.woff2|*.eot|*.ttf|*.woff";
         }
 
         filter = PatternFilterFactory.createFilter(exts);

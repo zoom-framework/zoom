@@ -288,6 +288,8 @@ public class ResScanner implements Destroyable {
             pathes.add(file.getAbsolutePath());
         }
 
+
+
         File lib = PathUtils.getWebInfPath("lib");
         if (lib.exists()) {
             if (!pathes.contains(lib.getAbsolutePath())) {
