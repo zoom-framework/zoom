@@ -9,6 +9,8 @@ import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.common.utils.DataObject;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -373,7 +375,7 @@ public class Caster {
                 }
         );
 
-
+        Caster.registerCastProvider(new String2Enum());
         Caster.registerCastProvider(new Map2BeanProvider());
         Caster.registerCastProvider(new String2BeanProvider());
 
@@ -390,6 +392,8 @@ public class Caster {
         Caster.register(Map.class, DataObject.class, new Map2DataObject());
 
     }
+
+
 
     /**
      * If A can cast to B
@@ -458,6 +462,42 @@ public class Caster {
         }
     }
 
+
+    static class String2EnumCaster implements ValueCaster{
+
+        private Method method;
+
+        public String2EnumCaster( Method method ){
+            this.method = method;
+        }
+
+        @Override
+        public Object to(Object src) {
+            try {
+                return method.invoke(null,src);
+            } catch (Exception e) {
+                throw new CasterException(e);
+            }
+        }
+    }
+
+    static class String2Enum implements Caster.CasterProvider {
+
+
+        @Override
+        public ValueCaster getCaster(Class<?> srcType, Class<?> toType) {
+            if (toType.isEnum()) {
+                try {
+                    Method method = toType.getMethod("valueOf",String.class);
+                    return new String2EnumCaster(method);
+                } catch (NoSuchMethodException e) {
+                   throw new CasterException("不能将String转化为enum "+toType+" 找不到valueOf方法");
+                }
+            }
+            return null;
+        }
+
+    }
     static class Map2BeanProvider implements Caster.CasterProvider {
 
 

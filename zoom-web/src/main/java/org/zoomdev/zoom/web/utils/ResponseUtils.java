@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.common.io.Io;
 import org.zoomdev.zoom.common.json.JSON;
+import org.zoomdev.zoom.common.utils.Classes;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -23,8 +24,8 @@ public class ResponseUtils {
         try {
             writer = response.getWriter();
             writer.write(content);
-        } catch (IOException e) {
-            log.error("HttpServletResponse输出发生异常", e);
+        } catch (Throwable e) {
+            log.error("HttpServletResponse输出发生异常", Classes.getCause(e));
         } finally {
             Io.close(writer);
         }
@@ -37,8 +38,8 @@ public class ResponseUtils {
             response.setContentType("application/json");
             writer = response.getOutputStream();
             JSON.write(writer, data);
-        } catch (IOException e) {
-            log.error("HttpServletResponse输出发生异常", e);
+        } catch (Throwable e) {
+            log.error("HttpServletResponse输出发生异常", Classes.getCause(e));
         } finally {
             Io.close(writer);
         }
@@ -49,8 +50,8 @@ public class ResponseUtils {
         try {
             writer = response.getOutputStream();
             writer.write(bytes);
-        } catch (IOException e) {
-            log.error("HttpServletResponse输出发生异常", e);
+        } catch (Throwable e) {
+            log.error("HttpServletResponse输出发生异常", Classes.getCause(e));
         } finally {
             Io.close(writer);
         }
@@ -72,8 +73,8 @@ public class ResponseUtils {
                 total += readed;
                 writer.write(buffer, 0, readed);
             }
-        } catch (IOException e) {
-            log.error("HttpServletResponse输出发生异常", e);
+        } catch (Throwable e) {
+            log.error("HttpServletResponse输出发生异常",Classes.getCause(e));
         } finally {
             Io.close(writer);
         }

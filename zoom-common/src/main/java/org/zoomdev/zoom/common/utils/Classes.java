@@ -309,6 +309,10 @@ public class Classes {
             return getCause(((InvocationTargetException) e).getTargetException());
         }
 
+        if(e instanceof  ZoomException){
+            return getCause(e.getCause());
+        }
+
         return e;
     }
 
