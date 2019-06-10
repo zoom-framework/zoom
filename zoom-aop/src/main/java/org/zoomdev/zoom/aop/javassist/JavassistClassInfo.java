@@ -29,7 +29,7 @@ public class JavassistClassInfo implements ClassInfo {
         try {
             objectType = ClassPool.getDefault().get("java.lang.Object");
         } catch (NotFoundException e) {
-            throw new RuntimeException(e);
+            throw new ZoomException(e);
         }
     }
 
@@ -90,13 +90,13 @@ public class JavassistClassInfo implements ClassInfo {
             for (int i = 0; i < len; i++) {
                 String name = attr.variableName(i + pos);
                 if (name == null) {
-                    throw new RuntimeException("名称为null");
+                    throw new ZoomException("名称为null");
                 }
                 names[i] = name;
             }
             return names;
         } catch (Exception e) {
-            throw new RuntimeException("获取方法参数名称失败" + method, e);
+            throw new ZoomException("获取方法参数名称失败" + method, e);
         }
     }
 

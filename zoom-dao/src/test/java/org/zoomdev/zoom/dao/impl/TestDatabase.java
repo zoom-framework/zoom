@@ -5,6 +5,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.expression.Symbol;
 import org.zoomdev.zoom.common.io.Io;
 import org.zoomdev.zoom.common.json.JSON;
@@ -146,7 +147,7 @@ public class TestDatabase extends AbstractDaoTest {
             scanner.scan();
             IMAGE_FILE = scanner.findFile("*").get(0).getFile().getAbsolutePath();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ZoomException(e);
         }
     }
 
@@ -567,7 +568,7 @@ public class TestDatabase extends AbstractDaoTest {
                                         @Override
                                         public void run() {
                                             insert(dao, 1);
-                                            throw new RuntimeException("Something bad!");
+                                            throw new ZoomException("Something bad!");
                                         }
                                     });
                                 }
@@ -869,7 +870,7 @@ public class TestDatabase extends AbstractDaoTest {
                             .insert();
                 } catch (Exception e) {
                     e.printStackTrace();
-                    throw new RuntimeException(e);
+                    throw new ZoomException(e);
                 }
 
                 dao.table("customer")

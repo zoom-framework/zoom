@@ -3,6 +3,7 @@ package org.zoomdev.zoom.web.parameter.pre.impl;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.web.action.ActionContext;
 import org.zoomdev.zoom.web.parameter.PreParameterParser;
 
@@ -40,7 +41,7 @@ public class UploadPreParamParser implements PreParameterParser {
             }
             return data;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new ZoomException(e);
         }
 
     }

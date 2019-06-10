@@ -5,6 +5,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.common.ConfigurationConstants;
 import org.zoomdev.zoom.common.caster.Caster;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.common.filter.pattern.PatternFilterFactory;
 import org.zoomdev.zoom.common.io.Io;
@@ -111,14 +112,14 @@ public class ConfigReader {
         } else if (name.endsWith(".properties")) {
             loader = new PropertiesConfigReader();
         } else {
-            throw new RuntimeException("不支持的配置类型" + file);
+            throw new ZoomException("不支持的配置类型" + file);
         }
         InputStream is = null;
         try {
             is = new FileInputStream(file);
             data.putAll(loader.load(is));
         } catch (Exception e) {
-            throw new RuntimeException(String.format("配置文件%s加载失败", file));
+            throw new ZoomException(String.format("配置文件%s加载失败", file));
         } finally {
             Io.close(is);
         }

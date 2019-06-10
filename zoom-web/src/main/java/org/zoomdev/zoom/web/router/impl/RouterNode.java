@@ -1,6 +1,7 @@
 package org.zoomdev.zoom.web.router.impl;
 
 import org.zoomdev.zoom.common.Destroyable;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.common.utils.CollectionUtils;
 import org.zoomdev.zoom.web.action.ActionHandler;
@@ -107,7 +108,7 @@ class RouterNode implements Destroyable {
      */
     public Router.RemoveToken register(String[] parts, String[] names, RouterParamRule rule, final ActionHandler value) {
         if (parts == null || parts.length == 0) {
-            throw new RuntimeException("parts长度必须大于0");
+            throw new ZoomException("parts长度必须大于0");
         }
         final int level = this.level;
         final String current = parts[level];

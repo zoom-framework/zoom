@@ -217,14 +217,14 @@ public class ClassesUtilTest {
     }
 
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = ZoomException.class)
     public void restMakeThrowable() {
         throw Classes.makeThrow(new InvocationTargetException(
                 new IOException()
         ));
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = ZoomException.class)
     public void restMakeThrowable1() {
         throw Classes.makeThrow(
                 new IOException());

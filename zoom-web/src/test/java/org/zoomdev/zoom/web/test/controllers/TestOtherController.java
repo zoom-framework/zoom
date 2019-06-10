@@ -1,5 +1,6 @@
 package org.zoomdev.zoom.web.test.controllers;
 
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.web.annotations.Controller;
 import org.zoomdev.zoom.web.annotations.JsonResponse;
 import org.zoomdev.zoom.web.exception.StatusException;
@@ -10,7 +11,7 @@ public class TestOtherController {
     // 500
     @JsonResponse
     public void testStatusException500(){
-        throw new RuntimeException();
+        throw new ZoomException();
     }
 
     // 404

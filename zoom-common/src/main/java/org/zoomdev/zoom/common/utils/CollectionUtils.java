@@ -1,6 +1,7 @@
 package org.zoomdev.zoom.common.utils;
 
 import org.zoomdev.zoom.common.designpattern.SingletonUtils;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.filter.Filter;
 
 import java.lang.reflect.Field;
@@ -193,7 +194,7 @@ public class CollectionUtils {
                         sb.append(",");
                     sb.append(field.get(data));
                 } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
+                    throw new ZoomException(e);
                 }
             }
             return sb.toString();

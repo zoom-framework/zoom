@@ -1,5 +1,6 @@
 package org.zoomdev.zoom.web.parameter.pre.impl;
 
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.web.action.ActionContext;
 import org.zoomdev.zoom.web.parameter.PreParameterParser;
 import org.zoomdev.zoom.web.parameter.PreParameterParserManager;
@@ -56,6 +57,6 @@ public class SimplePreParameterParserManager implements PreParameterParserManage
             }
         }
 
-        throw new RuntimeException("找不到参数解析器");
+        throw new ZoomException("找不到参数解析器");
     }
 }

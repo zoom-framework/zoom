@@ -1,5 +1,6 @@
 package org.zoomdev.zoom.web.action;
 
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.utils.CollectionUtils;
 
 import javax.servlet.ServletOutputStream;
@@ -168,7 +169,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
         if(outputStream==null){
             outputStream = new MockServletOutputStream();
         }else{
-            throw new RuntimeException("Stream is already opened");
+            throw new ZoomException("Stream is already opened");
         }
         return outputStream;
     }
@@ -182,7 +183,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
             writer = new PrintWriter(stringWriter);
         }else{
             if(outputStream!=null)
-                throw new RuntimeException("Stream is already opened");
+                throw new ZoomException("Stream is already opened");
         }
         return writer;
     }

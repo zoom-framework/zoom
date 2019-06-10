@@ -122,7 +122,7 @@ public class MethodInvoker {
      */
     public Object getReturnObject() {
 //		if(!invoked) {
-//			throw new RuntimeException("必须在调用invoke之后才可以使用这个方法，否则无意义");
+//			throw new ZoomException("必须在调用invoke之后才可以使用这个方法，否则无意义");
 //		}
         return returnObject;
     }

@@ -6,6 +6,7 @@ import org.zoomdev.zoom.aop.MethodInterceptor;
 import org.zoomdev.zoom.aop.MethodInterceptorFactory;
 import org.zoomdev.zoom.aop.factory.ClassAndMethodFilterMethodInterceptorFactory;
 import org.zoomdev.zoom.common.Destroyable;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.filter.ClassAndMethodFilter;
 import org.zoomdev.zoom.common.utils.CachedClasses;
 import org.zoomdev.zoom.common.utils.Classes;
@@ -214,7 +215,7 @@ public abstract class AstractMethodInterceptorFactory implements AopFactory, Des
 
 
                 } catch (Exception e) {
-                    throw new RuntimeException("增强类失败", e);
+                    throw new ZoomException("增强类失败", e);
                 }
 
                 createdConfigs.addAll(configs);

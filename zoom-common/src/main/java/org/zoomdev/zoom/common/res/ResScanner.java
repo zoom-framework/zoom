@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.common.Destroyable;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.common.filter.pattern.PatternFilterFactory;
 import org.zoomdev.zoom.common.io.Io;
@@ -171,7 +172,7 @@ public class ResScanner implements Destroyable {
             try {
                 return Class.forName(className, false, classLoader);
             } catch (ClassNotFoundException e) {
-                throw new RuntimeException("找不到对应的类" + className, e);
+                throw new ZoomException("找不到对应的类" + className, e);
             }
         }
 

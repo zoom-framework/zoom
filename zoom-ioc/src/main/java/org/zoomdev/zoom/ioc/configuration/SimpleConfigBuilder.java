@@ -48,7 +48,7 @@ public class SimpleConfigBuilder extends ClassResolver {
             }
         }
         return null;
-        //throw new RuntimeException("必须有一个ZoomApplication标注的Module");
+        //throw new ZoomException("必须有一个ZoomApplication标注的Module");
     }
 
     public void endResolve() {

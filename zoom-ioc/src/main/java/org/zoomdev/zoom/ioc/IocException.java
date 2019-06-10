@@ -1,6 +1,8 @@
 package org.zoomdev.zoom.ioc;
 
-public class IocException extends RuntimeException {
+import org.zoomdev.zoom.common.exceptions.ZoomException;
+
+public class IocException extends ZoomException {
 
     public IocException(String message, Throwable cause) {
         super(message, cause);

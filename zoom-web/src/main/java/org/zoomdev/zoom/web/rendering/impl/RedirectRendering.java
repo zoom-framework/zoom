@@ -1,6 +1,7 @@
 package org.zoomdev.zoom.web.rendering.impl;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.web.action.ActionContext;
 import org.zoomdev.zoom.web.annotations.JsonResponse;
 import org.zoomdev.zoom.web.rendering.Rendering;
@@ -20,7 +21,7 @@ public class RedirectRendering implements Rendering {
                 context.getResponse().sendRedirect(result.substring(RedirectRendering.REDIRECT.length()));
                 return true;
             } else if (result.startsWith(FORWARD)) {
-                throw new RuntimeException("目前这个版本还不支持forward");
+                throw new ZoomException("目前这个版本还不支持forward");
 //                context.getRequest().getRequestDispatcher("")
 //                        .forward(request,response);
             }

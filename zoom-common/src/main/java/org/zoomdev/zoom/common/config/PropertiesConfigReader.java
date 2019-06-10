@@ -1,6 +1,7 @@
 package org.zoomdev.zoom.common.config;
 
 import org.apache.commons.lang3.StringUtils;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.io.Io;
 
 import java.io.IOException;
@@ -96,7 +97,7 @@ class PropertiesConfigReader implements ConfigLoader {
                 if (maybeList instanceof List) {
                     list = (List) maybeList;
                 } else {
-                    throw new RuntimeException(
+                    throw new ZoomException(
                             String.format("同一个名称不能为多种类型 名称:%s 期待类型:%s 现在的类型:%s", name, List.class, maybeList.getClass()));
                 }
             }
@@ -108,7 +109,7 @@ class PropertiesConfigReader implements ConfigLoader {
             String maybeIndex = matcher.group(2);
             //这个时候一定是有值的，
             if (StringUtils.isEmpty(maybeIndex)) {
-                throw new RuntimeException("对于下标[]来说，如果需要支持[].prop的属性，必须为[index].prop");
+                throw new ZoomException("对于下标[]来说，如果需要支持[].prop的属性，必须为[index].prop");
             }
 
             int takeIndex = Integer.parseInt(maybeIndex);
@@ -138,7 +139,7 @@ class PropertiesConfigReader implements ConfigLoader {
                 String next = matcher.group(2);
 
                 if (StringUtils.isEmpty(next)) {
-                    throw new RuntimeException("name{}的后面必须有key值，如:  bean{}.name=xxx");
+                    throw new ZoomException("name{}的后面必须有key值，如:  bean{}.name=xxx");
                 }
 
                 Map map;
@@ -151,7 +152,7 @@ class PropertiesConfigReader implements ConfigLoader {
                     if (maybeMap instanceof Map) {
                         map = (Map) maybeMap;
                     } else {
-                        throw new RuntimeException(
+                        throw new ZoomException(
                                 String.format("同一个名称不能为多种类型 名称:%s 期待类型:%s 现在的类型:%s", name, Map.class, maybeMap.getClass()));
                     }
                 }
@@ -166,9 +167,9 @@ class PropertiesConfigReader implements ConfigLoader {
                 Object orgValue = current.get(name);
                 if (orgValue != null) {
                     if (orgValue instanceof Map) {
-                        throw new RuntimeException("覆盖原值,出现这个错误的原因一般是，之前设置了一个Map，而后又尝试设置一个普通值");
+                        throw new ZoomException("覆盖原值,出现这个错误的原因一般是，之前设置了一个Map，而后又尝试设置一个普通值");
                     } else if (orgValue instanceof List) {
-                        throw new RuntimeException("覆盖原值,出现这个错误的原因一般是，之前设置了一个List，而后又尝试设置一个普通值");
+                        throw new ZoomException("覆盖原值,出现这个错误的原因一般是，之前设置了一个List，而后又尝试设置一个普通值");
                     }
                 }
                 current.put(name, value);

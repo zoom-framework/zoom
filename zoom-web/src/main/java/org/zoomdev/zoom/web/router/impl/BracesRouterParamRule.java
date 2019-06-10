@@ -1,5 +1,6 @@
 package org.zoomdev.zoom.web.router.impl;
 
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.web.router.RouterParamRule;
 
 import java.util.regex.Matcher;
@@ -26,7 +27,7 @@ public class BracesRouterParamRule implements RouterParamRule {
         if (matcher.matches()) {
             String realValue = matcher.group(1);
             if (!CORRECT_PATTERN.matcher(realValue).matches()) {
-                throw new RuntimeException(ERROR);
+                throw new ZoomException(ERROR);
             }
             return realValue;
         }

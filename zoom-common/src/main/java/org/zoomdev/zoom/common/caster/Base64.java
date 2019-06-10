@@ -605,7 +605,7 @@ public class Base64 {
         try {
             return new String(decodeFast(src.toCharArray()), "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
+            throw new ZoomException(e);
         }
     }
 
@@ -619,7 +619,7 @@ public class Base64 {
         try {
             return encodeToString(src.getBytes("UTF-8"), false);
         } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
+            throw new ZoomException(e);
         }
     }
 }

@@ -2,6 +2,7 @@ package org.zoomdev.zoom.common.config;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.json.JSON;
 import org.zoomdev.zoom.common.res.ResScanner;
 
@@ -73,7 +74,7 @@ public class PropertiesConfigReaderTest {
     }
 
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = ZoomException.class)
     public void testParseMap0() {
         Map<String, Object> current = new HashMap<String, Object>();
         PropertiesConfigReader.parseKey("a{}", "1", current);
@@ -81,7 +82,7 @@ public class PropertiesConfigReaderTest {
     }
 
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = ZoomException.class)
     public void testParseMape() {
         Map<String, Object> current = new HashMap<String, Object>();
         PropertiesConfigReader.parseKey("a{}.name[0]", "1", current);
@@ -90,7 +91,7 @@ public class PropertiesConfigReaderTest {
     }
 
 
-    @Test(expected = RuntimeException.class)
+    @Test(expected = ZoomException.class)
     public void testParseMape1() {
         Map<String, Object> current = new HashMap<String, Object>();
         PropertiesConfigReader.parseKey("a{}.name[0]", "1", current);

@@ -1,5 +1,7 @@
 package org.zoomdev.zoom.common.utils;
 
+import org.zoomdev.zoom.common.exceptions.ZoomException;
+
 import java.io.File;
 import java.net.URL;
 
@@ -28,7 +30,7 @@ public class PathUtils {
                     webRootPath = new StringBuilder(webRootPath).append(File.separator).toString();
                 }
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new ZoomException(e);
             }
         }
         return webRootPath;

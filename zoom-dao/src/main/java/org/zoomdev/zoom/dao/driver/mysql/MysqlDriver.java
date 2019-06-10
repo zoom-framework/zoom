@@ -1,6 +1,7 @@
 package org.zoomdev.zoom.dao.driver.mysql;
 
 import org.apache.commons.lang3.StringUtils;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.dao.Entity;
 import org.zoomdev.zoom.dao.adapters.EntityField;
@@ -173,7 +174,7 @@ public class MysqlDriver extends AbsDriver {
             try {
                 sb.append(formatColumnType(columnMeta));
             } catch (Exception e) {
-                throw new RuntimeException("不支持的类型" + columnMeta.getName());
+                throw new ZoomException("不支持的类型" + columnMeta.getName());
             }
 
 
@@ -305,7 +306,7 @@ public class MysqlDriver extends AbsDriver {
             case Types.BLOB:
                 return "blob";
             default:
-                throw new RuntimeException("不支持的类型" + columnMeta.getType());
+                throw new ZoomException("不支持的类型" + columnMeta.getType());
         }
 
     }

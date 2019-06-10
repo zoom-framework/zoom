@@ -1,6 +1,7 @@
 package org.zoomdev.zoom.web.test.controllers;
 
 
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.web.action.ActionContext;
 import org.zoomdev.zoom.web.annotations.Controller;
 import org.zoomdev.zoom.web.view.impl.JsonView;
@@ -28,7 +29,7 @@ public class TemplateTest {
 
 
     public void testError(){
-        throw new RuntimeException();
+        throw new ZoomException();
     }
 
 

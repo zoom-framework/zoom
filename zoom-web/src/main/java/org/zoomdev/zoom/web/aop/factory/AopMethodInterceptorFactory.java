@@ -3,6 +3,7 @@ package org.zoomdev.zoom.web.aop.factory;
 import org.zoomdev.zoom.aop.MethodInterceptor;
 import org.zoomdev.zoom.aop.annotations.Aop;
 import org.zoomdev.zoom.aop.factory.AnnotationMethodInterceptorFactory;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.ioc.IocContainer;
 
 import java.lang.reflect.Method;
@@ -25,7 +26,7 @@ public class AopMethodInterceptorFactory extends AnnotationMethodInterceptorFact
             try {
                 interceptors.add(ioc.fetch(clazz));
             } catch (Exception e) {
-                throw new RuntimeException(String.format("在初始化MethodInterceptor[%s]的时候发生异常", clazz), e);
+                throw new ZoomException(String.format("在初始化MethodInterceptor[%s]的时候发生异常", clazz), e);
             }
         }
     }

@@ -1,5 +1,7 @@
 package org.zoomdev.zoom.http;
 
+import org.zoomdev.zoom.common.exceptions.ZoomException;
+
 import javax.net.ssl.*;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -19,7 +21,7 @@ public class HttpUtil {
             sc = SSLContext.getInstance("SSL", "SunJSSE");
             sc.init(null, new TrustManager[]{new TrustAnyTrustManager()}, new SecureRandom());
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new ZoomException(e);
         }
 
     }

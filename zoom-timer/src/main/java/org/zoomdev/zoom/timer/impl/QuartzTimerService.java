@@ -6,6 +6,7 @@ import org.quartz.*;
 import org.quartz.core.jmx.JobDataMapSupport;
 import org.quartz.impl.StdSchedulerFactory;
 import org.zoomdev.zoom.common.Destroyable;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.utils.MapUtils;
 import org.zoomdev.zoom.timer.TimerJob;
 import org.zoomdev.zoom.timer.TimerService;
@@ -27,11 +28,11 @@ public class QuartzTimerService implements TimerService, Destroyable {
         try {
             scheduler = schedulerFactory.getScheduler();
         } catch (SchedulerException e) {
-            throw new RuntimeException(e);
+            throw new ZoomException(e);
         }
 
         if (scheduler == null) {
-            throw new RuntimeException("scheduler is null");
+            throw new ZoomException("scheduler is null");
         }
     }
 
@@ -109,7 +110,7 @@ public class QuartzTimerService implements TimerService, Destroyable {
     @Override
     public <T> void startTimer(String jobName, Class<? extends TimerJob<T>> jobClass, T data, String cron) {
         if (map.containsKey(jobName)) {
-            throw new RuntimeException(String.format("Job with name %s is already exists!", jobName));
+            throw new ZoomException(String.format("Job with name %s is already exists!", jobName));
         }
         JobBuilder jobBuilder = JobBuilder.newJob(SimpleTimerJob.class).withIdentity("jobName", jobName);
         Map<String, Object> jobData = MapUtils.asMap(JOB_DATA, data, JOB_CLASS, jobClass);
@@ -121,7 +122,7 @@ public class QuartzTimerService implements TimerService, Destroyable {
             scheduler.scheduleJob(job, trigger);
             scheduler.start();
         } catch (Exception e) {
-            throw new RuntimeException("创建定时任务失败", e);
+            throw new ZoomException("创建定时任务失败", e);
         }
 
         map.put(jobName, new JobCreateInfo(trigger, job, cron, jobName));

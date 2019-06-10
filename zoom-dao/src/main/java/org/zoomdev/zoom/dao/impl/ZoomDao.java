@@ -3,6 +3,7 @@ package org.zoomdev.zoom.dao.impl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.common.Destroyable;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.io.Io;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.dao.*;
@@ -205,7 +206,7 @@ public class ZoomDao implements Dao, Destroyable {
             return new OracleDbStruct(this, tableCat);
         }
 
-        throw new RuntimeException(String.format("不支持的数据库产品:%s", productName));
+        throw new ZoomException(String.format("不支持的数据库产品:%s", productName));
     }
 
     private SqlDriver createDriver(String productName) {
@@ -221,7 +222,7 @@ public class ZoomDao implements Dao, Destroyable {
             return new OracleDriver();
         }
 
-        throw new RuntimeException(String.format("不支持的数据库产品:%s", productName));
+        throw new ZoomException(String.format("不支持的数据库产品:%s", productName));
     }
 
 

@@ -88,7 +88,7 @@ public class MapUtils {
         try {
             dest = src.getClass().newInstance();
         } catch (Exception e) {
-            throw new RuntimeException("不能初始化要求转化的Map类型" + src.getClass(), e);
+            throw new ZoomException("不能初始化要求转化的Map类型" + src.getClass(), e);
         }
         for (Map.Entry<String, VT> entry : src.entrySet()) {
             dest.put(entry.getKey(), converter.convert(entry.getValue()));

@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.aop.MethodCaller;
 import org.zoomdev.zoom.common.Destroyable;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.ioc.IocContainer;
 import org.zoomdev.zoom.web.parameter.ParameterParser;
@@ -192,7 +193,7 @@ public class Action implements Destroyable {
                         return;
                     }
                 } catch (Exception e) {
-                    throw new RuntimeException("调用拦截器的whenError发生异常", e);
+                    throw new ZoomException("调用拦截器的whenError发生异常", e);
                 }
             }
         }

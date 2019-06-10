@@ -19,7 +19,7 @@ public class Classes {
         if (type instanceof ParameterizedType) {
             return getClass(((ParameterizedType) type).getRawType());
         }
-        throw new RuntimeException("不能获取class " + type);
+        throw new ZoomException("不能获取class " + type);
     }
 
 
@@ -40,18 +40,18 @@ public class Classes {
         try {
             return type.newInstance();
         } catch (Throwable e) {
-            throw new RuntimeException("不能初始化" + type);
+            throw new ZoomException("不能初始化" + type);
         }
     }
 
-    public static RuntimeException makeThrow(Throwable e) {
+    public static ZoomException makeThrow(Throwable e) {
         if (e instanceof InvocationTargetException) {
             return makeThrow(((InvocationTargetException) e).getTargetException());
         }
-        if (e instanceof RuntimeException) {
-            return (RuntimeException) e;
+        if (e instanceof ZoomException) {
+            return (ZoomException) e;
         }
-        return new RuntimeException(e);
+        return new ZoomException(e);
     }
 
 
@@ -111,7 +111,7 @@ public class Classes {
                 result.add(field);
             }
         } catch (Throwable e) {
-            throw new RuntimeException(String.format("在获取%s的field的时候发生异常", clazz), e);
+            throw new ZoomException(String.format("在获取%s的field的时候发生异常", clazz), e);
         }
 
     }
@@ -134,7 +134,7 @@ public class Classes {
                 clazz = clazz.getSuperclass();
                 if (clazz == Object.class) {
                     return null;
-                    //throw new RuntimeException("Cannot find field " + name + " in " + clazz.getName());
+                    //throw new ZoomException("Cannot find field " + name + " in " + clazz.getName());
                 }
             }
 
@@ -309,9 +309,6 @@ public class Classes {
             return getCause(((InvocationTargetException) e).getTargetException());
         }
 
-        if(e instanceof  ZoomException){
-            return getCause(e.getCause());
-        }
 
         return e;
     }
@@ -362,7 +359,7 @@ public class Classes {
         try {
             return Class.forName(className);
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new ZoomException(e);
         }
     }
 

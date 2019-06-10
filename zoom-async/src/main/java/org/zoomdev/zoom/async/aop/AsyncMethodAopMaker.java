@@ -5,6 +5,7 @@ import org.zoomdev.zoom.aop.MethodInvoker;
 import org.zoomdev.zoom.aop.factory.AnnotationMethodInterceptorFactory;
 import org.zoomdev.zoom.async.annotation.Async;
 import org.zoomdev.zoom.async.impl.Asyncs;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.utils.Classes;
 
 import java.lang.reflect.Method;
@@ -78,7 +79,7 @@ public class AsyncMethodAopMaker extends AnnotationMethodInterceptorFactory<Asyn
                         invoker.invoke();
                         return invoker.getReturnObject();
                     } catch (Throwable e) {
-                        throw new RuntimeException("执行错误", e);
+                        throw new ZoomException("执行错误", e);
                     }
                 }
             });

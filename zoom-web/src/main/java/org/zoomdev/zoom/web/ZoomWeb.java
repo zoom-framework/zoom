@@ -7,6 +7,7 @@ import org.zoomdev.zoom.async.impl.Asyncs;
 import org.zoomdev.zoom.common.ConfigurationConstants;
 import org.zoomdev.zoom.common.annotations.IocBean;
 import org.zoomdev.zoom.common.config.ConfigReader;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.common.filter.OrFilter;
 import org.zoomdev.zoom.common.filter.pattern.PatternFilterFactory;
@@ -143,7 +144,7 @@ public class ZoomWeb {
             ioc.getIocClassLoader().append(ResScanner.class,scanner,true,IocBean.SYSTEM);
             scanner.scan(ZoomWeb.class.getClassLoader(), jarFilter);
         } catch (IOException e) {
-            throw new RuntimeException("扫描解析文件出错", e);
+            throw new ZoomException("扫描解析文件出错", e);
         }
        // System.out.println("======Scan time :" + (System.currentTimeMillis()-time));
 
@@ -166,7 +167,7 @@ public class ZoomWeb {
 
         if (file == null) {
             // 目前这个版本支持两种主配置，properties/yml
-            //throw new RuntimeException("启动失败，请确认application.properties或application.json存在");
+            //throw new ZoomException("启动失败，请确认application.properties或application.json存在");
             return;
         }
         ConfigReader.getDefault().load(file);

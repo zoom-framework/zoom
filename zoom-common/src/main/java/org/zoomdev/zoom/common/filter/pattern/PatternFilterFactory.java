@@ -194,7 +194,7 @@ public class PatternFilterFactory {
 
         if (list.size() == 0) {
             /// not possible
-            //throw new RuntimeException();
+            //throw new ZoomException();
 
 
             if (context.brackets.size() > 0) {

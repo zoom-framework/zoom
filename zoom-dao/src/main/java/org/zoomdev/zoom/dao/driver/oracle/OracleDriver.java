@@ -2,6 +2,7 @@ package org.zoomdev.zoom.dao.driver.oracle;
 
 import org.zoomdev.zoom.common.caster.Caster;
 import org.zoomdev.zoom.common.caster.ValueCaster;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.dao.Dao;
 import org.zoomdev.zoom.dao.Entity;
@@ -87,7 +88,7 @@ public class OracleDriver extends AbsDriver implements AutoGenerateProvider {
             case Types.NUMERIC:
                 return "NUMBER";
             default:
-                throw new RuntimeException("不支持的类型" + struct.getDataType());
+                throw new ZoomException("不支持的类型" + struct.getDataType());
         }
     }
 
@@ -219,7 +220,7 @@ public class OracleDriver extends AbsDriver implements AutoGenerateProvider {
             try {
                 sb.append(formatColumnType(columnMeta));
             } catch (Exception e) {
-                throw new RuntimeException("不支持的类型" + columnMeta.getName());
+                throw new ZoomException("不支持的类型" + columnMeta.getName());
             }
 
 
@@ -316,7 +317,7 @@ public class OracleDriver extends AbsDriver implements AutoGenerateProvider {
 
     @Override
     public <T> void buildInsertOrUpdate(SimpleSqlBuilder builder, Entity entity, T data, Filter<EntityField> filter, boolean ignoreNull, String[] unikeys) {
-        throw new RuntimeException();
+        throw new ZoomException();
     }
 
 

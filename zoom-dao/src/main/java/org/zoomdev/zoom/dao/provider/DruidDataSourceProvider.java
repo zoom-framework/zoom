@@ -3,6 +3,7 @@ package org.zoomdev.zoom.dao.provider;
 import com.alibaba.druid.pool.DruidDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.zoomdev.zoom.common.Destroyable;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.dao.ConnectionDescriptor;
 import org.zoomdev.zoom.dao.DataSourceProvider;
 
@@ -331,7 +332,7 @@ public class DruidDataSourceProvider implements DataSourceProvider {
             try {
                 ds.setFilters(filters);
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                throw new ZoomException(e);
             }
         }
 

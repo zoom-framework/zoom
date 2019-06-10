@@ -2,6 +2,7 @@ package org.zoomdev.zoom.ioc.impl;
 
 import org.apache.commons.lang3.StringUtils;
 import org.zoomdev.zoom.common.annotations.IocBean;
+import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.utils.CachedClasses;
 import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.ioc.*;
@@ -41,7 +42,7 @@ abstract class ZoomIocConstructor implements IocConstructor {
             try {
                 method.invoke(target);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new ZoomException(e);
             }
         }
     }
