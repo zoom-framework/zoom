@@ -33,16 +33,8 @@ public class ResponseUtils {
     }
 
     public static void json(HttpServletResponse response, Object data) {
-        OutputStream writer = null;
-        try {
-            response.setContentType("application/json");
-            writer = response.getOutputStream();
-            JSON.write(writer, data);
-        } catch (Throwable e) {
-            log.error("HttpServletResponse输出发生异常", Classes.getCause(e));
-        } finally {
-            Io.close(writer);
-        }
+        response.setContentType("application/json");
+        write(response,JSON.stringify(data));
     }
 
     public static void write(HttpServletResponse response, byte[] bytes) {

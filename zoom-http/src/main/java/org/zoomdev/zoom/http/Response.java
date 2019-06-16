@@ -31,12 +31,17 @@ public class Response {
         }
     }
 
-    private InputStream getInputStream() {
+    private InputStream getInputStream() throws IOException {
+        InputStream is = null;
         try {
-            return connection.getInputStream();
+            is= connection.getInputStream();
         } catch (IOException e) {
-            return connection.getErrorStream();
+            is= connection.getErrorStream();
         }
+        if(is==null){
+            throw new IOException();
+        }
+        return is;
     }
 
     public byte[] bytes() throws IOException {
