@@ -14,7 +14,6 @@ public class SimpleActionInterceptorFactory implements ActionInterceptorFactory 
 
     private OrderedList<InterceptorInfo> list;
     private InterceptorInfo[] interceptors;
-    private List<ActionInterceptor> tmp;
 
     private static class InterceptorInfo {
         InterceptorInfo(ActionInterceptor interceptor, ClassAndMethodFilter filter) {
@@ -28,7 +27,6 @@ public class SimpleActionInterceptorFactory implements ActionInterceptorFactory 
 
     public SimpleActionInterceptorFactory() {
         list = new OrderedList<InterceptorInfo>();
-        tmp = new ArrayList<ActionInterceptor>();
     }
 
 
@@ -46,7 +44,8 @@ public class SimpleActionInterceptorFactory implements ActionInterceptorFactory 
 
     @Override
     public ActionInterceptor[] create(Class<?> controllerClass, Method method) {
-        final List<ActionInterceptor> tmp = this.tmp;
+
+         List<ActionInterceptor> tmp = new ArrayList<ActionInterceptor>();
 
         InterceptorInfo[] interceptors = this.interceptors;
         tmp.clear();
