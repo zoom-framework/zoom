@@ -324,4 +324,13 @@ public class CollectionUtils {
         }
         return null;
     }
+
+    public static <T> int indexOf(List<T> list, Filter<T> filter, int start) {
+        for (int i = start, c = list.size(); i < c; ++i) {
+            if (filter.accept(list.get(i))) {
+                return i;
+            }
+        }
+        return -1;
+    }
 }
