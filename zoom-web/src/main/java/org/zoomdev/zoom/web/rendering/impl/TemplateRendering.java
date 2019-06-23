@@ -100,6 +100,12 @@ public abstract class TemplateRendering implements Rendering {
 
         }
         response.setContentType("text/html");
+        if(!path.endsWith(getExt())){
+            path = path + getExt();
+        }
+        if(data==null){
+            data = merge(data,context);
+        }
         render(request, response, path, data);
         return true;
     }

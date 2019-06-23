@@ -126,8 +126,8 @@ public class ActionHolder implements ActionHandler {
         }
 
         action.setUrl(key);
-        //模板路径
-        action.setPath(key.substring(1));
+        //模板路径,如果带有{}的通配符，则将通配符删除掉
+        action.setPath(key.substring(1).replace("{","").replace("}",""));
         if (log.isDebugEnabled()) {
             log.debug(String.format("注册Action成功:key:[%s] class:[%s] method:[%s] loader:[%s]",
                     key,
