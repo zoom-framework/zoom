@@ -1,5 +1,7 @@
 package org.zoomdev.zoom.async.aop;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.aop.MethodInterceptor;
 import org.zoomdev.zoom.aop.MethodInvoker;
 import org.zoomdev.zoom.aop.factory.AnnotationMethodInterceptorFactory;
@@ -15,6 +17,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 
 public class AsyncMethodAopMaker extends AnnotationMethodInterceptorFactory<Async> {
+
+    private static final Log log = LogFactory.getLog(AsyncMethodAopMaker.class);
 
     @Override
     protected void createMethodInterceptors(Async annotation, Method method, List<MethodInterceptor> interceptors) {
@@ -38,7 +42,7 @@ public class AsyncMethodAopMaker extends AnnotationMethodInterceptorFactory<Asyn
 
         @Override
         public void intercept(final MethodInvoker invoker) throws Throwable {
-            FutureTask task = new FutureTask(new Callable() {
+            Future future = Asyncs.defaultJobQueue().submit(new Callable() {
                 @Override
                 public Object call() throws Exception {
                     try {
@@ -49,15 +53,14 @@ public class AsyncMethodAopMaker extends AnnotationMethodInterceptorFactory<Asyn
                             value = ((Future) value).get();
                         }
                         return value;
-                    } catch (Throwable throwable) {
-                        throw Classes.makeThrow(throwable);
+                    } catch (Throwable e) {
+                        log.error("执行异步出错",e);
+                        throw new ZoomException("执行错误", e);
                     }
 
                 }
             });
-            invoker.setReturnObject(task, false);
-            Asyncs.defaultJobQueue().run(task);
-
+            invoker.setReturnObject(future, false);
         }
 
     }
@@ -79,6 +82,8 @@ public class AsyncMethodAopMaker extends AnnotationMethodInterceptorFactory<Asyn
                         invoker.invoke();
                         return invoker.getReturnObject();
                     } catch (Throwable e) {
+                        //如果这里出错了怎么办?
+                        log.error("执行异步出错",e);
                         throw new ZoomException("执行错误", e);
                     }
                 }
