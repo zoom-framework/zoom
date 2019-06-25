@@ -111,25 +111,25 @@ public abstract class AbsDbStruct implements DbStructFactory {
 
 
     private Validator createLengthValidator(ColumnMeta columnMeta) {
-        if (columnMeta.getMaxLen() != 0) {
-
-            //什么类型
-            switch (columnMeta.getType()) {
-                case Types.VARCHAR:
-                case Types.CHAR:
-                case Types.CLOB: {
-                    //字节判断
-                    return new ByteStringValidator(columnMeta.getMaxLen());
-                }
-                case Types.NVARCHAR:
-                case Types.NCHAR:
-                case Types.NCLOB: {
-                    return new StringValidator(columnMeta.getMaxLen());
-                }
-                case Types.BLOB:
-            }
-
-        }
+//        if (columnMeta.getMaxLen() != 0) {
+//
+//            //什么类型
+//            switch (columnMeta.getType()) {
+//                case Types.VARCHAR:
+//                case Types.CHAR:
+//                case Types.CLOB: {
+//                    //字节判断
+//                    return new ByteStringValidator(columnMeta.getMaxLen());
+//                }
+//                case Types.NVARCHAR:
+//                case Types.NCHAR:
+//                case Types.NCLOB: {
+//                    return new StringValidator(columnMeta.getMaxLen());
+//                }
+//                case Types.BLOB:
+//            }
+//
+//        }
 
         return null;
     }

@@ -269,6 +269,9 @@ public class Caster {
         //date
         Caster.register(java.util.Date.class, java.sql.Date.class, new Date2SqlDate());
         //除非你想用toString,否则下面这条不必要s
+        Caster.register(java.util.Date.class, String.class,new Date2String());
+
+
         //Caster.register(java.sql.Date.class, java.util.Date.class, new SqlDate2Date());
 
 
@@ -1817,6 +1820,15 @@ public class Caster {
      */
     private static final String SHORT_DATE_TIME = "yyyyMMddHHmmssSSS";
     private static final String LONG_DATE_TIME = "yyyy-MM-dd HH:mm:ss:SSS";
+
+    private static class Date2String implements ValueCaster{
+
+        @Override
+        public Object to(Object src) {
+            Date date = (Date)src;
+            return new SimpleDateFormat(DATE_TIME_FORMAT).format(date);
+        }
+    }
 
     private static class String2Date implements ValueCaster {
         @Override
