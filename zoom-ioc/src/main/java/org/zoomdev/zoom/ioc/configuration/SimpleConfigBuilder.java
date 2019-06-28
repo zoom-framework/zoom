@@ -76,16 +76,10 @@ public class SimpleConfigBuilder extends ClassResolver {
             types.add(app);
         }
 
-        long time = System.currentTimeMillis();
 
         for (Class<?> type : types) {
             ioc.getIocClassLoader().appendModule(type);
         }
-
-
-        time = System.currentTimeMillis();
-
-        //Injectors
 
         log.debug("正在进行注入...");
 

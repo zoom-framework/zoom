@@ -57,7 +57,7 @@ class EventObserverMethodHandler extends AnnotationMethodHandler<EventObserver> 
                 } else if (CharSequence.class.isAssignableFrom(type)) {
                     condition = 2;
                 } else {
-                    throw new ZoomException("EventObserver标注的方法如果参数个数为1个，必须是Event或者String类型");
+                    condition = 5;
                 }
             } else if (types.length == 2) {
 
@@ -109,6 +109,8 @@ class EventObserverMethodHandler extends AnnotationMethodHandler<EventObserver> 
                 } else if (condition == 4) {
                     //参数是name+data+throwable
                     method.invoke(target.get(), event.getName(), event.getData(), event.getError());
+                }else if(condition == 5){
+                    method.invoke(target.get(),event.getData());
                 }
 
             } catch (Exception e) {

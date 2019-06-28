@@ -11,12 +11,12 @@ import org.zoomdev.zoom.ioc.IocMethodVisitor;
 public class EventModule {
 
 
-    @IocBean
+    @IocBean(order = IocBean.CONFIG)
     public EventService getEventService() {
         return new AsyncEventService();
     }
 
-    @Inject
+    @Inject(order = IocBean.CONFIG)
     public void init(AopFactory aopFactory, IocMethodVisitor methodVisitor, EventService eventService) {
         methodVisitor.add(new EventObserverMethodHandler(eventService));
         aopFactory.addMethodInterceptorFactory(new EventResultMethodInterceptorFactory(eventService), 0);
