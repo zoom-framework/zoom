@@ -1,5 +1,7 @@
 package org.zoomdev.zoom.event.modules;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.zoomdev.zoom.async.impl.Asyncs;
 import org.zoomdev.zoom.common.designpattern.SingletonUtils;
 import org.zoomdev.zoom.common.lock.LockUtils;
@@ -71,12 +73,18 @@ class AsyncEventService implements EventService {
         notifyObservers(new PayloadEvent(name, data, error));
     }
 
+    private static final Log log = LogFactory.getLog(AsyncEventService.class);
+
     /**
      *
      * @param event
      */
     public void notifyObservers(final Event event) {
         List<EventListener> listeners = events.get(event.getName());
+        if(listeners==null){
+            log.info("没有监听器来处理事件"+event.getName());
+            return;
+        }
         List<EventListener> eventListeners = new ArrayList<EventListener>();
         synchronized (LockUtils.getLock(event.getName())) {
             eventListeners.addAll(listeners);
