@@ -24,7 +24,7 @@ public class WebUtils {
     private static AtomicBoolean startupSuccess = new AtomicBoolean(false);
 
     private static Collection<Runnable> queue = Collections.synchronizedList(new ArrayList<Runnable>());
-    private static Collection<Runnable> after = new ArrayList<Runnable>();
+    private static Collection<Runnable> after = Collections.synchronizedList(new ArrayList<Runnable>());
 
     /**
      * 最后处理
@@ -58,12 +58,14 @@ public class WebUtils {
         for(Runnable runnable : after){
             runnable.run();
         }
+        after.clear();
 
         synchronized (queue) {
             startupSuccess.set(true);
             for (Runnable runnable : queue) {
                 Asyncs.defaultJobQueue().run(runnable);
             }
+            queue.clear();
         }
 
     }

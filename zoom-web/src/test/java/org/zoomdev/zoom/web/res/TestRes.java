@@ -2,7 +2,6 @@ package org.zoomdev.zoom.web.res;
 
 import junit.framework.TestCase;
 import org.zoomdev.zoom.common.res.ClassResolver;
-import org.zoomdev.zoom.web.utils.ClassResolvers;
 import org.zoomdev.zoom.common.res.ResScanner;
 
 import java.io.IOException;
@@ -17,14 +16,6 @@ public class TestRes extends TestCase {
         ResScanner scanner = new ResScanner();
         scanner.scan();
 
-        ClassResolvers resolvers = new ClassResolvers(
-                new ClassResolver() {
-                    @Override
-                    public void resolve(ResScanner scanner) {
 
-                    }
-                }
-        );
-        resolvers.visit(scanner);
     }
 }

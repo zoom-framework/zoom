@@ -74,6 +74,10 @@ public class ZoomWeb {
             @Override
             public void run() {
                 new SimpleConfigBuilder(ioc).resolve(scanner);
+
+                log.info("============ClassResolvers解析成功============");
+                WebUtils.setStartupSuccess();
+
             }
         });
 
