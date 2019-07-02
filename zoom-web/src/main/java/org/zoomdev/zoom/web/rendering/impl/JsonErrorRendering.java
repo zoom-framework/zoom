@@ -26,7 +26,7 @@ public class JsonErrorRendering implements Rendering {
             if (exception instanceof StatusException) {
                 StatusException statusException = (StatusException) exception;
                 response.setStatus(statusException.getStatus());
-                ResponseUtils.json(response, MapUtils.asMap("code", statusException.getClass().getName(), "error", statusException.getError()));
+                ResponseUtils.json(response, MapUtils.asMap("code", statusException.getCode(), "error", statusException.getError()));
                 return true;
             }
 

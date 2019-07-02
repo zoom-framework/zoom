@@ -46,7 +46,9 @@ public class StatusException extends ZoomException implements RestException {
         public UnAuthException() {
             super(401);
         }
-
+        public UnAuthException(String code,String message) {
+            super(401,code,message);
+        }
         /**
          *
          */
