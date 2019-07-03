@@ -74,6 +74,7 @@ public interface Dao extends StatementAdapterFactory {
 
     /**
      * 获取到数据库连接字符串
+     *
      * @return
      */
     String getURL();
@@ -84,6 +85,7 @@ public interface Dao extends StatementAdapterFactory {
 
     /**
      * 这是改名策略 {@link NameAdapter}
+     *
      * @param aDefault
      */
     void setNameAdapter(NameAdapter aDefault);
@@ -91,14 +93,15 @@ public interface Dao extends StatementAdapterFactory {
 
     /**
      * 是否输出sql
+     *
      * @param output
      */
     void setOutput(boolean output);
 
 
-
     /**
      * 数据库产品名称
+     *
      * @return
      */
     String getProductName();

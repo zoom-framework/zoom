@@ -1,7 +1,6 @@
 package org.zoomdev.zoom.cache.impl;
 
 import org.zoomdev.zoom.cache.DataCache;
-import org.zoomdev.zoom.common.config.ConfigReader;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -9,28 +8,28 @@ import java.util.concurrent.TimeUnit;
 
 public class DefaultCache implements DataCache {
 
-    private static class CacheInfo{
+    private static class CacheInfo {
         Object data;
         long time;
         long timeout;
 
-        CacheInfo(Object data,long timeout){
+        CacheInfo(Object data, long timeout) {
             time = System.currentTimeMillis();
             this.data = data;
             this.timeout = timeout;
         }
 
-        boolean isTimeout(){
+        boolean isTimeout() {
             return System.currentTimeMillis() - time > timeout;
         }
     }
 
-    private Map<String,CacheInfo> map = new ConcurrentHashMap<String, CacheInfo>();
+    private Map<String, CacheInfo> map = new ConcurrentHashMap<String, CacheInfo>();
 
     @Override
     public Object get(String key) {
         CacheInfo cacheInfo = map.get(key);
-        if(cacheInfo==null || cacheInfo.isTimeout()){
+        if (cacheInfo == null || cacheInfo.isTimeout()) {
             return null;
         }
 
@@ -39,17 +38,17 @@ public class DefaultCache implements DataCache {
 
     @Override
     public Object set(String key, Object value) {
-       return set(key,value,20*1000*60);
+        return set(key, value, 20 * 1000 * 60);
     }
 
     @Override
     public Object set(String key, Object value, TimeUnit unit, int timeout) {
-        return set(key,value,  unit.toMillis(timeout));
+        return set(key, value, unit.toMillis(timeout));
     }
 
     @Override
     public Object set(String key, Object value, long timeoutMs) {
-        return map.put(key,new CacheInfo(value,timeoutMs));
+        return map.put(key, new CacheInfo(value, timeoutMs));
     }
 
     @Override

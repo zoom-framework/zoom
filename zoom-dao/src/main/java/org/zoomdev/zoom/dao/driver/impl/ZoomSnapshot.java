@@ -7,7 +7,7 @@ import org.zoomdev.zoom.dao.meta.TableMeta;
 import java.io.Serializable;
 import java.util.List;
 
-public class ZoomSnapshot implements Snapshot,Serializable {
+public class ZoomSnapshot implements Snapshot, Serializable {
 
 
     public List<TableMeta> getTables() {
@@ -21,7 +21,6 @@ public class ZoomSnapshot implements Snapshot,Serializable {
     private List<TableMeta> tables;
 
 
-
     @Override
     public String compare(Snapshot snapshot) {
         return null;
@@ -29,7 +28,6 @@ public class ZoomSnapshot implements Snapshot,Serializable {
 
     @Override
     public String toSql(SqlDriver driver) {
-
 
 
         return null;

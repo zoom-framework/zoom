@@ -1,7 +1,5 @@
 package org.zoomdev.zoom.aop.utils;
 
-import javassist.ClassPool;
-
 public class JavassistUtils {
 
 //    private static ClassPool pool;

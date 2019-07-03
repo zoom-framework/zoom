@@ -11,7 +11,10 @@ import org.zoomdev.zoom.dao.*;
 import org.zoomdev.zoom.dao.adapters.DataAdapter;
 import org.zoomdev.zoom.dao.adapters.EntityField;
 import org.zoomdev.zoom.dao.adapters.StatementAdapter;
-import org.zoomdev.zoom.dao.annotations.*;
+import org.zoomdev.zoom.dao.annotations.AutoGenerate;
+import org.zoomdev.zoom.dao.annotations.Column;
+import org.zoomdev.zoom.dao.annotations.ColumnIgnore;
+import org.zoomdev.zoom.dao.annotations.PrimaryKey;
 import org.zoomdev.zoom.dao.auto.AutoField;
 import org.zoomdev.zoom.dao.auto.DatabaseAutoGenerateKey;
 import org.zoomdev.zoom.dao.auto.SequenceAutoGenerateKey;
@@ -42,19 +45,19 @@ class BeanEntityFactory extends AbstractEntityFactory {
     private BeanTableAdapter tableAdapter;
 
 
-    public void addBeanTableAdapter(BeanTableAdapter beanTableAdapter){
-        if(tableAdapter instanceof GroupBeanTableAdapter){
-            ((GroupBeanTableAdapter)tableAdapter).addBeanTableAdapter(beanTableAdapter);
-        }else{
-            tableAdapter = new GroupBeanTableAdapter(this.tableAdapter,beanTableAdapter);
+    public void addBeanTableAdapter(BeanTableAdapter beanTableAdapter) {
+        if (tableAdapter instanceof GroupBeanTableAdapter) {
+            ((GroupBeanTableAdapter) tableAdapter).addBeanTableAdapter(beanTableAdapter);
+        } else {
+            tableAdapter = new GroupBeanTableAdapter(this.tableAdapter, beanTableAdapter);
         }
     }
 
-    protected BeanEntityFactory(Dao dao){
-        this(dao, new ZoomBeanTableAdapter() );
+    protected BeanEntityFactory(Dao dao) {
+        this(dao, new ZoomBeanTableAdapter());
     }
 
-    protected BeanEntityFactory(Dao dao,BeanTableAdapter tableAdapter) {
+    protected BeanEntityFactory(Dao dao, BeanTableAdapter tableAdapter) {
         super(dao);
         handlers = new ArrayList<ContextHandler>();
 
@@ -99,7 +102,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
                     entityField.setSelectColumnName(context.column.value());
                 } else {
                     // 最短距离算法算出哪个字段最接近
-                    throw new DaoException("绑定实体类"+context.field.getDeclaringClass()+"到表"+context.tableName+"出错，找不到字段的配置" + context.field.getName() + "当前所有可用字段为"
+                    throw new DaoException("绑定实体类" + context.field.getDeclaringClass() + "到表" + context.tableName + "出错，找不到字段的配置" + context.field.getName() + "当前所有可用字段为"
                             + StringUtils.join(context.getAvliableFields(), ","));
                 }
             }
@@ -315,17 +318,17 @@ class BeanEntityFactory extends AbstractEntityFactory {
     }
 
 
-    public Entity bindEndity(Class<?> type,String table){
-        BeanTableInfo tableInfo = tableAdapter.getTableInfo(type,table);
-        return createEntity(type,tableInfo);
+    public Entity bindEndity(Class<?> type, String table) {
+        BeanTableInfo tableInfo = tableAdapter.getTableInfo(type, table);
+        return createEntity(type, tableInfo);
     }
 
-    private Entity createEntity(Class<?> type,BeanTableInfo tableInfo){
+    private Entity createEntity(Class<?> type, BeanTableInfo tableInfo) {
         Map<String, RenameUtils.ColumnRenameConfig> map;
         String tableName = tableInfo.getTableNames()[0];
-        if(tableInfo.getJoins()!=null){
+        if (tableInfo.getJoins() != null) {
             map = RenameUtils.rename(dao, tableInfo.getTableNames());
-        }else{
+        } else {
             map = RenameUtils.rename(dao, tableName);
         }
 
@@ -365,7 +368,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
                 if (e instanceof DaoException) {
                     throw (DaoException) e;
                 }
-                throw new DaoException("绑定Entity失败，发生异常: 实体类:" + type + " 表:" + tableName , e);
+                throw new DaoException("绑定Entity失败，发生异常: 实体类:" + type + " 表:" + tableName, e);
             }
         }
 
@@ -383,7 +386,7 @@ class BeanEntityFactory extends AbstractEntityFactory {
 
         BeanTableInfo tableInfo = tableAdapter.getTableInfo(type);
 
-        return createEntity(type,tableInfo);
+        return createEntity(type, tableInfo);
     }
 
 
@@ -407,9 +410,6 @@ class BeanEntityFactory extends AbstractEntityFactory {
             }
         });
     }
-
-
-
 
 
     private AutoEntity findAutoGenerateFields(

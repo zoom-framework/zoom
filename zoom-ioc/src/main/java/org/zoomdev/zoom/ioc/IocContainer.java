@@ -43,8 +43,8 @@ public interface IocContainer extends Destroyable {
     <T> T fetch(Class<T> type);
 
     /**
-     *
      * 通过key获取ioc容器中的对象，如果找不到则返回null
+     *
      * @param key {@link org.zoomdev.zoom.ioc.impl.ZoomIocKey}
      * @return
      */
@@ -53,6 +53,7 @@ public interface IocContainer extends Destroyable {
 
     /**
      * 获取指定的IocObject列表，每一个列表元素都是经过注入初始化的
+     *
      * @param keys
      * @return
      */
@@ -88,6 +89,7 @@ public interface IocContainer extends Destroyable {
 
     /**
      * 获取到一个方法代理
+     *
      * @param iocClass
      * @param target
      * @return

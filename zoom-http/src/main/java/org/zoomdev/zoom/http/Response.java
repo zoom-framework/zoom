@@ -1,7 +1,6 @@
 package org.zoomdev.zoom.http;
 
 import org.zoomdev.zoom.common.io.Io;
-import org.zoomdev.zoom.common.utils.MapUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -34,11 +33,11 @@ public class Response {
     private InputStream getInputStream() throws IOException {
         InputStream is = null;
         try {
-            is= connection.getInputStream();
+            is = connection.getInputStream();
         } catch (IOException e) {
-            is= connection.getErrorStream();
+            is = connection.getErrorStream();
         }
-        if(is==null){
+        if (is == null) {
             throw new IOException();
         }
         return is;
@@ -73,13 +72,13 @@ public class Response {
         }
     }
 
-    public Map<String,String> headers() {
+    public Map<String, String> headers() {
         Map<String, List<String>> data = connection.getHeaderFields();
-        Map<String,String> headers = new HashMap<String, String>();
-        for(Map.Entry<String,List<String>> entry : data.entrySet()){
+        Map<String, String> headers = new HashMap<String, String>();
+        for (Map.Entry<String, List<String>> entry : data.entrySet()) {
             List<String> list = entry.getValue();
-            if(list.size()>0){
-                headers.put(entry.getKey(),list.get(0));
+            if (list.size() > 0) {
+                headers.put(entry.getKey(), list.get(0));
             }
 
         }

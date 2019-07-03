@@ -25,7 +25,7 @@ public class ReflectIocMethodProxy implements IocMethodProxy {
 
     @Override
     public IocMethod getIocMethod() {
-        if(iocMethod==null){
+        if (iocMethod == null) {
             iocMethod = iocContainer.getMethod(
                     iocClass,
                     method

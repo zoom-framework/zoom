@@ -57,7 +57,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
                 });
     }
 
-    public EntityActiveRecord(Dao dao, Entity entity,boolean output) {
+    public EntityActiveRecord(Dao dao, Entity entity, boolean output) {
         super(dao.getDataSource(), new SimpleSqlBuilder(dao.getDriver()));
         this.entity = entity;
         this.dao = dao;
@@ -87,7 +87,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
                 entity.setQuerySource(builder);
                 EntitySqlUtils.buildSelect(builder, entity, filter, entityFields);
                 builder.buildSelect();
-                return EntitySqlUtils.executeQuery(connection, builder, entityFields, entity,output);
+                return EntitySqlUtils.executeQuery(connection, builder, entityFields, entity, output);
             }
         });
     }
@@ -101,7 +101,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
                 entity.setQuerySource(builder);
                 EntitySqlUtils.buildSelect(builder, entity, filter, entityFields);
                 builder.buildLimit(position, size);
-                return EntitySqlUtils.executeQuery(connection, builder, entityFields, entity,output);
+                return EntitySqlUtils.executeQuery(connection, builder, entityFields, entity, output);
             }
         });
     }
@@ -115,18 +115,16 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
                 entity.setQuerySource(builder);
                 EntitySqlUtils.buildSelect(builder, entity, filter, entityFields);
                 builder.buildLimit(position, size);
-                List<T> list = EntitySqlUtils.executeQuery(connection, builder, entityFields, entity,output);
+                List<T> list = EntitySqlUtils.executeQuery(connection, builder, entityFields, entity, output);
                 builder.clear(false);
                 remove2(builder.values);
                 //最后两个参数要移除掉
-                int total = EntitySqlUtils.getValue(connection, builder, DaoUtils.SELECT_COUNT, int.class,output);
-                int page = DaoUtils.position2page(position,size);
+                int total = EntitySqlUtils.getValue(connection, builder, DaoUtils.SELECT_COUNT, int.class, output);
+                int page = DaoUtils.position2page(position, size);
                 return new Page<T>(list, page, size, total);
             }
         });
     }
-
-
 
 
     @Override
@@ -161,7 +159,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
             public Integer execute(Connection connection) throws SQLException {
                 builder.table(entity.getTable());
                 builder.buildDelete();
-                return BuilderKit.executeUpdate(connection, builder,output);
+                return BuilderKit.executeUpdate(connection, builder, output);
             }
         });
     }
@@ -175,7 +173,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
                 EntitySqlUtils.entityCondition(builder, entity, data);
                 builder.table(entity.getTable());
                 builder.buildDelete();
-                return EntitySqlUtils.executeUpdate(connection, builder,output);
+                return EntitySqlUtils.executeUpdate(connection, builder, output);
             }
         });
     }
@@ -204,7 +202,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
             public Integer execute(Connection connection) throws SQLException {
                 return EntitySqlUtils.executeUpdate(
                         connection,
-                        builder,output
+                        builder, output
                 );
             }
         });
@@ -248,7 +246,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
         entity.setQuerySource(builder);
         EntitySqlUtils.buildSelect(builder, entity, filter, entityFields);
         builder.buildSelect();
-        return EntitySqlUtils.executeGet(connection, builder, entity, entityFields,output);
+        return EntitySqlUtils.executeGet(connection, builder, entity, entityFields, output);
     }
 
     @Override
@@ -261,6 +259,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
             }
         });
     }
+
     @Override
     public int insertIgnoreDuplicated(final T data, final String... keys) {
         assert (data != null);
@@ -284,7 +283,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
                         connection,
                         entity,
                         data,
-                        builder,output
+                        builder, output
                 );
             }
         });
@@ -301,7 +300,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
         execute(new ConnectionExecutor() {
             @Override
             public Integer execute(Connection connection) throws SQLException {
-                dao.getDriver().buildInsertOrUpdate( builder,
+                dao.getDriver().buildInsertOrUpdate(builder,
 
                         entity,
                         data,
@@ -311,7 +310,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
 
                 return EntitySqlUtils.executeUpdate(
                         connection,
-                        builder,output
+                        builder, output
                 );
             }
         });
@@ -339,7 +338,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
                         connection,
                         entity,
                         data,
-                        builder,output
+                        builder, output
                 );
             }
         });
@@ -366,7 +365,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
 
     @Override
     public EAr<T> orWhere(SqlBuilder.Condition condition) {
-        builder.orWhere(this,condition);
+        builder.orWhere(this, condition);
         return this;
     }
 
@@ -423,7 +422,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
 
     @Override
     public EAr<T> join(String table, String on, SqlBuilder.JoinType type) {
-        return join(table,on,type.value());
+        return join(table, on, type.value());
     }
 
     @Override
@@ -433,7 +432,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
 
     @Override
     public EAr<T> select(Iterable<String> select) {
-        entity.select(entityFields,select);
+        entity.select(entityFields, select);
         return this;
     }
 
@@ -452,7 +451,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
 
     @Override
     public EAr<T> orLike(String name, SqlBuilder.Like like, Object value) {
-        builder.orLike(name,like,value);
+        builder.orLike(name, like, value);
         return this;
     }
 
@@ -483,7 +482,7 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
 
     @Override
     public EAr<T> where(SqlBuilder.Condition condition) {
-        builder.where(this,condition);
+        builder.where(this, condition);
         return this;
     }
 
@@ -508,14 +507,14 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
                 } else {
                     field = key;
                 }
-                return EntitySqlUtils.getValue(connection, builder, field, typeOfE,output);
+                return EntitySqlUtils.getValue(connection, builder, field, typeOfE, output);
             }
         });
     }
 
     @Override
     public int insert(final Iterable<T> it) {
-        assert (it!=null);
+        assert (it != null);
         final MutableInt result = new MutableInt(0);
         ZoomDao.executeTrans(
                 new Runnable() {
@@ -529,7 +528,6 @@ public class EntityActiveRecord<T> extends AbstractRecord implements EAr<T> {
 
         return result.getValue();
     }
-
 
 
     @Override

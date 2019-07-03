@@ -286,7 +286,7 @@ public class SimpleSqlBuilder implements SqlBuilder {
 
     @Override
     public SqlBuilder join(String table, String on, JoinType type) {
-        return join(table,on,type.value());
+        return join(table, on, type.value());
     }
 
 
@@ -319,9 +319,6 @@ public class SimpleSqlBuilder implements SqlBuilder {
         this.table = table;
         return this;
     }
-
-
-
 
 
     @Override
@@ -476,7 +473,7 @@ public class SimpleSqlBuilder implements SqlBuilder {
     }
 
 
-    void conditionWhere(Sql sql,Condition condition) {
+    void conditionWhere(Sql sql, Condition condition) {
         where.append("(");
         this.condition = true;
         condition.where(sql);
@@ -488,25 +485,25 @@ public class SimpleSqlBuilder implements SqlBuilder {
 
     @Override
     public SqlBuilder where(Condition condition) {
-        return where(this,condition);
+        return where(this, condition);
     }
 
     @Override
     public SqlBuilder orWhere(Condition condition) {
-        return orWhere(this,condition);
+        return orWhere(this, condition);
 
     }
 
 
-    public SqlBuilder where(Sql sql,Condition condition) {
+    public SqlBuilder where(Sql sql, Condition condition) {
         whereRelation(where, AND);
-        conditionWhere(sql,condition);
+        conditionWhere(sql, condition);
         return this;
     }
 
-    public SqlBuilder orWhere(Sql sql,Condition condition) {
+    public SqlBuilder orWhere(Sql sql, Condition condition) {
         whereRelation(where, OR);
-        conditionWhere(this,condition);
+        conditionWhere(this, condition);
         return this;
 
     }

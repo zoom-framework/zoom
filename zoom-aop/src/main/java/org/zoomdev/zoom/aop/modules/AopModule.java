@@ -5,7 +5,6 @@ import org.zoomdev.zoom.aop.AopFactory;
 import org.zoomdev.zoom.aop.javassist.JavassistAopFactory;
 import org.zoomdev.zoom.aop.javassist.JavassistClassInfo;
 import org.zoomdev.zoom.aop.reflect.ClassInfo;
-import org.zoomdev.zoom.aop.utils.JavassistUtils;
 import org.zoomdev.zoom.common.annotations.Inject;
 import org.zoomdev.zoom.common.annotations.IocBean;
 import org.zoomdev.zoom.common.annotations.Module;
@@ -16,7 +15,7 @@ public class AopModule {
 
 
     @IocBean
-    public ClassPool getClassPool(){
+    public ClassPool getClassPool() {
         return new ClassPool(ClassPool.getDefault());
     }
 

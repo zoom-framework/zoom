@@ -43,7 +43,7 @@ public class WebModules {
     private String encoding;
 
 
-    static class Request2MapCasterFactory extends Caster.ParameterizedTypeCasterfactory<HttpServletRequest,Map> {
+    static class Request2MapCasterFactory extends Caster.ParameterizedTypeCasterfactory<HttpServletRequest, Map> {
 
         @Override
         protected ValueCaster create(ParameterizedType targetType) {
@@ -70,46 +70,47 @@ public class WebModules {
 
 
     @IocBean
-    public WebConfig getWebConfig(){
+    public WebConfig getWebConfig() {
         return new WebConfig();
     }
 
     @IocBean
-    public TemplateEngineManager getTemplateEngineManager(WebConfig webConfig){
+    public TemplateEngineManager getTemplateEngineManager(WebConfig webConfig) {
         return new SimpleTemplateEngineManager(webConfig);
     }
 
     @IocBean
     public TemplateEngineRendering getTemplateEngineRendering(
             TemplateEngineManager manager,
-            WebConfig config){
-        return new TemplateEngineRendering(manager,config);
+            WebConfig config) {
+        return new TemplateEngineRendering(manager, config);
     }
 
     @Inject
-    public void config(AopFactory aopFactory, IocContainer ioc){
-        aopFactory.addMethodInterceptorFactory(new AopMethodInterceptorFactory(ioc),0);
+    public void config(AopFactory aopFactory, IocContainer ioc) {
+        aopFactory.addMethodInterceptorFactory(new AopMethodInterceptorFactory(ioc), 0);
     }
 
     /**
      * 涉及拦截器都是系统级别
+     *
      * @return
      */
     @IocBean(order = IocBean.SYSTEM)
-    public ActionInterceptorFactory getActionInterceptorFactory(){
+    public ActionInterceptorFactory getActionInterceptorFactory() {
         return new SimpleActionInterceptorFactory();
     }
 
 
     @IocBean(order = IocBean.SYSTEM)
-    public ActionFactory getActionFactory(){
+    public ActionFactory getActionFactory() {
         return new SimpleActionFactory();
     }
 
     @IocBean
     public RenderingFactory getRenderingFactoryManager(
             TemplateEngineRendering rendering
-    ){
+    ) {
         SimpleRenderingFactory factory = new SimpleRenderingFactory();
         JsonRendering jsonRendering = new JsonRendering();
         JsonErrorRendering jsonErrorRendering = new JsonErrorRendering();
@@ -132,7 +133,6 @@ public class WebModules {
     public PreParameterParserManager getPreParameterParserManager() {
         return new SimplePreParameterParserManager();
     }
-
 
 
     static class Request2BeanProvider implements Caster.CasterProvider {
@@ -170,27 +170,28 @@ public class WebModules {
 
             try {
                 Object data = toType.newInstance();
-                Field[] fields = CachedClasses.getFields(toType );
-                for(Field field : fields){
+                Field[] fields = CachedClasses.getFields(toType);
+                for (Field field : fields) {
                     Object value;
-                    if(field.getType().isArray()
-                            || Iterable.class.isAssignableFrom(field.getType())){
+                    if (field.getType().isArray()
+                            || Iterable.class.isAssignableFrom(field.getType())) {
                         value = request.getParameterValues(field.getName());
-                    }else{
+                    } else {
                         value = request.getParameter(field.getName());
                     }
-                    if(value==null){
+                    if (value == null) {
                         continue;
                     }
-                    field.set(data,Caster.toType(value,field.getGenericType()));
+                    field.set(data, Caster.toType(value, field.getGenericType()));
                 }
                 return data;
             } catch (Exception e) {
-               throw new ZoomException(e);
+                throw new ZoomException(e);
             }
         }
 
     }
+
     /**
      * 将request转成map
      *
@@ -205,6 +206,7 @@ public class WebModules {
         }
         return data;
     }
+
     static class Request2DataObject implements ValueCaster {
 
         @Override
@@ -213,6 +215,7 @@ public class WebModules {
             return DataObject.wrap(getParameters(request));
         }
     }
+
     static class Request2Map implements ValueCaster {
 
         @Override
@@ -224,13 +227,10 @@ public class WebModules {
     }
 
 
-
-
-
     @Inject
-    public void config(IocContainer ioc, Router router, ResScanner resScanner, ClassInfo classInfo){
+    public void config(IocContainer ioc, Router router, ResScanner resScanner, ClassInfo classInfo) {
 
-        new SimpleActionBuilder(ioc,router,classInfo).resolve(resScanner);
+        new SimpleActionBuilder(ioc, router, classInfo).resolve(resScanner);
 
     }
 

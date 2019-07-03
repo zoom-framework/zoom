@@ -2,7 +2,6 @@ package org.zoomdev.zoom.common.caster;
 
 import junit.framework.TestCase;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Test;
 
 import java.io.IOException;
 import java.util.*;
@@ -15,11 +14,11 @@ public class JSONTest extends TestCase {
         ObjectMapper mapper = new ObjectMapper();
         List list = new ArrayList();
         Map map1 = new HashMap();
-        map1.put("id","111");
-        map1.put("users", Arrays.asList(1,2,3,4,5,5));
+        map1.put("id", "111");
+        map1.put("users", Arrays.asList(1, 2, 3, 4, 5, 5));
         list.add(map1);
         Map map2 = new HashMap();
-        map2.put("name","zqw");
+        map2.put("name", "zqw");
         list.add(map2);
         //普通输出
         System.out.println(mapper.writeValueAsString(list));

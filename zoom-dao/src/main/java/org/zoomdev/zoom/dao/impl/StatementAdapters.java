@@ -27,10 +27,10 @@ class StatementAdapters {
     static Map<String, StatementAdapter> pool = new ConcurrentHashMap<String, StatementAdapter>();
 
     static String getKey(Class<?> fieldType, Class<?> columnType) {
-        if(fieldType==null){
+        if (fieldType == null) {
             return columnType.getName();
         }
-        return new StringBuilder().append(fieldType.getName())+"2"+columnType.getName();
+        return new StringBuilder().append(fieldType.getName()) + "2" + columnType.getName();
     }
 
     static StatementAdapter DEFAULT = new StatementAdapter() {
@@ -72,39 +72,39 @@ class StatementAdapters {
         if (adapter == null) {
             if (Clob.class.isAssignableFrom(columnType)) {
                 if (fieldType == String.class) {
-                    adapter= STRING2CLOB;
-                }else{
-                    adapter=new CasterProxyStatementAdapter(Caster.wrap(fieldType, String.class), STRING2CLOB);
+                    adapter = STRING2CLOB;
+                } else {
+                    adapter = new CasterProxyStatementAdapter(Caster.wrap(fieldType, String.class), STRING2CLOB);
                 }
             } else if (Blob.class.isAssignableFrom(columnType)) {
                 if (fieldType == byte[].class) {
                     adapter = BYTEARRAY2BLOB;
-                }else{
+                } else {
                     adapter = new CasterProxyStatementAdapter(Caster.wrap(fieldType, byte[].class), BYTEARRAY2BLOB);
                 }
-            }else{
-                adapter = new CasterProxyStatementAdapter(Caster.wrap(fieldType,columnType),DEFAULT);
+            } else {
+                adapter = new CasterProxyStatementAdapter(Caster.wrap(fieldType, columnType), DEFAULT);
             }
-            pool.put(key,adapter);
+            pool.put(key, adapter);
         }
 
         return adapter;
     }
 
     public static StatementAdapter create(Class<?> columnType) {
-        String key = getKey(null,columnType);
+        String key = getKey(null, columnType);
         StatementAdapter adapter = pool.get(key);
-        if(adapter==null){
+        if (adapter == null) {
             if (Clob.class.isAssignableFrom(columnType)) {
                 //先转成String
-                adapter = new CasterProxyStatementAdapter(Caster.wrap(String.class),STRING2CLOB);
+                adapter = new CasterProxyStatementAdapter(Caster.wrap(String.class), STRING2CLOB);
             } else if (Blob.class.isAssignableFrom(columnType)) {
                 //先转成byte[]
-                adapter = new CasterProxyStatementAdapter(Caster.wrap(byte[].class),BYTEARRAY2BLOB);
-            }else{
-                adapter = new CasterProxyStatementAdapter(Caster.wrap(columnType),DEFAULT);
+                adapter = new CasterProxyStatementAdapter(Caster.wrap(byte[].class), BYTEARRAY2BLOB);
+            } else {
+                adapter = new CasterProxyStatementAdapter(Caster.wrap(columnType), DEFAULT);
             }
-            pool.put(key,adapter);
+            pool.put(key, adapter);
         }
 
         return adapter;

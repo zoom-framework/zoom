@@ -98,6 +98,7 @@ public class ActionContext implements Destroyable {
 
     /**
      * 与put是同义词
+     *
      * @param key
      * @param value
      * @return
@@ -108,21 +109,23 @@ public class ActionContext implements Destroyable {
     }
 
     /**
-     *
      * set的同义词
+     *
      * @param key
      * @param value
      * @return
      */
     public ActionContext put(String key, Object value) {
-        return set(key,value);
+        return set(key, value);
     }
+
     public <T> T get(String key, Class<T> classOfT) {
         return Caster.to(checkData().get(key), classOfT);
     }
 
     /**
      * 确定类型可以强制转化
+     *
      * @param key
      * @param <T>
      * @return
@@ -232,6 +235,7 @@ public class ActionContext implements Destroyable {
 
     /**
      * 这个方法将直接设置要渲染的对象，并且将状态改成 {@link ActionContext#STATE_BEFORE_RENDER}
+     *
      * @param renderObject
      */
     public void setRenderObject(Object renderObject) {
@@ -261,12 +265,12 @@ public class ActionContext implements Destroyable {
     }
 
 
-    public ActionContext setSession(String key,Object value){
+    public ActionContext setSession(String key, Object value) {
         HttpSession session = null;
-        if(request!=null  && ( (session = request.getSession()) != null)  ){
-            try{
-                session.setAttribute(key,value);
-            }catch (Throwable t){
+        if (request != null && ((session = request.getSession()) != null)) {
+            try {
+                session.setAttribute(key, value);
+            } catch (Throwable t) {
 
             }
         }
@@ -274,12 +278,12 @@ public class ActionContext implements Destroyable {
     }
 
 
-    public ActionContext removeSession(String key){
+    public ActionContext removeSession(String key) {
         HttpSession session = null;
-        if(request!=null  && ( (session = request.getSession()) != null)  ){
-            try{
+        if (request != null && ((session = request.getSession()) != null)) {
+            try {
                 session.removeAttribute(key);
-            }catch (Throwable t){
+            } catch (Throwable t) {
 
             }
         }
@@ -289,10 +293,11 @@ public class ActionContext implements Destroyable {
 
     /**
      * 有可能获取到null
+     *
      * @return
      */
-    public Cookie[] getCookies(){
-        if(request!=null){
+    public Cookie[] getCookies() {
+        if (request != null) {
             return request.getCookies();
         }
         return null;
@@ -301,26 +306,27 @@ public class ActionContext implements Destroyable {
 
     /**
      * 有可能获取到null
+     *
      * @return
      */
-    public String getSessionId(){
+    public String getSessionId() {
         HttpSession session = null;
-        if(request!=null  && ( (session = request.getSession()) != null)  ){
-            try{
+        if (request != null && ((session = request.getSession()) != null)) {
+            try {
                 return session.getId();
-            }catch (Throwable t){
+            } catch (Throwable t) {
 
             }
         }
         return null;
     }
 
-    public Object getSession(String key){
+    public Object getSession(String key) {
         HttpSession session = null;
-        if(request!=null  && ( (session = request.getSession()) != null)  ){
-            try{
+        if (request != null && ((session = request.getSession()) != null)) {
+            try {
                 return session.getAttribute(key);
-            }catch (Throwable t){
+            } catch (Throwable t) {
 
             }
         }

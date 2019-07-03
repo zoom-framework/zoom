@@ -80,8 +80,8 @@ public class BuilderKit {
             Connection connection,
             String sql,
             List<Object> values,
-            String[] generatedKeys,boolean output) throws SQLException {
-        if(output){
+            String[] generatedKeys, boolean output) throws SQLException {
+        if (output) {
             log.info(String.format(sql.replace("?", "'%s'"),
                     values.toArray(new Object[values.size()])));
         }
@@ -98,8 +98,8 @@ public class BuilderKit {
     public static PreparedStatement prepareStatement(
             Connection connection,
             String sql,
-            List<Object> values,boolean output) throws SQLException {
-        if(output){
+            List<Object> values, boolean output) throws SQLException {
+        if (output) {
             log.info(String.format(sql.replace("?", "'%s'"),
                     values.toArray(new Object[values.size()])));
         }
@@ -167,7 +167,7 @@ public class BuilderKit {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = BuilderKit.prepareStatement(connection, builder.sql.toString(), builder.values,output);
+            ps = BuilderKit.prepareStatement(connection, builder.sql.toString(), builder.values, output);
             rs = ps.executeQuery();
             return BuilderKit.build(rs, nameAdapter);
         } finally {
@@ -249,10 +249,10 @@ public class BuilderKit {
 
 
     public static Integer executeUpdate(Connection connection,
-                                        SimpleSqlBuilder builder,boolean output) throws SQLException {
+                                        SimpleSqlBuilder builder, boolean output) throws SQLException {
         PreparedStatement ps = null;
         try {
-            ps = BuilderKit.prepareStatement(connection, builder.sql.toString(), builder.values,output);
+            ps = BuilderKit.prepareStatement(connection, builder.sql.toString(), builder.values, output);
             return ps.executeUpdate();
         } finally {
             DaoUtils.close(ps);
@@ -267,7 +267,7 @@ public class BuilderKit {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = BuilderKit.prepareStatement(connection, builder.sql.toString(), builder.values, generatedKeys,output);
+            ps = BuilderKit.prepareStatement(connection, builder.sql.toString(), builder.values, generatedKeys, output);
             int ret = ps.executeUpdate();
             if (ret > 0) {
                 rs = ps.getGeneratedKeys();

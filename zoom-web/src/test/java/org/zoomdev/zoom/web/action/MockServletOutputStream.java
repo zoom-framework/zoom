@@ -9,12 +9,12 @@ public class MockServletOutputStream extends ServletOutputStream {
     private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
 
-    MockServletOutputStream(){
+    MockServletOutputStream() {
 
     }
 
 
-    public byte[] getBytes(){
+    public byte[] getBytes() {
         return outputStream.toByteArray();
     }
 
@@ -27,7 +27,7 @@ public class MockServletOutputStream extends ServletOutputStream {
 
     @Override
     public void write(byte[] b) throws IOException {
-       outputStream.write(b);
+        outputStream.write(b);
     }
 
     @Override

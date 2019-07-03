@@ -5,9 +5,9 @@ import org.zoomdev.zoom.dao.auto.AutoField;
 import org.zoomdev.zoom.dao.auto.DatabaseAutoGenerateKey;
 import org.zoomdev.zoom.dao.auto.SequenceAutoGenerateKey;
 import org.zoomdev.zoom.dao.driver.AutoGenerateProvider;
+import org.zoomdev.zoom.dao.impl.TableBuildInfo;
 import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.meta.TableMeta;
-import org.zoomdev.zoom.dao.impl.TableBuildInfo;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,11 +15,11 @@ import java.util.Map;
 
 public class SimpleOracleAutoIncreaseProvider implements AutoGenerateProvider {
 
-    private String sequenceName="%s_sequence";
+    private String sequenceName = "%s_sequence";
     private String triggerName = "%s_increase";
 
 
-    public SimpleOracleAutoIncreaseProvider(){
+    public SimpleOracleAutoIncreaseProvider() {
 
     }
 
@@ -59,35 +59,35 @@ public class SimpleOracleAutoIncreaseProvider implements AutoGenerateProvider {
     public AutoField createAutoField(Dao dao, TableMeta tableMeta, ColumnMeta columnMeta) {
         //寻找一下是否有 table_increase的trigger
 
-        if(!(tableMeta.getPrimaryKeys().length == 1 && columnMeta.isPrimary()) ){
+        if (!(tableMeta.getPrimaryKeys().length == 1 && columnMeta.isPrimary())) {
             return null;
         }
 
-        if(containsSpecialTrigger(dao,tableMeta.getName())){
+        if (containsSpecialTrigger(dao, tableMeta.getName())) {
             return new DatabaseAutoGenerateKey();
         }
 
         //看下sequence是否存在
 
-        if(containSpecialSequence(dao,tableMeta.getName())){
+        if (containSpecialSequence(dao, tableMeta.getName())) {
             return new SequenceAutoGenerateKey(getSepcialSequenceName(tableMeta.getName()));
         }
 
         return null;
     }
 
-    private boolean containsSpecialTrigger(Dao dao,String table){
-        Map<String,Collection<String>> map = dao.getDbStructFactory().getTriggers();
+    private boolean containsSpecialTrigger(Dao dao, String table) {
+        Map<String, Collection<String>> map = dao.getDbStructFactory().getTriggers();
         Collection<String> triggers = map.get(table.toUpperCase());
-        if(triggers!=null && triggers.contains(getSepcialTriggerName(table))){
+        if (triggers != null && triggers.contains(getSepcialTriggerName(table))) {
             return true;
         }
         return false;
     }
 
-    private boolean containSpecialSequence(Dao dao,String table){
+    private boolean containSpecialSequence(Dao dao, String table) {
 
-        if(dao.getDbStructFactory().getSequences().contains(getSepcialSequenceName(table))){
+        if (dao.getDbStructFactory().getSequences().contains(getSepcialSequenceName(table))) {
             return true;
         }
 
@@ -95,17 +95,18 @@ public class SimpleOracleAutoIncreaseProvider implements AutoGenerateProvider {
     }
 
 
-    private String getSepcialTriggerName(String table){
-        return String.format(triggerName,table).toUpperCase();
+    private String getSepcialTriggerName(String table) {
+        return String.format(triggerName, table).toUpperCase();
     }
 
-    private String getSepcialSequenceName(String table){
-        return String.format(sequenceName,table).toUpperCase();
+    private String getSepcialSequenceName(String table) {
+        return String.format(sequenceName, table).toUpperCase();
     }
 
     /**
      * 本表是否包含有特殊命名的trigger?
      * 数据库中是否包含有特殊命名的sequence?
+     *
      * @param dao
      * @param tableMeta
      * @param columnMeta
@@ -115,8 +116,8 @@ public class SimpleOracleAutoIncreaseProvider implements AutoGenerateProvider {
     public boolean isAuto(Dao dao, TableMeta tableMeta, ColumnMeta columnMeta) {
 
 
-        return (tableMeta.getPrimaryKeys().length == 1 && columnMeta.isPrimary()) && (containsSpecialTrigger(dao,tableMeta.getName())
-                || containSpecialSequence(dao,columnMeta.getName()));
+        return (tableMeta.getPrimaryKeys().length == 1 && columnMeta.isPrimary()) && (containsSpecialTrigger(dao, tableMeta.getName())
+                || containSpecialSequence(dao, columnMeta.getName()));
     }
 
 

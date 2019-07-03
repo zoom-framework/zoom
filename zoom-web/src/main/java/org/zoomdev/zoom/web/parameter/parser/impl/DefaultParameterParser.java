@@ -1,8 +1,8 @@
 package org.zoomdev.zoom.web.parameter.parser.impl;
 
 import org.zoomdev.zoom.web.action.ActionContext;
-import org.zoomdev.zoom.web.parameter.ParameterParser;
 import org.zoomdev.zoom.web.parameter.ParameterAdapter;
+import org.zoomdev.zoom.web.parameter.ParameterParser;
 
 import java.lang.reflect.Type;
 

@@ -45,37 +45,37 @@ class EventObserverMethodHandler extends AnnotationMethodHandler<EventObserver> 
     }
 
 
-    static ValueGetter<Event,Object> eventData = new ValueGetter<Event,Object>() {
+    static ValueGetter<Event, Object> eventData = new ValueGetter<Event, Object>() {
         @Override
         public Object getValue(Event data) {
             return data.getData();
         }
     };
 
-    static ValueGetter<Event,Object> eventError = new ValueGetter<Event,Object>() {
+    static ValueGetter<Event, Object> eventError = new ValueGetter<Event, Object>() {
         @Override
         public Object getValue(Event data) {
             return data.getError();
         }
     };
 
-    static ValueGetter<Event,Object> eventName = new ValueGetter<Event,Object>() {
+    static ValueGetter<Event, Object> eventName = new ValueGetter<Event, Object>() {
         @Override
         public Object getValue(Event data) {
             return data.getName();
         }
     };
 
-    static ValueGetter parseValueGetter(Class<?> type){
+    static ValueGetter parseValueGetter(Class<?> type) {
         if (Event.class.isAssignableFrom(type)) {
             return EqValueGetter.getter;
         }
 
-        if(CharSequence.class.isAssignableFrom(type)){
+        if (CharSequence.class.isAssignableFrom(type)) {
             return eventName;
         }
 
-        if(Throwable.class.isAssignableFrom(type)){
+        if (Throwable.class.isAssignableFrom(type)) {
             return eventError;
         }
 
@@ -94,7 +94,7 @@ class EventObserverMethodHandler extends AnnotationMethodHandler<EventObserver> 
             this.method = method;
             Class<?>[] types = method.getParameterTypes();
             ValueGetter[] getters = new ValueGetter[types.length];
-            for(int i=0; i < types.length; ++i){
+            for (int i = 0; i < types.length; ++i) {
                 getters[i] = parseValueGetter(types[i]);
             }
             argGetter = new DefArgGetter(getters);
@@ -107,7 +107,7 @@ class EventObserverMethodHandler extends AnnotationMethodHandler<EventObserver> 
         @Override
         public void onEvent(Event event) {
             try {
-                method.invoke(target.get(),argGetter.getArgs(event));
+                method.invoke(target.get(), argGetter.getArgs(event));
             } catch (Exception e) {
                 throw new ZoomException(e);
             }

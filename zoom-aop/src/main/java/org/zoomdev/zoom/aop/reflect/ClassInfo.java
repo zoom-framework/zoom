@@ -22,12 +22,14 @@ public interface ClassInfo {
 
     /**
      * 通过类名称获取到stream
+     *
      * @param classLoader
      */
     void appendClassLoader(StreamClassLoader classLoader);
 
     /**
      * 移除
+     *
      * @param classLoader
      */
     void removeClassLoader(StreamClassLoader classLoader);

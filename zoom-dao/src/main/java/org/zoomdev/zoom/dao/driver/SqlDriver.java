@@ -61,10 +61,10 @@ public interface SqlDriver extends StatementAdapterFactory {
      */
     String getTableCatFromUrl(String url);
 
-    <T> void buildInsertOrUpdate(  SimpleSqlBuilder builder,
-                               Entity entity,
-                               T data,
-                               Filter<EntityField> filter,
-                               boolean ignoreNull,
-                               String[] unikeys);
+    <T> void buildInsertOrUpdate(SimpleSqlBuilder builder,
+                                 Entity entity,
+                                 T data,
+                                 Filter<EntityField> filter,
+                                 boolean ignoreNull,
+                                 String[] unikeys);
 }

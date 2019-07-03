@@ -218,21 +218,21 @@ public class CollectionUtilsTest extends TestCase {
     }
 
 
-    public void testIndexOf(){
+    public void testIndexOf() {
         List<String> str = new ArrayList<String>();
         str.add("1");
         str.add("2");
         str.add("3");
 
-        assertEquals(1,CollectionUtils.indexOf(str, new Filter<String>() {
+        assertEquals(1, CollectionUtils.indexOf(str, new Filter<String>() {
             @Override
             public boolean accept(String value) {
                 return value.equals("2");
             }
-        },0));
+        }, 0));
 
 
-        assertEquals(1,CollectionUtils.lastIndexOf(str, new Filter<String>() {
+        assertEquals(1, CollectionUtils.lastIndexOf(str, new Filter<String>() {
             @Override
             public boolean accept(String value) {
                 return value.equals("2");

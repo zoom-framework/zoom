@@ -341,7 +341,7 @@ public class TestDatabase extends AbstractDaoTest {
         Product product = dao.ar(Product.class).where(new SqlBuilder.Condition() {
             @Override
             public void where(Sql where) {
-                where.where("id",1);
+                where.where("id", 1);
             }
         }).get();
 
@@ -530,7 +530,7 @@ public class TestDatabase extends AbstractDaoTest {
 
 
     @Test
-    public void testInsertOrUpdate(){
+    public void testInsertOrUpdate() {
         final Product product = new Product();
         product.setId(1);
         product.setTitle("test");
@@ -539,7 +539,7 @@ public class TestDatabase extends AbstractDaoTest {
         execute(new RunWithDao() {
             @Override
             public void run(Dao dao) throws Exception {
-                dao.ar(Product.class).filter("title|price").insertOrUpdate(product,"id");
+                dao.ar(Product.class).filter("title|price").insertOrUpdate(product, "id");
             }
         });
     }

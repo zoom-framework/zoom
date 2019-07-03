@@ -23,7 +23,6 @@ public class JSON {
     }
 
 
-
     /**
      * 格式化json
      *
@@ -65,10 +64,10 @@ public class JSON {
         }
     }
 
-    public static <T> T parse(String src, ParameterizedType targetType){
+    public static <T> T parse(String src, ParameterizedType targetType) {
         JavaType type = TypeFactory.defaultInstance().constructType(targetType);
         try {
-            return mapper.readValue(src,type);
+            return mapper.readValue(src, type);
         } catch (IOException e) {
             throw new ZoomException(e);
         }

@@ -10,46 +10,45 @@ import org.zoomdev.zoom.web.view.impl.RedirectView;
 import java.util.HashMap;
 import java.util.Map;
 
-@Controller(key="temp")
+@Controller(key = "temp")
 public class TemplateTest {
 
-    public void index(){
+    public void index() {
     }
 
 
-    public String test(){
+    public String test() {
         return "temp/test";
     }
 
-    public Map<String,Object> hello(ActionContext context){
-        context.put("id","1");
-        context.put("data","title");
+    public Map<String, Object> hello(ActionContext context) {
+        context.put("id", "1");
+        context.put("data", "title");
         return new HashMap<String, Object>();
     }
 
 
-    public void testError(){
+    public void testError() {
         throw new ZoomException();
     }
 
 
-    public String test1(){
+    public String test1() {
         return "temp/test1.html";
     }
 
 
-    public JsonView testView(){
-        return new JsonView(new HashMap<String,Object>());
+    public JsonView testView() {
+        return new JsonView(new HashMap<String, Object>());
     }
 
 
-
-    public RedirectView redirectView(){
+    public RedirectView redirectView() {
         return new RedirectView("redirect/test");
     }
 
 
-    public String redirectView2(){
+    public String redirectView2() {
         return "redirect:redirect/view2";
     }
 }

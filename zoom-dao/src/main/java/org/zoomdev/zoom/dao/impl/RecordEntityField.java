@@ -8,15 +8,9 @@ import java.lang.reflect.Type;
 public class RecordEntityField extends AbstractEntityField {
 
 
-
-
-
-
     protected String field;
 
     protected Class<?> type;
-
-
 
 
     RecordEntityField(String field, Class<?> type) {
@@ -61,8 +55,8 @@ public class RecordEntityField extends AbstractEntityField {
 
     @Override
     protected Object clone() throws CloneNotSupportedException {
-        RecordEntityField recordEntityField= new RecordEntityField(
-                field,type
+        RecordEntityField recordEntityField = new RecordEntityField(
+                field, type
         );
 
         recordEntityField.validators = validators;

@@ -22,15 +22,15 @@ public class ZoomBeanIocField extends ZoomIocField implements IocField {
         }
     }
 
-    private int order=-1 ;
+    private int order = -1;
 
     ///根据Type的Order
     @Override
     public int getOrder() {
-        if(order==-1){
+        if (order == -1) {
             IocClass iocClass = ioc.getIocClassLoader().get(key);
-            if(iocClass==null){
-                throw new IocException("未找到指定的IocClass:"+key);
+            if (iocClass == null) {
+                throw new IocException("未找到指定的IocClass:" + key);
             }
             order = iocClass.getOrder() - 10;
         }

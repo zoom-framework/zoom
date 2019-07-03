@@ -15,13 +15,13 @@ public class SimplePreParameterParserManager implements PreParameterParserManage
 
 
     public SimplePreParameterParserManager() {
-        try{
+        try {
             parsers = new PreParameterParser[]{
                     new JsonPreParamParser(),
                     new UploadPreParamParser(),
                     new FormPreParamParser()
             };
-        }catch (Throwable t){
+        } catch (Throwable t) {
             parsers = new PreParameterParser[]{
                     new JsonPreParamParser(),
                     new FormPreParamParser()

@@ -45,7 +45,7 @@ public class SimpleActionInterceptorFactory implements ActionInterceptorFactory 
     @Override
     public ActionInterceptor[] create(Class<?> controllerClass, Method method) {
 
-         List<ActionInterceptor> tmp = new ArrayList<ActionInterceptor>();
+        List<ActionInterceptor> tmp = new ArrayList<ActionInterceptor>();
 
         InterceptorInfo[] interceptors = this.interceptors;
         tmp.clear();

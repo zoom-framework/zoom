@@ -15,9 +15,11 @@ import java.util.concurrent.Future;
  */
 public interface JobQueue {
 
-    interface Response<R>{
+    interface Response<R> {
         R get();
+
         Throwable error();
+
         boolean isSuccess();
     }
 
@@ -65,6 +67,7 @@ public interface JobQueue {
 
     /**
      * 异步执行队列，且保证队列的执行顺序
+     *
      * @param <T>
      * @param <R>
      * @param jobs
@@ -129,7 +132,6 @@ public interface JobQueue {
      * @param name
      */
     void unregister(String name);
-
 
 
 }

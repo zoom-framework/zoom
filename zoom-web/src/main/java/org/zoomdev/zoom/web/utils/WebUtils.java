@@ -29,8 +29,8 @@ public class WebUtils {
     /**
      * 最后处理
      */
-    public static void runAfter(Runnable runnable){
-        if(startupSuccess.get()){
+    public static void runAfter(Runnable runnable) {
+        if (startupSuccess.get()) {
             runnable.run();
             return;
         }
@@ -55,7 +55,7 @@ public class WebUtils {
 
     public static void setStartupSuccess() {
 
-        for(Runnable runnable : after){
+        for (Runnable runnable : after) {
             runnable.run();
         }
         after.clear();

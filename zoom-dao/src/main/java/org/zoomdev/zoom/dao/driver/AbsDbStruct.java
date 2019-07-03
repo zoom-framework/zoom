@@ -29,14 +29,14 @@ public abstract class AbsDbStruct implements DbStructFactory {
         return "select * from " + dao.getDriver().protectTable(table) + " where 1=2";
     }
 
-    protected Map<String,List<ColumnMeta>> toTreeMap(List<ColumnMeta> columnMetas){
+    protected Map<String, List<ColumnMeta>> toTreeMap(List<ColumnMeta> columnMetas) {
 
-        Map<String,List<ColumnMeta>> map = new HashMap<String, List<ColumnMeta>>();
-        for(ColumnMeta columnMeta : columnMetas){
+        Map<String, List<ColumnMeta>> map = new HashMap<String, List<ColumnMeta>>();
+        for (ColumnMeta columnMeta : columnMetas) {
             List<ColumnMeta> list = map.get(columnMeta.getTable());
-            if(list==null){
+            if (list == null) {
                 list = new ArrayList<ColumnMeta>();
-                map.put(columnMeta.getTable().toLowerCase(),list);
+                map.put(columnMeta.getTable().toLowerCase(), list);
             }
             list.add(columnMeta);
         }
@@ -86,15 +86,13 @@ public abstract class AbsDbStruct implements DbStructFactory {
 
         if (tableMeta.getComment() == null) {
             fill(tableMeta);
-            for(ColumnMeta column : tableMeta.getColumns()){
+            for (ColumnMeta column : tableMeta.getColumns()) {
                 column.setValidators(createValidators(column));
             }
             if (tableMeta.getComment() == null) {
                 tableMeta.setComment("");
             }
         }
-
-
 
 
         return tableMeta;
@@ -157,8 +155,8 @@ public abstract class AbsDbStruct implements DbStructFactory {
     protected Validator[] createValidators(ColumnMeta columnMeta) {
         List<Validator> list = new ArrayList<Validator>();
 
-        if(!columnMeta.isAuto()){
-            if (!columnMeta.isNullable() ) {
+        if (!columnMeta.isAuto()) {
+            if (!columnMeta.isNullable()) {
                 if (columnMeta.getDefaultValue() == null) {
                     list.add(new NotNullValidator());
                 }
@@ -172,11 +170,11 @@ public abstract class AbsDbStruct implements DbStructFactory {
         }
 
         validator = createFormatValidator(columnMeta);
-        if(validator!=null){
+        if (validator != null) {
             list.add(validator);
         }
 
-        if(list.size()==0){
+        if (list.size() == 0) {
             return EMPTY;
         }
 

@@ -1,10 +1,8 @@
 package org.zoomdev.zoom.dao.impl;
 
 import org.zoomdev.zoom.dao.Dao;
-import org.zoomdev.zoom.dao.migrations.DatabaseBuilder;
 
 public class Utils {
-
 
 
     public static void createTestMapNameAdapter(Dao dao) {

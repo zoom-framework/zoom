@@ -35,6 +35,7 @@ public interface IocMethodProxy {
 
     /**
      * 使用内部{@link IocMethod}（如果不存在则会创建),执行原始Method
+     *
      * @param obj
      * @return
      */
@@ -42,6 +43,7 @@ public interface IocMethodProxy {
 
     /**
      * 等同 {@link Method#getAnnotation(Class)}
+     *
      * @param annotationClass
      * @param <T>
      * @return

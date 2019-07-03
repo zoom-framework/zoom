@@ -24,7 +24,7 @@ public class TestView extends TestCase {
                 "content"
         );
         view.render(response);
-        assertEquals(response.getContent(),"content");
+        assertEquals(response.getContent(), "content");
 
         ResScanner scanner = new ResScanner();
         scanner.scan();
@@ -41,7 +41,7 @@ public class TestView extends TestCase {
 
         response = new MockHttpServletResponse();
         BytesView bytesView = new BytesView(
-                Io.readBytes(file),"1.txt"
+                Io.readBytes(file), "1.txt"
         );
         bytesView.render(response);
         assertTrue(Arrays.equals(response.getBytes(), Io.readBytes(file)));
@@ -62,7 +62,7 @@ public class TestView extends TestCase {
             @Override
             protected void writeTo(OutputStream outputStream) throws IOException {
 
-                Io.copy(inputStream,outputStream);
+                Io.copy(inputStream, outputStream);
 
             }
         };
@@ -73,8 +73,8 @@ public class TestView extends TestCase {
         response = new MockHttpServletResponse();
         JsonView jsonView = new JsonView(
                 DataObject.as(
-                        "id",1,
-                        "name","张三"
+                        "id", 1,
+                        "name", "张三"
                 )
         );
 
@@ -82,11 +82,10 @@ public class TestView extends TestCase {
 
         assertEquals(response.getContent(), JSON.stringify(
                 DataObject.as(
-                        "id",1,
-                        "name","张三"
+                        "id", 1,
+                        "name", "张三"
                 )
         ));
-
 
 
     }

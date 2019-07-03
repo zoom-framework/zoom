@@ -52,7 +52,7 @@ public class Application {
             @Override
             public void whenResult(ActionContext context) throws Exception {
                 super.whenResult(context);
-                monitor.setArguments(context.getResponse(),context.getArgs());
+                monitor.setArguments(context.getResponse(), context.getArgs());
             }
 
             @Override
@@ -66,8 +66,7 @@ public class Application {
     }
 
 
-    public static class TestRendering extends TemplateRendering{
-
+    public static class TestRendering extends TemplateRendering {
 
 
         public TestRendering() {
@@ -76,14 +75,13 @@ public class Application {
 
         @Override
         protected void render(HttpServletRequest request, HttpServletResponse response, String path, Map<String, Object> data) throws Exception {
-           if(response==null){
-               throw new ZoomException("response is null");
-           }
+            if (response == null) {
+                throw new ZoomException("response is null");
+            }
 
-           if(response.getWriter()==null)
-           {
-               throw new ZoomException("writer is null");
-           }
+            if (response.getWriter() == null) {
+                throw new ZoomException("writer is null");
+            }
             response.getWriter().print(path);
         }
 
@@ -101,9 +99,9 @@ public class Application {
 
     @Inject
     public void config(TemplateEngineManager manager,
-                       WebConfig webConfig){
+                       WebConfig webConfig) {
 
-        manager.register("html",new TestRendering() );
+        manager.register("html", new TestRendering());
 
 
         WebUtils.runAfterAsync(new Runnable() {

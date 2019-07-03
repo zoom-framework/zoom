@@ -9,7 +9,7 @@ public class ZoomIocKeyValue implements IocValue {
 
     private final IocKey key;
 
-    public ZoomIocKeyValue(IocKey key){
+    public ZoomIocKeyValue(IocKey key) {
         this.key = key;
     }
 

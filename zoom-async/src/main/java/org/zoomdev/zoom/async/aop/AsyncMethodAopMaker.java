@@ -8,13 +8,11 @@ import org.zoomdev.zoom.aop.factory.AnnotationMethodInterceptorFactory;
 import org.zoomdev.zoom.async.annotation.Async;
 import org.zoomdev.zoom.async.impl.Asyncs;
 import org.zoomdev.zoom.common.exceptions.ZoomException;
-import org.zoomdev.zoom.common.utils.Classes;
 
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
 
 public class AsyncMethodAopMaker extends AnnotationMethodInterceptorFactory<Async> {
 
@@ -54,7 +52,7 @@ public class AsyncMethodAopMaker extends AnnotationMethodInterceptorFactory<Asyn
                         }
                         return value;
                     } catch (Throwable e) {
-                        log.error("执行异步出错",e);
+                        log.error("执行异步出错", e);
                         throw new ZoomException("执行错误", e);
                     }
 
@@ -83,7 +81,7 @@ public class AsyncMethodAopMaker extends AnnotationMethodInterceptorFactory<Asyn
                         return invoker.getReturnObject();
                     } catch (Throwable e) {
                         //如果这里出错了怎么办?
-                        log.error("执行异步出错",e);
+                        log.error("执行异步出错", e);
                         throw new ZoomException("执行错误", e);
                     }
                 }

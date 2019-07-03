@@ -122,8 +122,8 @@ public abstract class AbstractDaoTest {
                 System.err.println(dao.getURL());
                 e.printStackTrace();
 
-                if(e instanceof DaoException){
-                    throw (DaoException)e;
+                if (e instanceof DaoException) {
+                    throw (DaoException) e;
                 }
                 throw new DaoException(e);
             }

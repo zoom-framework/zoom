@@ -5,7 +5,6 @@ public interface IocInjector {
     void inject(IocObject target);
 
     /**
-     *
      * @return
      */
     int getOrder();

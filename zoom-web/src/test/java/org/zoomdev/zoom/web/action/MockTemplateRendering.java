@@ -1,6 +1,5 @@
 package org.zoomdev.zoom.web.action;
 
-import org.zoomdev.zoom.web.WebConfig;
 import org.zoomdev.zoom.web.rendering.impl.TemplateRendering;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,9 +19,6 @@ public class MockTemplateRendering extends TemplateRendering {
             HttpServletResponse response,
             String path,
             Map<String, Object> data) throws Exception {
-
-
-        
 
 
     }

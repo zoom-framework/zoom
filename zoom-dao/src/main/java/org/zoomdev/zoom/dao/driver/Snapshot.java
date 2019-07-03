@@ -15,6 +15,7 @@ public interface Snapshot {
 
     /**
      * 比较两个版本，并得出对应的sql语句
+     *
      * @param snapshot
      * @return
      */
@@ -22,6 +23,7 @@ public interface Snapshot {
 
     /**
      * 转成sql语句
+     *
      * @param driver
      * @return
      */

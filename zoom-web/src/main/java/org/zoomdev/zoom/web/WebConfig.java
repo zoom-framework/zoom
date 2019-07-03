@@ -17,7 +17,7 @@ public class WebConfig {
     }
 
     public void setTemplateExt(String templateExt) {
-        if(!templateExt.startsWith(".")){
+        if (!templateExt.startsWith(".")) {
             templateExt = "." + templateExt;
         }
         this.templateExt = templateExt;

@@ -98,19 +98,20 @@ public abstract class AbstractEntity<T> implements Entity<T> {
 
     /**
      * 尽一切可能
+     *
      * @return
      */
-    protected EntityField tryToFind(String field){
+    protected EntityField tryToFind(String field) {
         for (EntityField entityField : entityFields) {
             if (field.equalsIgnoreCase(entityField.getFieldName())) {
                 return entityField;
             }
-            if(field.equalsIgnoreCase(entityField.getColumnName())){
+            if (field.equalsIgnoreCase(entityField.getColumnName())) {
                 return entityField;
             }
             ColumnMeta meta = entityField.getColumnMeta();
-            if(meta!=null){
-                if(field.equalsIgnoreCase(meta.getName())){
+            if (meta != null) {
+                if (field.equalsIgnoreCase(meta.getName())) {
                     return entityField;
                 }
             }
@@ -230,9 +231,9 @@ public abstract class AbstractEntity<T> implements Entity<T> {
 
     @Override
     public EntityField getFieldByColumnName(String columnName) {
-        assert(columnName!=null);
-        for(EntityField field : entityFields){
-            if(columnName.equalsIgnoreCase(field.getColumnName())){
+        assert (columnName != null);
+        for (EntityField field : entityFields) {
+            if (columnName.equalsIgnoreCase(field.getColumnName())) {
                 return field;
             }
         }

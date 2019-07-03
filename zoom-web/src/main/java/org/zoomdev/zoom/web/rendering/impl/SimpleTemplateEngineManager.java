@@ -11,15 +11,15 @@ public class SimpleTemplateEngineManager implements TemplateEngineManager {
 
     private WebConfig webConfig;
 
-    private Map<String,TemplateRendering> pool = new ConcurrentHashMap<String, TemplateRendering>();
+    private Map<String, TemplateRendering> pool = new ConcurrentHashMap<String, TemplateRendering>();
 
-    public SimpleTemplateEngineManager(WebConfig webConfig){
+    public SimpleTemplateEngineManager(WebConfig webConfig) {
         this.webConfig = webConfig;
     }
 
     @Override
     public TemplateRendering getEngine(String name) {
-        if(!name.startsWith(".")){
+        if (!name.startsWith(".")) {
             name = "." + name;
         }
         return pool.get(name);
@@ -27,11 +27,11 @@ public class SimpleTemplateEngineManager implements TemplateEngineManager {
 
     @Override
     public void register(String name, TemplateRendering rendering) {
-        if(!name.startsWith(".")){
+        if (!name.startsWith(".")) {
             name = "." + name;
         }
         rendering.setWebConfig(webConfig);
-        pool.put(name,rendering);
+        pool.put(name, rendering);
     }
 
     @Override

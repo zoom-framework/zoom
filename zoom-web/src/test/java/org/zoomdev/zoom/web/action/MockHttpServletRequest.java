@@ -37,7 +37,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
         return json(serverPath, method, data, new HashMap<String, String>());
     }
 
-    private static  Map<String,String[]> getParameters(Map<String,Object> data){
+    private static Map<String, String[]> getParameters(Map<String, Object> data) {
         return MapUtils.convert(data, new Converter<Object, String[]>() {
             @Override
             public String[] convert(Object data) {
@@ -49,7 +49,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
     public static MockHttpServletRequest form(
             String serverPath,
             String method,
-            Map<String,Object> data,
+            Map<String, Object> data,
             Map<String, String> headers
     ) {
         return new MockHttpServletRequest(
@@ -60,6 +60,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
                 getParameters(data)
         );
     }
+
     public static MockHttpServletRequest json(
             String serverPath,
             String method,
@@ -349,11 +350,11 @@ public class MockHttpServletRequest implements HttpServletRequest {
     }
 
 
-    private Map<String,Object> attr = new HashMap<String, Object>();
+    private Map<String, Object> attr = new HashMap<String, Object>();
 
     @Override
     public void setAttribute(String name, Object o) {
-        attr.put(name,o);
+        attr.put(name, o);
     }
 
     @Override

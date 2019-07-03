@@ -12,7 +12,7 @@ public interface SqlBuilder extends Sql<SqlBuilder> {
     String RIGHT = "RIGHT";
 
 
-    enum JoinType{
+    enum JoinType {
         INNER(SqlBuilder.INNER),
         LEFT(SqlBuilder.LEFT),
         RIGHT(SqlBuilder.RIGHT);
@@ -228,7 +228,6 @@ public interface SqlBuilder extends Sql<SqlBuilder> {
     SqlBuilder join(String table, String on, String type);
 
     SqlBuilder join(String table, String on, JoinType type);
-
 
 
     SqlBuilder union(SqlBuilder builder);

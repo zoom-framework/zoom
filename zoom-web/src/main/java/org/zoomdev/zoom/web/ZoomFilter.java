@@ -99,7 +99,6 @@ public class ZoomFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) resp;
 
 
-
         if (filter.accept(request.getServletPath())) {
             chain.doFilter(req, resp);
             return;

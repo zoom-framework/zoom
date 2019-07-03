@@ -1,6 +1,5 @@
 package org.zoomdev.zoom.dao.impl;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,7 +21,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public class EntitySqlUtils {
@@ -90,7 +92,7 @@ public class EntitySqlUtils {
             boolean ignoreNull,
             String[] unikeys
 
-    ){
+    ) {
 
 
         StringBuilder sql = builder.sql;
@@ -104,7 +106,7 @@ public class EntitySqlUtils {
         List<StatementAdapter> insertFields = builder.adapters;
         int index = 0;
         Object value;
-        String[] placeHolder = new String[fields.length*2];
+        String[] placeHolder = new String[fields.length * 2];
         for (EntityField entityField : fields) {
             //插入数据,如果有忽略掉其他判断
 
@@ -125,7 +127,7 @@ public class EntitySqlUtils {
 
         }
 
-        sql.append(") VALUES (").append(StringUtils.repeat("?",",",index)).append(") ON DUPLICATE KEY UPDATE ");
+        sql.append(") VALUES (").append(StringUtils.repeat("?", ",", index)).append(") ON DUPLICATE KEY UPDATE ");
         first = true;
         Set<String> keySet = new HashSet<String>();
         for (String string : unikeys) {
@@ -135,17 +137,17 @@ public class EntitySqlUtils {
         for (EntityField entityField : fields) {
             String key = entityField.getFieldName();
             //插入数据,如果有忽略掉其他判断
-            if(keySet.contains(key)){
+            if (keySet.contains(key)) {
                 continue;
             }
             if (filter == null || filter.accept(entityField)) {
-                if(first){
+                if (first) {
                     first = false;
-                }else{
+                } else {
                     sql.append(',');
                 }
                 sql.append(entityField.getColumnName()).append("=?");
-                value =  entityField.get(data);
+                value = entityField.get(data);
                 insertFields.add(entityField);
                 values.add(value);
 
@@ -153,7 +155,6 @@ public class EntitySqlUtils {
             }
 
         }
-
 
 
     }
@@ -213,9 +214,9 @@ public class EntitySqlUtils {
             String value = placeHolder[i];
             if (value == null)
                 continue;
-            if(first){
+            if (first) {
                 first = false;
-            }else{
+            } else {
                 sql.append(",");
             }
             sql.append("?");
@@ -225,15 +226,15 @@ public class EntitySqlUtils {
                 .append(" WHERE ");
         first = true;
         for (String key : keys) {
-            if(first){
+            if (first) {
                 first = false;
-            }else{
+            } else {
                 sql.append(" AND ");
             }
 
             EntityField field = entity.getFieldByFieldName(key);
-            if(field==null){
-                throw new DaoException("找不到"+key+"对应的字段，所有可能的字段:"+entity.getAvailableFields());
+            if (field == null) {
+                throw new DaoException("找不到" + key + "对应的字段，所有可能的字段:" + entity.getAvailableFields());
             }
             sql.append(field.getColumnName()).append("=?");
             values.add(field.get(data));
@@ -402,6 +403,7 @@ public class EntitySqlUtils {
     /**
      * 在update的时候进行值的判断需要注意的是：
      * 只有在有值，并且这个值为null的情况下才会判断空
+     *
      * @param values
      * @param adapters
      * @param field

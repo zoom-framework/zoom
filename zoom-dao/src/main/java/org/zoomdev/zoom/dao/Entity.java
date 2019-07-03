@@ -40,13 +40,14 @@ public interface Entity<T> {
     /**
      * 获取field
      *
-     * @param name      field名称
+     * @param name field名称
      * @return
      */
     EntityField getFieldByFieldName(String name);
 
     /**
      * 通过字段查找
+     *
      * @param columnName
      * @return
      */
@@ -126,6 +127,5 @@ public interface Entity<T> {
     Set<String> getAvailableFields();
 
 
-
-    List<EntityField> select(List<EntityField> holder,Iterable<String> fields);
+    List<EntityField> select(List<EntityField> holder, Iterable<String> fields);
 }

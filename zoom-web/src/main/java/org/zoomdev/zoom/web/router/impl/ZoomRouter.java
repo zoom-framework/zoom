@@ -24,7 +24,7 @@ public class ZoomRouter implements Router, Destroyable {
     private Map<ActionHandler, Boolean> actionPool;
 
 
-    public ZoomRouter(){
+    public ZoomRouter() {
         this(new BracesRouterParamRule());
     }
 

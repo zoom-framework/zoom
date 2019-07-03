@@ -14,8 +14,6 @@ import java.util.regex.Matcher;
 public class RecordEntity extends AbstractEntity<Record> {
 
 
-
-
     RecordEntity(String table,
                  EntityField[] entityFields,
                  EntityField[] primaryKeys,
@@ -39,42 +37,42 @@ public class RecordEntity extends AbstractEntity<Record> {
         builder.table(table);
     }
 
-    private Map<String,EntityField> pool = new ConcurrentHashMap<String, EntityField>();
+    private Map<String, EntityField> pool = new ConcurrentHashMap<String, EntityField>();
 
     public List<EntityField> select(
             List<EntityField> holder,
             Iterable<String> fields
-    ){
-        for(String key : fields){
+    ) {
+        for (String key : fields) {
             EntityField field = pool.get(key);
-            if(field==null){
+            if (field == null) {
                 Matcher matcher;
                 String fieldName;
                 String alias = null;
-                if( (matcher=  BuilderKit.AS_PATTERN.matcher(key)).matches() ){
+                if ((matcher = BuilderKit.AS_PATTERN.matcher(key)).matches()) {
                     fieldName = matcher.group(1);
                     alias = matcher.group(2);
 
-                }else{
+                } else {
                     fieldName = key;
                 }
                 RecordEntityField entityField = (RecordEntityField) tryToFind(fieldName);
-                if(entityField==null){
-                    throw new DaoException("找不到"+key+"对应的字段,所有可能的字段为"+StringUtils.join(getAvailableFields()));
+                if (entityField == null) {
+                    throw new DaoException("找不到" + key + "对应的字段,所有可能的字段为" + StringUtils.join(getAvailableFields()));
                 }
 
-                if(alias!=null){
+                if (alias != null) {
                     try {
                         RecordEntityField recordEntityField = (RecordEntityField) entityField.clone();
                         recordEntityField.field = alias;
-                        pool.put(key,recordEntityField);
+                        pool.put(key, recordEntityField);
                         field = recordEntityField;
                     } catch (CloneNotSupportedException e) {
                         throw new DaoException(e);
                     }
-                }else{
+                } else {
                     field = entityField;
-                    pool.put(key,entityField);
+                    pool.put(key, entityField);
                 }
             }
             holder.add(field);

@@ -32,7 +32,7 @@ public class ActionTest extends TestCase {
 
         IocContainer ioc = filter.getWeb().getIoc();
         Monitor monitor = new Monitor();
-        ioc.getIocClassLoader().append(Monitor.class, monitor, false,IocBean.USER);
+        ioc.getIocClassLoader().append(Monitor.class, monitor, false, IocBean.USER);
 
         filter.init(config);
 
@@ -61,88 +61,87 @@ public class ActionTest extends TestCase {
         assertTrue(HttpSession.class.isAssignableFrom(monitor.arguments()[3].getClass()));
 
         request("/user/login", DataObject.as(
-            "account","user",
-                "password","password"
+                "account", "user",
+                "password", "password"
         ));
         assertEquals(monitor.count(), ++count);
         assertTrue(UserController.LoginRequest.class.isAssignableFrom(monitor.arguments()[0].getClass()));
         UserController.LoginRequest request = (UserController.LoginRequest) monitor.arguments()[0];
-        assertEquals(request.getAccount(),"user");
-        assertEquals(request.getPassword(),"password");
-
+        assertEquals(request.getAccount(), "user");
+        assertEquals(request.getPassword(), "password");
 
 
         request("/user/update", DataObject.as(
-                "head",DataObject.as(
-                        "img","image_url",
-                        "info","name",
-                        "age","15"
+                "head", DataObject.as(
+                        "img", "image_url",
+                        "info", "name",
+                        "age", "15"
                 ),
-                "id",1
+                "id", 1
         ));
         assertEquals(monitor.count(), ++count);
         assertTrue(UserController.HeaderInfo.class.isAssignableFrom(monitor.arguments()[0].getClass()));
         UserController.HeaderInfo headerInfo = (UserController.HeaderInfo) monitor.arguments()[0];
-        assertEquals(headerInfo.getImg(),"image_url");
-        assertEquals(headerInfo.getAge(),15);
-        assertEquals(monitor.arguments()[1],"1");
+        assertEquals(headerInfo.getImg(), "image_url");
+        assertEquals(headerInfo.getAge(), 15);
+        assertEquals(monitor.arguments()[1], "1");
         ///test url
 
         request("/user/updateHead", DataObject.as(
-                "head",DataObject.as(
-                        "img","image_url",
-                        "info","name",
-                        "age","15"
+                "head", DataObject.as(
+                        "img", "image_url",
+                        "info", "name",
+                        "age", "15"
                 ),
-                "id",1
+                "id", 1
         ));
         assertEquals(monitor.count(), ++count);
         assertTrue(Map.class.isAssignableFrom(monitor.arguments()[0].getClass()));
 
-        assertEquals(monitor.arguments()[0],DataObject.as(
-                "img","image_url",
-                "info","name",
-                "age","15"
+        assertEquals(monitor.arguments()[0], DataObject.as(
+                "img", "image_url",
+                "info", "name",
+                "age", "15"
         ));
 
 
-        assertEquals(monitor.arguments()[1],"1");
+        assertEquals(monitor.arguments()[1], "1");
 
         request("/module/add/id", DataObject.as(
-               "param0","param0"
+                "param0", "param0"
         ));
 
         assertEquals(monitor.count(), ++count);
-        assertEquals( monitor.arguments()[0],"add" );
+        assertEquals(monitor.arguments()[0], "add");
 
 
         request("/module/add/1", DataObject.as(
-                "param0","param0"
+                "param0", "param0"
         ));
 
         assertEquals(monitor.count(), ++count);
-        assertEquals( monitor.arguments()[0],"add" );
-        assertEquals( monitor.arguments()[1],1 );
+        assertEquals(monitor.arguments()[0], "add");
+        assertEquals(monitor.arguments()[1], 1);
 
 
         request("/myuser/index/1", DataObject.as(
-                "param0","param0"
+                "param0", "param0"
         ));
 
         assertEquals(monitor.count(), ++count);
-        assertEquals( monitor.arguments()[0],"myuser" );
-        assertEquals( monitor.arguments()[1],1 );
+        assertEquals(monitor.arguments()[0], "myuser");
+        assertEquals(monitor.arguments()[1], 1);
 
 
         request("/myuser1/index1/1", DataObject.as(
-                "param0","param0"
+                "param0", "param0"
         ));
 
         assertEquals(monitor.count(), ++count);
-        assertEquals( monitor.arguments()[0],"myuser1" );
-        assertEquals( monitor.arguments()[1],"index1" );
-        assertEquals( monitor.arguments()[2],"1" );
-        assertEquals( monitor.arguments()[3],"param0" );
+        assertEquals(monitor.arguments()[0], "myuser1");
+        assertEquals(monitor.arguments()[1], "index1");
+        assertEquals(monitor.arguments()[2], "1");
+        assertEquals(monitor.arguments()[3], "param0");
 
         ////////////////////////////////////////////
 
@@ -170,145 +169,141 @@ public class ActionTest extends TestCase {
         assertTrue(HttpSession.class.isAssignableFrom(monitor.arguments()[3].getClass()));
 
         form("/user/login", DataObject.as(
-                "account","user",
-                "password","password"
+                "account", "user",
+                "password", "password"
         ));
         assertEquals(monitor.count(), ++count);
         assertTrue(UserController.LoginRequest.class.isAssignableFrom(monitor.arguments()[0].getClass()));
         request = (UserController.LoginRequest) monitor.arguments()[0];
-        assertEquals(request.getAccount(),"user");
-        assertEquals(request.getPassword(),"password");
-
+        assertEquals(request.getAccount(), "user");
+        assertEquals(request.getPassword(), "password");
 
 
         form("/user/update", DataObject.as(
                 "head", JSON.stringify(DataObject.as(
-                        "img","image_url",
-                        "info","name",
-                        "age","15"
+                        "img", "image_url",
+                        "info", "name",
+                        "age", "15"
                 )),
-                "id",1
+                "id", 1
         ));
         assertEquals(monitor.count(), ++count);
         assertTrue(UserController.HeaderInfo.class.isAssignableFrom(monitor.arguments()[0].getClass()));
         headerInfo = (UserController.HeaderInfo) monitor.arguments()[0];
-        assertEquals(headerInfo.getImg(),"image_url");
-        assertEquals(headerInfo.getAge(),15);
-        assertEquals(monitor.arguments()[1],"1");
+        assertEquals(headerInfo.getImg(), "image_url");
+        assertEquals(headerInfo.getAge(), 15);
+        assertEquals(monitor.arguments()[1], "1");
         ///test url
 
         form("/user/updateHead", DataObject.as(
-                "head",JSON.stringify(DataObject.as(
-                        "img","image_url",
-                        "info","name",
-                        "age","15"
+                "head", JSON.stringify(DataObject.as(
+                        "img", "image_url",
+                        "info", "name",
+                        "age", "15"
                 )),
-                "id",1
+                "id", 1
         ));
         assertEquals(monitor.count(), ++count);
         assertTrue(Map.class.isAssignableFrom(monitor.arguments()[0].getClass()));
 
-        assertEquals(monitor.arguments()[0],DataObject.as(
-                "img","image_url",
-                "info","name",
-                "age","15"
+        assertEquals(monitor.arguments()[0], DataObject.as(
+                "img", "image_url",
+                "info", "name",
+                "age", "15"
         ));
 
 
-        assertEquals(monitor.arguments()[1],"1");
+        assertEquals(monitor.arguments()[1], "1");
 
         form("/module/add/id", DataObject.as(
-                "param0","param0"
+                "param0", "param0"
         ));
 
         assertEquals(monitor.count(), ++count);
-        assertEquals( monitor.arguments()[0],"add" );
+        assertEquals(monitor.arguments()[0], "add");
 
 
         form("/module/add/1", DataObject.as(
-                "param0","param0"
+                "param0", "param0"
         ));
 
         assertEquals(monitor.count(), ++count);
-        assertEquals( monitor.arguments()[0],"add" );
-        assertEquals( monitor.arguments()[1],1 );
+        assertEquals(monitor.arguments()[0], "add");
+        assertEquals(monitor.arguments()[1], 1);
 
 
         form("/myuser/index/1", DataObject.as(
-                "param0","param0"
+                "param0", "param0"
         ));
 
         assertEquals(monitor.count(), ++count);
-        assertEquals( monitor.arguments()[0],"myuser" );
-        assertEquals( monitor.arguments()[1],1 );
+        assertEquals(monitor.arguments()[0], "myuser");
+        assertEquals(monitor.arguments()[1], 1);
 
 
         form("/myuser1/index1/1", DataObject.as(
-                "param0","param0"
+                "param0", "param0"
         ));
 
         assertEquals(monitor.count(), ++count);
-        assertEquals( monitor.arguments()[0],"myuser1" );
-        assertEquals( monitor.arguments()[1],"index1" );
-        assertEquals( monitor.arguments()[2],"1" );
-        assertEquals( monitor.arguments()[3],"param0" );
+        assertEquals(monitor.arguments()[0], "myuser1");
+        assertEquals(monitor.arguments()[1], "index1");
+        assertEquals(monitor.arguments()[2], "1");
+        assertEquals(monitor.arguments()[3], "param0");
 
-        request("/test/testStatusException500",new HashMap<String,Object>());
+        request("/test/testStatusException500", new HashMap<String, Object>());
         assertEquals(monitor.count(), ++count);
-        assertEquals(monitor.getResponse().getStatus(),500);
-        request("/test/testStatusException404",new HashMap<String,Object>());
+        assertEquals(monitor.getResponse().getStatus(), 500);
+        request("/test/testStatusException404", new HashMap<String, Object>());
         assertEquals(monitor.count(), ++count);
-        request("/test/testStatusException403",new HashMap<String,Object>());
+        request("/test/testStatusException403", new HashMap<String, Object>());
         assertEquals(monitor.count(), ++count);
-        request("/test/testStatusException401",new HashMap<String,Object>());
+        request("/test/testStatusException401", new HashMap<String, Object>());
         assertEquals(monitor.count(), ++count);
-        request("/test/testStatusException400",new HashMap<String,Object>());
+        request("/test/testStatusException400", new HashMap<String, Object>());
         assertEquals(monitor.count(), ++count);
-        request("/test/testStatusException405",new HashMap<String,Object>());
+        request("/test/testStatusException405", new HashMap<String, Object>());
         assertEquals(monitor.count(), ++count);
-        request("/test/testStatusException500_",new HashMap<String,Object>());
-        assertEquals(monitor.count(), ++count);
-
-
-
-
-
-        request("/temp/index",new HashMap<String,Object>());
-        assertEquals(monitor.count(), ++count);
-
-        request("/temp/test",new HashMap<String,Object>());
+        request("/test/testStatusException500_", new HashMap<String, Object>());
         assertEquals(monitor.count(), ++count);
 
 
-        request("/temp/hello",new HashMap<String,Object>());
+        request("/temp/index", new HashMap<String, Object>());
+        assertEquals(monitor.count(), ++count);
+
+        request("/temp/test", new HashMap<String, Object>());
         assertEquals(monitor.count(), ++count);
 
 
-        request("/temp/testError",new HashMap<String,Object>());
+        request("/temp/hello", new HashMap<String, Object>());
         assertEquals(monitor.count(), ++count);
 
-        request("/temp/test1",new HashMap<String,Object>());
+
+        request("/temp/testError", new HashMap<String, Object>());
         assertEquals(monitor.count(), ++count);
 
-        request("/temp/testView",new HashMap<String,Object>());
+        request("/temp/test1", new HashMap<String, Object>());
         assertEquals(monitor.count(), ++count);
 
-        request("/temp/redirectView",new HashMap<String,Object>());
+        request("/temp/testView", new HashMap<String, Object>());
         assertEquals(monitor.count(), ++count);
-        assertEquals(((MockHttpServletResponse)monitor.getResponse())
-                .getRedirectUrl(),"redirect/test");
 
-        request("/temp/redirectView2",new HashMap<String,Object>());
+        request("/temp/redirectView", new HashMap<String, Object>());
         assertEquals(monitor.count(), ++count);
-        assertEquals(((MockHttpServletResponse)monitor.getResponse())
-                .getRedirectUrl(),"redirect/view2");
+        assertEquals(((MockHttpServletResponse) monitor.getResponse())
+                .getRedirectUrl(), "redirect/test");
+
+        request("/temp/redirectView2", new HashMap<String, Object>());
+        assertEquals(monitor.count(), ++count);
+        assertEquals(((MockHttpServletResponse) monitor.getResponse())
+                .getRedirectUrl(), "redirect/view2");
 
         filter.destroy();
 
     }
 
 
-    private void form(String url, Map<String,Object> data) throws IOException, ServletException {
+    private void form(String url, Map<String, Object> data) throws IOException, ServletException {
         filter.doFilter(mockFormRequest(
                 url,
                 data
@@ -335,8 +330,8 @@ public class ActionTest extends TestCase {
 
     private MockHttpServletRequest mockFormRequest(
             String url,
-            Map<String,Object> data
-    ){
+            Map<String, Object> data
+    ) {
         return MockHttpServletRequest.form(
                 url,
                 "POST",
@@ -359,7 +354,7 @@ public class ActionTest extends TestCase {
         );
     }
 
-    public void test(){
+    public void test() {
 
     }
 

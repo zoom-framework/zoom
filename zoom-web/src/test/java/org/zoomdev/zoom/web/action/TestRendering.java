@@ -12,16 +12,16 @@ import org.zoomdev.zoom.web.rendering.impl.TemplateEngineRendering;
 
 public class TestRendering extends TestCase {
 
-    public static class TestController{
+    public static class TestController {
 
-        public void test(){
+        public void test() {
 
         }
 
     }
 
 
-    public void test(){
+    public void test() {
 
         WebModules modules = new WebModules();
         modules.configCaster();
@@ -31,8 +31,8 @@ public class TestRendering extends TestCase {
         WebConfig config = modules.getWebConfig();
 
         TemplateEngineManager templateEngineManager = modules.getTemplateEngineManager(config);
-        TemplateEngineRendering templateEngineRendering = modules.getTemplateEngineRendering(templateEngineManager,config);
-        RenderingFactory renderingFactoryManager =  modules.getRenderingFactoryManager(templateEngineRendering);
+        TemplateEngineRendering templateEngineRendering = modules.getTemplateEngineRendering(templateEngineManager, config);
+        RenderingFactory renderingFactoryManager = modules.getRenderingFactoryManager(templateEngineRendering);
 
         CachedClasses.getPublicMethods(TestController.class);
         //renderingFactoryManager.add();

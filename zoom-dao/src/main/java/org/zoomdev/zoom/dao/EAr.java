@@ -127,15 +127,17 @@ public interface EAr<T> extends Sql<EAr<T>> {
 
     /**
      * 忽略重复插入,需要设置下重复插入的条件,最直接的办法就是指定下哪些键作为判断依据（必须unique约束）
+     *
      * @return
      */
-    int insertIgnoreDuplicated(T data,String...keys);
+    int insertIgnoreDuplicated(T data, String... keys);
 
     /**
      * 插入或者更新,最直接的办法就是指定下哪些键作为判断依据（必须unique约束）
+     *
      * @return
      */
-    void insertOrUpdate(T data,String...keys);
+    void insertOrUpdate(T data, String... keys);
 
     /**
      * 批量更新

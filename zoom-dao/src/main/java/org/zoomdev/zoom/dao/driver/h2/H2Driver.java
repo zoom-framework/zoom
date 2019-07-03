@@ -1,8 +1,8 @@
 package org.zoomdev.zoom.dao.driver.h2;
 
 import org.zoomdev.zoom.dao.driver.mysql.MysqlDriver;
-import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.impl.TableBuildInfo;
+import org.zoomdev.zoom.dao.meta.ColumnMeta;
 
 import java.util.List;
 import java.util.Map;
@@ -18,7 +18,7 @@ public class H2Driver extends MysqlDriver {
     public void buildTable(TableBuildInfo table, List<String> sqlList) {
         super.buildTable(table, sqlList);
 
-        buildComment(table,sqlList);
+        buildComment(table, sqlList);
     }
 
     @Override

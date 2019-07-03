@@ -40,12 +40,12 @@ public class CasterTest3 {
     }
 
 
-    static enum  MyEnum{
+    static enum MyEnum {
         V1,
         V2
     }
 
-    static enum  MyEnum2{
+    static enum MyEnum2 {
 
 
         V3(1),
@@ -53,14 +53,15 @@ public class CasterTest3 {
 
         private final int value;
 
-        MyEnum2(int value){
+        MyEnum2(int value) {
             this.value = value;
         }
     }
-    public void testEnum(){
 
-        assertEquals(MyEnum.V1,Caster.to("V1",MyEnum.class));
-        assertEquals(MyEnum2.V3,Caster.to("V3",MyEnum2.class));
+    public void testEnum() {
+
+        assertEquals(MyEnum.V1, Caster.to("V1", MyEnum.class));
+        assertEquals(MyEnum2.V3, Caster.to("V3", MyEnum2.class));
 
 
     }

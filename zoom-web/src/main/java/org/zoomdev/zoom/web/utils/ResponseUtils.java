@@ -7,7 +7,9 @@ import org.zoomdev.zoom.common.json.JSON;
 import org.zoomdev.zoom.common.utils.Classes;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Writer;
 
 public class ResponseUtils {
 
@@ -34,7 +36,7 @@ public class ResponseUtils {
 
     public static void json(HttpServletResponse response, Object data) {
         response.setContentType("application/json");
-        write(response,JSON.stringify(data));
+        write(response, JSON.stringify(data));
     }
 
     public static void write(HttpServletResponse response, byte[] bytes) {
@@ -66,7 +68,7 @@ public class ResponseUtils {
                 writer.write(buffer, 0, readed);
             }
         } catch (Throwable e) {
-            log.error("HttpServletResponse输出发生异常",Classes.getCause(e));
+            log.error("HttpServletResponse输出发生异常", Classes.getCause(e));
         } finally {
             Io.close(writer);
         }

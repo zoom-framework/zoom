@@ -28,17 +28,16 @@ public class SimpleConfigBuilder extends ClassResolver {
 
     @Override
     public void resolve(ResScanner scanner) {
-        List<ResScanner.ClassRes> classes= scanner.findClass("*.modules.*");
-        for(ResScanner.ClassRes res : classes){
+        List<ResScanner.ClassRes> classes = scanner.findClass("*.modules.*");
+        for (ResScanner.ClassRes res : classes) {
             Class<?> type = res.getType();
             Module module = type.getAnnotation(Module.class);
-            if(module==null)continue;
+            if (module == null) continue;
             list.add(type);
         }
 
         endResolve();
     }
-
 
 
     private Class<?> findApplication() {
@@ -65,9 +64,9 @@ public class SimpleConfigBuilder extends ClassResolver {
                     || (app != null && app.getAnnotation(annotationClass) != null)) {
                 types.add(type);
             } else {
-                if(log.isDebugEnabled())
+                if (log.isDebugEnabled())
                     log.debug("没有找到对应的标注:" + annotationClass + " 模块" + type + "未启用," +
-                        "若要启用本模块，请使用ApplicationModule标注主模块，并使用对应的【" + annotationClass.getName() + "】标注");
+                            "若要启用本模块，请使用ApplicationModule标注主模块，并使用对应的【" + annotationClass.getName() + "】标注");
             }
         }
 
@@ -84,36 +83,36 @@ public class SimpleConfigBuilder extends ClassResolver {
         log.debug("正在进行注入...");
 
         OrderedList<Pair> injectors = new OrderedList<Pair>();
-        for(Class<?> type : types){
+        for (Class<?> type : types) {
             IocObject module = ioc.get(new ZoomIocKey(type));
 
             IocClass iocClass = module.getIocClass();
 
             IocField[] fields = iocClass.getIocFields();
-            if(fields!=null && fields.length >0){
-                for(IocInjector injector : fields){
-                    Pair pair = new Pair(module,injector);
-                    injectors.add(pair,injector.getOrder());
+            if (fields != null && fields.length > 0) {
+                for (IocInjector injector : fields) {
+                    Pair pair = new Pair(module, injector);
+                    injectors.add(pair, injector.getOrder());
                 }
             }
 
             IocMethod[] methods = iocClass.getIocMethods();
-            if(methods!=null && methods.length>0){
-                for(IocInjector injector : methods){
-                    Pair pair = new Pair(module,injector);
-                    injectors.add(pair,injector.getOrder());
+            if (methods != null && methods.length > 0) {
+                for (IocInjector injector : methods) {
+                    Pair pair = new Pair(module, injector);
+                    injectors.add(pair, injector.getOrder());
                 }
             }
 
         }
 
         //首先执行order<=2的
-        for(Pair pair :  injectors.toList()){
+        for (Pair pair : injectors.toList()) {
             pair.injector.inject(pair.obj);
         }
 
 
-       // time = System.currentTimeMillis();
+        // time = System.currentTimeMillis();
         // System.out.println("==========config build 成功"+(System.currentTimeMillis()-time)+"==========");
 
         list.clear();
@@ -123,11 +122,11 @@ public class SimpleConfigBuilder extends ClassResolver {
     }
 
 
-    static class Pair{
+    static class Pair {
         IocInjector injector;
         IocObject obj;
 
-        public Pair( IocObject obj,IocInjector injector) {
+        public Pair(IocObject obj, IocInjector injector) {
             this.injector = injector;
             this.obj = obj;
         }

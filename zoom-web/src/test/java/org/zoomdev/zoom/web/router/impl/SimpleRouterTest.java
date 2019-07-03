@@ -41,7 +41,7 @@ public class SimpleRouterTest {
 
         MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest("/main/index");
 
-      //  assertEquals(router.match("/action/index", new MockHttpServletRequest("/module/index")), "index");
+        //  assertEquals(router.match("/action/index", new MockHttpServletRequest("/module/index")), "index");
         assertEquals(router.match("/action/edit", new MockHttpServletRequest("/test/edit")), new MockAction("paths"));
         assertEquals(router.match("/index/action/add",
                 new MockHttpServletRequest("add")),

@@ -4,7 +4,7 @@ package org.zoomdev.zoom.dao.alias;
  * 名称适配器
  * 如果只有一张表，对于表 t, 字段 id,name,success_date 来说映射成为  id,name,successDate
  * 如果有多张表，对于表t_a和t_b, 分别有字段 id,name,success_date 来说映射成为 aId,aName,aSuccessDate与bId,bName,bSuccessDate
- *
+ * <p>
  * {@link org.zoomdev.zoom.dao.alias.impl.CamelNameAdapter}
  * {@link org.zoomdev.zoom.dao.alias.impl.CamelAliasPolicy}
  * {@link org.zoomdev.zoom.dao.alias.impl.EmptyNameAdapter}

@@ -17,41 +17,38 @@ import java.lang.reflect.Method;
 
 public class TestCache extends TestCase {
 
-    public static class TestCacheService{
+    public static class TestCacheService {
 
 
         private int count;
 
         @CacheRemove(format = "test%s")
-        public void remove(String key){
+        public void remove(String key) {
 
         }
 
 
         @Cache(format = "test%s")
-        public String get(String key){
+        public String get(String key) {
             ++count;
             return "MyTestValue";
         }
 
         // if cache is null return null
-        @Cache(format = "test_not_fill%s", timeoutMs = 3000,ignoreNull = false,fill = false)
-        public String getButNotFill(String key){
+        @Cache(format = "test_not_fill%s", timeoutMs = 3000, ignoreNull = false, fill = false)
+        public String getButNotFill(String key) {
             ++count;
             return "TestValue";
         }
 
 
-
         @Cache(format = "getWithoutFormat")
-        public String getWithoutFormat(){
+        public String getWithoutFormat() {
             ++count;
             return "TestWithoutFormat";
         }
 
     }
-
-
 
 
     public void test() throws IllegalAccessException, InstantiationException, IOException {
@@ -97,12 +94,12 @@ public class TestCache extends TestCase {
         int count = service.count;
 
         String value = service.get("mykey");
-        assertEquals("MyTestValue",value);
+        assertEquals("MyTestValue", value);
 
         //=====
         value = service.get("mykey");
-        assertEquals(count+1,service.count);
-        assertEquals("MyTestValue",value);
+        assertEquals(count + 1, service.count);
+        assertEquals("MyTestValue", value);
 
         // remove
         service.remove("mykey");
@@ -110,14 +107,14 @@ public class TestCache extends TestCase {
 
         ////
         String newValue = service.getButNotFill("mykey");
-        assertEquals("TestValue",newValue);
+        assertEquals("TestValue", newValue);
 
 
         service.getButNotFill("testKey");
         count = service.count;
 
         service.getButNotFill("testKey");
-        assertEquals(count+1,service.count);
+        assertEquals(count + 1, service.count);
 
 
         Method method = CachedClasses.getPublicMethod(service.getClass(), new MethodFilter() {
@@ -131,16 +128,16 @@ public class TestCache extends TestCase {
 
         service.getWithoutFormat();
 
-        assertEquals(count+1,service.count);
+        assertEquals(count + 1, service.count);
 
-        assertEquals("TestWithoutFormat",v);
+        assertEquals("TestWithoutFormat", v);
 
 
-        cache.set("test","value");
+        cache.set("test", "value");
 
-        assertEquals(cache.get("test"),"value");
+        assertEquals(cache.get("test"), "value");
 
         cache.remove("test");
-        assertEquals(cache.get("test"),null);
+        assertEquals(cache.get("test"), null);
     }
 }

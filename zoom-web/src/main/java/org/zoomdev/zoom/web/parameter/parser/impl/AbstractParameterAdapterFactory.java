@@ -1,9 +1,9 @@
 package org.zoomdev.zoom.web.parameter.parser.impl;
 
 import org.zoomdev.zoom.common.Destroyable;
+import org.zoomdev.zoom.web.parameter.ParameterAdapter;
 import org.zoomdev.zoom.web.parameter.ParameterAdapterFactory;
 import org.zoomdev.zoom.web.parameter.ParameterAdapterMaker;
-import org.zoomdev.zoom.web.parameter.ParameterAdapter;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -23,7 +23,7 @@ abstract class AbstractParameterAdapterFactory<T> implements ParameterAdapterFac
 
     @Override
     public ParameterAdapter createParameterAdapter(String name, Type type, Annotation[] annotations) {
-        ParameterAdapter<?> adapter = BasicParameterAdapter.getAdapter(name,type,annotations);
+        ParameterAdapter<?> adapter = BasicParameterAdapter.getAdapter(name, type, annotations);
         if (adapter != null) {
             return adapter;
         }

@@ -1,9 +1,5 @@
 package org.zoomdev.zoom.web.view;
 
-import org.zoomdev.zoom.web.view.impl.BytesView;
-import org.zoomdev.zoom.web.view.impl.FileView;
-import org.zoomdev.zoom.web.view.impl.StringView;
-
 import javax.servlet.http.HttpServletResponse;
 
 /**

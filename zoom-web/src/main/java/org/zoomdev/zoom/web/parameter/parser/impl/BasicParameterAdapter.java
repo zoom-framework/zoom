@@ -18,7 +18,6 @@ class BasicParameterAdapter {
     static final ParameterAdapter<Object> ACTION_CONTEXT = new ActionContextAdapter();
 
 
-
     protected static boolean isPathVariable(String name, Annotation[] annotations) {
         for (Annotation annotation : annotations) {
             if (annotation instanceof Param) {
@@ -33,7 +32,6 @@ class BasicParameterAdapter {
         }
         return false;
     }
-
 
 
     protected static boolean isRequestBody(String name, Annotation[] annotations) {
@@ -90,11 +88,10 @@ class BasicParameterAdapter {
 
         @Override
         public Object get(ActionContext context, Object data, String name, Type type) {
-            return Caster.toType(context.getRequest().getAttribute(name),type);
+            return Caster.toType(context.getRequest().getAttribute(name), type);
         }
 
     }
-
 
 
     static class SessionAdapter implements ParameterAdapter<Object> {

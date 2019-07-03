@@ -32,8 +32,8 @@ public class SimpleActionBuilder extends ClassResolver {
 
     private ClassInfo classInfo;
 
-    public SimpleActionBuilder(IocContainer ioc, Router router,ClassInfo classInfo) {
-        this(ioc, router, null,classInfo);
+    public SimpleActionBuilder(IocContainer ioc, Router router, ClassInfo classInfo) {
+        this(ioc, router, null, classInfo);
     }
 
 
@@ -41,7 +41,7 @@ public class SimpleActionBuilder extends ClassResolver {
     public SimpleActionBuilder(
             IocContainer ioc,
             Router router,
-            List<Router.RemoveToken> removeTokenList,ClassInfo classInfo) {
+            List<Router.RemoveToken> removeTokenList, ClassInfo classInfo) {
 
         this.ioc = ioc;
         this.router = router;
@@ -51,22 +51,22 @@ public class SimpleActionBuilder extends ClassResolver {
 
     @Override
     public void resolve(ResScanner scanner) {
-        List<ResScanner.ClassRes> classes= scanner.findClass("*.controllers.*");
-        for(ResScanner.ClassRes res : classes){
+        List<ResScanner.ClassRes> classes = scanner.findClass("*.controllers.*");
+        for (ResScanner.ClassRes res : classes) {
             Class<?> controllerType = res.getType();
             Controller controller = controllerType.getAnnotation(Controller.class);
-            if(controller==null)continue;
+            if (controller == null) continue;
             String controllerKey = controller.key();
             Method[] methods = CachedClasses.getPublicMethods(controllerType);
 
-            for(Method method : methods){
-                appendMethod(controllerType,method,controllerKey);
+            for (Method method : methods) {
+                appendMethod(controllerType, method, controllerKey);
             }
 
         }
     }
 
-    protected void appendMethod(Class<?> controllerType,Method method,String controllerKey){
+    protected void appendMethod(Class<?> controllerType, Method method, String controllerKey) {
         Mapping mapping = method.getAnnotation(Mapping.class);
         String[] methods;
         if (mapping != null) {
@@ -75,16 +75,15 @@ public class SimpleActionBuilder extends ClassResolver {
             methods = null;
         }
         String key = getKey(controllerKey, method, mapping);
-        log.info("映射Controller:"+key+"===>"+method);
+        log.info("映射Controller:" + key + "===>" + method);
         ActionHolder handler = new ActionHolder(
-                controllerType,method,ioc,key,classInfo);
+                controllerType, method, ioc, key, classInfo);
         handler.setHttpMethods(methods);
-        Router.RemoveToken removeToken = router.register(key,handler);
+        Router.RemoveToken removeToken = router.register(key, handler);
         if (removeTokenList != null) {
             removeTokenList.add(removeToken);
         }
     }
-
 
 
     public static String getKey(String key, Method method, Mapping mapping) {
@@ -108,8 +107,6 @@ public class SimpleActionBuilder extends ClassResolver {
         }
         return key;
     }
-
-
 
 
 }

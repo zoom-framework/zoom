@@ -1,18 +1,9 @@
 package org.zoomdev.zoom.web;
 
 import junit.framework.TestCase;
-import org.junit.Test;
-import org.zoomdev.zoom.aop.AopFactory;
-import org.zoomdev.zoom.aop.javassist.JavassistAopFactory;
-
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
 
 public class TestAop extends TestCase {
-    public void test(){
+    public void test() {
 
     }
 //

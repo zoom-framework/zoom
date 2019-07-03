@@ -16,7 +16,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
-import java.security.InvalidParameterException;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -130,7 +129,6 @@ public class JavassistAopFactoryTest {
         }
 
     }
-
 
 
     @Test()

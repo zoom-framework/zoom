@@ -11,7 +11,6 @@ import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.common.filter.OrFilter;
 import org.zoomdev.zoom.common.filter.pattern.PatternFilterFactory;
-import org.zoomdev.zoom.web.utils.ClassResolvers;
 import org.zoomdev.zoom.common.res.ResLoader;
 import org.zoomdev.zoom.common.res.ResScanner;
 import org.zoomdev.zoom.common.utils.CachedClasses;
@@ -20,7 +19,6 @@ import org.zoomdev.zoom.ioc.configuration.SimpleConfigBuilder;
 import org.zoomdev.zoom.ioc.impl.ZoomIocContainer;
 import org.zoomdev.zoom.web.action.ActionFactory;
 import org.zoomdev.zoom.web.action.ActionHandler;
-import org.zoomdev.zoom.web.action.impl.SimpleActionBuilder;
 import org.zoomdev.zoom.web.router.Router;
 import org.zoomdev.zoom.web.router.impl.ZoomRouter;
 import org.zoomdev.zoom.web.utils.WebUtils;
@@ -54,7 +52,7 @@ public class ZoomWeb {
 
         printLogo();
         /// 加载整个项目的主配置,这个改成在Module加载
-        ioc.getIocClassLoader().append(ConfigReader.class,ConfigReader.getDefault(),true,IocBean.SYSTEM);
+        ioc.getIocClassLoader().append(ConfigReader.class, ConfigReader.getDefault(), true, IocBean.SYSTEM);
         loadApplicationConfig();
         // 扫描整个资源, .class .jar 其他配置文件等
         scanResources();
@@ -81,7 +79,7 @@ public class ZoomWeb {
             }
         });
 
-      // SimpleConfigBuilder configBuilder= new SimpleConfigBuilder(ioc);
+        // SimpleConfigBuilder configBuilder= new SimpleConfigBuilder(ioc);
 //        SimpleActionBuilder actionBuilder= new SimpleActionBuilder(
 //                ioc,
 //                router,
@@ -94,7 +92,7 @@ public class ZoomWeb {
 
     private void createRouter() {
         router = new ZoomRouter();
-        ioc.getIocClassLoader().append(Router.class,router,true,IocBean.MAX);
+        ioc.getIocClassLoader().append(Router.class, router, true, IocBean.MAX);
     }
 
 
@@ -145,12 +143,12 @@ public class ZoomWeb {
         long time = System.currentTimeMillis();
         try {
             scanner = new ResScanner();
-            ioc.getIocClassLoader().append(ResScanner.class,scanner,true,IocBean.SYSTEM);
+            ioc.getIocClassLoader().append(ResScanner.class, scanner, true, IocBean.SYSTEM);
             scanner.scan(ZoomWeb.class.getClassLoader(), jarFilter);
         } catch (IOException e) {
             throw new ZoomException("扫描解析文件出错", e);
         }
-       // System.out.println("======Scan time :" + (System.currentTimeMillis()-time));
+        // System.out.println("======Scan time :" + (System.currentTimeMillis()-time));
 
     }
 
@@ -166,7 +164,6 @@ public class ZoomWeb {
         if (file == null) {
             file = ResLoader.getResourceAsFile("application.json");
         }
-
 
 
         if (file == null) {

@@ -47,7 +47,6 @@ public abstract class AbsDriver implements SqlDriver {
     }
 
 
-
     protected static String buildCommentOnTable(String table, String comment) {
         return String.format("COMMENT ON TABLE %s IS '%s", table, comment);
     }

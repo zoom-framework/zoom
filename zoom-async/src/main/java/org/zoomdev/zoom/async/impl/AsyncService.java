@@ -114,15 +114,15 @@ class AsyncService implements JobQueue, ThreadFactory, Destroyable {
     public <T, R> Future<List<R>> sequence(final Iterable<T> jobs, final JobExecutor<T, R> executor) throws ExecutionException, InterruptedException {
 
 
-        assert (jobs!=null);
-        assert (executor!=null);
+        assert (jobs != null);
+        assert (executor != null);
 
-        Future<List<R>> future =  service.submit(new Callable<List<R>>() {
+        Future<List<R>> future = service.submit(new Callable<List<R>>() {
             @Override
             public List<R> call() throws Exception {
                 final List<R> list = new ArrayList<R>();
-                for(T job : jobs){
-                    Future<R> future = service.submit(new InnerJobExecutor<T,R>(job,executor));
+                for (T job : jobs) {
+                    Future<R> future = service.submit(new InnerJobExecutor<T, R>(job, executor));
                     list.add(future.get());
                 }
                 return list;

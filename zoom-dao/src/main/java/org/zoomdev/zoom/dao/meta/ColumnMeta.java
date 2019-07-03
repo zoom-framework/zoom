@@ -59,8 +59,6 @@ public class ColumnMeta implements Serializable {
     private int maxLen;
 
 
-
-
     public Validator[] getValidators() {
         return validators;
     }
@@ -177,7 +175,7 @@ public class ColumnMeta implements Serializable {
 
 
     @JsonIgnore
-    public String getDescription(){
+    public String getDescription() {
         return StringUtils.isEmpty(comment) ? name : comment;
     }
 
@@ -216,6 +214,6 @@ public class ColumnMeta implements Serializable {
 
     @Override
     public String toString() {
-        return name+":"+comment;
+        return name + ":" + comment;
     }
 }

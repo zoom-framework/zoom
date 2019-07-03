@@ -29,6 +29,6 @@ public class ZoomConfigIocField extends ZoomIocField {
 
     @Override
     public int getOrder() {
-        return IocBean.CONFIG-10;
+        return IocBean.CONFIG - 10;
     }
 }

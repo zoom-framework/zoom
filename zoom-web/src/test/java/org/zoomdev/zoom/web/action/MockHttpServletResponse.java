@@ -14,10 +14,8 @@ import java.util.*;
 public class MockHttpServletResponse implements HttpServletResponse {
 
 
-
-
-    public String getContent(){
-        if(writer != null){
+    public String getContent() {
+        if (writer != null) {
             return stringWriter.toString();
         }
 
@@ -26,8 +24,8 @@ public class MockHttpServletResponse implements HttpServletResponse {
     }
 
 
-    public byte[] getBytes(){
-        if(outputStream!=null){
+    public byte[] getBytes() {
+        if (outputStream != null) {
             return outputStream.getBytes();
         }
         return stringWriter.toString().getBytes();
@@ -88,21 +86,21 @@ public class MockHttpServletResponse implements HttpServletResponse {
     public void addDateHeader(String name, long date) {
 
 
-
     }
 
-    private Map<String,List<String>> header =new HashMap<String, List<String>>();
+    private Map<String, List<String>> header = new HashMap<String, List<String>>();
+
     @Override
     public void setHeader(String name, String value) {
-        header.put(name,CollectionUtils.asList(value));
+        header.put(name, CollectionUtils.asList(value));
     }
 
     @Override
     public void addHeader(String name, String value) {
-        if(header.containsKey(name)){
-            ((List<String>)header.get(name)).add(value);
-        }else{
-            header.put(name,CollectionUtils.asList(value));
+        if (header.containsKey(name)) {
+            ((List<String>) header.get(name)).add(value);
+        } else {
+            header.put(name, CollectionUtils.asList(value));
         }
     }
 
@@ -137,7 +135,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     @Override
     public String getHeader(String name) {
-        return CollectionUtils.getAt(header.get(name),0);
+        return CollectionUtils.getAt(header.get(name), 0);
     }
 
     @Override
@@ -166,9 +164,9 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     @Override
     public ServletOutputStream getOutputStream() throws IOException {
-        if(outputStream==null){
+        if (outputStream == null) {
             outputStream = new MockServletOutputStream();
-        }else{
+        } else {
             throw new ZoomException("Stream is already opened");
         }
         return outputStream;
@@ -179,10 +177,10 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     @Override
     public PrintWriter getWriter() throws IOException {
-        if(writer==null){
+        if (writer == null) {
             writer = new PrintWriter(stringWriter);
-        }else{
-            if(outputStream!=null)
+        } else {
+            if (outputStream != null)
                 throw new ZoomException("Stream is already opened");
         }
         return writer;
@@ -195,13 +193,13 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     @Override
     public void setContentLength(int len) {
-        header.put("Content-Length",CollectionUtils.asList(String.valueOf(len)));
+        header.put("Content-Length", CollectionUtils.asList(String.valueOf(len)));
     }
 
 
     @Override
     public void setContentType(String type) {
-        header.put("Content-Type",CollectionUtils.asList(type));
+        header.put("Content-Type", CollectionUtils.asList(type));
     }
 
     @Override

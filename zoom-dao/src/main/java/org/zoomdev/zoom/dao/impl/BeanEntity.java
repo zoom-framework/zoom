@@ -75,7 +75,7 @@ class BeanEntity<T> extends AbstractEntity<T> {
         builder.table(table);
         if (joins != null) {
             for (JoinMeta joinMeta : joins) {
-                builder.join(joinMeta.getTable(), joinMeta.getOn(),joinMeta.getType());
+                builder.join(joinMeta.getTable(), joinMeta.getOn(), joinMeta.getType());
             }
         }
 
@@ -83,10 +83,10 @@ class BeanEntity<T> extends AbstractEntity<T> {
 
     @Override
     public List<EntityField> select(List<EntityField> holder, Iterable<String> fields) {
-        for(String key : fields){
+        for (String key : fields) {
             EntityField entityField = tryToFind(key);
-            if(entityField==null){
-                throw new DaoException("找不到"+key+"对应的字段,所有可能的字段为"+StringUtils.join(getAvailableFields()));
+            if (entityField == null) {
+                throw new DaoException("找不到" + key + "对应的字段,所有可能的字段为" + StringUtils.join(getAvailableFields()));
             }
             holder.add(entityField);
         }

@@ -11,10 +11,10 @@ import org.zoomdev.zoom.dao.auto.AutoField;
 import org.zoomdev.zoom.dao.driver.AbsDriver;
 import org.zoomdev.zoom.dao.driver.AutoGenerateProvider;
 import org.zoomdev.zoom.dao.impl.SimpleSqlBuilder;
-import org.zoomdev.zoom.dao.meta.ColumnMeta;
-import org.zoomdev.zoom.dao.meta.TableMeta;
 import org.zoomdev.zoom.dao.impl.TableBuildInfo;
 import org.zoomdev.zoom.dao.impl.ZoomDatabaseBuilder;
+import org.zoomdev.zoom.dao.meta.ColumnMeta;
+import org.zoomdev.zoom.dao.meta.TableMeta;
 
 import java.sql.SQLException;
 import java.sql.Types;
@@ -50,7 +50,6 @@ public class OracleDriver extends AbsDriver implements AutoGenerateProvider {
     public void setAutoGenerateProvider(AutoGenerateProvider autoGenerateProvider) {
         this.autoGenerateProvider = autoGenerateProvider;
     }
-
 
 
     @Override

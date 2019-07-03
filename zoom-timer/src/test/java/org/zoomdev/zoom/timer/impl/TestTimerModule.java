@@ -43,7 +43,7 @@ public class TestTimerModule extends TestCase {
     public static class TestModule {
 
         @Inject
-        public void inject(TestService service){
+        public void inject(TestService service) {
 
         }
 
@@ -64,14 +64,13 @@ public class TestTimerModule extends TestCase {
         container.getIocClassLoader().appendModule(TimerModule.class);
 
 
-
         container.fetch(IocModule.class);
         container.fetch(AopModule.class);
         container.fetch(TimerModule.class);
 
 
         IocContainer subContainer = new ZoomIocContainer(
-                container,container.getClassLoader()
+                container, container.getClassLoader()
         );
 
 

@@ -69,7 +69,7 @@ public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
     protected Ar getAllColumns(Ar ar) {
         return ar.table("information_schema.columns").nameAdapter(EmptyNameAdapter.DEFAULT)
                 .select("TABLE_NAME,COLUMN_NAME,IS_NULLABLE,DATA_TYPE,CHARACTER_MAXIMUM_LENGTH,COLUMN_KEY,EXTRA,COLUMN_COMMENT,COLUMN_DEFAULT")
-                .where("table_schema",dbName);
+                .where("table_schema", dbName);
     }
 
     protected void fill(String table, ColumnMeta columnMeta, Record record) {
@@ -107,7 +107,7 @@ public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
             meta.setComment("");
         }
 
-        list = getAllColumns(dao.ar()).where("TABLE_NAME",meta.getName()).find();
+        list = getAllColumns(dao.ar()).where("TABLE_NAME", meta.getName()).find();
 
         for (Record record : list) {
             String column = record.getString("COLUMN_NAME");
@@ -118,12 +118,11 @@ public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
                 continue;
             }
 
-            fill( meta.getName(),columnMeta,record );
+            fill(meta.getName(), columnMeta, record);
         }
 
 
     }
-
 
 
     @Override
@@ -136,21 +135,21 @@ public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
                 ColumnMeta columnMeta = new ColumnMeta();
                 String table = record.getString("TABLE_NAME");
                 columnMeta.setTable(table);
-                fill(table,columnMeta,record);
+                fill(table, columnMeta, record);
                 return columnMeta;
             }
         });
 
 
-        final Map<String,List<ColumnMeta>> treeMap = toTreeMap(columnMetas);
+        final Map<String, List<ColumnMeta>> treeMap = toTreeMap(columnMetas);
 
         ///tables
-        List<TableMeta> tableMetas =  CollectionUtils.map(nameAndComments, new Converter<TableNameAndComment, TableMeta>() {
+        List<TableMeta> tableMetas = CollectionUtils.map(nameAndComments, new Converter<TableNameAndComment, TableMeta>() {
             @Override
             public TableMeta convert(TableNameAndComment data) {
                 List<ColumnMeta> children = treeMap.get(data.getName().toLowerCase());
-                if(children==null){
-                    throw new DaoException("找不到对应的表"+data.getName());
+                if (children == null) {
+                    throw new DaoException("找不到对应的表" + data.getName());
                 }
                 TableMeta tableMeta = new TableMeta();
                 tableMeta.setName(data.getName());
@@ -162,8 +161,7 @@ public class MysqlDbStruct extends AbsDbStruct implements DbStructFactory {
         });
 
 
-
-        ZoomSnapshot snapshot= new ZoomSnapshot();
+        ZoomSnapshot snapshot = new ZoomSnapshot();
         snapshot.setTables(tableMetas);
 
 

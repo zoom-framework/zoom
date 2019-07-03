@@ -9,9 +9,9 @@ import org.zoomdev.zoom.dao.adapters.StatementAdapter;
 import org.zoomdev.zoom.dao.driver.AbsDriver;
 import org.zoomdev.zoom.dao.impl.EntitySqlUtils;
 import org.zoomdev.zoom.dao.impl.SimpleSqlBuilder;
-import org.zoomdev.zoom.dao.meta.ColumnMeta;
 import org.zoomdev.zoom.dao.impl.TableBuildInfo;
 import org.zoomdev.zoom.dao.impl.ZoomDatabaseBuilder;
+import org.zoomdev.zoom.dao.meta.ColumnMeta;
 
 import java.sql.Types;
 import java.util.*;
@@ -64,7 +64,7 @@ public class MysqlDriver extends AbsDriver {
     public <T> void buildInsertOrUpdate(SimpleSqlBuilder builder, Entity entity, T data, Filter<EntityField> filter, boolean ignoreNull, String[] unikeys) {
         EntitySqlUtils.buildInsertOrUpdateForMysql(
                 builder,
-               this,
+                this,
                 entity,
                 data,
                 filter,
@@ -193,7 +193,7 @@ public class MysqlDriver extends AbsDriver {
                 if (columnMeta.isPrimary()) {
                     if (columnMeta.isAuto()) {
                         sb.append(" PRIMARY KEY");
-                        sb.append(" auto_increment" .toUpperCase());
+                        sb.append(" auto_increment".toUpperCase());
                     } else {
                         //single primary key
                         if (primaryKeys.size() == 1) {
@@ -207,7 +207,7 @@ public class MysqlDriver extends AbsDriver {
                 }
             }
 
-            createColumnComment(sb,columnMeta);
+            createColumnComment(sb, columnMeta);
 
             if (index < table.getColumns().size() - 1) {
                 sb.append(",");
@@ -246,7 +246,7 @@ public class MysqlDriver extends AbsDriver {
     }
 
     protected void createColumnComment(StringBuilder sb, ColumnMeta columnMeta) {
-        if(!StringUtils.isEmpty(columnMeta.getComment())){
+        if (!StringUtils.isEmpty(columnMeta.getComment())) {
             sb.append(" COMMENT '")
                     .append(columnMeta.getComment()).append("'");
         }
@@ -315,9 +315,6 @@ public class MysqlDriver extends AbsDriver {
     public StringBuilder protectTable(StringBuilder sb, String name) {
         return protectColumn(sb, name);
     }
-
-
-
 
 
 }

@@ -14,7 +14,7 @@ public class Monitor {
         num.incrementAndGet();
     }
 
-    public void setArguments(HttpServletResponse response,Object... arguments) {
+    public void setArguments(HttpServletResponse response, Object... arguments) {
         this.arguments = arguments.clone();
         num.incrementAndGet();
         this.response = response;

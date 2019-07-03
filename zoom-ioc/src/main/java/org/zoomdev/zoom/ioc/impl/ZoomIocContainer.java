@@ -35,11 +35,11 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
         globalScope = new GlobalScope(this, this);
         this.iocClassLoader = new ZoomIocClassLoader(this);
         this.iocClassLoader.setClassEnhancer(new NoneEnhancer());
-        getIocClassLoader().append(IocContainer.class, this, true,IocBean.SYSTEM);
+        getIocClassLoader().append(IocContainer.class, this, true, IocBean.SYSTEM);
 
     }
 
-    public ZoomIocContainer(IocContainer parent,ClassLoader classLoader) {
+    public ZoomIocContainer(IocContainer parent, ClassLoader classLoader) {
         this.classLoader = classLoader;
         IocScope parentScope = parent.getScope(Scope.APPLICATION);
         IocClassLoader parentClassLoader = parent.getIocClassLoader();
@@ -49,7 +49,7 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
         this.iocClassLoader = new GroupClassLoader(this, parentClassLoader);
         this.iocClassLoader.setClassEnhancer(new NoneEnhancer());
         this.eventListeners.addAll(eventListeners);
-        getIocClassLoader().append(IocContainer.class, this, true,IocBean.SYSTEM);
+        getIocClassLoader().append(IocContainer.class, this, true, IocBean.SYSTEM);
     }
 
 
@@ -75,7 +75,7 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
 
     @Override
     public IocObject fetch(IocKey key) {
-        return fetch(globalScope, key,true);
+        return fetch(globalScope, key, true);
     }
 
     @Override
@@ -85,7 +85,7 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
 
     @Override
     public IocObject get(IocKey key) {
-        return fetch(globalScope,key,false);
+        return fetch(globalScope, key, false);
     }
 
     @Override
@@ -102,20 +102,20 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
 
         if (!obj.inited) {
             obj.inited = true;
-            inject(obj,scope);
-            onObjectInjected(scope,obj);
+            inject(obj, scope);
+            onObjectInjected(scope, obj);
         }
     }
 
-    private void inject(ZoomIocObject obj, IocScope scope){
+    private void inject(ZoomIocObject obj, IocScope scope) {
         //先初始化构造器中没有被初始化的
         IocClass iocClass = obj.getIocClass();
         IocConstructor iocConstructor = iocClass.getIocConstructor();
 
 
         for (IocValue value : iocConstructor.getParameterValues()) {
-            if(value instanceof ZoomIocKeyValue){
-                ZoomIocObject childObject = (ZoomIocObject) scope.get( ((ZoomIocKeyValue)value) .getKey() );
+            if (value instanceof ZoomIocKeyValue) {
+                ZoomIocObject childObject = (ZoomIocObject) scope.get(((ZoomIocKeyValue) value).getKey());
                 initObject(childObject, scope);
             }
 
@@ -132,7 +132,7 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
         IocMethod[] methods = iocClass.getIocMethods();
         if (methods != null) {
             for (IocMethod method : methods) {
-                if(method==null){
+                if (method == null) {
                     //可能是空的
                     continue;
                 }
@@ -143,7 +143,7 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
         obj.initialize();
     }
 
-    public synchronized IocObject fetch(IocScope scope, IocKey key,boolean inject) {
+    public synchronized IocObject fetch(IocScope scope, IocKey key, boolean inject) {
         try {
             ZoomIocObject obj = (ZoomIocObject) scope.get(key);
             IocClass iocClass = null;
@@ -161,7 +161,7 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
                     throw new IocException("创建对象失败");
                 }
             }
-            if(inject){
+            if (inject) {
                 initObject(obj, scope);
             }
             return obj;
@@ -175,7 +175,8 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
     static final IocKey[] EMPTY_KEYS = new IocKey[0];
 
     static final IocValue[] EMPTY_VALUES = new IocValue[0];
-    public static Object[] getValues( IocContainer ioc, IocValue...objects){
+
+    public static Object[] getValues(IocContainer ioc, IocValue... objects) {
 
         if (objects.length == 0) {
             return EMPTY;
@@ -198,10 +199,11 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
         return values;
     }
 
-        public static IocValue[] parseParameterValues(Object target, Method method, IocClassLoader classLoader) {
+    public static IocValue[] parseParameterValues(Object target, Method method, IocClassLoader classLoader) {
         return parseParameterValues(target.getClass().getClassLoader(), method.getParameterAnnotations(),
                 method.getParameterTypes(), classLoader);
     }
+
     public static IocValue[] parseParameterValues(
             ClassLoader classLoader,
             Annotation[][] methodAnnotations,
@@ -219,19 +221,19 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
                 }
             }
             if (paramInject != null) {
-                if(!StringUtils.isEmpty(paramInject.value())){
+                if (!StringUtils.isEmpty(paramInject.value())) {
                     arg = new ZoomIocKeyValue(new ZoomIocKey(paramInject.value(), type));
-                }else if(!StringUtils.isEmpty(paramInject.config())){
-                    arg = new ZoomConfigValue(paramInject.config(),type);
-                }else{
+                } else if (!StringUtils.isEmpty(paramInject.config())) {
+                    arg = new ZoomConfigValue(paramInject.config(), type);
+                } else {
                     arg = new ZoomIocKeyValue(new ZoomIocKey(type));
-                    if(!type.isInterface()){
+                    if (!type.isInterface()) {
                         iocClassLoader.append(type);
                     }
                 }
             } else {
                 arg = new ZoomIocKeyValue(new ZoomIocKey(type));
-                if(!type.isInterface()){
+                if (!type.isInterface()) {
                     iocClassLoader.append(type);
                 }
             }
@@ -322,7 +324,7 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
         }
 
         return new ReflectIocMethodProxy(
-                this,iocClass,target);
+                this, iocClass, target);
     }
 
     @Override
@@ -341,12 +343,12 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
 
     @Override
     public void waitFor() {
-        while(!loaded){
-            try{
-                synchronized (lock){
+        while (!loaded) {
+            try {
+                synchronized (lock) {
                     lock.wait(200);
                 }
-            }catch (InterruptedException e){
+            } catch (InterruptedException e) {
                 return;
             }
         }
@@ -355,7 +357,7 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
     @Override
     public void setLoadComplete() {
         loaded = true;
-        synchronized (lock){
+        synchronized (lock) {
             lock.notify();
         }
 
@@ -406,13 +408,13 @@ public class ZoomIocContainer implements IocContainer, IocEventListener {
             IocClass iocClass,
             Class<?> type,
             IocClassLoader classLoader) {
-        if(type.getSimpleName().endsWith("$Enhance")){
+        if (type.getSimpleName().endsWith("$Enhance")) {
             try {
                 String className = type.getName();
-                className = className.substring(0,className.length()-8);
-                type = Class.forName(className,false,classLoader.getClassLoader());
+                className = className.substring(0, className.length() - 8);
+                type = Class.forName(className, false, classLoader.getClassLoader());
             } catch (ClassNotFoundException e) {
-               throw new ZoomException();
+                throw new ZoomException();
             }
         }
         Method[] methods = CachedClasses.getPublicMethods(type);

@@ -14,7 +14,7 @@ import java.util.List;
 abstract class ZoomIocConstructor implements IocConstructor {
 
     static ZoomIocConstructor createFromIocBean(Object target, Method method, IocClassLoader classLoader) {
-        try{
+        try {
             IocBean iocBean = method.getAnnotation(IocBean.class);
             String initialize = iocBean.initialize();
             String name = iocBean.name();
@@ -23,8 +23,8 @@ abstract class ZoomIocConstructor implements IocConstructor {
             return new IocBeanConstructor(key,
                     ZoomIocContainer.parseParameterValues(target, method, classLoader), target, method,
                     initialize, destroy);
-        }catch (Exception e){
-            throw new IocException("不能创建IocBean:["+target+"] "+method,e);
+        } catch (Exception e) {
+            throw new IocException("不能创建IocBean:[" + target + "] " + method, e);
         }
     }
 
@@ -86,15 +86,13 @@ abstract class ZoomIocConstructor implements IocConstructor {
         Constructor<?> constructor;
         if (constructors.length == 1) {
             constructor = constructors[0];
-        }else{
+        } else {
             //如果有多个构造函数，那么寻找无参数的
             constructor = Classes.findNoneParameterConstructor(type);
             if (constructor == null) {
                 throw new IocException("不能创建IocConstructor,请提供无参数构造函数，否则系统无法判断应该使用哪一个构造函数来创建对象.");
             }
         }
-
-
 
 
         return new IocConstructorContructor(key,
@@ -136,8 +134,8 @@ abstract class ZoomIocConstructor implements IocConstructor {
         @Override
         public IocObject newInstance() {
             try {
-               // IocObject[] values = iocClass.getValues(parameterKeys);
-                Object[] param = ZoomIocContainer.getValues(iocClass.getIoc(),parameterKeys);
+                // IocObject[] values = iocClass.getValues(parameterKeys);
+                Object[] param = ZoomIocContainer.getValues(iocClass.getIoc(), parameterKeys);
                 return ZoomIocObject.wrap(iocClass, constructor.newInstance(param));
             } catch (Exception e) {
                 throw new IocException(e);
@@ -173,7 +171,7 @@ abstract class ZoomIocConstructor implements IocConstructor {
         @Override
         public IocObject newInstance() {
             try {
-                Object[] values = ZoomIocContainer.getValues(iocClass.getIoc(),parameterKeys);
+                Object[] values = ZoomIocContainer.getValues(iocClass.getIoc(), parameterKeys);
                 //IocObject[] values = iocClass.getIoc().fetchValues(parameterKeys);
                 Object bean = method.invoke(target, values);
 

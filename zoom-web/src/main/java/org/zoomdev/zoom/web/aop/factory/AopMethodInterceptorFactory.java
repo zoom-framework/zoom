@@ -13,7 +13,7 @@ public class AopMethodInterceptorFactory extends AnnotationMethodInterceptorFact
 
     private IocContainer ioc;
 
-    public AopMethodInterceptorFactory(IocContainer ioc){
+    public AopMethodInterceptorFactory(IocContainer ioc) {
         this.ioc = ioc;
     }
 

@@ -7,12 +7,9 @@ import org.zoomdev.zoom.aop.reflect.ClassInfo;
 import org.zoomdev.zoom.common.filter.Filter;
 import org.zoomdev.zoom.common.utils.CollectionUtils;
 import org.zoomdev.zoom.ioc.IocContainer;
-import org.zoomdev.zoom.ioc.IocObject;
-import org.zoomdev.zoom.ioc.impl.ZoomIocKey;
 import org.zoomdev.zoom.web.action.Action;
 import org.zoomdev.zoom.web.action.ActionFactory;
 import org.zoomdev.zoom.web.action.ActionHandler;
-import org.zoomdev.zoom.web.action.ActionInterceptorFactory;
 import org.zoomdev.zoom.web.annotations.Mapping;
 import org.zoomdev.zoom.web.annotations.Param;
 
@@ -26,15 +23,13 @@ import java.util.List;
 
 public class ActionHolder implements ActionHandler {
 
-    private static  final Log log = LogFactory.getLog(ActionHolder.class);
-
+    private static final Log log = LogFactory.getLog(ActionHolder.class);
 
 
     private Class<?> controllerClass;
     private Method method;
     private IocContainer ioc;
     private String key;
-
 
 
     private ClassInfo classInfo;
@@ -90,7 +85,6 @@ public class ActionHolder implements ActionHandler {
     }
 
 
-
     public Action getAction() {
         return action;
     }
@@ -106,7 +100,7 @@ public class ActionHolder implements ActionHandler {
     private String[] names;
 
     public String[] getNames() {
-        if(names==null){
+        if (names == null) {
             initNames();
         }
         return names;
@@ -127,7 +121,7 @@ public class ActionHolder implements ActionHandler {
 
         action.setUrl(key);
         //模板路径,如果带有{}的通配符，则将通配符删除掉
-        action.setPath(key.substring(1).replace("{","").replace("}",""));
+        action.setPath(key.substring(1).replace("{", "").replace("}", ""));
         if (log.isDebugEnabled()) {
             log.debug(String.format("注册Action成功:key:[%s] class:[%s] method:[%s] loader:[%s]",
                     key,
@@ -152,10 +146,9 @@ public class ActionHolder implements ActionHandler {
     };
 
 
-
-    private Action lazyLoad(){
-        synchronized (this){
-            if(action==null){
+    private Action lazyLoad() {
+        synchronized (this) {
+            if (action == null) {
                 visitMethod();
             }
             return action;
@@ -165,11 +158,12 @@ public class ActionHolder implements ActionHandler {
     @Override
     public boolean handle(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         Action action = this.action;
-        if(action==null){
+        if (action == null) {
             action = lazyLoad();
         }
-        return action.handle(request,response);
+        return action.handle(request, response);
     }
+
     private String[] methods;
 
     public void setHttpMethods(String[] methods) {
@@ -180,6 +174,7 @@ public class ActionHolder implements ActionHandler {
     public String[] getMethods() {
         return methods;
     }
+
     @Override
     public boolean supportsHttpMethod(String method) {
         if (this.methods != null) {
@@ -197,7 +192,7 @@ public class ActionHolder implements ActionHandler {
 
     @Override
     public String[] getPathVariableNames() {
-        if(pathVariableNames==null){
+        if (pathVariableNames == null) {
             initNames();
         }
         return pathVariableNames;
@@ -231,7 +226,7 @@ public class ActionHolder implements ActionHandler {
     }
 
 
-    public Object getTarget(){
+    public Object getTarget() {
         return ioc.fetch(controllerClass);
     }
 }

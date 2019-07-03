@@ -11,7 +11,6 @@ import org.zoomdev.zoom.event.EventService;
 import org.zoomdev.zoom.event.PayloadEvent;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,35 +23,33 @@ class AsyncEventService implements EventService {
     private Map<String, List<EventListener>> events = new ConcurrentHashMap<String, List<EventListener>>();
 
     /**
-     *
      * @param name
      * @param listener
      */
     public void addListener(final String name, final EventListener listener) {
         SingletonUtils.modify(
-            events,
-            name,
-            new SingletonUtils.SingletonModify<List<EventListener>>() {
-                @Override
-                public List<EventListener> modify(List<EventListener> eventListeners) {
-                    synchronized (LockUtils.getLock(name)){
-                        eventListeners.add(listener);
+                events,
+                name,
+                new SingletonUtils.SingletonModify<List<EventListener>>() {
+                    @Override
+                    public List<EventListener> modify(List<EventListener> eventListeners) {
+                        synchronized (LockUtils.getLock(name)) {
+                            eventListeners.add(listener);
+                        }
+                        return eventListeners;
                     }
-                    return eventListeners;
-                }
 
-                @Override
-                public List<EventListener> create() {
-                    List<EventListener> listeners = new ArrayList<EventListener>();
-                    listeners.add(listener);
-                    return listeners;
+                    @Override
+                    public List<EventListener> create() {
+                        List<EventListener> listeners = new ArrayList<EventListener>();
+                        listeners.add(listener);
+                        return listeners;
+                    }
                 }
-            }
         );
     }
 
     /**
-     *
      * @param name
      * @param listener
      */
@@ -64,7 +61,6 @@ class AsyncEventService implements EventService {
     }
 
     /**
-     *
      * @param name
      * @param data
      * @param error
@@ -76,13 +72,12 @@ class AsyncEventService implements EventService {
     private static final Log log = LogFactory.getLog(AsyncEventService.class);
 
     /**
-     *
      * @param event
      */
     public void notifyObservers(final Event event) {
         List<EventListener> listeners = events.get(event.getName());
-        if(listeners==null){
-            log.info("没有监听器来处理事件"+event.getName());
+        if (listeners == null) {
+            log.info("没有监听器来处理事件" + event.getName());
             return;
         }
         List<EventListener> eventListeners = new ArrayList<EventListener>();

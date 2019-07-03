@@ -15,11 +15,12 @@ public class TemplateEngineRendering implements Rendering {
 
     public TemplateEngineRendering(
             TemplateEngineManager templateEngineManager,
-            WebConfig config){
+            WebConfig config) {
         this.templateEngineManager = templateEngineManager;
         this.webConfig = config;
 
     }
+
     @Override
     public String getUid() {
         return "template";
@@ -30,22 +31,22 @@ public class TemplateEngineRendering implements Rendering {
         Object data = context.getRenderObject();
         String ext;
         String path;
-        if(data instanceof String){
-            path  = (String)data;
+        if (data instanceof String) {
+            path = (String) data;
             int n;
-            if((n=path.lastIndexOf('.')) > 0){
-                ext = path.substring(n+1);
-            }else{
+            if ((n = path.lastIndexOf('.')) > 0) {
+                ext = path.substring(n + 1);
+            } else {
                 ext = webConfig.getTemplateExt();
                 context.setRenderObject(path + ext);
             }
-        }else{
+        } else {
             ext = webConfig.getTemplateExt();
         }
 
         TemplateRendering rendering = templateEngineManager.getEngine(ext);
-        if(rendering==null){
-            throw new ZoomException("Cannot find template engine for extension "+ext);
+        if (rendering == null) {
+            throw new ZoomException("Cannot find template engine for extension " + ext);
         }
         return rendering.render(context);
     }

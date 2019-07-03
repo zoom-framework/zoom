@@ -6,10 +6,10 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-public abstract class ZoomCreatorFactory implements IocCreatorFactory,InvocationHandler {
+public abstract class ZoomCreatorFactory implements IocCreatorFactory, InvocationHandler {
     @Override
     public Object create(Class<?> interfaceClass) {
-        return Proxy.newProxyInstance(ZoomCreatorFactory.class.getClassLoader(),new Class<?>[]{interfaceClass},this);
+        return Proxy.newProxyInstance(ZoomCreatorFactory.class.getClassLoader(), new Class<?>[]{interfaceClass}, this);
     }
 
     @Override

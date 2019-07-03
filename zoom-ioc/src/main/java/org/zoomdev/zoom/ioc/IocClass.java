@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 
 /**
  * 用于描述Ioc容器内部对象的创建信息
- *
  */
 public interface IocClass {
 
@@ -16,6 +15,7 @@ public interface IocClass {
 
     /**
      * 与IocContainer的getValues不同，获取到的IocObject为未注入初始化的对象
+     *
      * @param keys
      * @return
      */

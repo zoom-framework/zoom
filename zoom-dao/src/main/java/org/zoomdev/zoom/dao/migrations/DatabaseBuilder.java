@@ -1,7 +1,5 @@
 package org.zoomdev.zoom.dao.migrations;
 
-import javax.xml.crypto.Data;
-
 /**
  * dao.newBuilder()
  * .create("user)

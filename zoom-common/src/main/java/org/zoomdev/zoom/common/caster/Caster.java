@@ -9,7 +9,6 @@ import org.zoomdev.zoom.common.utils.Classes;
 import org.zoomdev.zoom.common.utils.DataObject;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -269,7 +268,7 @@ public class Caster {
         //date
         Caster.register(java.util.Date.class, java.sql.Date.class, new Date2SqlDate());
         //除非你想用toString,否则下面这条不必要s
-        Caster.register(java.util.Date.class, String.class,new Date2String());
+        Caster.register(java.util.Date.class, String.class, new Date2String());
 
 
         //Caster.register(java.sql.Date.class, java.util.Date.class, new SqlDate2Date());
@@ -321,7 +320,6 @@ public class Caster {
 
 
         Caster.register(String.class, byte[].class, new String2ByteArray());
-
 
 
         Caster.registerParameterizedType(
@@ -397,7 +395,6 @@ public class Caster {
     }
 
 
-
     /**
      * If A can cast to B
      * And B can cast to C
@@ -466,18 +463,18 @@ public class Caster {
     }
 
 
-    static class String2EnumCaster implements ValueCaster{
+    static class String2EnumCaster implements ValueCaster {
 
         private Method method;
 
-        public String2EnumCaster( Method method ){
+        public String2EnumCaster(Method method) {
             this.method = method;
         }
 
         @Override
         public Object to(Object src) {
             try {
-                return method.invoke(null,src);
+                return method.invoke(null, src);
             } catch (Exception e) {
                 throw new CasterException(e);
             }
@@ -491,16 +488,17 @@ public class Caster {
         public ValueCaster getCaster(Class<?> srcType, Class<?> toType) {
             if (toType.isEnum()) {
                 try {
-                    Method method = toType.getMethod("valueOf",String.class);
+                    Method method = toType.getMethod("valueOf", String.class);
                     return new String2EnumCaster(method);
                 } catch (NoSuchMethodException e) {
-                   throw new CasterException("不能将String转化为enum "+toType+" 找不到valueOf方法");
+                    throw new CasterException("不能将String转化为enum " + toType + " 找不到valueOf方法");
                 }
             }
             return null;
         }
 
     }
+
     static class Map2BeanProvider implements Caster.CasterProvider {
 
 
@@ -539,10 +537,10 @@ public class Caster {
     }
 
 
-    class String2ParameterizedType implements ValueCaster{
+    class String2ParameterizedType implements ValueCaster {
         ParameterizedType type;
 
-        public String2ParameterizedType(ParameterizedType type){
+        public String2ParameterizedType(ParameterizedType type) {
             this.type = type;
         }
 
@@ -550,7 +548,7 @@ public class Caster {
         @Override
         public Object to(Object src) {
             try {
-                return JSON.parse((String)src,type);
+                return JSON.parse((String) src, type);
             } catch (Exception e) {
                 throw new Caster.CasterException(e);
             }
@@ -573,7 +571,7 @@ public class Caster {
         public Object to(Object src) {
             String str = (String) src;
             try {
-                return JSON.parse((String)src,javaType);
+                return JSON.parse((String) src, javaType);
 
             } catch (Exception e) {
                 throw new CasterException(e);
@@ -601,7 +599,7 @@ public class Caster {
             }
             String str = (String) clobCaster.to(src);
             try {
-                return JSON.parse(str,javaType);
+                return JSON.parse(str, javaType);
             } catch (Exception e) {
                 throw new CasterException(e);
             }
@@ -798,7 +796,7 @@ public class Caster {
         @Override
         public Object to(Object src) {
             try {
-                return JSON.parse((String) src,Map.class);
+                return JSON.parse((String) src, Map.class);
             } catch (Exception e) {
                 throw new CasterException(e);
             }
@@ -812,7 +810,7 @@ public class Caster {
         public Object to(Object src) {
             InputStream is = (InputStream) src;
             try {
-                return JSON.parse(is,Map.class);
+                return JSON.parse(is, Map.class);
             } catch (Exception e) {
                 throw new CasterException(e);
             } finally {
@@ -828,7 +826,7 @@ public class Caster {
         public Object to(Object src) {
             InputStream is = (InputStream) src;
             try {
-                return JSON.parse(is,Map.class);
+                return JSON.parse(is, Map.class);
             } catch (Exception e) {
                 throw new CasterException(e);
             } finally {
@@ -844,7 +842,7 @@ public class Caster {
         public Object to(Object src) {
             Reader is = (Reader) src;
             try {
-                return JSON.parse(is,Map.class);
+                return JSON.parse(is, Map.class);
             } catch (Exception e) {
                 throw new CasterException(e);
             } finally {
@@ -860,7 +858,7 @@ public class Caster {
         public Object to(Object src) {
             Reader is = (Reader) src;
             try {
-                return JSON.parse(is,List.class);
+                return JSON.parse(is, List.class);
             } catch (Exception e) {
                 throw new CasterException(e);
             } finally {
@@ -876,7 +874,7 @@ public class Caster {
         @Override
         public Object to(Object src) {
             try {
-                return JSON.parse((String)src,List.class);
+                return JSON.parse((String) src, List.class);
             } catch (Exception e) {
                 throw new CasterException(e);
             }
@@ -1505,7 +1503,7 @@ public class Caster {
     private static EqValueCaster eqValueCaster = new EqValueCaster();
 
     private static ValueCaster get(Class<?> srcType, Class<?> toType) {
-        if(srcType == toType){
+        if (srcType == toType) {
             return eqValueCaster;
         }
         /**
@@ -1657,7 +1655,7 @@ public class Caster {
         }
 
         if (toType instanceof Class) {
-            if(srcType == toType){
+            if (srcType == toType) {
                 return eqValueCaster;
             }
             return wrap(srcType, (Class<?>) toType);
@@ -1821,11 +1819,11 @@ public class Caster {
     private static final String SHORT_DATE_TIME = "yyyyMMddHHmmssSSS";
     private static final String LONG_DATE_TIME = "yyyy-MM-dd HH:mm:ss:SSS";
 
-    private static class Date2String implements ValueCaster{
+    private static class Date2String implements ValueCaster {
 
         @Override
         public Object to(Object src) {
-            Date date = (Date)src;
+            Date date = (Date) src;
             return new SimpleDateFormat(DATE_TIME_FORMAT).format(date);
         }
     }

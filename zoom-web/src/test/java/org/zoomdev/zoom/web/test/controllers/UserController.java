@@ -73,13 +73,13 @@ public class UserController {
     @JsonResponse
     public void login(
             @Param(body = true)
-            LoginRequest request
+                    LoginRequest request
     ) {
 
 
     }
 
-    public static class HeaderInfo{
+    public static class HeaderInfo {
 
         String img;
         String info;
@@ -116,16 +116,16 @@ public class UserController {
     public void update(
             HeaderInfo head,
             String id
-    ){
+    ) {
 
     }
 
     /// update the head info
     @JsonResponse
     public void updateHead(
-            Map<String,Object> head,
+            Map<String, Object> head,
             String id
-    ){
+    ) {
 
         System.out.println(head);
     }

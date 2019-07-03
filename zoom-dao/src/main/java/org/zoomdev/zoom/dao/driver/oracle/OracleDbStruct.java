@@ -50,20 +50,20 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
     }
 
 
-    private Ar getAllKeyTypes(Ar ar){
+    private Ar getAllKeyTypes(Ar ar) {
         return ar.nameAdapter(EmptyNameAdapter.DEFAULT).table("user_cons_columns")
                 .select("user_cons_columns.constraint_name,user_cons_columns.table_name, user_cons_columns.column_name,user_constraints.constraint_type")
-                .join("user_constraints","user_cons_columns.constraint_name = user_constraints.constraint_name")
+                .join("user_constraints", "user_cons_columns.constraint_name = user_constraints.constraint_name")
                 .join("user_tables", " user_tables.table_name=user_cons_columns.table_name");
     }
 
     protected Map<String, String> getKeyTypes(String table) {
-        List<Record> consts = getAllKeyTypes(dao.ar()).where("user_cons_columns.table_name",table.toUpperCase()).find();
+        List<Record> consts = getAllKeyTypes(dao.ar()).where("user_cons_columns.table_name", table.toUpperCase()).find();
         return getKeyTypesMap(consts);
     }
 
 
-    private Map<String,String> getKeyTypesMap(List<Record> consts ){
+    private Map<String, String> getKeyTypesMap(List<Record> consts) {
         Map<String, String> keyTypes = new HashMap<String, String>();
         for (Record record : consts) {
             String keyType = record.getString("CONSTRAINT_TYPE");
@@ -72,13 +72,13 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
         return keyTypes;
     }
 
-    private Ar getAllIndexes(Ar ar){
+    private Ar getAllIndexes(Ar ar) {
         return ar.nameAdapter(EmptyNameAdapter.DEFAULT).table("user_ind_columns")
                 .select("user_ind_columns.table_name,user_ind_columns.column_name,user_indexes.index_type")
-                .join("user_indexes","user_ind_columns.index_name = user_indexes.index_name");
+                .join("user_indexes", "user_ind_columns.index_name = user_indexes.index_name");
     }
 
-    private Set<String> getAllIndexes(List<Record> indexs){
+    private Set<String> getAllIndexes(List<Record> indexs) {
         Set<String> indexes = new HashSet<String>();
         for (Record record : indexs) {
             indexes.add(getRecordKey(record));
@@ -86,10 +86,9 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
         return indexes;
     }
 
-    private Set<String> getIndexes(String tableName)
-    {
+    private Set<String> getIndexes(String tableName) {
         List<Record> indexes = getAllIndexes(dao.ar())
-                .where("user_ind_columns.table_name",tableName.toUpperCase()).find();
+                .where("user_ind_columns.table_name", tableName.toUpperCase()).find();
         return getAllIndexes(indexes);
     }
 
@@ -98,7 +97,7 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
                 .append(table.toUpperCase()).append(columnMeta.getName()).toString();
     }
 
-    protected void fill(String table, ColumnMeta columnMeta, Record record, Map<String, String> keyTypes,Set<String> indexes) {
+    protected void fill(String table, ColumnMeta columnMeta, Record record, Map<String, String> keyTypes, Set<String> indexes) {
         columnMeta.setName(record.getString("COLUMN_NAME"));
         columnMeta.setComment(record.getString("COMMENTS"));
 
@@ -109,11 +108,10 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
                 //auto 另外计算
             } else if (keyType.equals("U")) {
                 columnMeta.setKeyType(KeyType.UNIQUE);
-            }else if(indexes.contains(getRecordKey(table, columnMeta))){
+            } else if (indexes.contains(getRecordKey(table, columnMeta))) {
                 columnMeta.setKeyType(KeyType.INDEX);
             }
         }
-
 
 
         columnMeta.setDefaultValue(record.getString("DATA_DEFAULT"));
@@ -128,7 +126,7 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
         return ar.table("cols").nameAdapter(EmptyNameAdapter.DEFAULT)
                 .select("cols.table_name,cols.column_name,cols.DATA_PRECISION,cols.NULLABLE,cols.DATA_DEFAULT,cols.DATA_TYPE,cols.DATA_LENGTH,COMMENTS")
                 .join("user_tables", " user_tables.table_name=cols.table_name")
-                .join("user_col_comments", "cols.COLUMN_NAME=user_col_comments.column_name and cols.TABLE_name=user_col_comments.TABLE_name","left");
+                .join("user_col_comments", "cols.COLUMN_NAME=user_col_comments.column_name and cols.TABLE_name=user_col_comments.TABLE_name", "left");
     }
 
 
@@ -171,7 +169,7 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
                 continue;
             }
 
-            fill(meta.getName(), columnMeta, record, keyTypes,indexTypes);
+            fill(meta.getName(), columnMeta, record, keyTypes, indexTypes);
         }
 
         fillWithAuto(meta);
@@ -238,15 +236,12 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
     }
 
 
-
-
-
     @Override
     public Snapshot takeSnapshot() {
 
         List<TableNameAndComment> nameAndComments = getNameAndComments();
         List<Record> allColumns = getAllColumns(dao.ar()).find();
-        final Map<String,String> keyTypes =getKeyTypesMap(getAllKeyTypes(dao.ar()).find()) ;
+        final Map<String, String> keyTypes = getKeyTypesMap(getAllKeyTypes(dao.ar()).find());
         final Set<String> indexes = getAllIndexes(getAllIndexes(dao.ar()).find());
         List<ColumnMeta> columnMetas = CollectionUtils.map(allColumns, new Converter<Record, ColumnMeta>() {
             @Override
@@ -254,23 +249,23 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
                 ColumnMeta columnMeta = new ColumnMeta();
                 String table = record.getString("TABLE_NAME");
                 columnMeta.setTable(table.toLowerCase());
-                fill(table,columnMeta,record,keyTypes,indexes);
+                fill(table, columnMeta, record, keyTypes, indexes);
                 return columnMeta;
             }
         });
 
 
-        final Map<String,List<ColumnMeta>> treeMap = toTreeMap(columnMetas);
+        final Map<String, List<ColumnMeta>> treeMap = toTreeMap(columnMetas);
 
         ///tables
-        List<TableMeta> tableMetas =  CollectionUtils.map(nameAndComments, new Converter<TableNameAndComment, TableMeta>() {
+        List<TableMeta> tableMetas = CollectionUtils.map(nameAndComments, new Converter<TableNameAndComment, TableMeta>() {
             @Override
             public TableMeta convert(TableNameAndComment data) {
 
 
                 List<ColumnMeta> children = treeMap.get(data.getName().toLowerCase());
-                if(children==null){
-                    throw new DaoException("找不到对应的表"+data.getName());
+                if (children == null) {
+                    throw new DaoException("找不到对应的表" + data.getName());
                 }
                 TableMeta tableMeta = new TableMeta();
                 tableMeta.setName(data.getName());
@@ -284,8 +279,7 @@ public class OracleDbStruct extends AbsDbStruct implements DbStructFactory {
         });
 
 
-
-        ZoomSnapshot snapshot= new ZoomSnapshot();
+        ZoomSnapshot snapshot = new ZoomSnapshot();
         snapshot.setTables(tableMetas);
 
 

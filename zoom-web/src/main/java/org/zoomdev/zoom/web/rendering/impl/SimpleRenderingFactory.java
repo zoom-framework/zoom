@@ -1,41 +1,42 @@
 package org.zoomdev.zoom.web.rendering.impl;
 
-import org.zoomdev.zoom.web.annotations.JsonResponse;
 import org.zoomdev.zoom.web.rendering.Rendering;
 import org.zoomdev.zoom.web.rendering.RenderingChain;
 import org.zoomdev.zoom.web.rendering.RenderingFactory;
 
-import java.awt.image.renderable.RenderContext;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class SimpleRenderingFactory implements RenderingFactory{
+public class SimpleRenderingFactory implements RenderingFactory {
 
 
     List<Rendering> renderings;
     List<Rendering> errorRenderings;
 
 
-    public SimpleRenderingFactory(){
+    public SimpleRenderingFactory() {
         renderings = new ArrayList<Rendering>();
         errorRenderings = new ArrayList<Rendering>();
     }
 
 
-    private Map<String,RenderingChain> pool = new HashMap<String, RenderingChain>();
+    private Map<String, RenderingChain> pool = new HashMap<String, RenderingChain>();
 
-    private RenderingChain createRendering(Class<?> targetClass, Method method,String keyPrefix,List<Rendering> src){
+    private RenderingChain createRendering(Class<?> targetClass, Method method, String keyPrefix, List<Rendering> src) {
         StringBuilder sb = new StringBuilder(keyPrefix);
         List<Rendering> list = new ArrayList<Rendering>();
-        for(Rendering rendering : src){
-            if(rendering.shouldHandle(targetClass,method)){
+        for (Rendering rendering : src) {
+            if (rendering.shouldHandle(targetClass, method)) {
                 sb.append(rendering.getUid());
                 list.add(rendering);
             }
         }
         String key = sb.toString();
-        RenderingChain  rendering = pool.get(key);
-        if(rendering==null){
+        RenderingChain rendering = pool.get(key);
+        if (rendering == null) {
             GroupRendering groupRendering = new GroupRendering(list.toArray(new Rendering[list.size()]));
             rendering = groupRendering;
             pool.put(key, rendering);
@@ -45,22 +46,22 @@ public class SimpleRenderingFactory implements RenderingFactory{
 
     @Override
     public synchronized RenderingChain createRendering(Class<?> targetClass, Method method) {
-        return createRendering(targetClass,method,"",renderings);
+        return createRendering(targetClass, method, "", renderings);
     }
 
     @Override
     public synchronized RenderingChain createExceptionRendering(Class<?> targetClass, Method method) {
-        return createRendering(targetClass,method,"error",errorRenderings);
+        return createRendering(targetClass, method, "error", errorRenderings);
     }
 
     @Override
     public void add(int index, Rendering rendering) {
-        this.renderings.add(index,rendering);
+        this.renderings.add(index, rendering);
     }
 
     @Override
     public void addError(int index, Rendering rendering) {
-        this.errorRenderings.add(index,rendering);
+        this.errorRenderings.add(index, rendering);
     }
 
     @Override

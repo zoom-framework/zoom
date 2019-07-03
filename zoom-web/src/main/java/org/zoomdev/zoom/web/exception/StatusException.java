@@ -28,7 +28,7 @@ public class StatusException extends ZoomException implements RestException {
     }
 
 
-    public static class ServiceUnavaliableException extends StatusException{
+    public static class ServiceUnavaliableException extends StatusException {
 
         public ServiceUnavaliableException() {
             super(504);
@@ -46,9 +46,11 @@ public class StatusException extends ZoomException implements RestException {
         public UnAuthException() {
             super(401);
         }
-        public UnAuthException(String code,String message) {
-            super(401,code,message);
+
+        public UnAuthException(String code, String message) {
+            super(401, code, message);
         }
+
         /**
          *
          */
@@ -81,8 +83,9 @@ public class StatusException extends ZoomException implements RestException {
      */
     public static class ServerException extends StatusException {
         public ServerException() {
-            super(500, null,null);
+            super(500, null, null);
         }
+
         public ServerException(String code, String error) {
             super(500, code, error);
         }
@@ -127,8 +130,8 @@ public class StatusException extends ZoomException implements RestException {
             super(403);
         }
 
-        public AuthException(String code,String error){
-            super(403,code,error);
+        public AuthException(String code, String error) {
+            super(403, code, error);
         }
 
         /**

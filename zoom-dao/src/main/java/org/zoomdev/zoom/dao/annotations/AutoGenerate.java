@@ -1,7 +1,5 @@
 package org.zoomdev.zoom.dao.annotations;
 
-import org.zoomdev.zoom.dao.AutoGenerateValue;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

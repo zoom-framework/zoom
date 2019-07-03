@@ -14,9 +14,9 @@ public interface IocClassLoader {
      *
      * @param moduleInstance module实例
      * @param method         module的方法
-     * @param order         {@link IocBean#order()}
+     * @param order          {@link IocBean#order()}
      */
-    IocClass append(Object moduleInstance, Method method,int order);
+    IocClass append(Object moduleInstance, Method method, int order);
 
     /**
      * 注册增加一个实例
@@ -24,10 +24,10 @@ public interface IocClassLoader {
      * @param baseType
      * @param instance
      * @param initialized
-     * @param order {@link IocBean#SYSTEM} {@link IocBean#USER}
+     * @param order       {@link IocBean#SYSTEM} {@link IocBean#USER}
      * @return
      */
-    <T> IocClass append(Class<T> baseType, T instance, boolean initialized,int order);
+    <T> IocClass append(Class<T> baseType, T instance, boolean initialized, int order);
 
 
     /**

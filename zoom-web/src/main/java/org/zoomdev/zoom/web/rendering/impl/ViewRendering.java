@@ -12,7 +12,7 @@ public class ViewRendering implements Rendering {
     public boolean render(ActionContext context) throws Exception {
 
         Object renderObject;
-        if ( (renderObject = context.getRenderObject()) instanceof View) {
+        if ((renderObject = context.getRenderObject()) instanceof View) {
             ((View) renderObject).render(context.getResponse());
             return true;
         }

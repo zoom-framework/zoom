@@ -49,14 +49,11 @@ public class ZoomIocObject implements IocObject, Destroyable {
     }
 
 
-
-
-
     @Override
     public void destroy() {
         if (obj == null)
             return;
-        if(log.isDebugEnabled()){
+        if (log.isDebugEnabled()) {
             log.debug("正在销毁" + obj);
         }
 

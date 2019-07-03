@@ -13,7 +13,6 @@ import java.lang.reflect.Method;
 public interface Rendering extends RenderingChain {
 
 
-
     boolean shouldHandle(Class<?> targetClass, Method method);
 
 

@@ -8,6 +8,7 @@ public interface IocCreatorFactory {
 
     /**
      * 根据接口创建一个代理对象
+     *
      * @param interfaceClass
      * @return
      */

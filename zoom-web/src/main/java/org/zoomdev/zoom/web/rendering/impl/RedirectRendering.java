@@ -1,9 +1,7 @@
 package org.zoomdev.zoom.web.rendering.impl;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.web.action.ActionContext;
-import org.zoomdev.zoom.web.annotations.JsonResponse;
 import org.zoomdev.zoom.web.rendering.Rendering;
 
 import java.lang.reflect.Method;

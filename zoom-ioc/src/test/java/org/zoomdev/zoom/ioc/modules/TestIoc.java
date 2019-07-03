@@ -42,7 +42,7 @@ public class TestIoc extends TestCase {
 
 
         IocContainer subIoc = new ZoomIocContainer(
-                ioc,ioc.getClassLoader()
+                ioc, ioc.getClassLoader()
         );
 
 
@@ -52,24 +52,23 @@ public class TestIoc extends TestCase {
     }
 
 
-    public static class A{
+    public static class A {
 
         private final B b;
 
-        public A(B b){
+        public A(B b) {
             this.b = b;
         }
-        
-    }
-
-    public static class B{
 
     }
 
-    public static class C{
+    public static class B {
 
     }
 
+    public static class C {
+
+    }
 
 
     public void testScopeIoc() throws IOException {
@@ -80,9 +79,8 @@ public class TestIoc extends TestCase {
         ioc.addEventListener(new IocMethodVisitorImpl());
 
 
-
         IocContainer container = new ZoomIocContainer(
-                ioc,ioc.getClassLoader()
+                ioc, ioc.getClassLoader()
         );
 
         container.getIocClassLoader().append(A.class);
@@ -96,7 +94,6 @@ public class TestIoc extends TestCase {
         container.fetch(A.class);
         container.fetch(B.class);
         container.fetch(C.class);
-
 
 
         Classes.destroy(container);

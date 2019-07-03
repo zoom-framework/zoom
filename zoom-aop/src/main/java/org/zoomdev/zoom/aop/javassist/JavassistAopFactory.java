@@ -7,7 +7,6 @@ import org.zoomdev.zoom.aop.MethodInterceptor;
 import org.zoomdev.zoom.aop.MethodInterceptorFactory;
 import org.zoomdev.zoom.aop.impl.AstractMethodInterceptorFactory;
 import org.zoomdev.zoom.aop.impl.ReflectMethodCaller;
-import org.zoomdev.zoom.aop.utils.JavassistUtils;
 import org.zoomdev.zoom.common.utils.Classes;
 
 import java.lang.reflect.Method;
@@ -29,7 +28,7 @@ public class JavassistAopFactory extends AstractMethodInterceptorFactory {
     private ClassPool classPool;
 
 
-    public JavassistAopFactory(ClassPool classPool,MethodInterceptorFactory... makers) {
+    public JavassistAopFactory(ClassPool classPool, MethodInterceptorFactory... makers) {
         super(makers);
         this.classPool = classPool;
     }
@@ -167,7 +166,7 @@ public class JavassistAopFactory extends AstractMethodInterceptorFactory {
                 sb.append(",");
             }
             String name = type.getName();
-            if(type.isArray()){
+            if (type.isArray()) {
                 name = type.getComponentType().getName() + "[]";
             }
 

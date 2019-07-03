@@ -59,17 +59,16 @@ public class TimerModule implements Destroyable {
             public void create(IocObject target, IocMethodProxy method) {
 
 
-
             }
 
             @Override
             public void inject(IocObject target, IocMethodProxy method) {
                 Timer timer = method.getAnnotation(Timer.class);
                 String cron = (String) ConfigReader.parseValue(getCron(timer));
-                if (StringUtils.isEmpty(cron)){
+                if (StringUtils.isEmpty(cron)) {
                     throw new ZoomException("cron is empty!");
                 }
-                log.info(String.format("启动定时器,方法[%s],时间段[%s]",method.getMethod(),cron));
+                log.info(String.format("启动定时器,方法[%s],时间段[%s]", method.getMethod(), cron));
                 timerService.startTimer(method.getUid(), IocTimerJob.class, new TimerData(
                         target,
                         method
@@ -78,7 +77,7 @@ public class TimerModule implements Destroyable {
 
             @Override
             public void destroy(IocObject target, IocMethodProxy method) {
-                log.info(String.format("关闭定时器,方法[%s]",method.getMethod()));
+                log.info(String.format("关闭定时器,方法[%s]", method.getMethod()));
                 timerService.stopTimer(method.getUid());
             }
 

@@ -50,7 +50,6 @@ public class HttpUtil {
     }
 
 
-
     public static Response execute(Request request) throws IOException {
         HttpURLConnection connection = null;
         try {
@@ -66,7 +65,7 @@ public class HttpUtil {
                 }
             }
 
-            if(request.body!=null){
+            if (request.body != null) {
                 connection.setDoInput(true);
 
                 connection.getOutputStream().write(request.body);

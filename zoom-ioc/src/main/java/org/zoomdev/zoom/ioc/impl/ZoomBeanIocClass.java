@@ -20,7 +20,7 @@ public class ZoomBeanIocClass extends ZoomIocClass {
             IocConstructor constructor,
             IocKey key,
             int order) {
-        super(ioc, scope,classLoader, constructor, key,order);
+        super(ioc, scope, classLoader, constructor, key, order);
     }
 
     private boolean injectorCreated = false;

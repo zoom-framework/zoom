@@ -29,7 +29,7 @@ public abstract class ZoomIocClass extends IocBase implements IocClass {
         this.classLoader = classLoader;
         this.constructor = constructor;
         this.key = key;
-        this.scope =scope;
+        this.scope = scope;
         this.order = order;
     }
 

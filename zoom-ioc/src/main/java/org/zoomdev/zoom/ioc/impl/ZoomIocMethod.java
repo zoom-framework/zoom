@@ -10,7 +10,7 @@ public class ZoomIocMethod extends IocBase implements IocMethod {
 
 
     private IocValue[] parameterValues;
-  //  private IocKey[] parameterKeys;
+    //  private IocKey[] parameterKeys;
 
     private final Method method;
 
@@ -55,14 +55,12 @@ public class ZoomIocMethod extends IocBase implements IocMethod {
     }
 
 
-
-
     @Override
     public Object invoke(IocObject obj) {
         try {
 
 
-            return method.invoke(obj.get(), ZoomIocContainer.getValues(ioc,parameterValues));
+            return method.invoke(obj.get(), ZoomIocContainer.getValues(ioc, parameterValues));
         } catch (Exception e) {
             throw new IocException("调用ioc注入函数失败" + method, e);
         }
@@ -95,20 +93,20 @@ public class ZoomIocMethod extends IocBase implements IocMethod {
     @Override
     public int getOrder() {
         //如果没有参数，那么就直接执行
-        if(order == -1){
-            if(parameterValues==null || parameterValues.length==0){
+        if (order == -1) {
+            if (parameterValues == null || parameterValues.length == 0) {
                 order = IocBean.MAX;
-            }else{
+            } else {
                 //评估下顺序，往后面推
                 int order = 0;
-                for(IocValue key : parameterValues){
-                    if(key instanceof ZoomIocKeyValue){
-                        IocClass iocClass = ioc.getIocClassLoader().get(  ((ZoomIocKeyValue)key).getKey()  );
-                        if(iocClass==null){
-                            throw new IocException("未找到指定的IocClass:"+key);
+                for (IocValue key : parameterValues) {
+                    if (key instanceof ZoomIocKeyValue) {
+                        IocClass iocClass = ioc.getIocClassLoader().get(((ZoomIocKeyValue) key).getKey());
+                        if (iocClass == null) {
+                            throw new IocException("未找到指定的IocClass:" + key);
                         }
                         order += iocClass.getOrder();
-                    }else{
+                    } else {
                         order += IocBean.CONFIG;
                     }
 

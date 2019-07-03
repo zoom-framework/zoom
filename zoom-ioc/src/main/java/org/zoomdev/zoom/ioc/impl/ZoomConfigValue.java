@@ -14,7 +14,7 @@ public class ZoomConfigValue implements IocValue {
     private String name;
     private Type type;
 
-    public ZoomConfigValue(String name,Type type){
+    public ZoomConfigValue(String name, Type type) {
         this.name = name;
         this.type = type;
     }
@@ -28,7 +28,7 @@ public class ZoomConfigValue implements IocValue {
     @Override
     public IocObject getValue(IocContainer ioc) {
         Object v = ConfigReader.getDefault().get(name);
-        v = Caster.toType(v,type);
-        return ZoomIocObject.wrap(null,v,true);
+        v = Caster.toType(v, type);
+        return ZoomIocObject.wrap(null, v, true);
     }
 }

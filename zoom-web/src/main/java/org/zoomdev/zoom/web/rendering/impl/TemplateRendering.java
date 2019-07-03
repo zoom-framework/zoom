@@ -37,7 +37,7 @@ public abstract class TemplateRendering implements Rendering {
 
     private WebConfig webConfig;
 
-    public TemplateRendering(){
+    public TemplateRendering() {
     }
 
     /**
@@ -46,7 +46,7 @@ public abstract class TemplateRendering implements Rendering {
      * @return
      */
     public static File getDefaultPath() {
-        return new File(PathUtils.getWebInfPath(""),"templates");
+        return new File(PathUtils.getWebInfPath(""), "templates");
     }
 
 
@@ -73,7 +73,7 @@ public abstract class TemplateRendering implements Rendering {
         if (result instanceof Map) {
             data = (Map<String, Object>) result;
             data = merge(data, context);
-            if(path.contains("{")){
+            if (path.contains("{")) {
                 throw new ZoomException("本方法必须要返回一个明确的模板路径,如users/index");
             }
         } else if (result instanceof String) {
@@ -90,26 +90,25 @@ public abstract class TemplateRendering implements Rendering {
             data = new HashMap<String, Object>();
 
             //注意这个时候仍然需要merge
-            merge(data,context);
+            merge(data, context);
             /// 注意不要命名冲突
-            data.put("exception",exeption);
+            data.put("exception", exeption);
             data.put("message", exeption.getMessage());
             data.put("stackTrace", Classes.formatStackTrace(exeption));
-            data.put("status",response.getStatus());
+            data.put("status", response.getStatus());
 
 
         }
         response.setContentType("text/html");
-        if(!path.endsWith(getExt())){
+        if (!path.endsWith(getExt())) {
             path = path + getExt();
         }
-        if(data==null){
-            data = merge(data,context);
+        if (data == null) {
+            data = merge(data, context);
         }
         render(request, response, path, data);
         return true;
     }
-
 
 
     /**
@@ -128,7 +127,6 @@ public abstract class TemplateRendering implements Rendering {
     }
 
     /**
-     *
      * @param data
      * @param context
      * @return

@@ -77,20 +77,20 @@ public class H2DbStruct extends AbsDbStruct {
     }
 
 
-    protected Ar getAllColumns(Ar ar){
+    protected Ar getAllColumns(Ar ar) {
         return ar.table("information_schema.columns")
                 .nameAdapter(ToLowerCaseNameAdapter.DEFAULT)
                 .select("TABLE_NAME,COLUMN_NAME,IS_NULLABLE,DATA_TYPE,SEQUENCE_NAME,CHARACTER_MAXIMUM_LENGTH,REMARKS,COLUMN_DEFAULT")
-                .where("TABLE_SCHEMA","PUBLIC");
+                .where("TABLE_SCHEMA", "PUBLIC");
     }
 
-    protected Ar getAllIndexes(Ar ar){
+    protected Ar getAllIndexes(Ar ar) {
         return ar.table("INFORMATION_SCHEMA.indexes")
                 .nameAdapter(ToLowerCaseNameAdapter.DEFAULT)
                 .select("TABLE_NAME,COLUMN_NAME,INDEX_TYPE_NAME");
     }
 
-    protected void fill( ColumnMeta columnMeta, Record record, Map<String, String> indexesMap) {
+    protected void fill(ColumnMeta columnMeta, Record record, Map<String, String> indexesMap) {
         columnMeta.setName(record.getString("column_name"));
         columnMeta.setComment(record.getString("remarks"));
         // 常用的
@@ -110,14 +110,15 @@ public class H2DbStruct extends AbsDbStruct {
 
 
     }
+
     @Override
     public void fill(TableMeta meta) {
 
 
         // columns
-        List<Record> list = getAllColumns(dao.ar()).where("TABLE_NAME",meta.getName().toUpperCase()).find();
+        List<Record> list = getAllColumns(dao.ar()).where("TABLE_NAME", meta.getName().toUpperCase()).find();
         //index
-        List<Record> indexes =getAllIndexes(dao.ar()).where("TABLE_NAME",meta.getName().toUpperCase()).find();
+        List<Record> indexes = getAllIndexes(dao.ar()).where("TABLE_NAME", meta.getName().toUpperCase()).find();
         Map<String, String> indexesMap = getIndexesMap(indexes);
 
         for (Record record : list) {
@@ -128,16 +129,17 @@ public class H2DbStruct extends AbsDbStruct {
                 log.warn("找不到对应的字段:" + column);
                 continue;
             }
-            fill(columnMeta,record,indexesMap);
+            fill(columnMeta, record, indexesMap);
         }
 
     }
+
     private String getRecordKey(Record record) {
         return new StringBuilder().append(record.getString("table_name"))
                 .append(record.getString("column_name")).toString();
     }
 
-    private Map<String,String> getIndexesMap(List<Record> consts ){
+    private Map<String, String> getIndexesMap(List<Record> consts) {
         Map<String, String> keyTypes = new HashMap<String, String>();
         for (Record record : consts) {
             String keyType = record.getString("index_type_name");
@@ -145,11 +147,12 @@ public class H2DbStruct extends AbsDbStruct {
         }
         return keyTypes;
     }
+
     @Override
     public Snapshot takeSnapshot() {
         List<TableNameAndComment> nameAndComments = getNameAndComments();
         List<Record> allColumns = getAllColumns(dao.ar()).find();
-        List<Record> indexes =getAllIndexes(dao.ar()).find();
+        List<Record> indexes = getAllIndexes(dao.ar()).find();
         final Map<String, String> indexesMap = getIndexesMap(indexes);
         List<ColumnMeta> columnMetas = CollectionUtils.map(allColumns, new Converter<Record, ColumnMeta>() {
             @Override
@@ -157,21 +160,21 @@ public class H2DbStruct extends AbsDbStruct {
                 ColumnMeta columnMeta = new ColumnMeta();
                 String table = record.getString("table_name").toLowerCase();
                 columnMeta.setTable(table);
-                fill(columnMeta,record,indexesMap);
+                fill(columnMeta, record, indexesMap);
                 return columnMeta;
             }
         });
 
 
-        final Map<String,List<ColumnMeta>> treeMap = toTreeMap(columnMetas);
+        final Map<String, List<ColumnMeta>> treeMap = toTreeMap(columnMetas);
 
         ///tables
-        List<TableMeta> tableMetas =  CollectionUtils.map(nameAndComments, new Converter<TableNameAndComment, TableMeta>() {
+        List<TableMeta> tableMetas = CollectionUtils.map(nameAndComments, new Converter<TableNameAndComment, TableMeta>() {
             @Override
             public TableMeta convert(TableNameAndComment data) {
                 List<ColumnMeta> children = treeMap.get(data.getName().toLowerCase());
-                if(children==null){
-                    throw new DaoException("找不到对应的表"+data.getName());
+                if (children == null) {
+                    throw new DaoException("找不到对应的表" + data.getName());
                 }
                 TableMeta tableMeta = new TableMeta();
                 tableMeta.setName(data.getName());
@@ -183,8 +186,7 @@ public class H2DbStruct extends AbsDbStruct {
         });
 
 
-
-        ZoomSnapshot snapshot= new ZoomSnapshot();
+        ZoomSnapshot snapshot = new ZoomSnapshot();
         snapshot.setTables(tableMetas);
         return snapshot;
     }

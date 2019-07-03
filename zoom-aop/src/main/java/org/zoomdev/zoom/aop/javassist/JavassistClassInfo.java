@@ -5,7 +5,6 @@ import javassist.bytecode.CodeAttribute;
 import javassist.bytecode.LocalVariableAttribute;
 import javassist.bytecode.MethodInfo;
 import org.zoomdev.zoom.aop.reflect.ClassInfo;
-import org.zoomdev.zoom.aop.utils.JavassistUtils;
 import org.zoomdev.zoom.common.exceptions.ZoomException;
 import org.zoomdev.zoom.common.utils.StreamClassLoader;
 
@@ -21,7 +20,7 @@ public class JavassistClassInfo implements ClassInfo {
     private final ClassPool classPool;
 
 
-    public JavassistClassInfo(ClassPool classPool){
+    public JavassistClassInfo(ClassPool classPool) {
         this.classPool = classPool;
     }
 
@@ -33,10 +32,10 @@ public class JavassistClassInfo implements ClassInfo {
         }
     }
 
-    static class StreamClassPath implements ClassPath{
+    static class StreamClassPath implements ClassPath {
         private StreamClassLoader classLoader;
 
-        public StreamClassPath(StreamClassLoader classLoader){
+        public StreamClassPath(StreamClassLoader classLoader) {
             this.classLoader = classLoader;
         }
 
@@ -113,9 +112,9 @@ public class JavassistClassInfo implements ClassInfo {
 
     @Override
     public synchronized void removeClassLoader(StreamClassLoader classLoader) {
-        for(int i=0,c=paths.size(); i < c; ++i){
+        for (int i = 0, c = paths.size(); i < c; ++i) {
             StreamClassPath p = paths.get(i);
-            if(p.classLoader == classLoader){
+            if (p.classLoader == classLoader) {
                 paths.remove(p);
                 ClassPool pool = classPool;
                 pool.removeClassPath(p);
