@@ -49,15 +49,16 @@ public class MapUtils {
 
     /**
      * 将列表转化为map
+     *
      * @param list
      * @param keyExtra
      * @param <T>
      * @return
      */
-    public static <T> Map<String,T> toMap(List<T> list,Converter<T,String> keyExtra){
+    public static <T> Map<String, T> toMap(List<T> list, Converter<T, String> keyExtra) {
         Map<String, T> result = new HashMap<String, T>();
         for (T data : list) {
-            result.put( keyExtra.convert(data),data );
+            result.put(keyExtra.convert(data), data);
         }
 
         return result;

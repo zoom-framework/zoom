@@ -13,7 +13,7 @@ public class StatusException extends ZoomException implements RestException {
 
 
         public ApiError(String message) {
-            super(418, message, message);
+            super(418, "message", message);
         }
 
         public ApiError(String code, String message) {

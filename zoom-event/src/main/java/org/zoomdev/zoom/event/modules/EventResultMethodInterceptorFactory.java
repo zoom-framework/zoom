@@ -41,6 +41,7 @@ class EventResultMethodInterceptorFactory extends AnnotationMethodInterceptorFac
                 eventService.notifyObservers(name, result, null);
             } catch (Throwable e) {
                 eventService.notifyObservers(name, null, e);
+                throw e;
             }
 
         }

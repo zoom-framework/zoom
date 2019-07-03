@@ -25,7 +25,7 @@ class SimpleParameterParser implements ParameterParser, Destroyable {
 
 
     @Override
-    public Object[] parse(ActionContext context) throws Exception {
+    public Object[] parse(ActionContext context) throws Throwable {
         for (ParameterParserContainer parameterAdapterFactory : proxys) {
             if (parameterAdapterFactory.shouldAdapt(context)) {
                 return parameterAdapterFactory.parse(context);

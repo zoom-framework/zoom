@@ -265,7 +265,7 @@ public class Action implements Destroyable {
      * @param context
      * @throws Exception
      */
-    private void parse(ActionContext context) throws Exception {
+    private void parse(ActionContext context) throws Throwable {
 
 
         if (context.getState() == ActionContext.STATE_PARSE) {

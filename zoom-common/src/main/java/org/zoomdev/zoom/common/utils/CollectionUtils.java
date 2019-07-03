@@ -336,7 +336,7 @@ public class CollectionUtils {
 
 
     public static <T> int lastIndexOf(List<T> list, Filter<T> filter) {
-        for (int i = list.size()-1; i >=0; --i) {
+        for (int i = list.size() - 1; i >= 0; --i) {
             if (filter.accept(list.get(i))) {
                 return i;
             }

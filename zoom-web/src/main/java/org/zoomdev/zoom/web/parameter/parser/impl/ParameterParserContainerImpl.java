@@ -31,7 +31,7 @@ class ParameterParserContainerImpl implements ParameterParserContainer {
     }
 
     @Override
-    public Object[] parse(ActionContext context) throws Exception {
+    public Object[] parse(ActionContext context) throws Throwable {
         if (parameterParser == null) {
             synchronized (this) {
                 if (parameterParser == null) {

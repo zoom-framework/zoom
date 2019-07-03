@@ -14,7 +14,7 @@ public interface ParameterParserContainer {
     /**
      * @return
      */
-    Object[] parse(ActionContext context) throws Exception;
+    Object[] parse(ActionContext context) throws Throwable;
 
 
 }
